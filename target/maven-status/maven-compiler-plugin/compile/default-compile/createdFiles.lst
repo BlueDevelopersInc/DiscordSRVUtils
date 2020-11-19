@@ -1,0 +1,7 @@
+com\bluetree\discordsrvutils\DiscordSRVUtils.class
+com\bluetree\discordsrvutils\DiscordSRVEventListener.class
+com\bluetree\discordsrvutils\Events\EssentialsAfk.class
+com\bluetree\discordsrvutils\JDALISTENER.class
+com\bluetree\discordsrvutils\Updatechecker.class
+com\bluetree\discordsrvutils\Commands\discordsrvutilsCommand.class
+com\bluetree\discordsrvutils\PluginConfiguration.class

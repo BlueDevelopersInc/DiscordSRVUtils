@@ -1,0 +1,13 @@
+name: DiscordSRVUtils
+softdepend:
+  - DiscordSRV
+  - Essentials
+  - Advancedban
+version: 1.0 SNAPSHOT 1
+main: com.bluetree.discordsrvutils.DiscordSRVUtils
+author: Blue_Tree
+api-version: 1.13
+
+commands:
+  discordsrvutils:
+    aliases: [dsrvu, dsu, du, discordu]

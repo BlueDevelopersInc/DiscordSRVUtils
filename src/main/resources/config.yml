@@ -1,0 +1,49 @@
+#DiscordSRVUtils addon config:
+
+
+
+#welcomer_channel. This channel will contain welcome message for people who join the discord server
+welcomer_channel: 000000000000000000
+
+#welcomer_message. We will send this message when a discord user joins
+#Avaiable PlaceHolders: [User_Name], [User_Tag], [User_Mention].
+welcomer_message:
+  - "🔸 **Welcome [User_Name] To The server!**"
+  - ""
+  - ""
+  - "🔸 **Server ip** | play.example.com"
+  - ""
+  - ""
+  - "🔸 **Store** | store.example.com"
+
+#mc_welcomer_message. This message will be send to online players when a new member joins the discord server
+#Avaible PlaceHolders: [User_name], [User_Tag], [Guild_Name].
+mc_welcomer_message: "&b[User_Name] &aJoined the Discord server"
+
+#Should we send the message above to all players when a new member joins the discord server?
+#Set to true if you want the message to be send, false if you don't
+join_message_to_online_players: true
+
+
+#What is the embed color we should use for the welcomer embed?
+#Default: RED
+welcomer_message_embed_color: RED
+
+#Should we send the afk messages to discord?
+essentials_afk_to_discord: true
+
+#Message to be send when player is afk
+#Avaible PlaceHolders: [Player_Name], [Player_DisplayName]
+essentials_player_afk_message:
+  - "**[Player_Name] is now afk**"
+
+#Message to send when player is no longer afk
+#Avaible PlaceHolders: [Player_Name], [Player_DisplayName]
+essentials_player_no_longer_afk_message:
+  - "**[Player_Name] is no longer afk**"
+
+#Bot status. can be set to ONLINE, DND, IDLE.
+bot_status: ONLINE
+
+
+#Reaction roles, tickets and databases coming soon.
