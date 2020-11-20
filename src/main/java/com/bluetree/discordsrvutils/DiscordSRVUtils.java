@@ -1,6 +1,7 @@
 package com.bluetree.discordsrvutils;
 
 import com.bluetree.discordsrvutils.Commands.discordsrvutilsCommand;
+import com.bluetree.discordsrvutils.Events.AdvancedbanEvents;
 import com.bluetree.discordsrvutils.Events.EssentialsAfk;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
@@ -33,6 +34,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
             getServer().getPluginManager().registerEvents(new EssentialsAfk(this), this);
         }
+        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
+            getServer().getPluginManager().registerEvents(new AdvancedbanEvents(this), this);
+        }
         getCommand("discordsrvutils").setExecutor(new discordsrvutilsCommand(this));
         this.DISCORDSRVEVENTLISTENER = new DiscordSRVEventListener(this);
         this.JDALISTENER = new JDALISTENER(this);
@@ -62,8 +66,10 @@ public class DiscordSRVUtils extends JavaPlugin {
         new Updatechecker(this).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
                 getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
+                getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
             } else {
                 getLogger().info(ChatColor.GREEN + "A new version is available. Please download as fast as possible!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
+                getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
             }
         });
         int pluginId = 9456; // <-- Replace with the id of your plugin!

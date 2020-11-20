@@ -112,6 +112,14 @@ public class discordsrvutilsCommand implements CommandExecutor {
                             sender.sendMessage(ChatColor.RED + "bot_status is not ONLINE or IDLE or DND");
                             errors = errors+1;
                         }
+                        if (core.getConfig().getLong("muted_role") == 000000000000000000) {
+                            sender.sendMessage(ChatColor.GOLD + "muted_role is in it's default stat");
+                            warnings = warnings+1;
+                        }
+                        else if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
+                            sender.sendMessage(ChatColor.RED + "muted_role is not found.");
+                            errors = errors+1;
+                        }
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bPlugin reloaded with &e" + errors + " &berrors and &e" + warnings + "&b warnings."));
                     warnings = 0;
                     errors = 0;
