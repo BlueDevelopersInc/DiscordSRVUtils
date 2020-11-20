@@ -60,6 +60,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.DevLeoko</groupId>
+            <artifactId>AdvancedBan</artifactId>
+            <version>b4bbb6a</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.discordsrv</groupId>
             <artifactId>discordsrv</artifactId>
             <version>1.20.0</version>
@@ -73,6 +79,10 @@
 
     </dependencies>
     <repositories>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
