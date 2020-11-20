@@ -1,36 +1,34 @@
-package com.bluetree.discordsrvutils.Events;
+package com.bluetree.discordsrvutils.events;
 
 import com.bluetree.discordsrvutils.DiscordSRVUtils;
-import com.bluetree.discordsrvutils.JDALISTENER;
+import com.bluetree.discordsrvutils.utils.PlayerUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
 import me.leoko.advancedban.manager.TimeManager;
-import me.leoko.advancedban.shaded.org.bstats.bukkit.Metrics;
 import me.leoko.advancedban.utils.PunishmentType;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class AdvancedbanEvents implements Listener {
+public class AdvancedBanListener implements Listener {
     private final DiscordSRVUtils core;
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
 
-    public AdvancedbanEvents(DiscordSRVUtils core) {
+    public AdvancedBanListener(DiscordSRVUtils core) {
         this.core = core;
     }
+
     @EventHandler
     public void onPlayerPunished(PunishmentEvent event) {
         Bukkit.getScheduler().runTask(core, () -> {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(event.getPunishment().getName()).getUniqueId());
 
 
-            Server server = Bukkit.getServer();
             PunishmentType type = event.getPunishment().getType();
             if (type == PunishmentType.BAN) {
                 if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
@@ -46,22 +44,21 @@ public class AdvancedbanEvents implements Listener {
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
                         ).queue();
-                        return;
 
 
                 }
             }
             else if (type == PunishmentType.MUTE) {
                 if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
+                    if (userId != null) {
                         if (!(DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null)) {
                            DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
                         }
                         else {
                             if (core.getConfig().getLong("muted_role") == 000000000000000000) {
-                                JDALISTENER.sendToPeopleWithPerms("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
+                                PlayerUtil.sendToAuthorizedPlayers("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
                             } else {
-                                JDALISTENER.sendToPeopleWithPerms("&cError: &eMuted role id not found on the main guild.");
+                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
                             }
                         }
                     }
@@ -85,9 +82,9 @@ public class AdvancedbanEvents implements Listener {
                         }
                         else {
                             if (core.getConfig().getLong("muted_role") == 000000000000000000) {
-                                JDALISTENER.sendToPeopleWithPerms("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
+                                PlayerUtil.sendToAuthorizedPlayers("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
                             } else {
-                                JDALISTENER.sendToPeopleWithPerms("&cError: &eMuted role id not found on the main guild.");
+                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
                             }
                         }
                     }
@@ -270,7 +267,7 @@ public class AdvancedbanEvents implements Listener {
                 if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
                     if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
 
-                      JDALISTENER.sendToPeopleWithPerms("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                        PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
                     }
                     else {
                         if (!(userId == null)) {
@@ -290,7 +287,7 @@ public class AdvancedbanEvents implements Listener {
                     if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
                         if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
 
-                            JDALISTENER.sendToPeopleWithPerms("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                            PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
                         }
                         else {
                             if (!(userId == null)) {
@@ -302,7 +299,7 @@ public class AdvancedbanEvents implements Listener {
                     if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
                         if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
 
-                            JDALISTENER.sendToPeopleWithPerms("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                            PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
                         }
                         else {
                             if (!(userId == null)) {

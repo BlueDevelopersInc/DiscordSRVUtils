@@ -9,18 +9,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 
-public class Updatechecker {
+public class UpdateChecker {
 
     private JavaPlugin plugin;
 
-    public Updatechecker(JavaPlugin plugin) {
+    public UpdateChecker(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
 
     public void getVersion(final Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try (InputStream inputStream = new URL("http://bluecraftweb.000webhostapp.com/Plugins/DiscordSRVUtils.html").openStream(); Scanner scanner = new Scanner(inputStream)) {
+            try (InputStream inputStream = new URL("http://bluecraftweb.000webhostapp.com/Plugins/DiscordSRVUtils.html").openStream();
+                 Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     consumer.accept(scanner.next());
                 }

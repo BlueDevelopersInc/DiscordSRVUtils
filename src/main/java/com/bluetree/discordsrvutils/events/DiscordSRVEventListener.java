@@ -1,5 +1,6 @@
-package com.bluetree.discordsrvutils;
+package com.bluetree.discordsrvutils.events;
 
+import com.bluetree.discordsrvutils.DiscordSRVUtils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -18,31 +19,26 @@ public class DiscordSRVEventListener {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
-    public static JDA jda;
 
     @Subscribe
     public void onDiscordGuildMessagePreProccessEvent(DiscordGuildMessagePreProcessEvent e) {
 
-
     }
     @Subscribe
-    public void onDISCORDSRVReady(DiscordReadyEvent e) {
-        if (core.getConfig().getString("bot_status") == null) {
-
+    public void onReady(DiscordReadyEvent e) {
+        String status = core.getConfig().getString("bot_status");
+        if (status != null) {
+            switch (status.toUpperCase()) {
+                case "DND":
+                    getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                    break;
+                case "IDLE":
+                    getJda().getPresence().setStatus(OnlineStatus.IDLE);
+                    break;
+                case "ONLINE":
+                    getJda().getPresence().setStatus(OnlineStatus.ONLINE);
+                    break;
+            }
         }
-        else {
-            if (core.getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-            }
-            else if (core.getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                getJda().getPresence().setStatus(OnlineStatus.IDLE);
-            }
-            else if (core.getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                getJda().getPresence().setStatus(OnlineStatus.ONLINE);
-            }
-
-        }
-        getJda().addEventListener(core.JDALISTENER);
-
     }
 }

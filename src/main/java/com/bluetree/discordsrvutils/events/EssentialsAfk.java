@@ -1,8 +1,7 @@
-package com.bluetree.discordsrvutils.Events;
+package com.bluetree.discordsrvutils.events;
 
 
 import com.bluetree.discordsrvutils.DiscordSRVUtils;
-import com.bluetree.discordsrvutils.JDALISTENER;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.event.EventHandler;

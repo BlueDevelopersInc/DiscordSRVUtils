@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils.Commands;
+package com.bluetree.discordsrvutils.commands;
 
 import com.bluetree.discordsrvutils.DiscordSRVUtils;
 import com.bluetree.discordsrvutils.PluginConfiguration;
@@ -6,8 +6,6 @@ import com.google.common.base.Charsets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,9 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Level;
 
-public class discordsrvutilsCommand implements CommandExecutor {
+public class DiscordSRVUtilsCommand implements CommandExecutor {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
@@ -32,7 +29,7 @@ public class discordsrvutilsCommand implements CommandExecutor {
     int errors = 0;
     private final DiscordSRVUtils core;
 
-    public discordsrvutilsCommand(DiscordSRVUtils core) {
+    public DiscordSRVUtilsCommand(DiscordSRVUtils core) {
 
         this.core = core;
     }
