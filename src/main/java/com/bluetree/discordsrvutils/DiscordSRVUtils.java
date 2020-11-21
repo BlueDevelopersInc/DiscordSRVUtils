@@ -1,8 +1,9 @@
 package com.bluetree.discordsrvutils;
 
-import com.bluetree.discordsrvutils.Commands.discordsrvutilsCommand;
-import com.bluetree.discordsrvutils.Events.AdvancedbanEvents;
-import com.bluetree.discordsrvutils.Events.EssentialsAfk;
+import com.bluetree.discordsrvutils.commands.DiscordSRVUtilsCommand;
+import com.bluetree.discordsrvutils.events.AdvancedBanListener;
+import com.bluetree.discordsrvutils.events.DiscordSRVEventListener;
+import com.bluetree.discordsrvutils.events.EssentialsAfk;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
@@ -11,9 +12,10 @@ import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class DiscordSRVUtils extends JavaPlugin {
-    public DiscordSRVEventListener DISCORDSRVEVENTLISTENER;
-    public JDALISTENER JDALISTENER;
+    public DiscordSRVEventListener discordListener;
 
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
@@ -35,40 +37,22 @@ public class DiscordSRVUtils extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EssentialsAfk(this), this);
         }
         if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
-            getServer().getPluginManager().registerEvents(new AdvancedbanEvents(this), this);
+            getServer().getPluginManager().registerEvents(new AdvancedBanListener(this), this);
         }
-        getCommand("discordsrvutils").setExecutor(new discordsrvutilsCommand(this));
-        this.DISCORDSRVEVENTLISTENER = new DiscordSRVEventListener(this);
-        this.JDALISTENER = new JDALISTENER(this);
-        DiscordSRV.api.subscribe(DISCORDSRVEVENTLISTENER);
-        if (DiscordSRV.isReady) {
-            getJda().addEventListener(JDALISTENER);
-            getLogger().warning("Please restart to enable all features.");
-            if (getConfig().getString("bot_status") == null) {
 
-            }
-            else {
-                if (getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                    getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-                }
-                else if (getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                    getJda().getPresence().setStatus(OnlineStatus.IDLE);
-                }
-                else if (getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                    getJda().getPresence().setStatus(OnlineStatus.ONLINE);
-                }
+        Objects.requireNonNull(getCommand("discordsrvutils")).setExecutor(new DiscordSRVUtilsCommand(this));
+        this.discordListener = new DiscordSRVEventListener(this);
+        DiscordSRV.api.subscribe(discordListener);
 
-            }
+        if (getConfig().getLong("welcomer_channel") == 0) {
+            getLogger().warning("Welcomer messages channel not specified");
         }
-        if (getConfig().getLong("welcomer_channel") == 000000000000000000) {
-            getLogger().warning("Welcomer messages channel not spectified");
-        }
-        new Updatechecker(this).getVersion(version -> {
+        new UpdateChecker(this).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
                 getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
                 getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
             } else {
-                getLogger().info(ChatColor.GREEN + "A new version is available. Please download as fast as possible!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
+                getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
                 getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
             }
         });
@@ -79,18 +63,9 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     }
     @Override
-    public void onDisable() {
-        if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) return;
-
-            DiscordSRV.api.unsubscribe(DISCORDSRVEVENTLISTENER);
-    }
-    @Override
     public void onLoad() {
-        if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) return;
-        DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
-    }
-
-    public static void setupCommands() {
-
+        if (getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+        }
     }
 }
