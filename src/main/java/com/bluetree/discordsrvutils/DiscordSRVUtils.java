@@ -4,6 +4,7 @@ import com.bluetree.discordsrvutils.commands.DiscordSRVUtilsCommand;
 import com.bluetree.discordsrvutils.events.AdvancedBanListener;
 import com.bluetree.discordsrvutils.events.DiscordSRVEventListener;
 import com.bluetree.discordsrvutils.events.EssentialsAfk;
+import com.bluetree.discordsrvutils.events.JDAEvents;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 public class DiscordSRVUtils extends JavaPlugin {
     public DiscordSRVEventListener discordListener;
+    public JDAEvents JDALISTENER;
 
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
@@ -42,25 +44,43 @@ public class DiscordSRVUtils extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("discordsrvutils")).setExecutor(new DiscordSRVUtilsCommand(this));
         this.discordListener = new DiscordSRVEventListener(this);
+        this.JDALISTENER = new JDAEvents(this);
+
         DiscordSRV.api.subscribe(discordListener);
 
         if (getConfig().getLong("welcomer_channel") == 0) {
             getLogger().warning("Welcomer messages channel not specified");
         }
-        new UpdateChecker(this).getVersion(version -> {
-            if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
-                getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
-                getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
-            } else {
-                getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
-                getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
+        if (DiscordSRV.isReady) {
+            getJda().addEventListener(JDALISTENER);
+            String status = getConfig().getString("bot_status");
+            if (status != null) {
+                switch (status.toUpperCase()) {
+                    case "DND":
+                        getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                        break;
+                    case "IDLE":
+                        getJda().getPresence().setStatus(OnlineStatus.IDLE);
+                        break;
+                    case "ONLINE":
+                        getJda().getPresence().setStatus(OnlineStatus.ONLINE);
+                        break;
+                }
             }
-        });
-        int pluginId = 9456; // <-- Replace with the id of your plugin!
-        Metrics metrics = new Metrics(this, pluginId);
+            new UpdateChecker(this).getVersion(version -> {
+                if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
+                    getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
+                    getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
+                } else {
+                    getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
+                    getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
+                }
+            });
+            int pluginId = 9456; // <-- Replace with the id of your plugin!
+            Metrics metrics = new Metrics(this, pluginId);
 
 
-
+        }
     }
     @Override
     public void onLoad() {
