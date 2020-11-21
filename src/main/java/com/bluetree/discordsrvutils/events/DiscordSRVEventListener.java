@@ -36,5 +36,6 @@ public class DiscordSRVEventListener {
                     break;
             }
         }
+        getJda().addEventListener(core.JDALISTENER);
     }
 }

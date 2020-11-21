@@ -1,8 +1,10 @@
+com\bluetree\discordsrvutils\events\EssentialsAfk.class
+com\bluetree\discordsrvutils\utils\PlayerUtil.class
 com\bluetree\discordsrvutils\DiscordSRVUtils.class
-com\bluetree\discordsrvutils\Events\AdvancedbanEvents.class
-com\bluetree\discordsrvutils\DiscordSRVEventListener.class
-com\bluetree\discordsrvutils\Events\EssentialsAfk.class
-com\bluetree\discordsrvutils\JDALISTENER.class
-com\bluetree\discordsrvutils\Updatechecker.class
-com\bluetree\discordsrvutils\Commands\discordsrvutilsCommand.class
+com\bluetree\discordsrvutils\commands\DiscordSRVUtilsCommand.class
+com\bluetree\discordsrvutils\events\DiscordSRVEventListener.class
+com\bluetree\discordsrvutils\events\AdvancedBanListener$1.class
+com\bluetree\discordsrvutils\events\JDAEvents.class
+com\bluetree\discordsrvutils\events\AdvancedBanListener.class
+com\bluetree\discordsrvutils\UpdateChecker.class
 com\bluetree\discordsrvutils\PluginConfiguration.class
