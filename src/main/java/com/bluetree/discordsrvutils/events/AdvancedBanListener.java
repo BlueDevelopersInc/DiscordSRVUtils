@@ -4,17 +4,18 @@ import com.bluetree.discordsrvutils.DiscordSRVUtils;
 import com.bluetree.discordsrvutils.utils.PlayerUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
 import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.utils.PunishmentType;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class AdvancedBanListener implements Listener {
     private final DiscordSRVUtils core;
+
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
@@ -30,85 +31,86 @@ public class AdvancedBanListener implements Listener {
 
 
             PunishmentType type = event.getPunishment().getType();
-            if (type == PunishmentType.BAN) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+            switch (type) {
+                case BAN: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (!(userId == null)) {
+                            if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
+                                DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                            }
                         }
                     }
-            }
-                if (core.getConfig().getBoolean("advancedban_ban_message_to_discord")) {
+                    if (core.getConfig().getBoolean("advancedban_ban_message_to_discord")) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ban_message"))
-                        .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
                         ).queue();
 
 
+                    }
+                    break;
                 }
-            }
-            else if (type == PunishmentType.MUTE) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (userId != null) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null)) {
-                           DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                        }
-                        else {
-                            if (core.getConfig().getLong("muted_role") == 000000000000000000) {
-                                PlayerUtil.sendToAuthorizedPlayers("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
+                case MUTE: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (userId != null) {
+                            if (!(DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null)) {
+                                DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
                             } else {
-                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
+                                if (core.getConfig().getLong("muted_role") == 000000000000000000) {
+                                    PlayerUtil.sendToAuthorizedPlayers("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
+                                } else {
+                                    PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
+                                }
                             }
                         }
                     }
+                    if (core.getConfig().getBoolean("advancedban_mute_message_to_discord")) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_mute_message"))
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
+                    break;
                 }
-                if (core.getConfig().getBoolean("advancedban_mute_message_to_discord")) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_mute_message"))
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                            .replace("[Reason]", event.getPunishment().getReason())
-                    ).queue();
+                case KICK: {
+                    break;
                 }
-            }
-            else if (type == PunishmentType.KICK) {
-
-            }
-            else if (type == PunishmentType.TEMP_MUTE) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                        }
-                        else {
-                            if (core.getConfig().getLong("muted_role") == 000000000000000000) {
-                                PlayerUtil.sendToAuthorizedPlayers("&CError: &eCould not give muted role to muted player because role is in it's default stats (000000000000000000)");
+                case TEMP_MUTE: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (!(userId == null)) {
+                            Role mutedRole = DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"));
+                            if (mutedRole != null) {
+                                DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, mutedRole).queue();
                             } else {
-                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
+                                if (core.getConfig().getLong("muted_role") == 000000000000000000) {
+                                    PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not give muted role to muted player because role is in its default state (000000000000000000)");
+                                } else {
+                                    PlayerUtil.sendToAuthorizedPlayers("&cError: &eMuted role id not found on the main guild.");
+                                }
                             }
                         }
                     }
+                    if (core.getConfig().getBoolean("advancedban_temp_mute_message_to_discord")) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_mute_message"))
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                                .replace("[Duration]", event.getPunishment().getDuration(true))
+                        ).queue();
+                    }
+                    break;
                 }
-                if (core.getConfig().getBoolean("advancedban_temp_mute_message_to_discord")) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_mute_message"))
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                            .replace("[Reason]", event.getPunishment().getReason())
-                            .replace("[Duration]", event.getPunishment().getDuration(true))
-                    ).queue();
-                }
-
-
-            }
-            else if (type == PunishmentType.TEMP_BAN) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                case TEMP_BAN: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (userId != null) {
+                            if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
+                                DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                            }
                         }
                     }
-                }
-                if (core.getConfig().getBoolean("advancedban_temp_ban_message_to_discord")) {
+                    if (core.getConfig().getBoolean("advancedban_temp_ban_message_to_discord")) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
@@ -116,50 +118,49 @@ public class AdvancedBanListener implements Listener {
                                 .replace("[Duration]", event.getPunishment().getDuration(true))
                         ).queue();
 
+                    }
+                    break;
                 }
-
-            }
-            else if (type == PunishmentType.IP_BAN) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                case IP_BAN: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (userId != null) {
+                            if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
+                                DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                            }
                         }
                     }
-                }
-                if (core.getConfig().getBoolean("advancedban_ip_ban_message_to_discord")) {
+                    if (core.getConfig().getBoolean("advancedban_ip_ban_message_to_discord")) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ip_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
                         ).queue();
-                        return;
 
+                    }
+                    break;
                 }
-            }
-            else if (type == PunishmentType.TEMP_IP_BAN) {
-                if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                    if (!(userId == null)) {
-                        if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                case TEMP_IP_BAN: {
+                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                        if (!(userId == null)) {
+                            if (!(DiscordSRV.getPlugin().getMainGuild().getMemberById(userId) == null)) {
+                                DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils banned by advancedban").queue();
+                            }
                         }
                     }
-                }
-                if (core.getConfig().getBoolean("advancedban_temp_ip_ban_message_to_discord")) {
+                    if (core.getConfig().getBoolean("advancedban_temp_ip_ban_message_to_discord")) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ip_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
                                 .replace("[Duration]", event.getPunishment().getDuration(true))
                         ).queue();
-                        return;
 
+                    }
+                    break;
                 }
 
+
             }
-
-
-
         });
 
     }
@@ -169,157 +170,152 @@ public class AdvancedBanListener implements Listener {
         Bukkit.getScheduler().runTask(core, () -> {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(event.getPunishment().getName()).getUniqueId());
             PunishmentType type = event.getPunishment().getType();
-            Server server = Bukkit.getServer();
-            if (type == PunishmentType.BAN) {
-                if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                    if (!(userId == null)) {
-                        DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                    }
-                }
-                if (core.getConfig().getBoolean("advancedban_unban_to_discord")) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unban_message"))
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                    ).queue();
+            Role muted = DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"));
 
-                }
-
-            }
-            else if (type == PunishmentType.TEMP_BAN) {
-                if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
+            switch (type) {
+                case BAN: {
                     if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                        if (!(userId == null)) {
+                        if (userId != null) {
                             DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
                         }
                     }
-
-                }
-                else {
-                    if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                        if (!(userId == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                        }
-                    }
-                    if (core.getConfig().getBoolean("advancedban_untempban_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempban_message"))
+                    if (core.getConfig().getBoolean("advancedban_unban_to_discord")) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
-                                .replace("[Operator]", event.getPunishment().getOperator())
-                                .replace("[Reason]", event.getPunishment().getReason())
-                        ).queue();
-
-                    }
-
-                }
-
-
-
-
-
-            }
-            else if (type == PunishmentType.IP_BAN) {
-                if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                    if (!(userId == null)) {
-                        DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                    }
-            }
-                if (core.getConfig().getBoolean("advancedban_unipban_to_discord")) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unipban_message"))
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                    ).queue();
-
-                }
-
-
-
-            }
-            else if (type == PunishmentType.TEMP_IP_BAN) {
-                if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
-                    if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                        if (!(userId == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                        }
-                }
-
-
-
-
-
-                }
-                else {
-                    if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                        if (!(userId == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                        }
-                    }
-
-                    if (core.getConfig().getBoolean("advancedban_untempipban_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempipban_message"))
-                                .replace("[Player]", event.getPunishment().getName())
-
                                 .replace("[Operator]", event.getPunishment().getOperator())
                         ).queue();
 
                     }
+                    break;
                 }
-            }
-            else if (type == PunishmentType.MUTE) {
-                if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                    if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
+                case TEMP_BAN: {
+                    if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (userId != null) {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }
+                        }
 
-                        PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                    } else {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (userId != null) {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }
+                        }
+                        if (core.getConfig().getBoolean("advancedban_untempban_to_discord")) {
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempban_message"))
+                                    .replace("[Player]", event.getPunishment().getName())
+                                    .replace("[Operator]", event.getPunishment().getOperator())
+                                    .replace("[Reason]", event.getPunishment().getReason())
+                            ).queue();
+
+                        }
+
                     }
-                    else {
-                        if (!(userId == null)) {
-                    DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                }}}
-                if (core.getConfig().getBoolean("advancedban_unmute_message_to_discord")) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unmute_message"))
-                            .replace("[Player]", event.getPunishment().getName())
-
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                    ).queue();
+                    break;
                 }
 
+                case IP_BAN: {
+                    if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                        if (userId != null) {
+                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                        }
+                    }
+                    if (core.getConfig().getBoolean("advancedban_unipban_to_discord")) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unipban_message"))
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                        ).queue();
+
+                    }
+                    break;
                 }
-            else if (type == PunishmentType.TEMP_MUTE) {
-                if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
+
+                case TEMP_IP_BAN: {
+                    if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (userId != null) {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }
+                        }
+
+
+                    } else {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (userId != null) {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }
+                        }
+
+                        if (core.getConfig().getBoolean("advancedban_untempipban_to_discord")) {
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempipban_message"))
+                                    .replace("[Player]", event.getPunishment().getName())
+
+                                    .replace("[Operator]", event.getPunishment().getOperator())
+                            ).queue();
+
+                        }
+                    }
+                    break;
+                }
+                case MUTE:
                     if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
                         if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
 
                             PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
-                        }
-                        else {
+                        } else {
                             if (!(userId == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                        }}}
-
-                }
-                else {
-                    if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
-                        if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
-
-                            PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                                DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, muted).queue();
+                            }
                         }
-                        else {
-                            if (!(userId == null)) {
-                            DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                        }}}
-                    if (core.getConfig().getBoolean("advancedban_untempmute_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempmute_message"))
+                    }
+                    if (core.getConfig().getBoolean("advancedban_unmute_message_to_discord")) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unmute_message"))
                                 .replace("[Player]", event.getPunishment().getName())
 
                                 .replace("[Operator]", event.getPunishment().getOperator())
                         ).queue();
                     }
+                    break;
 
-                }
+                case TEMP_MUTE:
+                    if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
+
+                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                            } else {
+                                if (!(userId == null)) {
+                                    DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
+                                }
+                            }
+                        }
+
+                    } else {
+                        if (core.getConfig().getBoolean("advancedban_unpunishments_to_discord")) {
+                            if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
+
+                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not remove role from unmuted player because muted_role is not found on the guild.");
+                            } else {
+                                if (!(userId == null)) {
+                                    DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
+                                }
+                            }
+                        }
+                        if (core.getConfig().getBoolean("advancedban_untempmute_message_to_discord")) {
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("global").sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempmute_message"))
+                                    .replace("[Player]", event.getPunishment().getName())
+
+                                    .replace("[Operator]", event.getPunishment().getOperator())
+                            ).queue();
+                        }
+
+                    }
+                    break;
             }
-
-
         });
 
     }
-    }
+}
 
 

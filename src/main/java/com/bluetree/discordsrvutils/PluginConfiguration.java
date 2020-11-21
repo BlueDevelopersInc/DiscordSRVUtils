@@ -23,7 +23,7 @@ public class PluginConfiguration {
 
         return config;
     }
-    private FileConfiguration newConfig = null;
+
     @NotNull
     public static YamlConfiguration loadConfiguration(@NotNull Reader reader) throws InvalidConfigurationException, IOException{
         Validate.notNull(reader, "Stream cannot be null");

@@ -12,6 +12,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class DiscordSRVUtils extends JavaPlugin {
     public DiscordSRVEventListener discordListener;
 
@@ -38,28 +40,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new AdvancedBanListener(this), this);
         }
 
-        getCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand(this));
+        Objects.requireNonNull(getCommand("discordsrvutils")).setExecutor(new DiscordSRVUtilsCommand(this));
         this.discordListener = new DiscordSRVEventListener(this);
         DiscordSRV.api.subscribe(discordListener);
-        if (DiscordSRV.isReady) {
-            getLogger().warning("Please restart to enable all features.");
-            if (getConfig().getString("bot_status") == null) {
 
-            }
-            else {
-                if (getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                    getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-                }
-                else if (getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                    getJda().getPresence().setStatus(OnlineStatus.IDLE);
-                }
-                else if (getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                    getJda().getPresence().setStatus(OnlineStatus.ONLINE);
-                }
-
-            }
-        }
-        if (getConfig().getLong("welcomer_channel") == 000000000000000000) {
+        if (getConfig().getLong("welcomer_channel") == 0) {
             getLogger().warning("Welcomer messages channel not specified");
         }
         new UpdateChecker(this).getVersion(version -> {
@@ -79,11 +64,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     @Override
     public void onLoad() {
-        if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) return;
-        DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
-    }
-
-    public static void setupCommands() {
-
+        if (getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+        }
     }
 }

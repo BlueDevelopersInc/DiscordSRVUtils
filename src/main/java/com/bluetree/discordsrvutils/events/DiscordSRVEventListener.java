@@ -21,10 +21,6 @@ public class DiscordSRVEventListener {
     }
 
     @Subscribe
-    public void onDiscordGuildMessagePreProccessEvent(DiscordGuildMessagePreProcessEvent e) {
-
-    }
-    @Subscribe
     public void onReady(DiscordReadyEvent e) {
         String status = core.getConfig().getString("bot_status");
         if (status != null) {

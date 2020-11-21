@@ -15,7 +15,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -23,6 +26,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
+
     public static JDA jda;
 
     int warnings = 0;
@@ -38,16 +42,12 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
     private FileConfiguration newConfig = null;
 
 
-
-
     private File configFile = null;
+
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(args.length >= 1)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bRunning DiscordSRVUtils v.&a" + core.getDescription().getVersion() + " "));
-
-
-        }
-        else if (args.length == 1) {
+        } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("discordsrvutils.reload")) {
                     sender.sendMessage(ChatColor.GREEN + "Reloading...");
@@ -65,63 +65,51 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
 
                         newConfig.setDefaults(PluginConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
                         core.reloadConfig();
-                    }
-                    catch (InvalidConfigurationException exception) {
+                    } catch (IOException | InvalidConfigurationException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;
                     }
-                    catch (IOException ex) {
-                        sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
-                        ex.printStackTrace();
-                        return true;
-
+                    if (core.getConfig().getLong("welcomer_channel") == 0) {
+                        sender.sendMessage(ChatColor.GOLD + "welcomer_channel is in it's default stat. Please update it.");
+                        warnings = warnings + 1;
                     }
-                    if (core.getConfig().getLong("welcomer_channel") == 000000000000000000) {
-                      sender.sendMessage(ChatColor.GOLD + "welcomer_channel is in it's default stat. Please update it.");
-                      warnings = warnings + 1;
-                    }
-                    if (core.getConfig().getStringList("welcomer_message") == null) {
+                    if (!core.getConfig().getStringList("welcomer_message").isEmpty()) {
                         sender.sendMessage(ChatColor.RED + "welcomer_message is not set.");
-                        errors = errors + 1;
+                        errors++;
                     }
                     if (core.getConfig().getString("mc_welcomer_message") == null) {
                         sender.sendMessage(ChatColor.RED + "mc_welcomer_message is not set");
-                        errors = errors +1;
+                        errors++;
                     }
-                    if (getJda().getGuildChannelById(core.getConfig().getString("welcomer_channel")) == null) {
+                    if (getJda().getGuildChannelById(core.getConfig().getLong("welcomer_channel")) == null) {
                         sender.sendMessage(ChatColor.GOLD + "welcomer_channel channel was not found");
                         warnings = warnings + 1;
                     }
 
 
-                        if (core.getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                            getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-                        }
-                        else if (core.getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                            getJda().getPresence().setStatus(OnlineStatus.IDLE);
-                        }
-                        else if (core.getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                            getJda().getPresence().setStatus(OnlineStatus.ONLINE);
+                    if (core.getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
+                        getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
+                        getJda().getPresence().setStatus(OnlineStatus.IDLE);
+                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
+                        getJda().getPresence().setStatus(OnlineStatus.ONLINE);
 
-                        }
-                        else {
-                            sender.sendMessage(ChatColor.RED + "bot_status is not ONLINE or IDLE or DND");
-                            errors = errors+1;
-                        }
-                        if (core.getConfig().getLong("muted_role") == 000000000000000000) {
-                            sender.sendMessage(ChatColor.GOLD + "muted_role is in it's default stat");
-                            warnings = warnings+1;
-                        }
-                        else if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
-                            sender.sendMessage(ChatColor.RED + "muted_role is not found.");
-                            errors = errors+1;
-                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "bot_status is not ONLINE or IDLE or DND");
+                        errors = errors + 1;
+                    }
+                    if (core.getConfig().getLong("muted_role") == 0) {
+                        sender.sendMessage(ChatColor.GOLD + "muted_role is in it's default stat");
+                        warnings = warnings + 1;
+                    } else if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
+                        sender.sendMessage(ChatColor.RED + "muted_role is not found.");
+                        errors = errors + 1;
+                    }
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bPlugin reloaded with &e" + errors + " &berrors and &e" + warnings + "&b warnings."));
                     warnings = 0;
                     errors = 0;
-                }
-                else {
+                } else {
                     sender.sendMessage(ChatColor.RED + "You don't have perms to use this command.");
                 }
 
@@ -130,18 +118,10 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
         return true;
 
     }
-    protected final ClassLoader getClassLoader() {
-        return classLoader;
-    }
-    final ClassLoader classLoader = this.getClass().getClassLoader();
 
     public InputStream getResource(@NotNull String filename) {
-        if (filename == null) {
-            throw new IllegalArgumentException("Filename cannot be null");
-        }
-
         try {
-            URL url = getClassLoader().getResource(filename);
+            URL url = getClass().getClassLoader().getResource(filename);
 
             if (url == null) {
                 return null;
