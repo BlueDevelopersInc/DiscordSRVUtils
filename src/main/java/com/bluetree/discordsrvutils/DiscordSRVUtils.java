@@ -52,7 +52,8 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "MessageId Bigint, " +
                     "Opened_Category Bigint, " +
                     "Closed_Category Bigint)").execute();
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
         }
         catch (SQLException exception)  {
             exception.printStackTrace();

@@ -1,6 +1,8 @@
 #DiscordSRVUtils addon config:
 
-
+#Bot prefix used in the discord server
+# for example, ! then the commands start with !, so !help !createticket
+BotPrefix: "!"
 
 #welcomer_channel. This channel will contain welcome message for people who join the discord server
 welcomer_channel: 000000000000000000
