@@ -4,15 +4,30 @@ import com.bluetree.discordsrvutils.DiscordSRVUtils;
 import com.bluetree.discordsrvutils.utils.PlayerUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.PermissionOverride;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
+import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.springframework.core.ParameterizedTypeReference;
 
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class JDAEvents extends ListenerAdapter {
 
@@ -162,6 +177,286 @@ public class JDAEvents extends ListenerAdapter {
         });
 
     }
+
+    @Override
+    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+            String[] args = e.getMessage().getContentRaw().split("\\s+");
+            if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "ticket")) {
+                if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+                    try (Connection conn = core.getMemoryConnection()) {
+                        try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
+                            p1.setLong(1, e.getMember().getIdLong());
+                            p1.setLong(2, e.getChannel().getIdLong());
+                            p1.execute();
+                            try (ResultSet r1 = p1.executeQuery()) {
+                                if (!r1.next()) {
+                                    try (PreparedStatement p2 = conn.prepareStatement("INSERT INTO tickets_creating (UserID, Channel_ID, step) VALUES (?,?, 0);")) {
+                                        p2.setLong(1, e.getMember().getIdLong());
+                                        p2.setLong(2, e.getChannel().getIdLong());
+                                        p2.execute();
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setColor(Color.RED);
+                                        embed.setTitle("Create new ticket");
+                                        embed.setDescription("**Step 1:** What is the name of the ticket?");
+                                        e.getChannel().sendMessage(embed.build()).queue();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        e.getChannel().sendMessage("Could not save data. Please try again later or restart your server.").queue();
+                    }
+
+                }
+            }
+            try (Connection conn = core.getMemoryConnection()) {
+                try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
+                    p1.setLong(1, e.getMember().getIdLong());
+                    p1.setLong(2, e.getChannel().getIdLong());
+                    p1.execute();
+                    try (ResultSet r1 = p1.executeQuery()) {
+                        if (r1.next()) {
+                            if (r1.getInt("step") == 0) {
+                                try (PreparedStatement p2 = conn.prepareStatement("UPDATE tickets_creating SET step=1, Name=? WHERE UserID=? AND Channel_id=?")) {
+                                    p2.setString(1, e.getMessage().getContentRaw());
+                                    p2.setLong(2, e.getMember().getIdLong());
+                                    p2.setLong(3, e.getChannel().getIdLong());
+                                    p2.execute();
+                                    EmbedBuilder embed = new EmbedBuilder();
+                                    embed.setTitle("Create new ticket");
+                                    embed.setDescription("**Step 2:** Please send the ID of the Category that opened tickets are created on");
+                                    embed.setColor(Color.RED);
+                                    e.getChannel().sendMessage(embed.build()).queue();
+                                }
+                            } else if (r1.getInt("step") == 1) {
+                                try {
+                                    Long.parseLong(e.getMessage().getContentRaw());
+                                    if (e.getJDA().getCategoryById(e.getMessage().getContentRaw()) == null) {
+                                        e.getChannel().sendMessage("Category not found on any server. Please try again.").queue();
+                                    } else {
+                                        PreparedStatement p2 = conn.prepareStatement("UPDATE tickets_creating SET Opened_Category=?, STEP=2 WHERE Channel_Id=? AND UserID=?");
+                                        p2.setLong(1, Long.parseLong(e.getMessage().getContentRaw()));
+                                        p2.setLong(2, e.getChannel().getIdLong());
+                                        p2.setLong(3, e.getMember().getIdLong());
+                                        p2.execute();
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setTitle("Create new ticket");
+                                        embed.setDescription("**Step 3:** Please send the ID of the category that Closed tickets should be moved to.");
+                                        embed.setColor(Color.RED);
+                                        e.getChannel().sendMessage(embed.build()).queue();
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    e.getChannel().sendMessage("Not even a valid number. Please try again.").queue();
+                                } catch (IllegalStateException ex) {
+                                    e.getChannel().sendMessage("sadly").queue();
+                                }
+
+                            } else if (r1.getInt("step") == 2) {
+                                try {
+                                    Long.parseLong(e.getMessage().getContentRaw());
+                                    if (e.getJDA().getCategoryById(e.getMessage().getContentRaw()) == null) {
+                                        e.getChannel().sendMessage("Category not found on any server. Please try again.").queue();
+                                    } else {
+                                        PreparedStatement p2 = conn.prepareStatement("UPDATE tickets_creating SET Closed_Category=?, STEP=3 WHERE Channel_Id=? AND UserID=?");
+                                        p2.setLong(1, Long.parseLong(e.getMessage().getContentRaw()));
+                                        p2.setLong(2, e.getChannel().getIdLong());
+                                        p2.setLong(3, e.getMember().getIdLong());
+                                        p2.execute();
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setTitle("Create new ticket");
+                                        embed.setDescription("**Step 4:** Please mention the roles that will be allowed to view all tickets.");
+                                        embed.setColor(Color.RED);
+                                        e.getChannel().sendMessage(embed.build()).queue(message -> {
+                                        });
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    e.getChannel().sendMessage("Not even a valid number. Please try again.").queue();
+                                } catch (IllegalStateException ex) {
+                                    e.getChannel().sendMessage("sadly").queue();
+                                }
+
+
+                            } else if (r1.getInt("step") == 3) {
+                                if (!e.getMessage().getMentionedRoles().isEmpty()) {
+                                    for (Role role : e.getMessage().getMentionedRoles()) {
+                                        try (PreparedStatement p2 = conn.prepareStatement("SELECT * FROM ticket_allowed_roles WHERE Channel_id=? AND UserID=?")) {
+                                            p2.setLong(1, e.getChannel().getIdLong());
+                                            p2.setLong(2, e.getMember().getIdLong());
+                                            p2.execute();
+                                            try (ResultSet r2 = p2.executeQuery()) {
+                                                    try (PreparedStatement p3 = conn.prepareStatement("INSERT INTO ticket_allowed_roles (Channel_id, UserID, RoleID) VALUES (?,?,?)")) {
+                                                        p3.setLong(1, e.getChannel().getIdLong());
+                                                        p3.setLong(2, e.getMember().getIdLong());
+                                                        p3.setLong(3, role.getIdLong());
+                                                        p3.execute();
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    PreparedStatement p2 = conn.prepareStatement("UPDATE tickets_creating SET step=4 WHERE channel_id=? AND UserID=?");
+                                    p2.setLong(1, e.getChannel().getIdLong());
+                                    p2.setLong(2, e.getMember().getIdLong());
+                                    p2.execute();
+                                    EmbedBuilder embed = new EmbedBuilder();
+                                    embed.setColor(Color.RED);
+                                    embed.setTitle("Create new ticket");
+                                    embed.setDescription("**Step 5:** Please mention the channel which we should send the ticket creation message.");
+                                    e.getChannel().sendMessage(embed.build()).queue();
+                                } else {
+                                    e.getChannel().sendMessage("No roles mentioned. Please try again").queue();
+                                }
+                            } else if (r1.getInt("step") == 4) {
+                                if (e.getMessage().getMentionedChannels().isEmpty()) {
+                                    e.getChannel().sendMessage("No Channels mentioned. Please try again").queue();
+                                    return;
+                                } else {
+                                    int number = 0;
+                                    for (TextChannel tx : e.getMessage().getMentionedChannels()) {
+                                        number = number+1;
+                                    }
+                                    if (number >= 2) {
+                                        e.getChannel().sendMessage("You mentioned more than 1 channel. Please try again").queue();
+                                    } else {
+                                        PreparedStatement p2 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?");
+                                        p2.setLong(1, e.getMember().getIdLong());
+                                        p2.setLong(2, e.getChannel().getIdLong());
+                                        p2.execute();
+                                        ResultSet r2 = p2.executeQuery();
+                                        r2.next();
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setTitle(r2.getString("Name"));
+                                        embed.setDescription("React with \uD83D\uDCE9 to create a ticket.");
+                                        embed.setColor(Color.CYAN);
+                                        e.getGuild().getTextChannelById(e.getMessage().getMentionedChannels().get(0).getIdLong()).sendMessage(embed.build()).queue(message -> {
+
+                                            message.addReaction("\uD83D\uDCE9").queue();
+                                            try (Connection mconn = core.getMemoryConnection()) {
+                                                Connection fconn = core.getDatabaseFile();
+                                                PreparedStatement mp1 = mconn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?");
+                                                mp1.setLong(1, e.getMember().getIdLong());
+                                                mp1.setLong(2, e.getChannel().getIdLong());
+                                                mp1.execute();
+                                                ResultSet mr1 = mp1.executeQuery();
+                                                mr1.next();
+                                                PreparedStatement fp1 = fconn.prepareStatement("INSERT INTO discordsrvutils_tickets (TicketID, MessageId, Opened_Category, Closed_Category, Name) VALUES (?, ?, ?, ?, ?)");
+                                                Random random = ThreadLocalRandom.current();
+                                                int TicketID = random.nextInt();
+                                                fp1.setLong(1, TicketID);
+                                                fp1.setLong(2, message.getIdLong());
+                                                fp1.setLong(3, mr1.getLong("Opened_Category"));
+                                                fp1.setLong(4, mr1.getLong("Closed_Category"));
+                                                fp1.setString(5, mr1.getString("Name"));
+                                                fp1.execute();
+                                                PreparedStatement mp2 = mconn.prepareStatement("SELECT * FROM ticket_allowed_roles WHERE Channel_id=? AND UserID=?");
+                                                mp2.setLong(1, e.getChannel().getIdLong());
+                                                mp2.setLong(2, e.getMember().getIdLong());
+                                                mp2.execute();
+                                                ResultSet mr2 = mp2.executeQuery();
+                                                while (mr2.next()) {
+                                                    PreparedStatement fm2 = fconn.prepareStatement("INSERT INTO ticket_allowed_roles (TicketID, RoleID) VALUES (?, ?)");
+                                                    fm2.setInt(1, TicketID);
+                                                    fm2.setLong(2, mr2.getLong("RoleID"));
+                                                    fm2.execute();
+                                                }
+                                                PreparedStatement last = mconn.prepareStatement("DELETE FROM tickets_creating WHERE Channel_id=? AND UserID=?");
+                                                last.setLong(1, e.getChannel().getIdLong());
+                                                last.setLong(2, e.getMember().getIdLong());
+                                                last.execute();
+
+                                            }catch (SQLException exception) {
+                                                exception.printStackTrace();
+                                            }
+                                        });
+                                        e.getChannel().sendMessage("Ticket sent in " + e.getMessage().getMentionedChannels().get(0).getAsMention()).queue();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+
+            }
+
+
+    }
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent e) {
+        if (e.getMember().getUser().isBot()) return;
+        try (Connection conn = core.getDatabaseFile()) {
+            try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?")) {
+                p1.setLong(1, e.getMessageIdLong());
+                p1.execute();
+                try (ResultSet r1 = p1.executeQuery()) {
+                    if (r1.next()) {
+                        e.getReaction().removeReaction(e.getMember().getUser()).queue();
+                        e.getGuild().getCategoryById(r1.getLong("Opened_Category")).createTextChannel("opened-" + e.getMember().getEffectiveName()).queue(channel -> {
+                            channel.getManager().setTopic("Ticket created by " + e.getMember().getUser().getName()).queue();
+                            channel.createPermissionOverride(e.getMember()).grant(Permission.VIEW_CHANNEL).queue();
+                            try {
+                                Connection conn2 = core.getDatabaseFile();
+                                PreparedStatement p2 = conn2.prepareStatement("SELECT * FROM ticket_allowed_roles WHERE TicketID=?");
+                                PreparedStatement p3 = conn2.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
+                                    p3.setLong(1, e.getMessageIdLong());
+                                    p3.execute();
+                                    ResultSet r2 = p3.executeQuery();
+                                    r2.next();
+
+                                    p2.setInt(1, r2.getInt("TicketID"));
+                                p2.execute();
+                                ResultSet r3 = p2.executeQuery();
+                                while (r3.next()) {
+                                    channel.createPermissionOverride(e.getGuild().getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
+                                    channel.createPermissionOverride(e.getGuild().getRoleById(r3.getLong("RoleID"))).grant(Permission.VIEW_CHANNEL).queue();
+                                }
+                            } catch (SQLException exception) {
+                                exception.printStackTrace();
+                            }
+                            channel.sendMessage(e.getMember().getAsMention() + " here is your ticket channel").queue(message2 -> {
+                                try {
+                                    Connection fconn2 = core.getDatabaseFile();
+                                    PreparedStatement fp1 = fconn2.prepareStatement("INSERT INTO Opened_Tickets (UserID, MessageID, TicketID) VALUES (?, ?, ?)");
+                                    PreparedStatement fp2 = fconn2.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
+                                    fp2.setLong(1, e.getMessageIdLong());
+                                    fp2.execute();
+                                    ResultSet fr1 = fp2.executeQuery();
+                                    fr1.next();
+
+
+                                        fp1.setLong(1, e.getMember().getIdLong());
+                                    fp1.setLong(2, message2.getIdLong());
+                                    fp1.setInt(3, fr1.getInt("TicketID"));
+                                    fp1.execute();
+                                } catch (SQLException exception) {
+                                    exception.printStackTrace();
+                                }
+
+                            });
+                        });
+                    } else {
+                        Connection conn2 = core.getDatabaseFile();
+                        PreparedStatement p2 = conn2.prepareStatement("SELECT * FROM Opened_Tickets WHERE MessageID=?");
+                        p2.setLong(1, e.getMessageIdLong());
+                        p2.execute();
+                        ResultSet r2 = p2.executeQuery();
+                        if (r2.next()) {
+                            e.getReaction().removeReaction(e.getUser()).queue();
+                        }
+
+                    }
+                }
+            }
+        }catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+
 
 
 

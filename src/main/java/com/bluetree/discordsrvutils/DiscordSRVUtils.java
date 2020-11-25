@@ -13,9 +13,18 @@ import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscordSRVUtils extends JavaPlugin {
+    Path databaseFile;
+    String jdbcUrl;
     public DiscordSRVEventListener discordListener;
     public JDAEvents JDALISTENER;
 
@@ -33,7 +42,28 @@ public class DiscordSRVUtils extends JavaPlugin {
             getLogger().warning("We will add support for no discordsrv in the future.");
             setEnabled(false);
             return;
+        }
+        databaseFile = getDataFolder().toPath().resolve("Database");
+        String jdbcUrl = "jdbc:hsqldb:file:" + databaseFile.toAbsolutePath();
+        try (Connection conn = getDatabaseFile()) {
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS ticket_allowed_roles (TicketID int, RoleID Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_tickets (" +
+                    "TicketID int, Name Varchar(500), " +
+                    "MessageId Bigint, " +
+                    "Opened_Category Bigint, " +
+                    "Closed_Category Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint)").execute();
+        }
+        catch (SQLException exception)  {
+            exception.printStackTrace();
 
+        }
+        try (Connection conn = getMemoryConnection()) {
+            conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
+            conn.prepareStatement("CREATE TABLE ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
         }
         if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
             getServer().getPluginManager().registerEvents(new EssentialsAfk(this), this);
@@ -67,6 +97,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         break;
                 }
             }
+        }
             new UpdateChecker(this).getVersion(version -> {
                 if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
                     getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
@@ -80,12 +111,33 @@ public class DiscordSRVUtils extends JavaPlugin {
             Metrics metrics = new Metrics(this, pluginId);
 
 
-        }
+
     }
     @Override
     public void onLoad() {
-        if (getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
         }
+    }
+    public Connection getDatabaseFile() throws SQLException {
+        if (!this.getConfig().getBoolean("MySQL.isEnabled")) {
+            return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false", "SA", "");
+        }
+        Connection conn = null;
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", getConfig().getString("MySQL.UserName"));
+        connectionProps.put("password", getConfig().getString("MySQL.Password"));
+
+        if (true) {
+            conn = DriverManager.getConnection(
+                    "jdbc:" + "mysql" + "://" +
+                            getConfig().getString("MySQL.host") +
+                            ":" + getConfig().getString("MySQL.host") + "/" + getConfig().get("MySQL.Database"),
+                    connectionProps);
+        }
+        return conn;
+    }
+    public Connection getMemoryConnection() throws SQLException{
+        return DriverManager.getConnection("jdbc:hsqldb:mem:MemoryDatabase", "SA", "");
     }
 }

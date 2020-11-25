@@ -81,7 +81,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "welcomer_message is not set.");
                         errors++;
                     }
-                    if (core.getConfig().getString("mc_welcomer_message") == null) {
+                    if (core.getConfig().getStringList("mc_welcomer_message") == null) {
                         sender.sendMessage(ChatColor.RED + "mc_welcomer_message is not set");
                         errors++;
                     }
