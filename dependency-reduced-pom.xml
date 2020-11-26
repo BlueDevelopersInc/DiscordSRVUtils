@@ -35,6 +35,10 @@
               <pattern>org.bstats</pattern>
               <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>org.mariadb.jdbc</pattern>
+              <shadedPattern>com.bluetree.discordsrvutils.shaded.mysql</shadedPattern>
+            </relocation>
           </relocations>
           <transformers>
             <transformer />

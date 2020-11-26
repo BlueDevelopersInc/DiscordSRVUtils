@@ -35,6 +35,10 @@
                         <!-- Replace this with your package! -->
                         <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
                     </relocation>
+                    <relocation>
+                        <pattern>org.mariadb.jdbc</pattern>
+                        <shadedPattern>com.bluetree.discordsrvutils.shaded.mysql</shadedPattern>
+                    </relocation>
                 </relocations>
                 <transformers>
                     <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
@@ -90,6 +94,11 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.7.0</version>
         </dependency>
 
     </dependencies>

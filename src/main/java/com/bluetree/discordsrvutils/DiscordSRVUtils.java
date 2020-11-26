@@ -51,7 +51,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "TicketID int, Name Varchar(500), " +
                     "MessageId Bigint, " +
                     "Opened_Category Bigint, " +
-                    "Closed_Category Bigint)").execute();
+                    "Closed_Category Bigint, ChannelID Bigint)").execute();
             conn.prepareStatement("CREATE TABLE IF NOT EXISTS Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
             conn.prepareStatement("CREATE TABLE IF NOT EXISTS Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
         }
@@ -132,8 +132,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (true) {
             conn = DriverManager.getConnection(
                     "jdbc:" + "mysql" + "://" +
-                            getConfig().getString("MySQL.host") +
-                            ":" + getConfig().getString("MySQL.host") + "/" + getConfig().get("MySQL.Database"),
+                            getConfig().getString("MySQL.Host") +
+                            ":" + getConfig().getInt("MySQL.Port") + "/" + getConfig().getString("MySQL.Database"),
                     connectionProps);
         }
         return conn;
