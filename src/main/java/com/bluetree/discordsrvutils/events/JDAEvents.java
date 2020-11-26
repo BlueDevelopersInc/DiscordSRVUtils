@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.EnumMap;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -265,7 +266,7 @@ public class JDAEvents extends ListenerAdapter {
                         ResultSet ticketss = tickets.executeQuery(); ticketss.next();
                             EmbedBuilder embed = new EmbedBuilder();
                             embed.setTitle("Ticket Closed");
-                            embed.setColor(Color.ORANGE);
+                            embed.setColor(Color.YELLOW);
                             embed.setDescription("Ticket Closed by " + e.getMember().getAsMention() + "");
                             e.getChannel().sendMessage(embed.build()).queue(msg -> {
                                 try {
@@ -529,7 +530,12 @@ public class JDAEvents extends ListenerAdapter {
                                 } catch (SQLException exception) {
                                     exception.printStackTrace();
                                 }
-                                channel.sendMessage(e.getMember().getAsMention() + " here is your ticket channel").queue(message2 -> {
+                                EmbedBuilder embed = new EmbedBuilder();
+                                embed.setTitle("Ticket");
+                                embed.setColor(Color.GREEN);
+                                embed.setDescription("here is your ticket.\nReact with \uD83D\uDD12 to close this ticket. or use `" + core.getConfig().getString("BotPrefix") + "close`.");
+                                channel.sendMessage(e.getMember().getAsMention() + " Welcome").queue();
+                                channel.sendMessage(embed.build()).queue(message2 -> {
                                     message2.addReaction("\uD83D\uDD12").queue();
                                     try {
                                         Connection fconn2 = core.getDatabaseFile();
@@ -571,8 +577,8 @@ public class JDAEvents extends ListenerAdapter {
                             if (e.getReactionEmote().getName().equals("\uD83D\uDD12")) {
                                 EmbedBuilder embed = new EmbedBuilder();
                                 embed.setTitle("Ticket Closed");
-                                embed.setColor(Color.ORANGE);
                                 embed.setDescription("Ticket Closed by " + e.getMember().getAsMention() + "");
+                                embed.setColor(Color.YELLOW);
                                 e.getChannel().sendMessage(embed.build()).queue(msg -> {
                                     try {
                                         Connection conn3 = core.getDatabaseFile();
@@ -595,7 +601,6 @@ public class JDAEvents extends ListenerAdapter {
                                         ex.printStackTrace();
                                     }
                                     msg.addReaction("\uD83D\uDDD1️").queue();
-                                    msg.addReaction("\uD83D\uDD13").queue();
                                 });
                                 e.getTextChannel().getPermissionOverride(e.getGuild().getMemberById(r2.getLong("UserID"))).getManager().setDeny(Permission.VIEW_CHANNEL).queue();
                                 e.getReaction().removeReaction(e.getUser()).queue();
@@ -621,41 +626,6 @@ public class JDAEvents extends ListenerAdapter {
                                 p3.setLong(1, e.getMessageIdLong());
                                 p3.execute();
                                 ResultSet r3 = p3.executeQuery();
-                                if (r3.next()) {
-                                    e.getReaction().removeReaction(e.getUser()).queue();
-                                    PreparedStatement closed = conn2.prepareStatement("SELECT * FROM Closed_Tickets WHERE Closed_Message=?");
-                                    closed.setLong(1, e.getMessageIdLong());
-                                    closed.execute(); ResultSet closed2 = closed.executeQuery(); closed2.next();
-                                    PreparedStatement tickets = conn2.prepareStatement("SELECT * FROM Closed_Tickets WHERE TicketID=?");
-                                    tickets.setLong(1, closed2.getInt("TicketID"));
-                                    tickets.execute();
-                                    ResultSet ticketss = tickets.executeQuery(); ticketss.next();
-                                    e.getTextChannel().getPermissionOverride(e.getGuild().getMemberById(closed2.getLong("UserID"))).getManager().setAllow(Permission.VIEW_CHANNEL).queue();
-                                    PreparedStatement pp = conn2.prepareStatement("INSERT INTO Opened_Tickets (UserID, MessageID, TicketID, Channel_id) VALUES (?, ?, ?, ?)");
-                                    pp.setLong(1, ticketss.getLong("UserID"));
-                                    pp.setLong(2, ticketss.getLong("MessageID"));
-                                    pp.setLong(3, ticketss.getInt("TicketID"));
-                                    pp.setLong(4, e.getChannel().getIdLong());
-                                    pp.execute();
-                                    PreparedStatement lst = conn2.prepareStatement("DELETE FROM Closed_Tickets WHERE Closed_Message=?");
-                                    lst.setLong(1, e.getMessageIdLong());
-                                    lst.execute();
-                                    EmbedBuilder embed = new EmbedBuilder();
-                                    embed.setTitle("Ticket Reopened");
-                                    embed.setDescription("Ticket reopned by " + e.getMember().getAsMention());
-                                    e.getChannel().sendMessage(embed.build()).queue();
-                                    PreparedStatement pppp = conn5.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
-                                    pppp.setInt(1, ticketss.getInt("TicketID"));
-                                    pppp.execute();
-                                    ResultSet rrrrr = pppp.executeQuery();
-                                    rrrrr.next();
-                                    e.getTextChannel().getManager().setParent(e.getGuild().getCategoryById(rrrrr.getLong("Opened_Category"))).queue();
-                                    e.getTextChannel().getManager().setName(e.getTextChannel().getName().replace("closed", "opened")).queue();
-
-
-
-
-                                }
 
                             }
                         }
