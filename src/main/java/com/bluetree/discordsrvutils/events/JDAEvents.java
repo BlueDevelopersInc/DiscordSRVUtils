@@ -617,6 +617,14 @@ public class JDAEvents extends ListenerAdapter {
                             p2.execute();
                             ResultSet r2 = p2.executeQuery();
                             if (r2.next()) {
+                                if (e.getMessage().getContentRaw().equalsIgnoreCase("cancel")) {
+                                    PreparedStatement p3 = conn.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
+                                    p3.setLong(1, e.getChannel().getIdLong());
+                                    p3.setLong(2, e.getMember().getIdLong());
+                                    p3.execute();
+                                    e.getChannel().sendMessage("Cancelled.").queue();
+                                }
+
                                 if (r2.getInt("Type") != 0) {
                                     if (r2.getInt("Type") == 1) {
                                         Connection fconn = core.getDatabaseFile();
@@ -1001,7 +1009,7 @@ public class JDAEvents extends ListenerAdapter {
             PreparedStatement p1 = conn.prepareStatement("DELETE FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
             p1.setLong(1, e.getChannel().getIdLong());
             p1.execute();
-            PreparedStatement p2 = conn.prepareStatement("DELETE FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
+            PreparedStatement p2 = conn.prepareStatement("DELETE FROM discordsrvutils_Closed_Tickets WHERE Channel_id=?");
             p2.setLong(1, e.getChannel().getIdLong());
             p2.execute();
         } catch (SQLException ex) {

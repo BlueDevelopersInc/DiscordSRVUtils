@@ -46,7 +46,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "" +
                 "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
-                "| &cInformation:\n" +
+                "| &cInformation:\n&r" +
                 "|   &cName: &rDiscordSRVUtils\n&r" +
                 "|   &cDeveloper: &rBlue Tree\n&r" +
                 "|   &cVersion: &r" + getDescription().getVersion() + "\n&r" +

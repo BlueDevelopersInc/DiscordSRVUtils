@@ -77,7 +77,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.GOLD + "welcomer_channel is in it's default stat. Please update it.");
                         warnings = warnings + 1;
                     }
-                    if (!core.getConfig().getStringList("welcomer_message").isEmpty()) {
+                    if (core.getConfig().getStringList("welcomer_message") == null) {
                         sender.sendMessage(ChatColor.RED + "welcomer_message is not set.");
                         errors++;
                     }
