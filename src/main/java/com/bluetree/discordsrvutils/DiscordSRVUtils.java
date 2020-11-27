@@ -55,7 +55,11 @@ public class DiscordSRVUtils extends JavaPlugin {
                 "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
                 "|   &cDiscord: &rhttps://discord.gg/MMMQHA4\n" +
                 "[]================================[]"));
-
+        try {
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
             getLogger().warning("DiscordSRVUtils could not be enabled. DiscordSRV is not installed or is not enabled.");
             getLogger().warning("We will add support for no discordsrv in the future.");
