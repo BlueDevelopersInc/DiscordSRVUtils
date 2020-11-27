@@ -46,14 +46,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         databaseFile = getDataFolder().toPath().resolve("Database");
         String jdbcUrl = "jdbc:hsqldb:file:" + databaseFile.toAbsolutePath();
         try (Connection conn = getDatabaseFile()) {
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS ticket_allowed_roles (TicketID int, RoleID Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_ticket_allowed_roles (TicketID int, RoleID Bigint)").execute();
             conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_tickets (" +
                     "TicketID int, Name Varchar(500), " +
                     "MessageId Bigint, " +
                     "Opened_Category Bigint, " +
                     "Closed_Category Bigint, ChannelID Bigint)").execute();
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
         }
         catch (SQLException exception)  {
             exception.printStackTrace();
@@ -61,7 +61,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
         try (Connection conn = getMemoryConnection()) {
             conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
-            conn.prepareStatement("CREATE TABLE ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
+            conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
         }
         catch (SQLException exception) {
             exception.printStackTrace();
