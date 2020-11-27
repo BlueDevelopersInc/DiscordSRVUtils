@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.example</groupId>
   <artifactId>DiscordSRVUtils</artifactId>
-  <version>1.0-SNAPSHOT 2</version>
+  <version>1.0-SNAPSHOT 3</version>
   <build>
     <plugins>
       <plugin>
@@ -28,10 +28,21 @@
         <configuration>
           <relocations>
             <relocation>
+              <pattern>org.hsqldb</pattern>
+              <shadedPattern>com.bluetree.discordsrvutils.shaded.org.hsqldb</shadedPattern>
+            </relocation>
+            <relocation>
               <pattern>org.bstats</pattern>
               <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>org.mariadb.jdbc</pattern>
+              <shadedPattern>com.bluetree.discordsrvutils.shaded.mysql</shadedPattern>
+            </relocation>
           </relocations>
+          <transformers>
+            <transformer />
+          </transformers>
         </configuration>
       </plugin>
     </plugins>
@@ -63,6 +74,12 @@
     </repository>
   </repositories>
   <dependencies>
+    <dependency>
+      <groupId>net.ess3</groupId>
+      <artifactId>EssentialsX</artifactId>
+      <version>2.17.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>

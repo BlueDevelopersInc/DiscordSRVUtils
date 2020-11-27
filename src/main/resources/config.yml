@@ -1,6 +1,25 @@
 #DiscordSRVUtils addon config:
 
+#Bot prefix used in the discord server
+# for example, ! then the commands start with !, so !help !createticket
+BotPrefix: "!"
 
+#MySQL settings
+MySQL:
+  #Should we use MySQL?
+  isEnabled: false
+  #Username used to login
+  UserName: "root"
+  #Password used to login
+  Password: "password"
+  #Name of database
+  Database: "DiscordSRVUtilsData"
+  #Host to connect to database. Sometimes Maybe called address in panels.
+  Host: "localhost"
+  #Port. The last thin in the host. If you have ":3306" at the end of your host (any number after :) remove : and the number and put them here
+  Port: 3306
+
+#MySQL won't work properly until you restart.
 
 #welcomer_channel. This channel will contain welcome message for people who join the discord server
 welcomer_channel: 000000000000000000
