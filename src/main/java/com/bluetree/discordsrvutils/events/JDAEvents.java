@@ -384,7 +384,7 @@ public class JDAEvents extends ListenerAdapter {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
                 embed.setDescription("Use `" + core.getConfig().getString("BotPrefix") + "<Command>` to execute a command.");
-                embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`", false);
+                embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
                 embed.setColor(Color.GREEN);
                 e.getChannel().sendMessage(embed.build()).queue();
             }
@@ -677,6 +677,77 @@ public class JDAEvents extends ListenerAdapter {
                                             e.getChannel().sendMessage("Not even a valid ID. Try again").queue();
                                         }
 
+                                    } else if (r2.getInt("Type") == 4) {
+                                        if (e.getMessage().getMentionedRoles().isEmpty()) {
+                                            e.getChannel().sendMessage("No roles were mentioned. Please try again").queue();
+                                        } else {
+                                            Connection fconn = core.getDatabaseFile();
+                                            PreparedStatement p3 = fconn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
+                                            p3.setInt(1, r2.getInt("TicketID"));
+                                            p3.execute();
+                                            for (Role role : e.getMessage().getMentionedRoles()) {
+                                                PreparedStatement p4 = fconn.prepareStatement("INSERT INTO discordsrvutils_ticket_allowed_roles (TicketID, RoleID) VALUES (?, ?)");
+                                                p4.setInt(1, r2.getInt("TicketID"));
+                                                p4.setLong(2, role.getIdLong());
+                                                p4.execute();
+                                                PreparedStatement p5 = conn.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
+                                                p5.setLong(1, e.getChannel().getIdLong());
+                                                p5.setLong(2, e.getMember().getIdLong());
+                                                p5.execute();
+                                                e.getChannel().sendMessage("Changed ticket view allowed roles.").queue();
+                                            }
+
+                                        }
+                                    } else if (r2.getInt("Type") == 5) {
+                                        if (e.getMessage().getMentionedChannels().isEmpty()) {
+                                            e.getChannel().sendMessage("No channels mentioned. Please try again").queue();
+                                        } else {
+                                            Connection fconn = core.getDatabaseFile();
+                                            PreparedStatement p3 = fconn.prepareStatement("SELECT * FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
+                                            p3.setInt(1, r2.getInt("TicketID"));
+                                            p3.execute();
+                                            ResultSet r3 = p3.executeQuery(); r3.next();
+                                            PreparedStatement something = fconn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
+                                            something.setInt(1, r2.getInt("TicketID"));
+                                            something.execute();
+                                            ResultSet rsomething = something.executeQuery(); rsomething.next();
+                                            e.getGuild().getTextChannelById(rsomething.getLong("ChannelID")).deleteMessageById(rsomething.getLong("MessageID")).queue();
+                                            EmbedBuilder embed = new EmbedBuilder();
+                                            PreparedStatement p5 = fconn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
+                                            p5.setInt(1, r2.getInt("TicketID"));
+                                            p5.execute();
+                                            ResultSet r5 = p5.executeQuery(); r5.next();
+                                            embed.setTitle(r5.getString("Name"));
+                                            embed.setDescription("React with \uD83D\uDCE9 to create a ticket.");
+                                            embed.setColor(Color.CYAN);
+                                            e.getGuild().getTextChannelById(e.getMessage().getMentionedChannels().get(0).getIdLong()).sendMessage(embed.build()).queue(msg -> {
+                                                try{
+                                                    Connection conn3 = core.getMemoryConnection();
+                                                    PreparedStatement mp2 = conn3.prepareStatement("SELECT * FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
+                                                    mp2.setLong(1, e.getChannel().getIdLong());
+                                                    mp2.setLong(2, e.getMember().getIdLong());
+                                                    mp2.execute();
+                                                    ResultSet mr2 = mp2.executeQuery(); mr2.next();
+                                                    Connection fconn2 = core.getDatabaseFile();
+                                                    PreparedStatement p6 = fconn2.prepareStatement("UPDATE discordsrvutils_tickets SET ChannelID=?, MessageID=? WHERE TicketID=?");
+                                                    p6.setLong(1, e.getMessage().getMentionedChannels().get(0).getIdLong());
+                                                    p6.setLong(2, msg.getIdLong());
+                                                    p6.setInt(3, mr2.getInt("TicketID"));
+                                                    p6.execute();
+                                                    msg.addReaction("\uD83D\uDCE9").queue();
+                                                    PreparedStatement p7 = conn3.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
+                                                    p7.setLong(1, e.getChannel().getIdLong());
+                                                    p7.setLong(2, e.getMember().getIdLong());
+                                                    p7.execute();
+                                                    e.getChannel().sendMessage("Ticket channel changed.").queue();
+
+
+                                                } catch (SQLException ex) {
+                                                    ex.printStackTrace();
+                                                }
+                                            });
+
+                                        }
                                     }
                                 }
                             }

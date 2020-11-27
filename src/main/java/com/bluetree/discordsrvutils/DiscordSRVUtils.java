@@ -11,6 +11,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -37,6 +38,24 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         this.reloadConfig();
+        String storage = "Unknown";
+        if (getConfig().getBoolean("MySQL.isEnabled")) {
+            storage = "MySQL";
+        } else {
+            storage = "HSQLDB (local)";
+        }
+        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "" +
+                "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
+                "| &cInformation:\n" +
+                "|   &cName: &rDiscordSRVUtils\n&r" +
+                "|   &cDeveloper: &rBlue Tree\n&r" +
+                "|   &cVersion: &r" + getDescription().getVersion() + "\n&r" +
+                "|   &cStorage: &r" + storage + "\n&r" +
+                "| &cSupport:\n&r" +
+                "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
+                "|   &cDiscord: &rhttps://discord.gg/MMMQHA4\n" +
+                "[]================================[]"));
+
         if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
             getLogger().warning("DiscordSRVUtils could not be enabled. DiscordSRV is not installed or is not enabled.");
             getLogger().warning("We will add support for no discordsrv in the future.");
@@ -103,10 +122,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             new UpdateChecker(this).getVersion(version -> {
                 if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
                     getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
-                    getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
                 } else {
                     getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
-                    getLogger().info("If there is any bug or you have a suggestion, please visit https://github.com/BlueTree242/DiscordSRVUtils/issues");
                 }
             });
             int pluginId = 9456; // <-- Replace with the id of your plugin!
