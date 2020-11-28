@@ -55,6 +55,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
                 "|   &cDiscord: &rhttps://discord.gg/MMMQHA4\n" +
                 "[]================================[]"));
+        System.setProperty("hsqldb.reconfig_logging", "false");
         try {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
         } catch (ClassNotFoundException e) {
@@ -144,7 +145,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public Connection getDatabaseFile() throws SQLException {
         if (!this.getConfig().getBoolean("MySQL.isEnabled")) {
-            return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false", "SA", "");
+            return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false;hsqldb.reconfig_logging=false", "SA", "");
         }
         Connection conn = null;
         Properties connectionProps = new Properties();
