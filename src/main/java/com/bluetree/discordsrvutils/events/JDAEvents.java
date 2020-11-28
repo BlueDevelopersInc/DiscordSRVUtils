@@ -45,6 +45,7 @@ public class JDAEvents extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
             UUID puuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getUser().getId());
+            if (puuid != null) {
             String pname = Bukkit.getOfflinePlayer(puuid).getName();
             if (puuid != null) {
                 if (PunishmentManager.get().isBanned(UUIDManager.get().getUUID(pname))) {
@@ -61,6 +62,7 @@ public class JDAEvents extends ListenerAdapter {
                         }
                     }
                 }
+            }
 
             }
             if (core.getConfig().getLong("welcomer_channel") == 000000000000000000) {
@@ -184,7 +186,8 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
-        if (e.getMember().getUser().isBot()) return;
+        if (e.getMember().getUser() == null) return;
+        if (e.getAuthor().isBot()) return;
             String[] args = e.getMessage().getContentRaw().split("\\s+");
             if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "createticket")) {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
