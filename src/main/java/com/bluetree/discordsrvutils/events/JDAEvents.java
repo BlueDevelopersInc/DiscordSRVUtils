@@ -5,7 +5,6 @@ import com.bluetree.discordsrvutils.utils.PlayerUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.PermissionOverride;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
@@ -15,22 +14,16 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.Messag
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
-import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.springframework.core.ParameterizedTypeReference;
 
-import javax.naming.PartialResultException;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.EnumMap;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class JDAEvents extends ListenerAdapter {
@@ -40,29 +33,31 @@ public class JDAEvents extends ListenerAdapter {
         this.core = core;
     }
 
-
+    private static final Random RANDOM = new Random();
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
-            UUID puuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getUser().getId());
-            if (puuid != null) {
-            String pname = Bukkit.getOfflinePlayer(puuid).getName();
-            if (puuid != null) {
-                if (PunishmentManager.get().isBanned(UUIDManager.get().getUUID(pname))) {
-                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                        e.getGuild().ban(e.getMember().getUser(), 0, "DiscordSRVUtils banned by Advancedban").queue();
-                        return;
-                    }
-                } else if (PunishmentManager.get().isMuted(UUIDManager.get().getUUID(pname))) {
-                    if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
-                        if (e.getGuild().getRoleById(core.getConfig().getString("muted_role")) != null) {
-                            e.getGuild().addRoleToMember(e.getMember(), e.getGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
-                        } else {
-                            PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not give role to muted member because role is not found.");
+            if (Bukkit.getPluginManager().isPluginEnabled("AdvancedBan")) {
+                UUID puuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getUser().getId());
+                if (puuid != null) {
+                    String pname = Bukkit.getOfflinePlayer(puuid).getName();
+
+                    if (PunishmentManager.get().isBanned(UUIDManager.get().getUUID(pname))) {
+                        if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                            e.getGuild().ban(e.getMember().getUser(), 0, "DiscordSRVUtils banned by Advancedban").queue();
+                            return;
+                        }
+                    } else if (PunishmentManager.get().isMuted(UUIDManager.get().getUUID(pname))) {
+                        if (core.getConfig().getBoolean("advancedban_punishments_to_discord")) {
+                            if (e.getGuild().getRoleById(core.getConfig().getString("muted_role")) != null) {
+                                e.getGuild().addRoleToMember(e.getMember(), e.getGuild().getRoleById(core.getConfig().getLong("muted_role"))).queue();
+                            } else {
+                                PlayerUtil.sendToAuthorizedPlayers("&cError: &eCould not give role to muted member because role is not found.");
+                            }
                         }
                     }
                 }
-            }
+
 
             }
             if (core.getConfig().getLong("welcomer_channel") == 000000000000000000) {
@@ -581,8 +576,7 @@ public class JDAEvents extends ListenerAdapter {
                                                 ResultSet mr1 = mp1.executeQuery();
                                                 mr1.next();
                                                 PreparedStatement fp1 = fconn.prepareStatement("INSERT INTO discordsrvutils_tickets (TicketID, MessageId, Opened_Category, Closed_Category, Name, ChannelID) VALUES (?, ?, ?, ?, ?, ?)");
-                                                Random random = ThreadLocalRandom.current();
-                                                int TicketID = random.nextInt();
+                                                int TicketID = RANDOM.nextInt(9999);
                                                 fp1.setLong(1, TicketID);
                                                 fp1.setLong(2, message.getIdLong());
                                                 fp1.setLong(3, mr1.getLong("Opened_Category"));
