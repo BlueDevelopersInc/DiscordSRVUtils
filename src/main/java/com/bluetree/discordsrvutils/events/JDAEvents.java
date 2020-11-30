@@ -181,7 +181,7 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
-        if (e.getMember().getUser() == null) return;
+        if (e.getAuthor().isFake()) return;
         if (e.getAuthor().isBot()) return;
             String[] args = e.getMessage().getContentRaw().split("\\s+");
             if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "createticket")) {
