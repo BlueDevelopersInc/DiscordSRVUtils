@@ -1,6 +1,7 @@
 package com.bluetree.discordsrvutils;
 
 import com.bluetree.discordsrvutils.commands.DiscordSRVUtilsCommand;
+import com.bluetree.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
 import com.bluetree.discordsrvutils.events.AdvancedBanListener;
 import com.bluetree.discordsrvutils.events.DiscordSRVEventListener;
 import com.bluetree.discordsrvutils.events.EssentialsAfk;
@@ -18,12 +19,14 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscordSRVUtils extends JavaPlugin {
+    public static boolean PAPI;
     Path databaseFile;
     String jdbcUrl;
     public DiscordSRVEventListener discordListener;
@@ -99,12 +102,15 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
 
         Objects.requireNonNull(getCommand("discordsrvutils")).setExecutor(new DiscordSRVUtilsCommand(this));
+        Objects.requireNonNull(getCommand("discordsrvutils")).setTabCompleter(new DiscordSRVUtilsTabCompleter());
         this.discordListener = new DiscordSRVEventListener(this);
         this.JDALISTENER = new JDAEvents(this);
 
         DiscordSRV.api.subscribe(discordListener);
 
-        if (getConfig().getLong("welcomer_channel") == 0) {
+
+
+            if (getConfig().getLong("welcomer_channel") == 0) {
             getLogger().warning("Welcomer messages channel not specified");
         }
         if (DiscordSRV.isReady) {
@@ -133,6 +139,14 @@ public class DiscordSRVUtils extends JavaPlugin {
             });
             int pluginId = 9456; // <-- Replace with the id of your plugin!
             Metrics metrics = new Metrics(this, pluginId);
+             PAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            Bukkit.getScheduler().runTask(this, () -> {
+                new PlaceholderAPI().register();
+
+            });
+                }
+
 
 
 
@@ -142,6 +156,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
         }
+    }
+    public static Connection getDatabase() throws SQLException{
+        return new DiscordSRVUtils().getDatabaseFile();
     }
     public Connection getDatabaseFile() throws SQLException {
         if (!this.getConfig().getBoolean("MySQL.isEnabled")) {

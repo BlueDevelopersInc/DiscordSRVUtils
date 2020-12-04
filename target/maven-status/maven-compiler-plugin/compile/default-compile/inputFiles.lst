@@ -1,8 +1,10 @@
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\DiscordSRVUtils.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\events\EssentialsAfk.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\events\AdvancedBanListener.java
+E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\commands\tabCompleters\DiscordSRVUtilsTabCompleter.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\PluginConfiguration.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\utils\PlayerUtil.java
+E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\PlaceholderAPI.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\commands\DiscordSRVUtilsCommand.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\UpdateChecker.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\com\bluetree\discordsrvutils\events\JDAEvents.java
