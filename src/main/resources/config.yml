@@ -21,9 +21,13 @@ MySQL:
 
 #MySQL won't work properly until you restart.
 
+
+
+
 #welcomer_channel. This channel will contain welcome message for people who join the discord server
 welcomer_channel: 000000000000000000
 
+welcomer_ignore_bots: true
 #welcomer_message. We will send this message when a discord user joins
 #Avaiable PlaceHolders: [User_Name], [User_Tag], [User_Mention].
 welcomer_message:
@@ -53,11 +57,13 @@ essentials_afk_to_discord: true
 
 #Message to be send when player is afk
 #Avaible PlaceHolders: [Player_Name], [Player_DisplayName]
+#PlaceholderAPI is supported.
 essentials_player_afk_message:
   - "**[Player_Name] is now afk**"
 
 #Message to send when player is no longer afk
 #Avaible PlaceHolders: [Player_Name], [Player_DisplayName]
+#PlaceholderAPI is supported.
 essentials_player_no_longer_afk_message:
   - "**[Player_Name] is no longer afk**"
 

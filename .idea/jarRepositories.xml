@@ -42,6 +42,11 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="placeholderapi" />
+      <option name="name" value="placeholderapi" />
+      <option name="url" value="http://repo.extendedclip.com/content/repositories/placeholderapi/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="CodeMC" />
       <option name="name" value="CodeMC" />
       <option name="url" value="https://repo.codemc.org/repository/maven-public" />

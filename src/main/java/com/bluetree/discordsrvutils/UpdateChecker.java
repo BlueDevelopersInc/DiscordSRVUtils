@@ -20,10 +20,12 @@ public class UpdateChecker {
 
     public void getVersion(final Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try (Scanner scanner = new Scanner(new URL("http://bluecraftweb.000webhostapp.com/Plugins/DiscordSRVUtils.html").openStream())) {
-                if (scanner.hasNext()) {
-                    consumer.accept(scanner.next());
-                }
+            try (Scanner scanner = new Scanner(new URL("https://api.spigotmc.org/legacy/update.php?resource=85958").openStream())) {
+                String argss = "";
+                    while (scanner.hasNext()) {
+                        argss = argss + scanner.next() + " ";
+                    }
+                consumer.accept(argss.replaceAll("\\s+$", ""));
             } catch (IOException exception) {
                 this.plugin.getLogger().info("Cannot look for updates: " + exception.getMessage());
             }

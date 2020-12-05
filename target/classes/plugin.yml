@@ -3,7 +3,7 @@ softdepend:
   - DiscordSRV
   - Essentials
   - Advancedban
-version: 1.0 SNAPSHOT 7
+version: 1.0 SNAPSHOT 9
 main: com.bluetree.discordsrvutils.DiscordSRVUtils
 author: Blue_Tree
 api-version: 1.13
@@ -11,3 +11,6 @@ api-version: 1.13
 commands:
   discordsrvutils:
     aliases: [dsrvu, dsu, du, discordu, srvu]
+
+loadafter:
+  - PlaceholderAPI

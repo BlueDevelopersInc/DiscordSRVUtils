@@ -1,6 +1,7 @@
 package com.bluetree.discordsrvutils.events;
 
 import com.bluetree.discordsrvutils.DiscordSRVUtils;
+import com.bluetree.discordsrvutils.PlaceholderAPI;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -22,6 +23,7 @@ public class DiscordSRVEventListener {
 
     @Subscribe
     public void onReady(DiscordReadyEvent e) {
+
         String status = core.getConfig().getString("bot_status");
         if (status != null) {
             switch (status.toUpperCase()) {
@@ -37,5 +39,6 @@ public class DiscordSRVEventListener {
             }
         }
         getJda().addEventListener(core.JDALISTENER);
+
     }
 }
