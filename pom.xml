@@ -6,7 +6,7 @@
 
     <groupId>me.bluetree.discordsrvutils</groupId>
     <artifactId>DiscordSRVUtils</artifactId>
-    <version>1.0-SNAPSHOT 8</version>
+    <version>1.0-SNAPSHOT 9</version>
     <build>
     <!-- To define the plugin version in your parent POM -->
     <plugins>
@@ -15,8 +15,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
-                <target>9</target>
-                <source>9</source>
+                <target>1.8</target>
+                <source>1.8</source>
             </configuration>
         </plugin>
         <plugin>
