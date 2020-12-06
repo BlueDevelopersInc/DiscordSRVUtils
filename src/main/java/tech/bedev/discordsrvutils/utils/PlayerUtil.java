@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils.utils;
+package tech.bedev.discordsrvutils.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

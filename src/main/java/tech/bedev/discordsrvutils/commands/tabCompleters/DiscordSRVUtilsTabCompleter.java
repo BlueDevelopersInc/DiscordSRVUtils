@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils.commands.tabCompleters;
+package tech.bedev.discordsrvutils.commands.tabCompleters;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,10 +10,13 @@ import java.util.List;
 public class DiscordSRVUtilsTabCompleter implements TabCompleter {
 
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length == 1) {
+
             List<String> arg0 = new ArrayList<>();
             if (sender.hasPermission("discordsrvutils.reload")) {
                 arg0.add("reload");
+            }
+            if (sender.hasPermission("discordsrvutils.updatecheck")) {
+                arg0.add("updatecheck");
             }
 
             List<String> result = new ArrayList<>();
@@ -23,7 +26,6 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
                 }
             }
             return result;
-        }
-        return null;
+
     }
 }

@@ -1,28 +1,23 @@
-package com.bluetree.discordsrvutils;
+package tech.bedev.discordsrvutils;
 
-import com.bluetree.discordsrvutils.commands.DiscordSRVUtilsCommand;
-import com.bluetree.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
-import com.bluetree.discordsrvutils.events.AdvancedBanListener;
-import com.bluetree.discordsrvutils.events.DiscordSRVEventListener;
-import com.bluetree.discordsrvutils.events.EssentialsAfk;
-import com.bluetree.discordsrvutils.events.JDAEvents;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
+import me.clip.placeholderapi.PlaceholderListener;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import tech.bedev.discordsrvutils.commands.DiscordSRVUtilsCommand;
+import tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
+import tech.bedev.discordsrvutils.events.*;
 
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscordSRVUtils extends JavaPlugin {
@@ -35,10 +30,15 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
-
+    public static Timer timer = new Timer();
 
     @Override
     public void onEnable() {
+        if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
+            setEnabled(false);
+            System.out.println("[DiscordSRVUtils] Detected plugin name change.");
+            return;
+        }
         this.saveDefaultConfig();
         this.reloadConfig();
         String storage = "Unknown";
@@ -87,6 +87,8 @@ public class DiscordSRVUtils extends JavaPlugin {
 
         }
         try (Connection conn = getMemoryConnection()) {
+
+            conn.prepareStatement("CREATE TABLE status (Status int)").execute();
             conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
             conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
             conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
@@ -105,6 +107,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         Objects.requireNonNull(getCommand("discordsrvutils")).setTabCompleter(new DiscordSRVUtilsTabCompleter());
         this.discordListener = new DiscordSRVEventListener(this);
         this.JDALISTENER = new JDAEvents(this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinEvent(this), this);
 
         DiscordSRV.api.subscribe(discordListener);
 
@@ -137,6 +140,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
                 }
             });
+
             int pluginId = 9456; // <-- Replace with the id of your plugin!
             Metrics metrics = new Metrics(this, pluginId);
              PAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
@@ -153,6 +157,9 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     @Override
     public void onLoad() {
+        if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
+            setEnabled(false);
+        }
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
         }
@@ -180,5 +187,9 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public Connection getMemoryConnection() throws SQLException{
         return DriverManager.getConnection("jdbc:hsqldb:mem:MemoryDatabase", "SA", "");
+    }
+    @Override
+    public void onDisable() {
+        timer.cancel();
     }
 }

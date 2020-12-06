@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils;
+package tech.bedev.discordsrvutils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
