@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils;
+package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

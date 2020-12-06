@@ -22,7 +22,27 @@ MySQL:
 #MySQL won't work properly until you restart.
 
 
+#The channel that chat is send to
+#If you are using towny, it should be general
+#If you get an error when player goes afk or when player is banned, this config option is the solution
+chat_channel: global
 
+#Should we send you that there is an update when you join the server?
+update_checker: true
+
+#Should we update the bot status in a delay?
+update_status: true
+
+#Delay between every status change. In seconds.
+#WARNING: Discord won't allow less than 4, it will limit the bot.
+bot_status_update_delay: 10
+
+
+#Statuses that will update, in order
+status_updates:
+  - "Playing Minecraft"
+  - "Watching players on the server"
+  - "Listening to Voice channels on discord"
 
 #welcomer_channel. This channel will contain welcome message for people who join the discord server
 welcomer_channel: 000000000000000000

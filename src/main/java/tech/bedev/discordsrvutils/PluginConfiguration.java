@@ -1,4 +1,4 @@
-package com.bluetree.discordsrvutils;
+package tech.bedev.discordsrvutils;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.InvalidConfigurationException;

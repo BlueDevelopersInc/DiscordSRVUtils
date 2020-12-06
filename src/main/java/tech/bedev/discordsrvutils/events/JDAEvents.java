@@ -1,7 +1,5 @@
-package com.bluetree.discordsrvutils.events;
+package tech.bedev.discordsrvutils.events;
 
-import com.bluetree.discordsrvutils.DiscordSRVUtils;
-import com.bluetree.discordsrvutils.utils.PlayerUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
@@ -16,6 +14,8 @@ import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
 import java.sql.Connection;
@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class JDAEvents extends ListenerAdapter {
 
