@@ -29,11 +29,15 @@
           <relocations>
             <relocation>
               <pattern>org.hsqldb</pattern>
-              <shadedPattern>com.bluetree.discordsrvutils.shaded.org.hsqldb</shadedPattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.hsqldb</shadedPattern>
             </relocation>
             <relocation>
               <pattern>org.bstats</pattern>
-              <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.bstats</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.yaml</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.snakeyaml</shadedPattern>
             </relocation>
           </relocations>
           <transformers>

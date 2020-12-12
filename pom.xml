@@ -28,12 +28,20 @@
                 <relocations>
                     <relocation>
                         <pattern>org.hsqldb</pattern>
-                        <shadedPattern>com.bluetree.discordsrvutils.shaded.org.hsqldb</shadedPattern>
+                        <shadedPattern>tech.bedev.discordsrvutils.dependecies.hsqldb</shadedPattern>
                     </relocation>
                     <relocation>
                         <pattern>org.bstats</pattern>
                         <!-- Replace this with your package! -->
-                        <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
+                        <shadedPattern>tech.bedev.discordsrvutils.dependecies.bstats</shadedPattern>
+                    </relocation>
+                    <relocation>
+                        <pattern>org.yaml</pattern>
+                        <shadedPattern>tech.bedev.discordsrvutils.dependecies.snakeyaml</shadedPattern>
+                    </relocation>
+                    <relocation>
+                        <pattern>space.arim.dazzleconf</pattern>
+                        <shadedPattern>tech.bedev.discordsrvutils.dependecies.dazzleconfig</shadedPattern>
                     </relocation>
                 </relocations>
                 <transformers>
@@ -71,6 +79,13 @@
             <version>2.3.2</version>
 
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.27</version>
+        </dependency>
+
         <dependency>
 
 
