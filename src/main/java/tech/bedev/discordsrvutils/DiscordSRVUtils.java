@@ -36,21 +36,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         return DiscordSRV.getPlugin().getJda();
     }
     public static Timer timer = new Timer();
-    ConfManager<Config> ConfigManager = ConfManager.create(getDataFolder().toPath(),"test.yml", Config.class);
+    ConfManager<Config> ConfigManager = ConfManager.create(getDataFolder().toPath(),"SQL.yml", Config.class);
 
     @Override
     public void onEnable() {
-        try {
         ConfigManager.reloadConfig();
-        ConfigManager.reloadConfig();
-        Config config = ConfigManager.getConfigData();
 
-            System.out.println(ConfigManager.reloadConfigData().Test());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigException e) {
-            e.printStackTrace();
-        }
         if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
             setEnabled(false);
             System.out.println("[DiscordSRVUtils] Detected plugin name change.");

@@ -8,6 +8,7 @@ import space.arim.dazzleconf.error.InvalidConfigException;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlConfigurationFactory;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
+import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -27,7 +28,7 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
                 .useCommentingWriter(true) // Enables writing YAML comments
                 .build();
         return new ConfManager<>(configFolder, fileName,
-                new SnakeYamlConfigurationFactory<>(configClass, ConfigurationOptions.defaults(), yamlOptions));
+                new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));
     }
 
     public void reloadConfig() {
