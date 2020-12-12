@@ -3,11 +3,14 @@ tech\bedev\discordsrvutils\events\EssentialsAfk.class
 tech\bedev\discordsrvutils\PluginConfiguration.class
 tech\bedev\discordsrvutils\events\DiscordSRVEventListener.class
 tech\bedev\discordsrvutils\commands\DiscordSRVUtilsCommand.class
+tech\bedev\discordsrvutils\Configs\ConfManager.class
 tech\bedev\discordsrvutils\DiscordSRVUtils.class
+tech\bedev\discordsrvutils\Configs\Config.class
 tech\bedev\discordsrvutils\events\AdvancedBanListener$1.class
 tech\bedev\discordsrvutils\events\PlayerJoinEvent.class
 tech\bedev\discordsrvutils\events\JDAEvents.class
 tech\bedev\discordsrvutils\events\PlayerJoinEvent$1.class
+tech\bedev\discordsrvutils\TPSCounter.class
 tech\bedev\discordsrvutils\StatusUpdater.class
 tech\bedev\discordsrvutils\PlaceholderAPI.class
 tech\bedev\discordsrvutils\events\AdvancedBanListener.class

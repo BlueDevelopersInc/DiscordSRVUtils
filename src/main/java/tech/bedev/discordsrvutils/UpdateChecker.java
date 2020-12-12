@@ -11,24 +11,19 @@ import java.util.Scanner;
 
 public class UpdateChecker {
 
-    private DiscordSRVUtils plugin;
-
-    public UpdateChecker(DiscordSRVUtils plugin) {
-        this.plugin = plugin;
-    }
 
 
-    public void getVersion(final Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try (Scanner scanner = new Scanner(new URL("https://api.spigotmc.org/legacy/update.php?resource=85958").openStream())) {
-                String argss = "";
-                    while (scanner.hasNext()) {
-                        argss = argss + scanner.next() + " ";
-                    }
-                consumer.accept(argss.replaceAll("\\s+$", ""));
-            } catch (IOException exception) {
-                this.plugin.getLogger().info("Cannot look for updates: " + exception.getMessage());
+
+    public static String getLatestVersion() {
+        try (Scanner scanner = new Scanner(new URL("https://api.spigotmc.org/legacy/update.php?resource=85958").openStream())) {
+            String argss = "";
+            while (scanner.hasNext()) {
+                argss = argss + scanner.next() + " ";
             }
-        });
+            return argss.replaceAll("\\s+$", "");
+        } catch (IOException exception) {
+            System.out.println("[DiscordSRVUtils] Could not look for updates.");
+        }
+        return null;
     }
 }

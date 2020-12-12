@@ -22,6 +22,10 @@ MySQL:
 #MySQL won't work properly until you restart.
 
 
+#Recommended version for the server
+version: "1.16"
+
+
 #The channel that chat is send to
 #If you are using towny, it should be general
 #If you get an error when player goes afk or when player is banned, this config option is the solution

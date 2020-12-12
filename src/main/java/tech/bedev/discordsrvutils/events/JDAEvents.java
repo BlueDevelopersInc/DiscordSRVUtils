@@ -1,5 +1,6 @@
 package tech.bedev.discordsrvutils.events;
 
+import com.sun.management.OperatingSystemMXBean;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
@@ -14,7 +15,9 @@ import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.TPSCounter;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
@@ -439,6 +442,22 @@ public class JDAEvents extends ListenerAdapter {
                 } else {
                     e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
                 }
+            }
+        } else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "serverinfo")) {
+            String players = "";
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                players = players + ", " + p.getName();
+            }
+            if (core.getConfig().getBoolean("anyone_can_use_serverinfo_command")) {
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(Color.CYAN);
+                embed.setTitle("Server Info");
+                embed.setThumbnail(e.getGuild().getIconUrl());
+                embed.setDescription("**Online players: **" + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getServer().getMaxPlayers() + "\n" +
+                        "**TPS: **" + TPSCounter.getTPS() + "\n" +
+                        "**Server version: ** " + core.getConfig().getString("Version") + "\n" +
+                        "**Online players**: ```" + players.replaceFirst(", ", "") + "```");
+                e.getChannel().sendMessage(embed.build()).queue();
             }
         }
         try (Connection conn = core.getMemoryConnection()) {

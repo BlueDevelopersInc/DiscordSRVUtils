@@ -4,15 +4,20 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
+import github.scarsz.discordsrv.objects.Lag;
 import me.clip.placeholderapi.PlaceholderListener;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.dazzleconf.error.InvalidConfigException;
+import tech.bedev.discordsrvutils.Configs.ConfManager;
+import tech.bedev.discordsrvutils.Configs.Config;
 import tech.bedev.discordsrvutils.commands.DiscordSRVUtilsCommand;
 import tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
 import tech.bedev.discordsrvutils.events.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,9 +36,21 @@ public class DiscordSRVUtils extends JavaPlugin {
         return DiscordSRV.getPlugin().getJda();
     }
     public static Timer timer = new Timer();
+    ConfManager<Config> ConfigManager = ConfManager.create(getDataFolder().toPath(),"test.yml", Config.class);
 
     @Override
     public void onEnable() {
+        try {
+        ConfigManager.reloadConfig();
+        ConfigManager.reloadConfig();
+        Config config = ConfigManager.getConfigData();
+
+            System.out.println(ConfigManager.reloadConfigData().Test());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigException e) {
+            e.printStackTrace();
+        }
         if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
             setEnabled(false);
             System.out.println("[DiscordSRVUtils] Detected plugin name change.");
@@ -133,13 +150,12 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
             }
         }
-            new UpdateChecker(this).getVersion(version -> {
-                if (this.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
-                    getLogger().info(ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
-                } else {
-                    getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + this.getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + version.replace("_", " "));
-                }
-            });
+        String newVersion = UpdateChecker.getLatestVersion();
+        if (newVersion.equalsIgnoreCase(getDescription().getVersion())) {
+            getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+        } else {
+            getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + newVersion);
+        }
 
             int pluginId = 9456; // <-- Replace with the id of your plugin!
             Metrics metrics = new Metrics(this, pluginId);
@@ -150,6 +166,8 @@ public class DiscordSRVUtils extends JavaPlugin {
 
             });
                 }
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+
 
 
 

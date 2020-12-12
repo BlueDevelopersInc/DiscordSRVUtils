@@ -156,19 +156,18 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("updatecheck")) {
                 if (sender.hasPermission("discordsrvutils.updatecheck")) {
                     sender.sendMessage(ChatColor.GREEN + "Checking for updates...");
-                    new UpdateChecker(core).getVersion(version -> {
-                        if (core.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
-                            core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
-                            sender.sendMessage(ChatColor.YELLOW + "No new version available.");
-                        } else {
-                            core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + core.getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + version.replace("_", " "));
 
-                            TextComponent msg = new TextComponent(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&aA newer version of DiscordSRVUtils is available.\n&9Your version: &5" + core.getDescription().getVersion() + "\n&9Newer version: &5" + version + "\n&6Click to download."));
-                            msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/discordsrvutils.85958/updates"));
-                            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download").create()));
-                            sender.spigot().sendMessage(msg);
-                        }
-                    });
+                    String newVersion = UpdateChecker.getLatestVersion();
+                    if (newVersion.equalsIgnoreCase(core.getDescription().getVersion())) {
+                        core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+                        sender.sendMessage(ChatColor.YELLOW + "No new version available.");
+                    } else {
+                        core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + core.getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + newVersion);
+                        TextComponent msg = new TextComponent(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&aA newer version of DiscordSRVUtils is available.\n&9Your version: &5" + core.getDescription().getVersion() + "\n&9Newer version: &5" + newVersion + "\n&6Click to download."));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/discordsrvutils.85958/updates"));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download").create()));
+                        sender.spigot().sendMessage(msg);
+                    }
 
                 } else {
                     sender.sendMessage(ChatColor.RED + "You don't have perms to use this command");
