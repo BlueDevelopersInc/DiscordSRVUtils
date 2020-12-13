@@ -8,6 +8,7 @@ tech\bedev\discordsrvutils\DiscordSRVUtils.class
 tech\bedev\discordsrvutils\Configs\Config.class
 tech\bedev\discordsrvutils\events\AdvancedBanListener$1.class
 tech\bedev\discordsrvutils\events\PlayerJoinEvent.class
+tech\bedev\discordsrvutils\Managers\Tickets.class
 tech\bedev\discordsrvutils\events\JDAEvents.class
 tech\bedev\discordsrvutils\events\PlayerJoinEvent$1.class
 tech\bedev\discordsrvutils\TPSCounter.class

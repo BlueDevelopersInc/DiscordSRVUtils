@@ -39,6 +39,14 @@
               <pattern>org.yaml</pattern>
               <shadedPattern>tech.bedev.discordsrvutils.dependecies.snakeyaml</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>space.arim.dazzleconf</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.dazzleconfig</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.mariadb.jdbc</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.mariadb</shadedPattern>
+            </relocation>
           </relocations>
           <transformers>
             <transformer />

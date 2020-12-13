@@ -1,6 +1,9 @@
 package tech.bedev.discordsrvutils;
 
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 public class TPSCounter implements Runnable
 {
     public static int TICK_COUNT= 0;

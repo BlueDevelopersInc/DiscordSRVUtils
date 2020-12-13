@@ -12,5 +12,4 @@ commands:
   discordsrvutils:
     aliases: [dsrvu, dsu, du, discordu, srvu]
 
-loadafter:
-  - PlaceholderAPI
+

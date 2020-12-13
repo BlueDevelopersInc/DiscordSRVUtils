@@ -71,6 +71,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+
         }
         if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
             getLogger().warning("DiscordSRVUtils could not be enabled. DiscordSRV is not installed or is not enabled.");

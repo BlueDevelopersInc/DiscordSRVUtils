@@ -1,6 +1,5 @@
 package tech.bedev.discordsrvutils.events;
 
-import com.sun.management.OperatingSystemMXBean;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
@@ -17,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.TPSCounter;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -33,7 +35,10 @@ public class JDAEvents extends ListenerAdapter {
     private DiscordSRVUtils core;
     public JDAEvents(DiscordSRVUtils core) {
         this.core = core;
+        this.tickets = new Tickets(core);
     }
+
+    private Tickets tickets;
 
     private static final Random RANDOM = new Random();
     @Override
@@ -587,9 +592,7 @@ public class JDAEvents extends ListenerAdapter {
                                     embed.setTitle(r2.getString("Name"));
                                     embed.setDescription("React with \uD83D\uDCE9 to create a ticket.");
                                     embed.setColor(Color.CYAN);
-                                    e.getGuild().getTextChannelById(e.getMessage().getMentionedChannels().get(0).getIdLong()).sendMessage(embed.build()).queue(message -> {
 
-                                        message.addReaction("\uD83D\uDCE9").queue();
                                         try (Connection mconn = core.getMemoryConnection()) {
                                             Connection fconn = core.getDatabaseFile();
                                             PreparedStatement mp1 = mconn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?");
@@ -598,35 +601,24 @@ public class JDAEvents extends ListenerAdapter {
                                             mp1.execute();
                                             ResultSet mr1 = mp1.executeQuery();
                                             mr1.next();
-                                            PreparedStatement fp1 = fconn.prepareStatement("INSERT INTO discordsrvutils_tickets (TicketID, MessageId, Opened_Category, Closed_Category, Name, ChannelID) VALUES (?, ?, ?, ?, ?, ?)");
                                             int TicketID = RANDOM.nextInt(9999);
-                                            fp1.setLong(1, TicketID);
-                                            fp1.setLong(2, message.getIdLong());
-                                            fp1.setLong(3, mr1.getLong("Opened_Category"));
-                                            fp1.setLong(4, mr1.getLong("Closed_Category"));
-                                            fp1.setString(5, mr1.getString("Name"));
-                                            fp1.setLong(6, e.getMessage().getMentionedChannels().get(0).getIdLong());
-                                            fp1.execute();
                                             PreparedStatement mp2 = mconn.prepareStatement("SELECT * FROM discordsrvutils_ticket_allowed_roles WHERE Channel_id=? AND UserID=?");
                                             mp2.setLong(1, e.getChannel().getIdLong());
                                             mp2.setLong(2, e.getMember().getIdLong());
                                             mp2.execute();
                                             ResultSet mr2 = mp2.executeQuery();
+                                            List<Long> roles = new ArrayList<>();
                                             while (mr2.next()) {
-                                                PreparedStatement fm2 = fconn.prepareStatement("INSERT INTO discordsrvutils_ticket_allowed_roles (TicketID, RoleID) VALUES (?, ?)");
-                                                fm2.setInt(1, TicketID);
-                                                fm2.setLong(2, mr2.getLong("RoleID"));
-                                                fm2.execute();
+                                                roles.add(mr2.getLong("RoleID"));
+
                                             }
-                                            PreparedStatement last = mconn.prepareStatement("DELETE FROM tickets_creating WHERE Channel_id=? AND UserID=?");
-                                            last.setLong(1, e.getChannel().getIdLong());
-                                            last.setLong(2, e.getMember().getIdLong());
-                                            last.execute();
+                                            tickets.createTicket(TicketID, e.getMessage().getMentionedChannels().get(0), mr1.getLong("Opened_Category"), mr1.getLong("Closed_Category"), mr1.getString("Name"), roles);
+                                            tickets.deleteMemoryTicketCreation(e.getChannel().getIdLong(), e.getMember().getIdLong());
 
                                         }catch (SQLException exception) {
                                             exception.printStackTrace();
                                         }
-                                    });
+
                                     e.getChannel().sendMessage("Ticket sent in " + e.getMessage().getMentionedChannels().get(0).getAsMention()).queue();
                                 }
                             }
