@@ -2,11 +2,14 @@ package tech.bedev.discordsrvutils.events;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
+import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
+import me.leoko.advancedban.shaded.org.apache.commons.lang3.ObjectUtils;
 import net.md_5.bungee.api.ChatColor;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.StatusUpdater;
@@ -69,7 +72,41 @@ public class DiscordSRVEventListener {
             String l = core.getConfig().getInt("bot_status_update_delay") + "000";
             DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
         }
+        DiscordSRVUtils.isReady = true;
+    }
 
+    @Subscribe
+    public void  onLink(AccountLinkedEvent e) {
+        try (Connection conn = core.getDatabaseFile()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
+            p1.setString(1, e.getPlayer().getUniqueId().toString());
+            p1.execute();
+            ResultSet r1 = p1.executeQuery();
+            if (r1.next()) {
+                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=? WHERE UUID=?");
+                p2.setLong(1, e.getUser().getIdLong());
+                p2.setString(2, e.getPlayer().getUniqueId().toString());
+                p2.execute();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 
+    @Subscribe
+    public void onUnlink(AccountUnlinkedEvent e) {
+        try (Connection conn = core.getDatabaseFile()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
+            p1.setString(1, e.getPlayer().getUniqueId().toString());
+            p1.execute();
+            ResultSet r1 = p1.executeQuery();
+            if (r1.next()) {
+                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=NULL WHERE UUID=?");
+                p2.setString(1, e.getPlayer().getUniqueId().toString());
+                p2.execute();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

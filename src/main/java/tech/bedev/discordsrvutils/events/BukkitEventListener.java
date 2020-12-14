@@ -8,15 +8,23 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.UpdateChecker;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PlayerJoinEvent implements Listener {
+public class BukkitEventListener implements Listener {
+    private static final Random RANDOM = new Random();
     private DiscordSRVUtils core;
-    public PlayerJoinEvent(DiscordSRVUtils core) {
+    public BukkitEventListener(DiscordSRVUtils core) {
         this.core = core;
     }
     @EventHandler
@@ -40,6 +48,29 @@ public class PlayerJoinEvent implements Listener {
                     }
                 }, 5000);
             }
+        }
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        try (Connection conn = core.getDatabaseFile()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
+            p1.setString(1, e.getPlayer().getUniqueId().toString());
+            p1.execute();
+            ResultSet r1 = p1.executeQuery();
+            if (r1.next()) {
+
+            } else {
+                Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+                person.addXP(RANDOM.nextInt(25));
+                if (person.getXP() >= 250) {
+                    person.addLevels(1);
+                    person.clearXP();
+                }
+
+            }
+        }catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 }

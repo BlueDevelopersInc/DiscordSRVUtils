@@ -26,12 +26,12 @@ public class EssentialsAfk implements Listener {
         if (e.getAffected().isVanished()) return;
         if (!e.getAffected().isAfk()) {
             if (conf.getBoolean("essentials_afk_to_discord")) {
-                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase(), conf.StringListToString("essentials_player_afk_message")));
+                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), conf.StringListToString("essentials_player_afk_message")));
 
             }
         } else {
             if (conf.getBoolean("essentials_afk_to_discord")) {
-                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase(), conf.StringListToString("essentials_player_no_longer_afk_message")));
+                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), conf.StringListToString("essentials_player_no_longer_afk_message")));
             }
         }
     }

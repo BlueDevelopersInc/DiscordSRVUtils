@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import net.md_5.bungee.api.chat.ClickEvent;
