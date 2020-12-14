@@ -27,4 +27,7 @@ public interface Person {
     UUID getMinecraftUUID();
     Member getMemberOnMainGuild();
 
+
+    void insertLeveling();
+
 }

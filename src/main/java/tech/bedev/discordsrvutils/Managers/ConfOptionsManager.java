@@ -43,11 +43,11 @@ public class ConfOptionsManager {
         return ChatColor.translateAlternateColorCodes('&', String.join("\n", core.getConfig().getStringList(path)));
     }
 
-    public String configToColorCodes(String msg) {
+    public String StringToColorCodes(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
-    public String StringToColorCodes(String path) {
-        return ChatColor.translateAlternateColorCodes('&', String.join("\n", core.getConfig().getString(path)));
+    public String ConfigToColorCodes(String path) {
+        return ChatColor.translateAlternateColorCodes('&', core.getConfig().getString(path));
     }
 
     public boolean getBoolean(String path) {

@@ -16,7 +16,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
+import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.TPSCounter;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
@@ -33,9 +35,11 @@ import java.util.UUID;
 public class JDAEvents extends ListenerAdapter {
 
     private DiscordSRVUtils core;
+    private ConfOptionsManager conf;
     public JDAEvents(DiscordSRVUtils core) {
         this.core = core;
         this.tickets = new Tickets(core);
+        conf = new ConfOptionsManager(core);
     }
 
     private Tickets tickets;
@@ -783,8 +787,18 @@ public class JDAEvents extends ListenerAdapter {
             exception.printStackTrace();
 
         }
-
-
+        if (conf.getBoolean("leveling")) {
+            Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
+            if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
+                person.insertLeveling();
+                person.addXP(BukkitEventListener.RANDOM.nextInt(25));
+                if (person.getXP() >= 300) {
+                    person.clearXP();
+                    person.addLevels(1);
+                    e.getChannel().sendMessage(conf.getConfigWithPapi(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) , conf.StringListToString("levelup_message_discord")).replace("[Level]", person.getLevel() + "")).queue();
+                }
+            }
+        }
     }
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e) {

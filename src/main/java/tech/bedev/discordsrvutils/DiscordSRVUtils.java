@@ -50,7 +50,6 @@ public class DiscordSRVUtils extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-            ConfigManager.reloadConfig();
 
             if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
                 setEnabled(false);
@@ -100,7 +99,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         "Closed_Category Bigint, ChannelID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
-                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (long userID, varchar UUID, int level, int XP)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int)").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
 
@@ -218,6 +217,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Person getPersonByUUID(UUID uuid) {
+        if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) return null;
         String UserID = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
         if (UserID == null) {
             return new PersonImpl(uuid, null, this);
@@ -225,6 +225,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         return new PersonImpl(uuid, DiscordSRV.getPlugin().getMainGuild().getMemberById(UserID), this);
     }
     public Person getPersonByDiscordID(Long id) {
+        if (DiscordSRV.getPlugin().getMainGuild().getMemberById(id) == null) return null;
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(id.toString());
         if (uuid == null) return new PersonImpl(null, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);
         return new PersonImpl(uuid, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);

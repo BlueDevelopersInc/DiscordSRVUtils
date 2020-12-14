@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
+import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.UpdateChecker;
 
@@ -22,10 +24,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class BukkitEventListener implements Listener {
-    private static final Random RANDOM = new Random();
+    public static final Random RANDOM = new Random();
     private DiscordSRVUtils core;
+    private ConfOptionsManager conf;
     public BukkitEventListener(DiscordSRVUtils core) {
         this.core = core;
+        this.conf = new ConfOptionsManager(core);
     }
     @EventHandler
     public void onJoin(org.bukkit.event.player.PlayerJoinEvent e) {
@@ -53,24 +57,15 @@ public class BukkitEventListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        try (Connection conn = core.getDatabaseFile()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
-            p1.setString(1, e.getPlayer().getUniqueId().toString());
-            p1.execute();
-            ResultSet r1 = p1.executeQuery();
-            if (r1.next()) {
-
-            } else {
-                Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
-                person.addXP(RANDOM.nextInt(25));
-                if (person.getXP() >= 250) {
-                    person.addLevels(1);
-                    person.clearXP();
-                }
-
+        if (conf.getBoolean("leveling")) {
+            Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+            person.insertLeveling();
+            person.addXP(RANDOM.nextInt(25));
+            if (person.getXP() >= 300) {
+                person.clearXP();
+                person.addLevels(1);
+                e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), conf.StringListToString("levelup_message_minecraft"))).replace("[Level]", person.getLevel() + ""));
             }
-        }catch (SQLException ex) {
-            ex.printStackTrace();
         }
     }
 }

@@ -78,12 +78,12 @@ public class DiscordSRVEventListener {
     @Subscribe
     public void  onLink(AccountLinkedEvent e) {
         try (Connection conn = core.getDatabaseFile()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
             p1.setString(1, e.getPlayer().getUniqueId().toString());
             p1.execute();
             ResultSet r1 = p1.executeQuery();
             if (r1.next()) {
-                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=? WHERE UUID=?");
+                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=? WHERE unique_id=?");
                 p2.setLong(1, e.getUser().getIdLong());
                 p2.setString(2, e.getPlayer().getUniqueId().toString());
                 p2.execute();
@@ -96,12 +96,12 @@ public class DiscordSRVEventListener {
     @Subscribe
     public void onUnlink(AccountUnlinkedEvent e) {
         try (Connection conn = core.getDatabaseFile()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE UUID=?");
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
             p1.setString(1, e.getPlayer().getUniqueId().toString());
             p1.execute();
             ResultSet r1 = p1.executeQuery();
             if (r1.next()) {
-                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=NULL WHERE UUID=?");
+                PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=NULL WHERE unique_id=?");
                 p2.setString(1, e.getPlayer().getUniqueId().toString());
                 p2.execute();
             }
