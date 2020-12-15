@@ -6,6 +6,7 @@ E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvuti
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\PluginConfiguration.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\utils\PlayerUtil.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\Configs\ConfManager.java
+E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\events\PlayerLevelupEvent.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\commands\DiscordSRVUtilsCommand.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\Managers\ConfOptionsManager.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\Person\PersonImpl.java
@@ -18,4 +19,5 @@ E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvuti
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\Configs\Config.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\DiscordSRVUtils.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\UpdateChecker.java
+E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\events\DiscordLevelupEvent.java
 E:\IntelliJ IDEA Projects\DiscordSRVUtils\src\main\java\tech\bedev\discordsrvutils\events\EssentialsAfk.java

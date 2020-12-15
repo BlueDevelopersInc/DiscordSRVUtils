@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import tech.bedev.discordsrvutils.Person.Person;
 
-public class DiscordLevelupEvent extends Event implements Cancellable {
+public final class DiscordLevelupEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
     private Person person;

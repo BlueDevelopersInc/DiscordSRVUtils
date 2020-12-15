@@ -49,6 +49,14 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        ConfigManager.reloadConfig();
+        try {
+            Config config = ConfigManager.reloadConfigData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigException e) {
+            e.printStackTrace();
+        }
         try {
 
             if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
@@ -173,9 +181,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-
-
-
 
     }
     @Override
