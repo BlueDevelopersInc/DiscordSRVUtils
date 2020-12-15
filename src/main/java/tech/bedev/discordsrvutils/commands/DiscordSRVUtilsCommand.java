@@ -21,6 +21,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.PluginConfiguration;
 import tech.bedev.discordsrvutils.StatusUpdater;
@@ -73,6 +74,8 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Reloading...");
                     YamlConfiguration config = new YamlConfiguration();
                     try {
+                        core.SQLConfigManager.reloadConfig();
+                        DiscordSRVUtils.SQLconfig = core.SQLConfigManager.reloadConfigData();
                         core.saveDefaultConfig();
                         this.configFile = new File(core.getDataFolder(), "config.yml");
                         newConfig = PluginConfiguration.loadConfiguration(configFile);
@@ -85,7 +88,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
 
                         newConfig.setDefaults(PluginConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
                         core.reloadConfig();
-                    } catch (IOException | InvalidConfigurationException exception) {
+                    } catch (IOException | InvalidConfigurationException |InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;

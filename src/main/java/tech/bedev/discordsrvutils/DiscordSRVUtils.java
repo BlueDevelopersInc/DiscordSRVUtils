@@ -23,7 +23,9 @@ import tech.bedev.discordsrvutils.events.*;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,15 +45,26 @@ public class DiscordSRVUtils extends JavaPlugin {
         return DiscordSRV.getPlugin().getJda();
     }
     public static Timer timer = new Timer();
-    ConfManager<Config> ConfigManager = ConfManager.create(getDataFolder().toPath(),"SQL.yml", Config.class);
+    public static Config SQLconfig;
+    public ConfManager<Config> SQLConfigManager = ConfManager.create(getDataFolder().toPath(),"SQL.yml", Config.class);
 
 
 
     @Override
     public void onEnable() {
-        ConfigManager.reloadConfig();
+        System.out.println(this.getDataFolder().toString());
+        Path dataFolder = getDataFolder().toPath();
+        Path source = dataFolder.resolve("Database.script");
+            Path destination = Paths.get(this.getDataFolder().toString() + "/Database/");
+            try {
+                Files.createDirectories(getDataFolder().toPath().resolve("Database"));
+                Files.copy(source, destination);
+            } catch (IOException e) {
+                e.printStackTrace();
+        }
+        SQLConfigManager.reloadConfig();
         try {
-            Config config = ConfigManager.reloadConfigData();
+            SQLconfig = SQLConfigManager.reloadConfigData();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidConfigException e) {
@@ -67,7 +80,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             this.saveDefaultConfig();
             this.reloadConfig();
             String storage = "Unknown";
-            if (getConfig().getBoolean("MySQL.isEnabled")) {
+            if (SQLconfig.isEnabled()) {
                 storage = "MySQL";
             } else {
                 storage = "HSQLDB (local)";
@@ -196,19 +209,19 @@ public class DiscordSRVUtils extends JavaPlugin {
         return new DiscordSRVUtils().getDatabaseFile();
     }
     public Connection getDatabaseFile() throws SQLException {
-        if (!this.getConfig().getBoolean("MySQL.isEnabled")) {
+        if (!SQLconfig.isEnabled()) {
             return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false;hsqldb.reconfig_logging=false", "SA", "");
         }
         Connection conn = null;
         Properties connectionProps = new Properties();
-        connectionProps.put("user", getConfig().getString("MySQL.UserName"));
-        connectionProps.put("password", getConfig().getString("MySQL.Password"));
+        connectionProps.put("user", SQLconfig.UserName());
+        connectionProps.put("password", SQLconfig.Password());
 
         if (true) {
             conn = DriverManager.getConnection(
                     "jdbc:" + "mysql" + "://" +
-                            getConfig().getString("MySQL.Host") +
-                            ":" + getConfig().getInt("MySQL.Port") + "/" + getConfig().getString("MySQL.Database"),
+                            SQLconfig.Host() +
+                            ":" + SQLconfig.Port() + "/" + SQLconfig.DatabaseName(),
                     connectionProps);
         }
         return conn;
