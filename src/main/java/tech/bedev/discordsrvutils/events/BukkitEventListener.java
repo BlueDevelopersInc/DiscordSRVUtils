@@ -57,15 +57,23 @@ public class BukkitEventListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if (conf.getBoolean("leveling")) {
-            Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
-            person.insertLeveling();
-            person.addXP(RANDOM.nextInt(25));
-            if (person.getXP() >= 300) {
-                person.clearXP();
-                person.addLevels(1);
-                e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), conf.StringListToString("levelup_message_minecraft"))).replace("[Level]", person.getLevel() + ""));
+        Bukkit.getScheduler().runTask(core, () -> {
+            if (conf.getBoolean("leveling")) {
+                Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+                person.insertLeveling();
+                person.addXP(RANDOM.nextInt(25));
+                if (person.getXP() >= 300) {
+                    person.clearXP();
+                    PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
+                    Bukkit.getPluginManager().callEvent(ev);
+                    if (!ev.isCancelled()) {
+                        person.addLevels(1);
+                        e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), conf.StringListToString("levelup_message_minecraft"))).replace("[Level]", person.getLevel() + ""));
+                    }
+                }
             }
-        }
+        });
     }
+
+
 }

@@ -787,18 +787,24 @@ public class JDAEvents extends ListenerAdapter {
             exception.printStackTrace();
 
         }
-        if (conf.getBoolean("leveling")) {
-            Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
-            if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
-                person.insertLeveling();
-                person.addXP(BukkitEventListener.RANDOM.nextInt(25));
-                if (person.getXP() >= 300) {
-                    person.clearXP();
-                    person.addLevels(1);
-                    e.getChannel().sendMessage(conf.getConfigWithPapi(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) , conf.StringListToString("levelup_message_discord")).replace("[Level]", person.getLevel() + "")).queue();
+        Bukkit.getScheduler().runTask(core, () -> {
+            if (conf.getBoolean("leveling")) {
+                Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
+                if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
+                    person.insertLeveling();
+                    person.addXP(BukkitEventListener.RANDOM.nextInt(25));
+                    if (person.getXP() >= 300) {
+                        person.clearXP();
+                        DiscordLevelupEvent ev = new DiscordLevelupEvent(e, person);
+                        Bukkit.getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            person.addLevels(1);
+                            e.getChannel().sendMessage(conf.getConfigWithPapi(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()), conf.StringListToString("levelup_message_discord")).replace("[Level]", person.getLevel() + "")).queue();
+                        }
+                    }
                 }
             }
-        }
+        });
     }
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e) {

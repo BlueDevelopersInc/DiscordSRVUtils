@@ -1,4 +1,5 @@
 tech\bedev\discordsrvutils\events\EssentialsAfk.class
+tech\bedev\discordsrvutils\events\PlayerLevelupEvent.class
 tech\bedev\discordsrvutils\events\DiscordSRVEventListener.class
 tech\bedev\discordsrvutils\Exceptions\StartupException.class
 tech\bedev\discordsrvutils\Configs\ConfManager.class
@@ -7,6 +8,7 @@ tech\bedev\discordsrvutils\PlaceholderAPI.class
 tech\bedev\discordsrvutils\events\AdvancedBanListener.class
 tech\bedev\discordsrvutils\commands\tabCompleters\DiscordSRVUtilsTabCompleter.class
 tech\bedev\discordsrvutils\PluginConfiguration.class
+tech\bedev\discordsrvutils\events\DiscordLevelupEvent.class
 tech\bedev\discordsrvutils\Person\Person.class
 tech\bedev\discordsrvutils\events\BukkitEventListener.class
 tech\bedev\discordsrvutils\commands\DiscordSRVUtilsCommand.class
