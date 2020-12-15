@@ -29,8 +29,10 @@ public class DiscordLevelupEvent extends Event implements Cancellable {
 
     }
 
-    @Override
     public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+    public @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 
