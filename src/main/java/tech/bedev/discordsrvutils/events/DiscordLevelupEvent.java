@@ -20,7 +20,7 @@ public final class DiscordLevelupEvent extends Event implements Cancellable {
     }
     @Override
     public boolean isCancelled() {
-        return false;
+        return cancelled;
     }
 
     @Override

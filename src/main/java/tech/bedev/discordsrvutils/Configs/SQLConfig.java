@@ -10,7 +10,7 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter.Order;
 
 import static space.arim.dazzleconf.annote.ConfDefault.*;
 
-public interface Config {
+public interface SQLConfig {
 
     @DefaultBoolean(false)
     @ConfComments("Should we use a database?")

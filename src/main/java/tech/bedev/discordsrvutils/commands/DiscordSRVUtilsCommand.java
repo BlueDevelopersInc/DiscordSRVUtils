@@ -76,6 +76,10 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                     try {
                         core.SQLConfigManager.reloadConfig();
                         DiscordSRVUtils.SQLconfig = core.SQLConfigManager.reloadConfigData();
+                        core.LevelingConfigManager.reloadConfig();
+                        DiscordSRVUtils.Levelingconfig = core.LevelingConfigManager.reloadConfigData();
+                        core.BotSettingsConfigManager.reloadConfig();
+                        DiscordSRVUtils.BotSettingsconfig = core.BotSettingsConfigManager.reloadConfigData();
                         core.saveDefaultConfig();
                         this.configFile = new File(core.getDataFolder(), "config.yml");
                         newConfig = PluginConfiguration.loadConfiguration(configFile);

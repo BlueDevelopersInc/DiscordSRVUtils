@@ -200,7 +200,8 @@ public class JDAEvents extends ListenerAdapter {
         if (e.getAuthor().isFake()) return;
         if (e.getAuthor().isBot()) return;
         String[] args = e.getMessage().getContentRaw().split("\\s+");
-        if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "createticket")) {
+        String prefix = DiscordSRVUtils.BotSettingsconfig.BotPrefix();
+        if (args[0].equalsIgnoreCase( prefix + "createticket")) {
             if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 try (Connection conn = core.getMemoryConnection()) {
                     try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
@@ -230,10 +231,10 @@ public class JDAEvents extends ListenerAdapter {
             } else {
                 e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
             }
-        } else if (args[0].equalsIgnoreCase(core    .getConfig().get("BotPrefix") + "ticketlookup")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "ticketlookup")) {
             if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 if (!(args.length >= 2)) {
-                    e.getChannel().sendMessage("**Usage:** " + core.getConfig().getString("BotPrefix") + "ticketlookup <ticket name>").queue();
+                    e.getChannel().sendMessage("**Usage:** " + prefix + "ticketlookup <ticket name>").queue();
 
                 } else {
                     try {
@@ -273,7 +274,7 @@ public class JDAEvents extends ListenerAdapter {
             else {
                 e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
             }
-        } else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "close")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "close")) {
             try {
                 Connection conn = core.getDatabaseFile();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
@@ -333,9 +334,9 @@ public class JDAEvents extends ListenerAdapter {
                 exception.printStackTrace();
             }
 
-        } else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "editticket")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "editticket")) {
             if (!(args.length >= 2)) {
-                e.getChannel().sendMessage("**Usage:** " + core.getConfig().getString("BotPrefix") + "editticket <Ticket ID>").queue();
+                e.getChannel().sendMessage("**Usage:** " + prefix + "editticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                     try {
@@ -376,7 +377,7 @@ public class JDAEvents extends ListenerAdapter {
                                 EmbedBuilder embed = new EmbedBuilder();
                                 embed.setColor(Color.RED);
                                 embed.setTitle("Invalid ticket ID");
-                                embed.setDescription("\nHaving troubles getting Ticket ID? use `" + core.getConfig().getString("BotPrefix") + "ticketlookup <TicketName>`.");
+                                embed.setDescription("\nHaving troubles getting Ticket ID? use `" + prefix + "ticketlookup <TicketName>`.");
                                 e.getChannel().sendMessage(embed.build()).queue();
 
                             }
@@ -387,7 +388,7 @@ public class JDAEvents extends ListenerAdapter {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setColor(Color.RED);
                         embed.setTitle("Invalid ticket ID");
-                        embed.setDescription("\nHaving troubles getting Ticket ID? use `" + core.getConfig().getString("BotPrefix") + "ticketlookup <TicketName>`.");
+                        embed.setDescription("\nHaving troubles getting Ticket ID? use `" + prefix + "ticketlookup <TicketName>`.");
                         e.getChannel().sendMessage(embed.build()).queue();
                     }
                 } else {
@@ -395,17 +396,17 @@ public class JDAEvents extends ListenerAdapter {
                 }
             }
         }
-        else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "help")) {
+        else if (args[0].equalsIgnoreCase(prefix + "help")) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
-            embed.setDescription("Use `" + core.getConfig().getString("BotPrefix") + "<Command>` to execute a command.");
+            embed.setDescription("Use `" + prefix + "<Command>` to execute a command.");
             embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
             embed.setColor(Color.GREEN);
             e.getChannel().sendMessage(embed.build()).queue();
         }
-        else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "deleteticket")) {
+        else if (args[0].equalsIgnoreCase(prefix + "deleteticket")) {
             if (!(args.length >= 2)) {
-                e.getChannel().sendMessage("**Usage:** " + core.getConfig().getString("BotPrefix") + "deleteticketticket <Ticket ID>").queue();
+                e.getChannel().sendMessage("**Usage:** " + prefix + "deleteticketticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                     try {
@@ -433,7 +434,7 @@ public class JDAEvents extends ListenerAdapter {
                             EmbedBuilder embed = new EmbedBuilder();
                             embed.setColor(Color.RED);
                             embed.setTitle("Invalid ticket ID");
-                            embed.setDescription("\nHaving troubles getting Ticket ID? use `" + core.getConfig().getString("BotPrefix") + "ticketlookup <TicketName>`.");
+                            embed.setDescription("\nHaving troubles getting Ticket ID? use `" + prefix + "ticketlookup <TicketName>`.");
                             e.getChannel().sendMessage(embed.build()).queue();
                         }
 
@@ -443,7 +444,7 @@ public class JDAEvents extends ListenerAdapter {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setColor(Color.RED);
                         embed.setTitle("Invalid ticket ID");
-                        embed.setDescription("\nHaving troubles getting Ticket ID? use `" + core.getConfig().getString("BotPrefix") + "ticketlookup <TicketName>`.");
+                        embed.setDescription("\nHaving troubles getting Ticket ID? use `" + prefix + "ticketlookup <TicketName>`.");
                         e.getChannel().sendMessage(embed.build()).queue();
                     }
 
@@ -452,7 +453,7 @@ public class JDAEvents extends ListenerAdapter {
                     e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
                 }
             }
-        } else if (args[0].equalsIgnoreCase(core.getConfig().getString("BotPrefix") + "serverinfo")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "serverinfo")) {
             String players = "";
             for (Player p : Bukkit.getOnlinePlayers()) {
                 players = players + ", " + p.getName();
@@ -777,7 +778,7 @@ public class JDAEvents extends ListenerAdapter {
                             }
                         }
                         if (e.getMessage().getMentionedMembers().contains(e.getGuild().getSelfMember())) {
-                            e.getChannel().sendMessage("**My prefix is** `" + core.getConfig().getString("BotPrefix") + "`").queue();
+                            e.getChannel().sendMessage("**My prefix is** `" + prefix + "`").queue();
                         }
                     }
                 }
@@ -788,7 +789,7 @@ public class JDAEvents extends ListenerAdapter {
 
         }
         Bukkit.getScheduler().runTask(core, () -> {
-            if (conf.getBoolean("leveling")) {
+            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                 Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
                 if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
                     person.insertLeveling();
@@ -799,7 +800,7 @@ public class JDAEvents extends ListenerAdapter {
                         Bukkit.getPluginManager().callEvent(ev);
                         if (!ev.isCancelled()) {
                             person.addLevels(1);
-                            e.getChannel().sendMessage(conf.getConfigWithPapi(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()), conf.StringListToString("levelup_message_discord")).replace("[Level]", person.getLevel() + "")).queue();
+                            e.getChannel().sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
                         }
                     }
                 }
@@ -852,7 +853,7 @@ public class JDAEvents extends ListenerAdapter {
                                     cp1.setLong(1, e.getMessageIdLong());
                                     cp1.execute();
                                     ResultSet cr1 = cp1.executeQuery(); cr1.next();
-                                    embed.setDescription("here is your ticket.\nReact with \uD83D\uDD12 to close this ticket. or use `" + core.getConfig().getString("BotPrefix") + "close`.\n\n**TicketName:** " + cr1.getString("Name"));
+                                    embed.setDescription("here is your ticket.\nReact with \uD83D\uDD12 to close this ticket. or use `" + DiscordSRVUtils.BotSettingsconfig.BotPrefix() + "close`.\n\n**TicketName:** " + cr1.getString("Name"));
                                 } catch (SQLException ex) {
                                     ex.printStackTrace();
                                 }

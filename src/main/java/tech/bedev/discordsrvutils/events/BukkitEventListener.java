@@ -33,6 +33,8 @@ public class BukkitEventListener implements Listener {
     }
     @EventHandler
     public void onJoin(org.bukkit.event.player.PlayerJoinEvent e) {
+        Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+        person.insertLeveling();
         if (!core.getConfig().getBoolean("update_checker")) return;
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
             String newVersion = UpdateChecker.getLatestVersion();
@@ -58,7 +60,7 @@ public class BukkitEventListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
-            if (conf.getBoolean("leveling")) {
+            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                 Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
                 person.insertLeveling();
                 person.addXP(RANDOM.nextInt(25));
@@ -68,7 +70,7 @@ public class BukkitEventListener implements Listener {
                     Bukkit.getPluginManager().callEvent(ev);
                     if (!ev.isCancelled()) {
                         person.addLevels(1);
-                        e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), conf.StringListToString("levelup_message_minecraft"))).replace("[Level]", person.getLevel() + ""));
+                        e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_minecraft()))).replace("[Level]", person.getLevel() + ""));
                     }
                 }
             }

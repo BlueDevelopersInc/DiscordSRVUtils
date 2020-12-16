@@ -5,19 +5,19 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.objects.Lag;
-import me.clip.placeholderapi.PlaceholderListener;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
+import tech.bedev.discordsrvutils.Configs.BotSettingsConfig;
 import tech.bedev.discordsrvutils.Configs.ConfManager;
-import tech.bedev.discordsrvutils.Configs.Config;
+import tech.bedev.discordsrvutils.Configs.LevelingConfig;
+import tech.bedev.discordsrvutils.Configs.SQLConfig;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.Person.PersonImpl;
-import tech.bedev.discordsrvutils.commands.DiscordSRVUtilsCommand;
+import tech.bedev.discordsrvutils.commands.*;
 import tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
 import tech.bedev.discordsrvutils.events.*;
 
@@ -30,7 +30,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscordSRVUtils extends JavaPlugin {
 
@@ -45,8 +44,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         return DiscordSRV.getPlugin().getJda();
     }
     public static Timer timer = new Timer();
-    public static Config SQLconfig;
-    public ConfManager<Config> SQLConfigManager = ConfManager.create(getDataFolder().toPath(),"SQL.yml", Config.class);
+    public static SQLConfig SQLconfig;
+    public ConfManager<SQLConfig> SQLConfigManager = ConfManager.create(getDataFolder().toPath(),"SQL.yml", SQLConfig.class);
+    public static LevelingConfig Levelingconfig;
+    public ConfManager<LevelingConfig> LevelingConfigManager = ConfManager.create(getDataFolder().toPath(),"Leveling.yml", LevelingConfig.class);
+    public static BotSettingsConfig BotSettingsconfig;
+    public ConfManager<BotSettingsConfig> BotSettingsConfigManager = ConfManager.create(getDataFolder().toPath(),"BotSettings.yml", BotSettingsConfig.class);
 
 
 
@@ -62,9 +65,14 @@ public class DiscordSRVUtils extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
         }
-        SQLConfigManager.reloadConfig();
+
         try {
+            SQLConfigManager.reloadConfig();
+            LevelingConfigManager.reloadConfig();
+            Levelingconfig = LevelingConfigManager.reloadConfigData();
             SQLconfig = SQLConfigManager.reloadConfigData();
+            BotSettingsConfigManager.reloadConfig();
+            BotSettingsconfig = BotSettingsConfigManager.reloadConfigData();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidConfigException e) {
@@ -148,6 +156,12 @@ public class DiscordSRVUtils extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new BukkitEventListener(this), this);
 
             DiscordSRV.api.subscribe(discordListener);
+            getCommand("setlevel").setExecutor(new setlevelCommand(this));
+            getCommand("addlevels").setExecutor(new addlevelsCommand(this));
+            getCommand("removelevels").setExecutor(new removelevelsCommand(this));
+            getCommand("setxp").setExecutor(new setxpCommand(this));
+            getCommand("addxp").setExecutor(new addxpCommand(this));
+            getCommand("removexp").setExecutor(new removeXPCommand(this));
 
 
             if (getConfig().getLong("welcomer_channel") == 0) {
@@ -216,6 +230,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         Properties connectionProps = new Properties();
         connectionProps.put("user", SQLconfig.UserName());
         connectionProps.put("password", SQLconfig.Password());
+        connectionProps.put("useSSL", "false");
 
         if (true) {
             conn = DriverManager.getConnection(

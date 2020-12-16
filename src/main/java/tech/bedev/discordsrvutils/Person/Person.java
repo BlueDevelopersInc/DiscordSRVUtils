@@ -23,6 +23,8 @@ public interface Person {
     int getLevel();
     int getXP();
 
+    boolean isLinked();
+
 
     UUID getMinecraftUUID();
     Member getMemberOnMainGuild();

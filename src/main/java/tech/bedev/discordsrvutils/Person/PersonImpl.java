@@ -166,7 +166,7 @@ import java.util.UUID;
                 ResultSet r1 = p1.executeQuery();
                 if (r1.next()) {
                     PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET XP=? WHERE unique_id=?");
-                    p2.setInt(2, xp);
+                    p2.setInt(1, xp);
                     p2.setString(2, uuid.toString());
                     p2.execute();
                 }
@@ -328,7 +328,16 @@ import java.util.UUID;
         return -1;
     }
 
-    @Override
+        @Override
+        public boolean isLinked() {
+            int count = 0;
+            if (uuid != null) count++;
+            if (DiscordUser != null) count++;
+            if (count == 2) return true;
+            return false;
+        }
+
+        @Override
     public UUID getMinecraftUUID() {
         if (this.uuid == null) return null;
         return this.uuid;

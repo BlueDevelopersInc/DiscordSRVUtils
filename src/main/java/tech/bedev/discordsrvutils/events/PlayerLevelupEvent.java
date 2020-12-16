@@ -20,6 +20,9 @@ public final class PlayerLevelupEvent extends Event implements Cancellable {
     public @NotNull HandlerList getHandlers() {
         return handlers;
     }
+    public static @NotNull HandlerList getHandlerList() {
+        return handlers;
+    }
 
     @Override
     public boolean isCancelled() {
