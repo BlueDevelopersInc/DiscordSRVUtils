@@ -129,12 +129,12 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             }
         } else if (identifier.equalsIgnoreCase("level")) {
             if (p != null) {
-                Person person = plugin.getPersonByUUID(p.getUniqueId());
+                Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
                 return person.getLevel() + "";
             } else return "Unknown player";
         }else if (identifier.equalsIgnoreCase("xp")) {
             if (p != null) {
-                Person person = plugin.getPersonByUUID(p.getUniqueId());
+                Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
                 return person.getXP() + "";
             } else return "Unknown player";
         }

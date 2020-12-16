@@ -61,7 +61,7 @@ public class BukkitEventListener implements Listener {
     public void onChat(AsyncPlayerChatEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
             if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
-                Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+                Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
                 person.insertLeveling();
                 person.addXP(RANDOM.nextInt(25));
                 if (person.getXP() >= 300) {

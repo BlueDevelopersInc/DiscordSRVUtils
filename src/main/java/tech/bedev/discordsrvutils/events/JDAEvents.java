@@ -3,6 +3,7 @@ package tech.bedev.discordsrvutils.events;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
@@ -495,8 +496,22 @@ public class JDAEvents extends ListenerAdapter {
                         embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                         e.getChannel().sendMessage(embed.build()).queue();
                     }
+                } else {
+                    Member mm = e.getMessage().getMentionedMembers().get(0);
+                    Person p = core.getPersonByDiscordID(mm.getIdLong());
+                    if (p.isLinked()) {
+                        EmbedBuilder embed = new EmbedBuilder();
+                        embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                        embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                        embed.setColor(Color.CYAN);
+                        embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                        e.getChannel().sendMessage(embed.build()).queue();
+                    } else {
+                        e.getChannel().sendMessage("This user is not linked.").queue();
+                    }
                 }
             }
+            return;
         }
         try (Connection conn = core.getMemoryConnection()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {

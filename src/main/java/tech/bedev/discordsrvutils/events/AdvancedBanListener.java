@@ -26,6 +26,7 @@ public class AdvancedBanListener implements Listener {
 
     @EventHandler
     public void onPlayerPunished(PunishmentEvent event) {
+        String channel = DiscordSRVUtils.BotSettingsconfig.chat_channel();
         Bukkit.getScheduler().runTask(core, () -> {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(event.getPunishment().getName()).getUniqueId());
 
@@ -41,7 +42,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_ban_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -66,7 +67,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_mute_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_mute_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_mute_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -93,7 +94,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_temp_mute_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_mute_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_mute_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -111,7 +112,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_temp_ban_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -130,7 +131,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_ip_ban_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ip_ban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_ip_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -148,7 +149,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_temp_ip_ban_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ip_ban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_temp_ip_ban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                                 .replace("[Reason]", event.getPunishment().getReason())
@@ -167,6 +168,7 @@ public class AdvancedBanListener implements Listener {
 
     @EventHandler
     public void onPlayerUnpunish(RevokePunishmentEvent event) {
+        String channel = DiscordSRVUtils.BotSettingsconfig.chat_channel();
         Bukkit.getScheduler().runTask(core, () -> {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(event.getPunishment().getName()).getUniqueId());
             PunishmentType type = event.getPunishment().getType();
@@ -180,7 +182,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_unban_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                         ).queue();
@@ -203,7 +205,7 @@ public class AdvancedBanListener implements Listener {
                             }
                         }
                         if (core.getConfig().getBoolean("advancedban_untempban_to_discord")) {
-                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempban_message"))
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempban_message"))
                                     .replace("[Player]", event.getPunishment().getName())
                                     .replace("[Operator]", event.getPunishment().getOperator())
                                     .replace("[Reason]", event.getPunishment().getReason())
@@ -222,7 +224,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_unipban_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unipban_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unipban_message"))
                                 .replace("[Player]", event.getPunishment().getName())
                                 .replace("[Operator]", event.getPunishment().getOperator())
                         ).queue();
@@ -248,7 +250,7 @@ public class AdvancedBanListener implements Listener {
                         }
 
                         if (core.getConfig().getBoolean("advancedban_untempipban_to_discord")) {
-                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempipban_message"))
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempipban_message"))
                                     .replace("[Player]", event.getPunishment().getName())
 
                                     .replace("[Operator]", event.getPunishment().getOperator())
@@ -270,7 +272,7 @@ public class AdvancedBanListener implements Listener {
                         }
                     }
                     if (core.getConfig().getBoolean("advancedban_unmute_message_to_discord")) {
-                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unmute_message"))
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_unmute_message"))
                                 .replace("[Player]", event.getPunishment().getName())
 
                                 .replace("[Operator]", event.getPunishment().getOperator())
@@ -303,7 +305,7 @@ public class AdvancedBanListener implements Listener {
                             }
                         }
                         if (core.getConfig().getBoolean("advancedban_untempmute_message_to_discord")) {
-                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(core.getConfig().getString("chat_channel")).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempmute_message"))
+                            DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", core.getConfig().getStringList("advancedban_untempmute_message"))
                                     .replace("[Player]", event.getPunishment().getName())
 
                                     .replace("[Operator]", event.getPunishment().getOperator())

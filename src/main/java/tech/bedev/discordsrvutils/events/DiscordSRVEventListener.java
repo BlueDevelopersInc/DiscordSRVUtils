@@ -11,6 +11,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import me.leoko.advancedban.shaded.org.apache.commons.lang3.ObjectUtils;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.StatusUpdater;
 
@@ -79,13 +80,13 @@ public class DiscordSRVEventListener {
     public void  onLink(AccountLinkedEvent e) {
         try (Connection conn = core.getDatabaseFile()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
-            p1.setString(1, e.getPlayer().getUniqueId().toString());
+            p1.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
             p1.execute();
             ResultSet r1 = p1.executeQuery();
             if (r1.next()) {
                 PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=? WHERE unique_id=?");
                 p2.setLong(1, e.getUser().getIdLong());
-                p2.setString(2, e.getPlayer().getUniqueId().toString());
+                p2.setString(2, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
                 p2.execute();
             }
         } catch (SQLException ex) {
@@ -97,12 +98,12 @@ public class DiscordSRVEventListener {
     public void onUnlink(AccountUnlinkedEvent e) {
         try (Connection conn = core.getDatabaseFile()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
-            p1.setString(1, e.getPlayer().getUniqueId().toString());
+            p1.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
             p1.execute();
             ResultSet r1 = p1.executeQuery();
             if (r1.next()) {
                 PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=NULL WHERE unique_id=?");
-                p2.setString(1, e.getPlayer().getUniqueId().toString());
+                p2.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
                 p2.execute();
             }
         } catch (SQLException ex) {
