@@ -55,17 +55,6 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(this.getDataFolder().toString());
-        Path dataFolder = getDataFolder().toPath();
-        Path source = dataFolder.resolve("Database.script");
-            Path destination = Paths.get(this.getDataFolder().toString() + "/Database/");
-            try {
-                Files.createDirectories(getDataFolder().toPath().resolve("Database"));
-                Files.copy(source, destination);
-            } catch (IOException e) {
-                e.printStackTrace();
-        }
-
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -224,7 +213,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public Connection getDatabaseFile() throws SQLException {
         if (!SQLconfig.isEnabled()) {
-            return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false;hsqldb.reconfig_logging=false", "SA", "");
+            return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false", "SA", "");
         }
         Connection conn = null;
         Properties connectionProps = new Properties();

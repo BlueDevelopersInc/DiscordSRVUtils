@@ -356,7 +356,6 @@ import java.util.UUID;
 
         @Override
         public void insertLeveling() {
-            if (!isLinked()) {
                 try (Connection conn = core.getDatabaseFile()) {
                     if (uuid != null) {
                         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -381,5 +380,5 @@ import java.util.UUID;
                     ex.printStackTrace();
                 }
             }
-        }
+
     }

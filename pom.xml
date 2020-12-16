@@ -6,7 +6,7 @@
 
     <groupId>me.bluetree.discordsrvutils</groupId>
     <artifactId>DiscordSRVUtils</artifactId>
-    <version>1.0-SNAPSHOT 11</version>
+    <version>1.0.0 BETA 1</version>
     <build>
     <!-- To define the plugin version in your parent POM -->
     <plugins>

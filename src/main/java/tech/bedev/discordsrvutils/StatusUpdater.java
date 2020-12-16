@@ -16,13 +16,13 @@ public class StatusUpdater extends TimerTask {
 
     @Override
     public void run() {
-        if (core.getConfig().getBoolean("update_status")) {
+        if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
             try (Connection conn = core.getMemoryConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM status");
                 p1.execute();
                 ResultSet r1 = p1.executeQuery();
                 if (r1.next()) {
-                    String current = core.getConfig().getStringList("status_updates").get(r1.getInt("Status"));
+                    String current = DiscordSRVUtils.BotSettingsconfig.Statuses().get(r1.getInt("Status"));
 
                     if (current.startsWith("Playing ")) {
                         core.getJda().getPresence().setActivity(Activity.playing(current.replaceFirst("Playing ", "")));
@@ -33,7 +33,7 @@ public class StatusUpdater extends TimerTask {
                     } else {
                         core.getJda().getPresence().setActivity(Activity.playing(current));
                     }
-                    if (core.getConfig().getStringList("status_updates").size() -1 == r1.getInt("Status")) {
+                    if (DiscordSRVUtils.BotSettingsconfig.Statuses().size() -1 == r1.getInt("Status")) {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=0 WHERE Status=?");
                         p2.setInt(1, r1.getInt("Status"));
                         p2.execute();

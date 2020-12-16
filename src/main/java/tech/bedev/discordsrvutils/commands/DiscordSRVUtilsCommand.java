@@ -97,62 +97,28 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         exception.printStackTrace();
                         return true;
                     }
-                    if (core.getConfig().getLong("welcomer_channel") == 0) {
-                        sender.sendMessage(ChatColor.GOLD + "welcomer_channel is in it's default stat. Please update it.");
-                        warnings = warnings + 1;
-                    }
-                    if (core.getConfig().getStringList("welcomer_message") == null) {
-                        sender.sendMessage(ChatColor.RED + "welcomer_message is not set.");
-                        errors++;
-                    }
-                    if (core.getConfig().getStringList("mc_welcomer_message") == null) {
-                        sender.sendMessage(ChatColor.RED + "mc_welcomer_message is not set");
-                        errors++;
-                    }
-                    if (getJda().getGuildChannelById(core.getConfig().getLong("welcomer_channel")) == null) {
-                        sender.sendMessage(ChatColor.GOLD + "welcomer_channel channel was not found");
-                        warnings = warnings + 1;
-                    }
-
-
-                    if (core.getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                        getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                        getJda().getPresence().setStatus(OnlineStatus.IDLE);
-                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                        getJda().getPresence().setStatus(OnlineStatus.ONLINE);
-
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "bot_status is not ONLINE or IDLE or DND");
-                        errors = errors + 1;
-                    }
-                    if (core.getConfig().getLong("muted_role") == 0) {
-                        sender.sendMessage(ChatColor.GOLD + "muted_role is in it's default stat");
-                        warnings = warnings + 1;
-                    } else if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
-                        sender.sendMessage(ChatColor.RED + "muted_role is not found.");
-                        errors = errors + 1;
-                    }
-                    if (core.getConfig().getInt("bot_status_update_delay") <= 3) {
-                        sender.sendMessage(ChatColor.GOLD + "bot_status_update_delay is less than 4, And discord won't allow the plugin to change the status in delay less than 4");
-                        warnings++;
-                    }
-                    DiscordSRVUtils.timer.cancel();
-                    try (Connection conn = core.getMemoryConnection()) {
-                        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM status");
-                        p1.execute();
-                        ResultSet r1 = p1.executeQuery(); r1.next();
-                        PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=0 WHERE Status=?");
-                        p2.setInt(1, r1.getInt("Status"));
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    }
-                    if (core.getConfig().getBoolean("update_status")) {
+                    if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
                         DiscordSRVUtils.timer = new Timer();
-                            String l = core.getConfig().getInt("bot_status_update_delay") + "000";
+                            String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";
                             DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
 
+                    }
+                    String status = DiscordSRVUtils.BotSettingsconfig.status();
+                    if (status != null) {
+                        switch (status.toUpperCase()) {
+                            case "DND":
+                                getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                                break;
+                            case "IDLE":
+                                getJda().getPresence().setStatus(OnlineStatus.IDLE);
+                                break;
+                            case "ONLINE":
+                                getJda().getPresence().setStatus(OnlineStatus.ONLINE);
+                                break;
+                            default:
+                                sender.sendMessage("Unknown bot status in BotSettings.yml");
+                                errors++;
+                        }
                     }
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bPlugin reloaded with &e" + errors + " &berrors and &e" + warnings + "&b warnings."));
                     warnings = 0;

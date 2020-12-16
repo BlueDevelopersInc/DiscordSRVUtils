@@ -36,7 +36,7 @@ public class DiscordSRVEventListener {
     @Subscribe
     public void onReady(DiscordReadyEvent e) {
 
-        String status = core.getConfig().getString("bot_status");
+        String status = DiscordSRVUtils.BotSettingsconfig.status();
         if (status != null) {
             switch (status.toUpperCase()) {
                 case "DND":
@@ -69,8 +69,8 @@ public class DiscordSRVEventListener {
         }
         DiscordSRVUtils.timer.cancel();
         DiscordSRVUtils.timer = new Timer();
-        if (core.getConfig().getBoolean("update_status")) {
-            String l = core.getConfig().getInt("bot_status_update_delay") + "000";
+        if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
+            String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";
             DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
         }
         DiscordSRVUtils.isReady = true;

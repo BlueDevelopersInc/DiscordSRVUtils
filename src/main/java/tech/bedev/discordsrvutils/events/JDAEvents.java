@@ -454,40 +454,12 @@ public class JDAEvents extends ListenerAdapter {
                     e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
                 }
             }
-        } else if (args[0].equalsIgnoreCase(prefix + "serverinfo")) {
-            String players = "";
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                players = players + ", " + p.getName();
-            }
-            if (core.getConfig().getBoolean("anyone_can_use_serverinfo_command")) {
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.setColor(Color.CYAN);
-                embed.setTitle("Server Info");
-                embed.setThumbnail(e.getGuild().getIconUrl());
-                embed.setDescription("**Online players: **" + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getServer().getMaxPlayers() + "\n" +
-                        "**TPS: **" + TPSCounter.getTPS() + "\n" +
-                        "**Server version: ** " + core.getConfig().getString("Version") + "\n" +
-                        "**Online players**: ```" + players.replaceFirst(", ", "") + "```");
-                e.getChannel().sendMessage(embed.build()).queue();
-            }
         } else if (args[0].equalsIgnoreCase(prefix + "level") || args[0].equalsIgnoreCase(prefix + "rank")) {
-            if (!(args.length >= 2)) {
-                Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
-                if (!p.isLinked()) {
-                    e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
-                } else {
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                    embed.setColor(Color.CYAN);
-                    embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
-                    e.getChannel().sendMessage(embed.build()).queue();
-                }
-            } else {
-                if (e.getMessage().getMentionedMembers().isEmpty()) {
-                    Person p = core.getPersonByUUID(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
-                    if (p == null) {
-                        e.getChannel().sendMessage("Player has never joined before.").queue();
+            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                if (!(args.length >= 2)) {
+                    Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
+                    if (!p.isLinked()) {
+                        e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
                     } else {
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
@@ -497,21 +469,35 @@ public class JDAEvents extends ListenerAdapter {
                         e.getChannel().sendMessage(embed.build()).queue();
                     }
                 } else {
-                    Member mm = e.getMessage().getMentionedMembers().get(0);
-                    Person p = core.getPersonByDiscordID(mm.getIdLong());
-                    if (p.isLinked()) {
-                        EmbedBuilder embed = new EmbedBuilder();
-                        embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                        embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                        embed.setColor(Color.CYAN);
-                        embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
-                        e.getChannel().sendMessage(embed.build()).queue();
+                    if (e.getMessage().getMentionedMembers().isEmpty()) {
+                        Person p = core.getPersonByUUID(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
+                        if (p == null) {
+                            e.getChannel().sendMessage("Player has never joined before.").queue();
+                        } else {
+                            EmbedBuilder embed = new EmbedBuilder();
+                            embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                            embed.setColor(Color.CYAN);
+                            embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                            e.getChannel().sendMessage(embed.build()).queue();
+                        }
                     } else {
-                        e.getChannel().sendMessage("This user is not linked.").queue();
+                        Member mm = e.getMessage().getMentionedMembers().get(0);
+                        Person p = core.getPersonByDiscordID(mm.getIdLong());
+                        if (p.isLinked()) {
+                            EmbedBuilder embed = new EmbedBuilder();
+                            embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                            embed.setColor(Color.CYAN);
+                            embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                            e.getChannel().sendMessage(embed.build()).queue();
+                        } else {
+                            e.getChannel().sendMessage("This user is not linked.").queue();
+                        }
                     }
                 }
-            }
-            return;
+                return;
+            } else {}
         }
         try (Connection conn = core.getMemoryConnection()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
