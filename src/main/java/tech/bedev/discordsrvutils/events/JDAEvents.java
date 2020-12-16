@@ -469,6 +469,34 @@ public class JDAEvents extends ListenerAdapter {
                         "**Online players**: ```" + players.replaceFirst(", ", "") + "```");
                 e.getChannel().sendMessage(embed.build()).queue();
             }
+        } else if (args[0].equalsIgnoreCase(prefix + "level") || args[0].equalsIgnoreCase(prefix + "rank")) {
+            if (!(args.length >= 2)) {
+                Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
+                if (!p.isLinked()) {
+                    e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
+                } else {
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                    embed.setColor(Color.CYAN);
+                    embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                    e.getChannel().sendMessage(embed.build()).queue();
+                }
+            } else {
+                if (e.getMessage().getMentionedMembers().isEmpty()) {
+                    Person p = core.getPersonByUUID(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
+                    if (p == null) {
+                        e.getChannel().sendMessage("Player has never joined before.").queue();
+                    } else {
+                        EmbedBuilder embed = new EmbedBuilder();
+                        embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                        embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                        embed.setColor(Color.CYAN);
+                        embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                        e.getChannel().sendMessage(embed.build()).queue();
+                    }
+                }
+            }
         }
         try (Connection conn = core.getMemoryConnection()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
