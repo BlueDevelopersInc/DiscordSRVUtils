@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import tech.bedev.discordsrvutils.Person.Person;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,7 +46,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        if (!DiscordSRV.isReady) return "...";
+        if (!DiscordSRVUtils.isReady) return "...";
         if (identifier.equalsIgnoreCase("tickets_opened")) {
             if (p != null) {
                 try (Connection conn = plugin.getDatabaseFile()) {
@@ -126,6 +127,16 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+        } else if (identifier.equalsIgnoreCase("level")) {
+            if (p != null) {
+                Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
+                return person.getLevel() + "";
+            } else return "Unknown player";
+        }else if (identifier.equalsIgnoreCase("xp")) {
+            if (p != null) {
+                Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
+                return person.getXP() + "";
+            } else return "Unknown player";
         }
         return "Unknown Placeholder.";
     }

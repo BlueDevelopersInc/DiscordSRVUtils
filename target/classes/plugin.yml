@@ -3,7 +3,7 @@ softdepend:
   - DiscordSRV
   - Essentials
   - Advancedban
-version: 1.0 SNAPSHOT 11
+version: 1.0.0 BETA 1
 main: tech.bedev.discordsrvutils.DiscordSRVUtils
 author: Blue_Tree
 api-version: 1.13
@@ -11,6 +11,25 @@ api-version: 1.13
 commands:
   discordsrvutils:
     aliases: [dsrvu, dsu, du, discordu, srvu]
+  setlevel:
+    aliases: [sl, setl]
+    permission: discordsrvutils.setlevel
+  addlevels:
+    aliases: [al, addl]
+    permission: discordsrvutils.addlevels
 
-loadafter:
-  - PlaceholderAPI
+  removelevels:
+    aliases: [rl, removelevels]
+    permission: discordsrvutils.removelevels
+  setxp:
+    aliases: [ sxp, setl ]
+    permission: discordsrvutils.setxp
+  addxp:
+    aliases: [ axp, addxp]
+    permission: discordsrvutils.addxp
+  removexp:
+    aliases: [rxp, removexp]
+    permission: discordsrvutils.removexp
+
+
+

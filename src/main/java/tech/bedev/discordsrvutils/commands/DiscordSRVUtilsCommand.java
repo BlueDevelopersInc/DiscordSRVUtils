@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -20,6 +21,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.PluginConfiguration;
 import tech.bedev.discordsrvutils.StatusUpdater;
@@ -72,6 +74,12 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Reloading...");
                     YamlConfiguration config = new YamlConfiguration();
                     try {
+                        core.SQLConfigManager.reloadConfig();
+                        DiscordSRVUtils.SQLconfig = core.SQLConfigManager.reloadConfigData();
+                        core.LevelingConfigManager.reloadConfig();
+                        DiscordSRVUtils.Levelingconfig = core.LevelingConfigManager.reloadConfigData();
+                        core.BotSettingsConfigManager.reloadConfig();
+                        DiscordSRVUtils.BotSettingsconfig = core.BotSettingsConfigManager.reloadConfigData();
                         core.saveDefaultConfig();
                         this.configFile = new File(core.getDataFolder(), "config.yml");
                         newConfig = PluginConfiguration.loadConfiguration(configFile);
@@ -84,67 +92,33 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
 
                         newConfig.setDefaults(PluginConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
                         core.reloadConfig();
-                    } catch (IOException | InvalidConfigurationException exception) {
+                    } catch (IOException | InvalidConfigurationException |InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;
                     }
-                    if (core.getConfig().getLong("welcomer_channel") == 0) {
-                        sender.sendMessage(ChatColor.GOLD + "welcomer_channel is in it's default stat. Please update it.");
-                        warnings = warnings + 1;
-                    }
-                    if (core.getConfig().getStringList("welcomer_message") == null) {
-                        sender.sendMessage(ChatColor.RED + "welcomer_message is not set.");
-                        errors++;
-                    }
-                    if (core.getConfig().getStringList("mc_welcomer_message") == null) {
-                        sender.sendMessage(ChatColor.RED + "mc_welcomer_message is not set");
-                        errors++;
-                    }
-                    if (getJda().getGuildChannelById(core.getConfig().getLong("welcomer_channel")) == null) {
-                        sender.sendMessage(ChatColor.GOLD + "welcomer_channel channel was not found");
-                        warnings = warnings + 1;
-                    }
-
-
-                    if (core.getConfig().getString("bot_status").equalsIgnoreCase("DND")) {
-                        getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("IDLE")) {
-                        getJda().getPresence().setStatus(OnlineStatus.IDLE);
-                    } else if (core.getConfig().getString("bot_status").equalsIgnoreCase("ONLINE")) {
-                        getJda().getPresence().setStatus(OnlineStatus.ONLINE);
-
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "bot_status is not ONLINE or IDLE or DND");
-                        errors = errors + 1;
-                    }
-                    if (core.getConfig().getLong("muted_role") == 0) {
-                        sender.sendMessage(ChatColor.GOLD + "muted_role is in it's default stat");
-                        warnings = warnings + 1;
-                    } else if (DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role")) == null) {
-                        sender.sendMessage(ChatColor.RED + "muted_role is not found.");
-                        errors = errors + 1;
-                    }
-                    if (core.getConfig().getInt("bot_status_update_delay") <= 3) {
-                        sender.sendMessage(ChatColor.GOLD + "bot_status_update_delay is less than 4, And discord won't allow the plugin to change the status in delay less than 4");
-                        warnings++;
-                    }
-                    DiscordSRVUtils.timer.cancel();
-                    try (Connection conn = core.getMemoryConnection()) {
-                        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM status");
-                        p1.execute();
-                        ResultSet r1 = p1.executeQuery(); r1.next();
-                        PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=0 WHERE Status=?");
-                        p2.setInt(1, r1.getInt("Status"));
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    }
-                    if (core.getConfig().getBoolean("update_status")) {
+                    if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
                         DiscordSRVUtils.timer = new Timer();
-                            String l = core.getConfig().getInt("bot_status_update_delay") + "000";
+                            String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";
                             DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
 
+                    }
+                    String status = DiscordSRVUtils.BotSettingsconfig.status();
+                    if (status != null) {
+                        switch (status.toUpperCase()) {
+                            case "DND":
+                                getJda().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                                break;
+                            case "IDLE":
+                                getJda().getPresence().setStatus(OnlineStatus.IDLE);
+                                break;
+                            case "ONLINE":
+                                getJda().getPresence().setStatus(OnlineStatus.ONLINE);
+                                break;
+                            default:
+                                sender.sendMessage("Unknown bot status in BotSettings.yml");
+                                errors++;
+                        }
                     }
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bPlugin reloaded with &e" + errors + " &berrors and &e" + warnings + "&b warnings."));
                     warnings = 0;
@@ -156,19 +130,18 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("updatecheck")) {
                 if (sender.hasPermission("discordsrvutils.updatecheck")) {
                     sender.sendMessage(ChatColor.GREEN + "Checking for updates...");
-                    new UpdateChecker(core).getVersion(version -> {
-                        if (core.getDescription().getVersion().equalsIgnoreCase(version.replace("_", " "))) {
-                            core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + version.replace("_", " ") + ")");
-                            sender.sendMessage(ChatColor.YELLOW + "No new version available.");
-                        } else {
-                            core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + core.getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + version.replace("_", " "));
 
-                            TextComponent msg = new TextComponent(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&aA newer version of DiscordSRVUtils is available.\n&9Your version: &5" + core.getDescription().getVersion() + "\n&9Newer version: &5" + version + "\n&6Click to download."));
-                            msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/discordsrvutils.85958/updates"));
-                            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download").create()));
-                            sender.spigot().sendMessage(msg);
-                        }
-                    });
+                    String newVersion = UpdateChecker.getLatestVersion();
+                    if (newVersion.equalsIgnoreCase(core.getDescription().getVersion())) {
+                        core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+                        sender.sendMessage(ChatColor.YELLOW + "No new version available.");
+                    } else {
+                        core.getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + core.getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + newVersion);
+                        TextComponent msg = new TextComponent(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&aA newer version of DiscordSRVUtils is available.\n&9Your version: &5" + core.getDescription().getVersion() + "\n&9Newer version: &5" + newVersion + "\n&6Click to download."));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/discordsrvutils.85958/updates"));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download").create()));
+                        sender.spigot().sendMessage(msg);
+                    }
 
                 } else {
                     sender.sendMessage(ChatColor.RED + "You don't have perms to use this command");

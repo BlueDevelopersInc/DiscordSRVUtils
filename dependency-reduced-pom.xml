@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.bluetree.discordsrvutils</groupId>
   <artifactId>DiscordSRVUtils</artifactId>
-  <version>1.0-SNAPSHOT 11</version>
+  <version>1.0.0 BETA 1</version>
   <build>
     <plugins>
       <plugin>
@@ -29,11 +29,23 @@
           <relocations>
             <relocation>
               <pattern>org.hsqldb</pattern>
-              <shadedPattern>com.bluetree.discordsrvutils.shaded.org.hsqldb</shadedPattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.hsqldb</shadedPattern>
             </relocation>
             <relocation>
               <pattern>org.bstats</pattern>
-              <shadedPattern>com.bluetree.discordsrvutils.shaded.bstats</shadedPattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.bstats</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.yaml</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.snakeyaml</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>space.arim.dazzleconf</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.dazzleconfig</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.mariadb.jdbc</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.mariadb</shadedPattern>
             </relocation>
           </relocations>
           <transformers>
