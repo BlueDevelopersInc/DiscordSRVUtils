@@ -17,6 +17,7 @@ Put these into your pom.xml
 		</repository>
 
 	</repositories>```
+dependecy
   
   ```	<dependency>
 
