@@ -5,8 +5,8 @@ Download: https://www.spigotmc.org/resources/discordsrvutils.85958/
 
 # API
 Put these into your pom.xml
-
-```	<repositories>
+```
+	<repositories>
 		<repository>
 		    <id>jitpack.io</id>
 		    <url>https://jitpack.io</url>
@@ -19,7 +19,8 @@ Put these into your pom.xml
             <artifactId>DiscordSRVUtils</artifactId>
             <version>1.0.0</version>
 	    ...
-      </dependency>```
+      </dependency>
+```
       
 You also need to add DiscordSRV's dependecy and repository, which is found
 
