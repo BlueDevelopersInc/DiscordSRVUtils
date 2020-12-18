@@ -203,7 +203,9 @@ public class JDAEvents extends ListenerAdapter {
         String[] args = e.getMessage().getContentRaw().split("\\s+");
         String prefix = DiscordSRVUtils.BotSettingsconfig.BotPrefix();
         if (args[0].equalsIgnoreCase( prefix + "createticket")) {
-            if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+
+                if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 try (Connection conn = core.getMemoryConnection()) {
                     try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
                         p1.setLong(1, e.getMember().getIdLong());
@@ -232,8 +234,10 @@ public class JDAEvents extends ListenerAdapter {
             } else {
                 e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
             }
+        }
         } else if (args[0].equalsIgnoreCase(prefix + "ticketlookup")) {
-            if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 if (!(args.length >= 2)) {
                     e.getChannel().sendMessage("**Usage:** " + prefix + "ticketlookup <ticket name>").queue();
 
@@ -271,12 +275,13 @@ public class JDAEvents extends ListenerAdapter {
                         exception.printStackTrace();
                     }
                 }
-            }
-            else {
+            } else {
                 e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
             }
+        }
         } else if (args[0].equalsIgnoreCase(prefix + "close")) {
-            try {
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                try {
                 Connection conn = core.getDatabaseFile();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
                 p1.setLong(1, e.getChannel().getIdLong());
@@ -286,11 +291,14 @@ public class JDAEvents extends ListenerAdapter {
 
                     PreparedStatement closed = conn.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE MessageID=?");
                     closed.setLong(1, e.getMessageIdLong());
-                    closed.execute(); ResultSet closed2 = closed.executeQuery(); closed2.next();
+                    closed.execute();
+                    ResultSet closed2 = closed.executeQuery();
+                    closed2.next();
                     PreparedStatement tickets = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
                     tickets.setLong(1, r1.getInt("TicketID"));
                     tickets.execute();
-                    ResultSet ticketss = tickets.executeQuery(); ticketss.next();
+                    ResultSet ticketss = tickets.executeQuery();
+                    ticketss.next();
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setTitle("Ticket Closed");
                     embed.setColor(Color.YELLOW);
@@ -322,21 +330,23 @@ public class JDAEvents extends ListenerAdapter {
                     PreparedStatement pp = conn.prepareStatement("SELECt * FROM discordsrvutils_tickets WHERE TicketID=?");
                     pp.setInt(1, r1.getInt("TicketID"));
                     pp.execute();
-                    ResultSet rr = pp.executeQuery(); rr.next();
+                    ResultSet rr = pp.executeQuery();
+                    rr.next();
                     System.out.println(rr.getLong("Closed_Category"));
                     System.out.println(ticketss.getLong("Closed_Category"));
                     e.getChannel().getManager().setParent(e.getGuild().getCategoryById(ticketss.getLong("Closed_Category"))).queue();
                     e.getChannel().getManager().setName(e.getChannel().getName().replace("opened", "closed")).queue();
 
 
-
                 } else e.getChannel().sendMessage("You are not on an opened ticket").queue();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
+        }
 
         } else if (args[0].equalsIgnoreCase(prefix + "editticket")) {
-            if (!(args.length >= 2)) {
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                if (!(args.length >= 2)) {
                 e.getChannel().sendMessage("**Usage:** " + prefix + "editticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
@@ -397,16 +407,21 @@ public class JDAEvents extends ListenerAdapter {
                 }
             }
         }
+        }
         else if (args[0].equalsIgnoreCase(prefix + "help")) {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
-            embed.setDescription("Use `" + prefix + "<Command>` to execute a command.");
-            embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
-            embed.setColor(Color.GREEN);
-            e.getChannel().sendMessage(embed.build()).queue();
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
+                embed.setDescription("Use `" + prefix + "<Command>` to execute a command.");
+                embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
+                embed.setColor(Color.GREEN);
+                e.getChannel().sendMessage(embed.build()).queue();
+            }
         }
         else if (args[0].equalsIgnoreCase(prefix + "deleteticket")) {
-            if (!(args.length >= 2)) {
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+
+                if (!(args.length >= 2)) {
                 e.getChannel().sendMessage("**Usage:** " + prefix + "deleteticketticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
@@ -454,50 +469,54 @@ public class JDAEvents extends ListenerAdapter {
                     e.getChannel().sendMessage("No permission (Required: **MANAGE SERVER**)").queue();
                 }
             }
+        }
         } else if (args[0].equalsIgnoreCase(prefix + "level") || args[0].equalsIgnoreCase(prefix + "rank")) {
-            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
-                if (!(args.length >= 2)) {
-                    Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
-                    if (!p.isLinked()) {
-                        e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                    if (!(args.length >= 2)) {
+                        Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
+                        if (!p.isLinked()) {
+                            e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
+                        } else {
+                            EmbedBuilder embed = new EmbedBuilder();
+                            embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                            embed.setColor(Color.CYAN);
+                            embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                            e.getChannel().sendMessage(embed.build()).queue();
+                        }
                     } else {
-                        EmbedBuilder embed = new EmbedBuilder();
-                        embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                        embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                        embed.setColor(Color.CYAN);
-                        embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
-                        e.getChannel().sendMessage(embed.build()).queue();
+                        if (e.getMessage().getMentionedMembers().isEmpty()) {
+                            Person p = core.getPersonByUUID(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
+                            if (p == null) {
+                                e.getChannel().sendMessage("Player has never joined before.").queue();
+                            } else {
+                                EmbedBuilder embed = new EmbedBuilder();
+                                embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                                embed.setColor(Color.CYAN);
+                                embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                                e.getChannel().sendMessage(embed.build()).queue();
+                            }
+                        } else {
+                            Member mm = e.getMessage().getMentionedMembers().get(0);
+                            Person p = core.getPersonByDiscordID(mm.getIdLong());
+                            if (p.isLinked()) {
+                                EmbedBuilder embed = new EmbedBuilder();
+                                embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                                embed.setColor(Color.CYAN);
+                                embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
+                                e.getChannel().sendMessage(embed.build()).queue();
+                            } else {
+                                e.getChannel().sendMessage("This user is not linked.").queue();
+                            }
+                        }
                     }
+                    return;
                 } else {
-                    if (e.getMessage().getMentionedMembers().isEmpty()) {
-                        Person p = core.getPersonByUUID(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
-                        if (p == null) {
-                            e.getChannel().sendMessage("Player has never joined before.").queue();
-                        } else {
-                            EmbedBuilder embed = new EmbedBuilder();
-                            embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                            embed.setColor(Color.CYAN);
-                            embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
-                            e.getChannel().sendMessage(embed.build()).queue();
-                        }
-                    } else {
-                        Member mm = e.getMessage().getMentionedMembers().get(0);
-                        Person p = core.getPersonByDiscordID(mm.getIdLong());
-                        if (p.isLinked()) {
-                            EmbedBuilder embed = new EmbedBuilder();
-                            embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                            embed.setColor(Color.CYAN);
-                            embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
-                            e.getChannel().sendMessage(embed.build()).queue();
-                        } else {
-                            e.getChannel().sendMessage("This user is not linked.").queue();
-                        }
-                    }
                 }
-                return;
-            } else {}
+            }
         }
         try (Connection conn = core.getMemoryConnection()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
@@ -562,7 +581,7 @@ public class JDAEvents extends ListenerAdapter {
                                     p2.execute();
                                     EmbedBuilder embed = new EmbedBuilder();
                                     embed.setTitle("Create new ticket");
-                                    embed.setDescription("**Step 4:** Please mention the roles that will be allowed to view all tickets.\n\n To cancel this process, reply with `cancel`");
+                                    embed.setDescription("**Step 4:** Please mention the roles that will be allowed to view all tickets.\n\n To cancel this process, reply with `cancel`\n\nReply with `none` for no roles.");
                                     embed.setColor(Color.RED);
                                     e.getChannel().sendMessage(embed.build()).queue(message -> {
                                     });
@@ -602,7 +621,20 @@ public class JDAEvents extends ListenerAdapter {
                                 embed.setDescription("**Step 5:** Please mention the channel which we should send the ticket creation message.\n\n To cancel this process, reply with `cancel`");
                                 e.getChannel().sendMessage(embed.build()).queue();
                             } else {
-                                e.getChannel().sendMessage("No roles mentioned. Please try again").queue();
+                                if (!e.getMessage().getContentRaw().equalsIgnoreCase("none")) {
+                                    e.getChannel().sendMessage("No roles mentioned. Please try again").queue();
+                                } else {
+                                    PreparedStatement p2 = conn.prepareStatement("UPDATE tickets_creating SET step=4 WHERE channel_id=? AND UserID=?");
+                                    p2.setLong(1, e.getChannel().getIdLong());
+                                    p2.setLong(2, e.getMember().getIdLong());
+                                    p2.execute();
+                                    EmbedBuilder embed = new EmbedBuilder();
+                                    embed.setColor(Color.RED);
+                                    embed.setTitle("Create new ticket");
+                                    embed.setDescription("**Step 5:** Please mention the channel which we should send the ticket creation message.\n\n To cancel this process, reply with `cancel`");
+                                    e.getChannel().sendMessage(embed.build()).queue();
+
+                                }
                             }
                         } else if (r1.getInt("step") == 4) {
                             if (e.getMessage().getMentionedChannels().isEmpty()) {
@@ -734,7 +766,19 @@ public class JDAEvents extends ListenerAdapter {
 
                                 } else if (r2.getInt("Type") == 4) {
                                     if (e.getMessage().getMentionedRoles().isEmpty()) {
-                                        e.getChannel().sendMessage("No roles were mentioned. Please try again").queue();
+                                        if (e.getMessage().getContentRaw().equalsIgnoreCase("none")) {
+                                            Connection fconn = core.getDatabaseFile();
+                                            PreparedStatement p3 = fconn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
+                                            p3.setInt(1, r2.getInt("TicketID"));
+                                            p3.execute();
+                                            PreparedStatement p5 = conn.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
+                                            p5.setLong(1, e.getChannel().getIdLong());
+                                            p5.setLong(2, e.getMember().getIdLong());
+                                            p5.execute();
+                                            e.getChannel().sendMessage("Changed ticket view allowed roles.").queue();
+                                        } else {
+                                            e.getChannel().sendMessage("No roles mentioned. Please try again").queue();
+                                        }
                                     } else {
                                         Connection fconn = core.getDatabaseFile();
                                         PreparedStatement p3 = fconn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
@@ -806,8 +850,10 @@ public class JDAEvents extends ListenerAdapter {
                                 }
                             }
                         }
-                        if (e.getMessage().getMentionedMembers().contains(e.getGuild().getSelfMember())) {
-                            e.getChannel().sendMessage("**My prefix is** `" + prefix + "`").queue();
+                        if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                            if (e.getMessage().getMentionedMembers().contains(e.getGuild().getSelfMember())) {
+                                e.getChannel().sendMessage("**My prefix is** `" + prefix + "`").queue();
+                            }
                         }
                     }
                 }
@@ -818,18 +864,20 @@ public class JDAEvents extends ListenerAdapter {
 
         }
         Bukkit.getScheduler().runTask(core, () -> {
-            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
-                Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
-                if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
-                    person.insertLeveling();
-                    person.addXP(BukkitEventListener.RANDOM.nextInt(25));
-                    if (person.getXP() >= 300) {
-                        person.clearXP();
-                        DiscordLevelupEvent ev = new DiscordLevelupEvent(e, person);
-                        Bukkit.getPluginManager().callEvent(ev);
-                        if (!ev.isCancelled()) {
-                            person.addLevels(1);
-                            e.getChannel().sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
+            if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                    Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
+                    if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
+                        person.insertLeveling();
+                        person.addXP(BukkitEventListener.RANDOM.nextInt(25));
+                        if (person.getXP() >= 300) {
+                            person.clearXP();
+                            DiscordLevelupEvent ev = new DiscordLevelupEvent(e, person);
+                            Bukkit.getPluginManager().callEvent(ev);
+                            if (!ev.isCancelled()) {
+                                person.addLevels(1);
+                                e.getChannel().sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
+                            }
                         }
                     }
                 }
@@ -838,6 +886,7 @@ public class JDAEvents extends ListenerAdapter {
     }
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e) {
+        if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
         if (e.getMember().getUser().isBot()) return;
         try (Connection conn = core.getDatabaseFile()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?")) {
@@ -866,9 +915,18 @@ public class JDAEvents extends ListenerAdapter {
                                     p2.setInt(1, r2.getInt("TicketID"));
                                     p2.execute();
                                     ResultSet r3 = p2.executeQuery();
-                                    while (r3.next()) {
+                                    if (!channel.getPermissionOverrides().contains(channel.getPermissionOverride(e.getGuild().getPublicRole()))) {
                                         channel.createPermissionOverride(e.getGuild().getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-                                        channel.createPermissionOverride(e.getGuild().getRoleById(r3.getLong("RoleID"))).grant(Permission.VIEW_CHANNEL).queue();
+                                    } else {
+                                        channel.getPermissionOverride(e.getGuild().getPublicRole()).getManager().setDeny(Permission.VIEW_CHANNEL).queue();
+
+                                    }
+                                    while (r3.next()) {
+                                        if (!channel.getPermissionOverrides().contains(channel.getPermissionOverride(e.getGuild().getRoleById(r3.getLong("RoleID"))))) {
+                                            channel.createPermissionOverride(e.getGuild().getRoleById(r3.getLong("RoleID"))).grant(Permission.VIEW_CHANNEL).queue();
+                                        } else {
+                                            channel.getPermissionOverride(e.getGuild().getRoleById(r3.getLong("RoleID"))).getManager().setAllow(Permission.VIEW_CHANNEL).queue();
+                                        }
                                     }
                                 } catch (SQLException exception) {
                                     exception.printStackTrace();

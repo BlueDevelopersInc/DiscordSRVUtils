@@ -60,21 +60,20 @@ public class BukkitEventListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
-            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
-                Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
-                person.insertLeveling();
-                person.addXP(RANDOM.nextInt(25));
-                if (person.getXP() >= 300) {
-                    person.clearXP();
-                    PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
-                    Bukkit.getPluginManager().callEvent(ev);
-                    if (!ev.isCancelled()) {
-                        person.addLevels(1);
-                        e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_minecraft()))).replace("[Level]", person.getLevel() + ""));
+                    Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
+                    person.insertLeveling();
+                    person.addXP(RANDOM.nextInt(25));
+                    if (person.getXP() >= 300) {
+                        person.clearXP();
+                        PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
+                        Bukkit.getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            person.addLevels(1);
+                            e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_minecraft()))).replace("[Level]", person.getLevel() + ""));
+                        }
                     }
-                }
-            }
         });
+
     }
 
 

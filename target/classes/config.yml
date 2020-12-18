@@ -32,7 +32,7 @@ welcomer_message:
 mc_welcomer_message: "&b[User_Name] &aJoined the Discord server"
 
 #Should we send the message above to all players when a new member joins the discord server?
-#Set to true if you want the message to be send, false if you don't
+#Set to true if you want the message to be send, false if you dont
 join_message_to_online_players: true
 
 

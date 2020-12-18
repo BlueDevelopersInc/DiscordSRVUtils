@@ -29,6 +29,7 @@ import java.util.UUID;
     }
     @Override
     public void setLevel(int level) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -63,6 +64,7 @@ import java.util.UUID;
 
     @Override
     public void addLevels(int levels) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -97,6 +99,7 @@ import java.util.UUID;
 
     @Override
     public void removeLevels(int levels) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -132,6 +135,7 @@ import java.util.UUID;
 
     @Override
     public void clearLevels() {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -163,6 +167,7 @@ import java.util.UUID;
 
     @Override
     public void setXP(int xp) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -198,6 +203,7 @@ import java.util.UUID;
 
     @Override
     public void addXP(int xp) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -233,6 +239,7 @@ import java.util.UUID;
 
     @Override
     public void removeXP(int xp) {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -268,6 +275,7 @@ import java.util.UUID;
 
     @Override
     public void clearXP() {
+        insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             if (uuid != null) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -299,6 +307,7 @@ import java.util.UUID;
 
     @Override
     public int getLevel() {
+        insertLeveling();
         if (uuid != null) {
             try (Connection conn = core.getDatabaseFile()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
@@ -317,6 +326,7 @@ import java.util.UUID;
 
     @Override
     public int getXP() {
+        insertLeveling();
         if (uuid != null) {
             try (Connection conn = core.getDatabaseFile()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");

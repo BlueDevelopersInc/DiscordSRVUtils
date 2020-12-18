@@ -1,5 +1,6 @@
 package tech.bedev.discordsrvutils.Configs;
 
+import jdk.jfr.BooleanFlag;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
@@ -38,4 +39,9 @@ public interface BotSettingsConfig{
     @ConfComments("Status for your bot, DND or ONLINE or IDLE")
     @AnnotationBasedSorter.Order(60)
     String status();
+
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("If you use bungee, enable this in all your servers except lobby (Should use mySQL)")
+    @Order(70)
+    boolean isBungee();
 }

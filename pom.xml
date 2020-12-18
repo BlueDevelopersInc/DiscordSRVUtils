@@ -6,7 +6,7 @@
 
     <groupId>me.bluetree.discordsrvutils</groupId>
     <artifactId>DiscordSRVUtils</artifactId>
-    <version>1.0.0 BETA 1</version>
+    <version>1.0.0</version>
     <build>
     <!-- To define the plugin version in your parent POM -->
     <plugins>
@@ -130,6 +130,7 @@
         </dependency>
     </dependencies>
     <repositories>
+
         <repository>
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>

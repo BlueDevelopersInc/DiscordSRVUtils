@@ -2,6 +2,7 @@ package tech.bedev.discordsrvutils.Configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
