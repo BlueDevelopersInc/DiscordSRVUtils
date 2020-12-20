@@ -46,6 +46,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
+        
         if (!DiscordSRVUtils.isReady) return "...";
         if (identifier.equalsIgnoreCase("tickets_opened")) {
             if (p != null) {
@@ -74,7 +75,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                 return "Invalid ticket id.";
             }
                 try (Connection conn = plugin.getDatabaseFile()) {
-                        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_opened_tickets WHERE TicketID=?");
+                        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE TicketID=?");
                         p1.setLong(1, Long.parseLong(ticketid));
                         p1.execute();
                         ResultSet r1 = p1.executeQuery();
@@ -114,7 +115,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                 return "Invalid ticket id.";
             }
             try (Connection conn = plugin.getDatabaseFile()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Closed_tickets WHERE TicketID=?");
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE TicketID=?");
                 p1.setLong(1, Long.parseLong(ticketid));
                 p1.execute();
                 ResultSet r1 = p1.executeQuery();
@@ -137,6 +138,12 @@ public class PlaceholderAPI extends PlaceholderExpansion {
                 Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
                 return person.getXP() + "";
             } else return "Unknown player";
+        } else if (identifier.equalsIgnoreCase("rank")) {
+            if (p != null) {
+                Person person = plugin.getPersonByUUID(Bukkit.getOfflinePlayer(p.getName()).getUniqueId());
+                return person.getRank() + "";
+
+            }
         }
         return "Unknown Placeholder.";
     }

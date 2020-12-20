@@ -1,5 +1,7 @@
 package tech.bedev.discordsrvutils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
@@ -23,9 +25,7 @@ import tech.bedev.discordsrvutils.events.*;
 
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -39,6 +39,13 @@ public class DiscordSRVUtils extends JavaPlugin {
     String jdbcUrl;
     public DiscordSRVEventListener discordListener;
     public JDAEvents JDALISTENER;
+    public HikariDataSource sql;
+    public String username;
+    public String password;
+    public int port;
+    public String host;
+    public boolean SQLEnabled;
+
 
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
@@ -55,6 +62,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -62,6 +70,25 @@ public class DiscordSRVUtils extends JavaPlugin {
             SQLconfig = SQLConfigManager.reloadConfigData();
             BotSettingsConfigManager.reloadConfig();
             BotSettingsconfig = BotSettingsConfigManager.reloadConfigData();
+            if (SQLconfig.isEnabled()) {
+                HikariConfig hikariConf = new HikariConfig();
+                hikariConf.setJdbcUrl("jdbc:" + "mysql" + "://" +
+                        SQLconfig.Host() +
+                        ":" + SQLconfig.Port() + "/" + SQLconfig.DatabaseName());
+                hikariConf.setUsername(SQLconfig.UserName());
+                hikariConf.setPassword(SQLconfig.Password());
+                hikariConf.setMaximumPoolSize(20);
+                sql = new HikariDataSource(hikariConf);
+                port = SQLconfig.Port();
+                username = SQLconfig.UserName();
+                host = SQLconfig.Host();
+                SQLEnabled = true;
+            } else {
+                port = 3306;
+                username = null;
+                host = null;
+                SQLEnabled = false;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidConfigException e) {
@@ -212,23 +239,11 @@ public class DiscordSRVUtils extends JavaPlugin {
         return new DiscordSRVUtils().getDatabaseFile();
     }
     public Connection getDatabaseFile() throws SQLException {
-        if (!SQLconfig.isEnabled()) {
+        if (!SQLEnabled) {
             return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false", "SA", "");
         }
-        Connection conn = null;
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", SQLconfig.UserName());
-        connectionProps.put("password", SQLconfig.Password());
-        connectionProps.put("useSSL", "false");
 
-        if (true) {
-            conn = DriverManager.getConnection(
-                    "jdbc:" + "mysql" + "://" +
-                            SQLconfig.Host() +
-                            ":" + SQLconfig.Port() + "/" + SQLconfig.DatabaseName(),
-                    connectionProps);
-        }
-        return conn;
+        return sql.getConnection();
     }
     public Connection getMemoryConnection() throws SQLException{
         return DriverManager.getConnection("jdbc:hsqldb:mem:MemoryDatabase", "SA", "");
@@ -239,7 +254,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Person getPersonByUUID(UUID uuid) {
-        if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) return null;
+        if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) {
+            if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
+
+            } else return null;
+        }
         String UserID = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
         if (UserID == null) {
             return new PersonImpl(uuid, null, this);

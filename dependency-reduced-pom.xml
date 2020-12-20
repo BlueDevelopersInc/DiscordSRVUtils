@@ -47,6 +47,10 @@
               <pattern>org.mariadb.jdbc</pattern>
               <shadedPattern>tech.bedev.discordsrvutils.dependecies.mariadb</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>com.zaxxer</pattern>
+              <shadedPattern>tech.bedev.discordsrvutils.dependecies.hikarikapool</shadedPattern>
+            </relocation>
           </relocations>
           <transformers>
             <transformer />
@@ -59,6 +63,10 @@
     <repository>
       <id>placeholderapi</id>
       <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+    </repository>
+    <repository>
+      <id>ossrh-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
     <repository>
       <id>jitpack</id>

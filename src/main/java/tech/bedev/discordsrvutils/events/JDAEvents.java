@@ -242,13 +242,11 @@ public class JDAEvents extends ListenerAdapter {
                     e.getChannel().sendMessage("**Usage:** " + prefix + "ticketlookup <ticket name>").queue();
 
                 } else {
-                    try {
+                    try (Connection conn = core.getDatabaseFile()){
                         String argss = "";
                         for (int i = 1; i < args.length; i++) {
                             argss = argss + args[i] + " ";
                         }
-
-                        Connection conn = core.getDatabaseFile();
                         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE Name=?");
                         p1.setString(1, argss.replaceAll("\\s+$", ""));
                         p1.execute();
@@ -281,8 +279,8 @@ public class JDAEvents extends ListenerAdapter {
         }
         } else if (args[0].equalsIgnoreCase(prefix + "close")) {
             if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
-                try {
-                Connection conn = core.getDatabaseFile();
+                try (Connection conn = core.getDatabaseFile()){
+
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
                 p1.setLong(1, e.getChannel().getIdLong());
                 p1.execute();
@@ -304,8 +302,8 @@ public class JDAEvents extends ListenerAdapter {
                     embed.setColor(Color.YELLOW);
                     embed.setDescription("Ticket Closed by " + e.getMember().getAsMention() + "");
                     e.getChannel().sendMessage(embed.build()).queue(msg -> {
-                        try {
-                            Connection conn3 = core.getDatabaseFile();
+                        try (Connection conn3 = core.getDatabaseFile()){
+                            ;
                             PreparedStatement prpstmt = conn3.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
                             prpstmt.setLong(1, e.getChannel().getIdLong());
                             prpstmt.execute();
@@ -350,14 +348,14 @@ public class JDAEvents extends ListenerAdapter {
                 e.getChannel().sendMessage("**Usage:** " + prefix + "editticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-                    try {
+                    try (Connection fconn = core.getDatabaseFile()){
                         Connection conn = core.getMemoryConnection();
                         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
                         p1.setLong(1, e.getChannel().getIdLong());
                         p1.setLong(2, e.getMember().getIdLong());
                         p1.execute();
                         ResultSet r1 = p1.executeQuery();
-                        Connection fconn = core.getDatabaseFile();
+
                         PreparedStatement p2 = fconn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
                         p2.setInt(1, Integer.parseInt(args[1]));
                         p2.execute();
@@ -425,8 +423,8 @@ public class JDAEvents extends ListenerAdapter {
                 e.getChannel().sendMessage("**Usage:** " + prefix + "deleteticketticket <Ticket ID>").queue();
             } else {
                 if (e.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-                    try {
-                        Connection conn = core.getDatabaseFile();
+                    try (Connection conn = core.getDatabaseFile()){
+                        ;
                         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE TicketID=?");
                         p1.setInt(1, Integer.parseInt(args[1]));
                         p1.execute();
@@ -479,11 +477,16 @@ public class JDAEvents extends ListenerAdapter {
                             e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
                         } else {
                             EmbedBuilder embed = new EmbedBuilder();
+                            if (DiscordSRVUtils.SQLconfig.isEnabled()) {
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
+                            } else {
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                            }
                             embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
                             embed.setColor(Color.CYAN);
                             embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                             e.getChannel().sendMessage(embed.build()).queue();
+
                         }
                     } else {
                         if (e.getMessage().getMentionedMembers().isEmpty()) {
@@ -492,8 +495,12 @@ public class JDAEvents extends ListenerAdapter {
                                 e.getChannel().sendMessage("Player has never joined before.").queue();
                             } else {
                                 EmbedBuilder embed = new EmbedBuilder();
+                                if (DiscordSRVUtils.SQLconfig.isEnabled()) {
+                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
+                                } else {
+                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+                                }
                                 embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
                                 embed.setColor(Color.CYAN);
                                 embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                                 e.getChannel().sendMessage(embed.build()).queue();
@@ -503,8 +510,13 @@ public class JDAEvents extends ListenerAdapter {
                             Person p = core.getPersonByDiscordID(mm.getIdLong());
                             if (p.isLinked()) {
                                 EmbedBuilder embed = new EmbedBuilder();
+                                if (DiscordSRVUtils.SQLconfig.isEnabled()) {
+                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
+                                } else {
+                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
+
+                                }
                                 embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
-                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
                                 embed.setColor(Color.CYAN);
                                 embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                                 e.getChannel().sendMessage(embed.build()).queue();
@@ -518,7 +530,7 @@ public class JDAEvents extends ListenerAdapter {
                 }
             }
         }
-        try (Connection conn = core.getMemoryConnection()) {
+        try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
                 p1.setLong(1, e.getMember().getIdLong());
                 p1.setLong(2, e.getChannel().getIdLong());
@@ -659,8 +671,8 @@ public class JDAEvents extends ListenerAdapter {
                                     embed.setDescription("React with \uD83D\uDCE9 to create a ticket.");
                                     embed.setColor(Color.CYAN);
 
-                                        try (Connection mconn = core.getMemoryConnection()) {
-                                            Connection fconn = core.getDatabaseFile();
+                                        try (Connection mconn = core.getMemoryConnection();) {
+
                                             PreparedStatement mp1 = mconn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?");
                                             mp1.setLong(1, e.getMember().getIdLong());
                                             mp1.setLong(2, e.getChannel().getIdLong());
@@ -706,7 +718,7 @@ public class JDAEvents extends ListenerAdapter {
 
                             if (r2.getInt("Type") != 0) {
                                 if (r2.getInt("Type") == 1) {
-                                    Connection fconn = core.getDatabaseFile();
+
                                     PreparedStatement p3 = fconn.prepareStatement("UPDATE discordsrvutils_tickets SET Name=? WHERE TicketID=?");
                                     p3.setString(1, e.getMessage().getContentRaw());
                                     p3.setInt(2, r2.getInt("TicketID"));
@@ -727,7 +739,6 @@ public class JDAEvents extends ListenerAdapter {
                                     e.getChannel().sendMessage("Ticket renamed.").queue();
                                 } else if (r2.getInt("Type") == 3) {
                                     try {
-                                        Connection fconn = core.getDatabaseFile();
                                         if (e.getJDA().getCategoryById(Long.parseLong(e.getMessage().getContentRaw())) == null) {
                                             e.getChannel().sendMessage("Category was not found.").queue();
                                         }
@@ -746,7 +757,6 @@ public class JDAEvents extends ListenerAdapter {
                                     }
                                 } else if (r2.getInt("Type") == 2) {
                                     try {
-                                        Connection fconn = core.getDatabaseFile();
                                         if (e.getJDA().getCategoryById(Long.parseLong(e.getMessage().getContentRaw())) == null) {
                                             e.getChannel().sendMessage("Category was not found.").queue();
                                         }
@@ -767,7 +777,6 @@ public class JDAEvents extends ListenerAdapter {
                                 } else if (r2.getInt("Type") == 4) {
                                     if (e.getMessage().getMentionedRoles().isEmpty()) {
                                         if (e.getMessage().getContentRaw().equalsIgnoreCase("none")) {
-                                            Connection fconn = core.getDatabaseFile();
                                             PreparedStatement p3 = fconn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
                                             p3.setInt(1, r2.getInt("TicketID"));
                                             p3.execute();
@@ -780,7 +789,6 @@ public class JDAEvents extends ListenerAdapter {
                                             e.getChannel().sendMessage("No roles mentioned. Please try again").queue();
                                         }
                                     } else {
-                                        Connection fconn = core.getDatabaseFile();
                                         PreparedStatement p3 = fconn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
                                         p3.setInt(1, r2.getInt("TicketID"));
                                         p3.execute();
@@ -801,7 +809,6 @@ public class JDAEvents extends ListenerAdapter {
                                     if (e.getMessage().getMentionedChannels().isEmpty()) {
                                         e.getChannel().sendMessage("No channels mentioned. Please try again").queue();
                                     } else {
-                                        Connection fconn = core.getDatabaseFile();
                                         PreparedStatement p3 = fconn.prepareStatement("SELECT * FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
                                         p3.setInt(1, r2.getInt("TicketID"));
                                         p3.execute();
@@ -820,14 +827,14 @@ public class JDAEvents extends ListenerAdapter {
                                         embed.setDescription("React with \uD83D\uDCE9 to create a ticket.");
                                         embed.setColor(Color.CYAN);
                                         e.getGuild().getTextChannelById(e.getMessage().getMentionedChannels().get(0).getIdLong()).sendMessage(embed.build()).queue(msg -> {
-                                            try{
+                                            try (Connection fconn2 = core.getDatabaseFile()){
                                                 Connection conn3 = core.getMemoryConnection();
                                                 PreparedStatement mp2 = conn3.prepareStatement("SELECT * FROM discordsrvutils_Awaiting_Edits WHERE Channel_id=? AND UserID=?");
                                                 mp2.setLong(1, e.getChannel().getIdLong());
                                                 mp2.setLong(2, e.getMember().getIdLong());
                                                 mp2.execute();
                                                 ResultSet mr2 = mp2.executeQuery(); mr2.next();
-                                                Connection fconn2 = core.getDatabaseFile();
+                                                ;
                                                 PreparedStatement p6 = fconn2.prepareStatement("UPDATE discordsrvutils_tickets SET ChannelID=?, MessageID=? WHERE TicketID=?");
                                                 p6.setLong(1, e.getMessage().getMentionedChannels().get(0).getIdLong());
                                                 p6.setLong(2, msg.getIdLong());
@@ -888,7 +895,7 @@ public class JDAEvents extends ListenerAdapter {
     public void onMessageReactionAdd(MessageReactionAddEvent e) {
         if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
         if (e.getMember().getUser().isBot()) return;
-        try (Connection conn = core.getDatabaseFile()) {
+        try (Connection conn = core.getDatabaseFile(); Connection conn2 = core.getDatabaseFile();) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?")) {
                 p1.setLong(1, e.getMessageIdLong());
                 p1.execute();
@@ -903,10 +910,9 @@ public class JDAEvents extends ListenerAdapter {
                             e.getGuild().getCategoryById(r1.getLong("Opened_Category")).createTextChannel("opened-" + e.getMember().getEffectiveName()).queue(channel -> {
                                 channel.getManager().setTopic("Ticket created by " + e.getMember().getUser().getName()).queue();
                                 channel.createPermissionOverride(e.getMember()).grant(Permission.VIEW_CHANNEL).queue();
-                                try {
-                                    Connection conn2 = core.getDatabaseFile();
-                                    PreparedStatement p2 = conn2.prepareStatement("SELECT * FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
-                                    PreparedStatement p3 = conn2.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
+                                try  (Connection conn3 = core.getDatabaseFile()){
+                                    PreparedStatement p2 = conn3.prepareStatement("SELECT * FROM discordsrvutils_ticket_allowed_roles WHERE TicketID=?");
+                                    PreparedStatement p3 = conn3.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
                                     p3.setLong(1, e.getMessageIdLong());
                                     p3.execute();
                                     ResultSet r2 = p3.executeQuery();
@@ -934,8 +940,8 @@ public class JDAEvents extends ListenerAdapter {
                                 EmbedBuilder embed = new EmbedBuilder();
                                 embed.setTitle("Ticket");
                                 embed.setColor(Color.GREEN);
-                                try {
-                                    Connection conn1 = core.getDatabaseFile();
+                                try (Connection conn1 = core.getDatabaseFile()){
+
                                     PreparedStatement cp1 = conn1.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
                                     cp1.setLong(1, e.getMessageIdLong());
                                     cp1.execute();
@@ -947,8 +953,8 @@ public class JDAEvents extends ListenerAdapter {
                                 channel.sendMessage(e.getMember().getAsMention() + " Welcome").queue();
                                 channel.sendMessage(embed.build()).queue(message2 -> {
                                     message2.addReaction("\uD83D\uDD12").queue();
-                                    try {
-                                        Connection fconn2 = core.getDatabaseFile();
+                                    try (Connection fconn2 = core.getDatabaseFile();){
+
                                         PreparedStatement fp1 = fconn2.prepareStatement("INSERT INTO discordsrvutils_Opened_Tickets (UserID, MessageID, TicketID, Channel_id) VALUES (?, ?, ?, ?)");
                                         PreparedStatement fp2 = fconn2.prepareStatement("SELECT * FROM discordsrvutils_tickets WHERE MessageId=?");
                                         fp2.setLong(1, e.getMessageIdLong());
@@ -970,7 +976,7 @@ public class JDAEvents extends ListenerAdapter {
                             });
                         } else e.getReaction().removeReaction(e.getUser()).queue();
                     } else {
-                        Connection conn2 = core.getDatabaseFile();
+
                         PreparedStatement p2 = conn2.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE MessageID=?");
                         p2.setLong(1, e.getMessageIdLong());
                         p2.execute();
@@ -991,8 +997,8 @@ public class JDAEvents extends ListenerAdapter {
                                 embed.setDescription("Ticket Closed by " + e.getMember().getAsMention() + "");
                                 embed.setColor(Color.YELLOW);
                                 e.getChannel().sendMessage(embed.build()).queue(msg -> {
-                                    try {
-                                        Connection conn3 = core.getDatabaseFile();
+                                    try (Connection conn3 = core.getDatabaseFile()){
+                                        ;
                                         PreparedStatement prpstmt = conn3.prepareStatement("SELECT * FROM discordsrvutils_Opened_Tickets WHERE MessageID=?");
                                         prpstmt.setLong(1, e.getMessageIdLong());
                                         prpstmt.execute();
@@ -1022,25 +1028,31 @@ public class JDAEvents extends ListenerAdapter {
                         } else {
                             //Message must be nothing or a complete closure message
                             if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
-                                Connection conn5 = core.getDatabaseFile();
-                                PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
-                                p3.setLong(1, e.getMessageIdLong());
-                                p3.execute();
-                                ResultSet r3 = p3.executeQuery();
-                                if (r3.next()) {
-                                    e.getTextChannel().delete().queue();
+
+                                try (Connection conn5 = core.getDatabaseFile();){
+                                    PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
+                                    p3.setLong(1, e.getMessageIdLong());
+                                    p3.execute();
+                                    ResultSet r3 = p3.executeQuery();
+                                    if (r3.next()) {
+                                        e.getTextChannel().delete().queue();
+                                    }
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
                                 }
                             }
                             else if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
-                                Connection conn5 = core.getDatabaseFile();
-                                PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
-                                p3.setLong(1, e.getMessageIdLong());
-                                p3.execute();
-                                ResultSet r3 = p3.executeQuery();
+                                try (Connection conn5 = core.getDatabaseFile();){
+                                    PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
+                                    p3.setLong(1, e.getMessageIdLong());
+                                    p3.execute();
+                                    ResultSet r3 = p3.executeQuery();
+                            } catch (SQLException ex)  {
+                                    ex.printStackTrace();
+                                }
 
                             }
-                            try  {
-                                Connection con = core.getMemoryConnection();
+                            try (Connection con = core.getMemoryConnection()){
                                 PreparedStatement p3 = con.prepareStatement("SELECT * FROM discordsrvutils_Awaiting_Edits WHERE UserID=? AND Channel_id=? AND MessageID=?");
                                 p3.setLong(1, e.getMember().getIdLong());
                                 p3.setLong(2, e.getTextChannel().getIdLong());
@@ -1126,8 +1138,7 @@ public class JDAEvents extends ListenerAdapter {
     }
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        try {
-            Connection conn = core.getDatabaseFile();
+        try  (Connection conn = core.getDatabaseFile()){
             PreparedStatement p1 = conn.prepareStatement("DELETE FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
             p1.setLong(1, e.getChannel().getIdLong());
             p1.execute();

@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
@@ -57,7 +58,7 @@ public class BukkitEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
         Bukkit.getScheduler().runTask(core, () -> {
                     Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());

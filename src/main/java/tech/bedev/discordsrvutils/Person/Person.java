@@ -22,6 +22,7 @@ public interface Person {
 
     int getLevel();
     int getXP();
+    String getRank();
 
     boolean isLinked();
 

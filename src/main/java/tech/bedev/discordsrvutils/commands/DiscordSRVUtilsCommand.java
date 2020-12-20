@@ -2,6 +2,8 @@ package tech.bedev.discordsrvutils.commands;
 
 
 import com.google.common.base.Charsets;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
@@ -96,6 +98,32 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;
+                    }
+                    if (DiscordSRVUtils.SQLconfig.isEnabled()) {
+                        if (DiscordSRVUtils.SQLconfig.Host() != core.host) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+                        } else if (DiscordSRVUtils.SQLconfig.UserName() != core.username) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+                        } else if (DiscordSRVUtils.SQLconfig.Password() != core.password) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+                        } else if (DiscordSRVUtils.SQLconfig.Port() != core.port) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+                        } else if (!core.SQLEnabled) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+
+                        }
+                    } else {
+                         if (core.SQLEnabled) {
+                            warnings++;
+                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
+
+                        }
+
                     }
                     if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
                         DiscordSRVUtils.timer = new Timer();
