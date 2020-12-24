@@ -2,6 +2,7 @@ package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.leoko.advancedban.manager.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import tech.bedev.discordsrvutils.Person.Person;
@@ -44,9 +45,9 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
 
 
+
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        
         if (!DiscordSRVUtils.isReady) return "...";
         if (identifier.equalsIgnoreCase("tickets_opened")) {
             if (p != null) {

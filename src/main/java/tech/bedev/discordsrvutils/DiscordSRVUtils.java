@@ -12,6 +12,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
+import sun.jvm.hotspot.debugger.cdbg.LineNumberVisitor;
 import tech.bedev.discordsrvutils.Configs.*;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
@@ -62,6 +63,41 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static MainConfConfig Config;
     public ConfManager<MainConfConfig> MainConfManager = ConfManager.create(getDataFolder().toPath(),"config.yml", MainConfConfig.class);
     public static Timer timer2 = new Timer();
+    public Map<Long, Long> tempmute = new HashMap<>();
+    public static DiscordSRVUtils getMainClass() {
+        return new DiscordSRVUtils();
+    }
+    public Long parseStringToMillies(String s) {
+        if (s.endsWith("s")) {
+            String v = s.replace("s", "");
+            try {
+                Integer.parseInt(v);
+                String v2 = v + "000";
+                return Long.parseLong(v2);
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+        } else if (s.endsWith("m")) {
+            String v = s.replace("s", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 60000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+
+        } else if (s.endsWith("h")) {
+            String v = s.replace("s", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 3600000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+
+        }
+        return Long.parseLong("-1");
+    }
 
 
     @Override
@@ -228,6 +264,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+        timer2.schedule(new TimeHandler(this), 0, 1000);
 
     }
     @Override

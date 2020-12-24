@@ -1,35 +1,24 @@
 package tech.bedev.discordsrvutils.events;
 
-import com.sun.tools.sjavac.Log;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.AccountType;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.guild.GuildBanEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import me.leoko.advancedban.manager.PunishmentManager;
-import me.leoko.advancedban.manager.TimeManager;
 import me.leoko.advancedban.manager.UUIDManager;
-import me.leoko.advancedban.utils.Punishment;
-import me.leoko.advancedban.utils.PunishmentType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
-import tech.bedev.discordsrvutils.TPSCounter;
-import tech.bedev.discordsrvutils.TimeHandler;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
@@ -37,9 +26,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Random;
+import java.util.UUID;
 
 public class JDAEvents extends ListenerAdapter {
 
@@ -1461,16 +1451,7 @@ public class JDAEvents extends ListenerAdapter {
         return false;
     }
 
-    @Override
-    public void onGuildBan(GuildBanEvent e) {
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getUser().getId());
-        if (uuid != null) {
-            if (Bukkit.getPluginManager().isPluginEnabled("AdvancedBan")) {
 
-                new Punishment(Bukkit.getOfflinePlayer(uuid).getName(), UUIDManager.get().getUUID(Bukkit.getOfflinePlayer(uuid).getName()), "Sync with Discord", "Discord", PunishmentType.BAN, TimeManager.getTime(), -1, null, -1).create(true);
-            }
-        }
-    }
 
 
 
