@@ -19,6 +19,7 @@ public interface Person {
     void addXP(int xp);
     void removeXP(int xp);
     void clearXP();
+    void unLink();
 
     int getLevel();
     int getXP();

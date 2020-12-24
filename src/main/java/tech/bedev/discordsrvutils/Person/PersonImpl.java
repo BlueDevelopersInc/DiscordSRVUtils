@@ -2,6 +2,7 @@ package tech.bedev.discordsrvutils.Person;
 
 
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import org.bukkit.Bukkit;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
@@ -309,6 +310,15 @@ public class PersonImpl implements Person {
             }
 
 
+    }
+
+    @Override
+    public void unLink() {
+        if (uuid != null) {
+            DiscordSRV.getPlugin().getAccountLinkManager().unlink(uuid);
+        } else {
+            DiscordSRV.getPlugin().getAccountLinkManager().unlink(DiscordUser.getId());
+        }
     }
 
     @Override

@@ -53,7 +53,6 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
     private final DiscordSRVUtils core;
 
     public DiscordSRVUtilsCommand(DiscordSRVUtils core) {
-
         this.core = core;
     }
 
@@ -76,55 +75,24 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Reloading...");
                     YamlConfiguration config = new YamlConfiguration();
                     try {
+                        core.ModerationConfigManager.reloadConfig();
+                        DiscordSRVUtils.Moderationconfig = core.ModerationConfigManager.reloadConfigData();
                         core.SQLConfigManager.reloadConfig();
                         DiscordSRVUtils.SQLconfig = core.SQLConfigManager.reloadConfigData();
                         core.LevelingConfigManager.reloadConfig();
                         DiscordSRVUtils.Levelingconfig = core.LevelingConfigManager.reloadConfigData();
                         core.BotSettingsConfigManager.reloadConfig();
                         DiscordSRVUtils.BotSettingsconfig = core.BotSettingsConfigManager.reloadConfigData();
-                        core.saveDefaultConfig();
-                        this.configFile = new File(core.getDataFolder(), "config.yml");
-                        newConfig = PluginConfiguration.loadConfiguration(configFile);
-
-
-                        final InputStream defConfigStream = getResource("config.yml");
-                        if (defConfigStream == null) {
-                            sender.sendMessage("Weird thing is null");
-                        }
-
-                        newConfig.setDefaults(PluginConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
-                        core.reloadConfig();
-                    } catch (IOException | InvalidConfigurationException |InvalidConfigException exception) {
+                        core.BansIntegrationConfigManager.reloadConfig();
+                        DiscordSRVUtils.BansIntegrationconfig = core.BansIntegrationConfigManager.reloadConfigData();
+                        core.MainConfManager.reloadConfig();
+                        DiscordSRVUtils.Config = core.MainConfManager.reloadConfigData();
+                    } catch (IOException |InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;
                     }
-                    if (DiscordSRVUtils.SQLconfig.isEnabled()) {
-                        if (DiscordSRVUtils.SQLconfig.Host() != core.host) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
-                        } else if (DiscordSRVUtils.SQLconfig.UserName() != core.username) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
-                        } else if (DiscordSRVUtils.SQLconfig.Password() != core.password) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
-                        } else if (DiscordSRVUtils.SQLconfig.Port() != core.port) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
-                        } else if (!core.SQLEnabled) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
 
-                        }
-                    } else {
-                         if (core.SQLEnabled) {
-                            warnings++;
-                            sender.sendMessage(ChatColor.GOLD + "You have changed SQL config options, please note that the new info will not apply until you restart.");
-
-                        }
-
-                    }
                     if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
                         DiscordSRVUtils.timer = new Timer();
                             String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";

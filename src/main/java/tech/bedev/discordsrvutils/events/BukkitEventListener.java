@@ -36,7 +36,7 @@ public class BukkitEventListener implements Listener {
     public void onJoin(org.bukkit.event.player.PlayerJoinEvent e) {
         Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
         person.insertLeveling();
-        if (!core.getConfig().getBoolean("update_checker")) return;
+        if (!DiscordSRVUtils.Config.isUpdateChecker()) return;
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
             String newVersion = UpdateChecker.getLatestVersion();
             if (newVersion.equalsIgnoreCase(core.getDescription().getVersion())) {

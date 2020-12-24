@@ -12,11 +12,9 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
-import tech.bedev.discordsrvutils.Configs.BotSettingsConfig;
-import tech.bedev.discordsrvutils.Configs.ConfManager;
-import tech.bedev.discordsrvutils.Configs.LevelingConfig;
-import tech.bedev.discordsrvutils.Configs.SQLConfig;
+import tech.bedev.discordsrvutils.Configs.*;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
+import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.Person.PersonImpl;
 import tech.bedev.discordsrvutils.commands.*;
@@ -57,7 +55,13 @@ public class DiscordSRVUtils extends JavaPlugin {
     public ConfManager<LevelingConfig> LevelingConfigManager = ConfManager.create(getDataFolder().toPath(),"Leveling.yml", LevelingConfig.class);
     public static BotSettingsConfig BotSettingsconfig;
     public ConfManager<BotSettingsConfig> BotSettingsConfigManager = ConfManager.create(getDataFolder().toPath(),"BotSettings.yml", BotSettingsConfig.class);
-
+    public static ModerationConfig Moderationconfig;
+    public ConfManager<ModerationConfig> ModerationConfigManager = ConfManager.create(getDataFolder().toPath(),"Moderation.yml", ModerationConfig.class);
+    public static BansIntegrationConfig BansIntegrationconfig;
+    public ConfManager<BansIntegrationConfig> BansIntegrationConfigManager = ConfManager.create(getDataFolder().toPath(),"BansIntegration.yml", BansIntegrationConfig.class);
+    public static MainConfConfig Config;
+    public ConfManager<MainConfConfig> MainConfManager = ConfManager.create(getDataFolder().toPath(),"config.yml", MainConfConfig.class);
+    public static Timer timer2 = new Timer();
 
 
     @Override
@@ -70,6 +74,12 @@ public class DiscordSRVUtils extends JavaPlugin {
             SQLconfig = SQLConfigManager.reloadConfigData();
             BotSettingsConfigManager.reloadConfig();
             BotSettingsconfig = BotSettingsConfigManager.reloadConfigData();
+            ModerationConfigManager.reloadConfig();
+            Moderationconfig = ModerationConfigManager.reloadConfigData();
+            BansIntegrationConfigManager.reloadConfig();
+            BansIntegrationconfig = BansIntegrationConfigManager.reloadConfigData();
+            MainConfManager.reloadConfig();
+            Config = MainConfManager.reloadConfigData();
             if (SQLconfig.isEnabled()) {
                 HikariConfig hikariConf = new HikariConfig();
                 hikariConf.setJdbcUrl("jdbc:" + "mysql" + "://" +
@@ -101,8 +111,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                 System.out.println("[DiscordSRVUtils] Detected plugin name change.");
                 return;
             }
-            this.saveDefaultConfig();
-            this.reloadConfig();
             String storage = "Unknown";
             if (SQLconfig.isEnabled()) {
                 storage = "MySQL";
@@ -179,13 +187,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             getCommand("addxp").setExecutor(new addxpCommand(this));
             getCommand("removexp").setExecutor(new removeXPCommand(this));
 
-
-            if (getConfig().getLong("welcomer_channel") == 0) {
-                getLogger().warning("Welcomer messages channel not specified");
-            }
             if (DiscordSRV.isReady) {
                 getJda().addEventListener(JDALISTENER);
-                String status = getConfig().getString("bot_status");
+                String status = BotSettingsconfig.status();
                 if (status != null) {
                     switch (status.toUpperCase()) {
                         case "DND":
