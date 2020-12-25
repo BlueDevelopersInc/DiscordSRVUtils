@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="DiscordSRVUtils (2)" />
         <module name="DiscordSRVUtils" />
         <module name="DiscordSRVUtils (1)" />
       </profile>
@@ -13,6 +14,7 @@
     <bytecodeTargetLevel>
       <module name="DiscordSRVUtils" target="1.8" />
       <module name="DiscordSRVUtils (1)" target="1.8" />
+      <module name="DiscordSRVUtils (2)" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

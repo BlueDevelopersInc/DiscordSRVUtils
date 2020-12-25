@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
+import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
@@ -73,8 +74,6 @@ public class JDAEvents extends ListenerAdapter {
 
             }
 
-                    core.getLogger().warning("welcomer_channel channel was not found on the guild. Please make sure you entered the right channel id.");
-                    PlayerUtil.sendToAuthorizedPlayers("&cError: &ewelcomer_channel channel was not found on the guild. Please make sure that you entered the right channel id.");
                     EmbedBuilder embed = new EmbedBuilder().setDescription(String.join("\n",
                             DiscordSRVUtils.Config.WelcomerMessage())
                             .replace("[User_Name]", e.getMember().getUser().getName())
@@ -158,7 +157,7 @@ public class JDAEvents extends ListenerAdapter {
 
 
                 }
-                        e.getGuild().getTextChannelById(core.getConfig().getLong("welcomer_channel")).sendMessage(embed.build()).queue();
+                        e.getGuild().getTextChannelById(DiscordSRVUtils.Config.WelcomerChannel()).sendMessage(embed.build()).queue();
 
                     }
             if (DiscordSRVUtils.Config.isJoinMessageToOnlinePlayers()) {

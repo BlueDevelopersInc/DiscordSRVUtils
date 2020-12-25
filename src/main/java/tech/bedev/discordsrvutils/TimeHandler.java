@@ -21,6 +21,7 @@ public class TimeHandler extends TimerTask {
 
     @Override
     public void run() {
+        if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
         if (!DiscordSRVUtils.isReady) return;
         Iterator it = core.tempmute.entrySet().iterator();
         while (it.hasNext()) {

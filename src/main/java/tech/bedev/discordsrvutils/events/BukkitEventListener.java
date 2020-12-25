@@ -60,6 +60,7 @@ public class BukkitEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
+        if (!DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) return;
         Bukkit.getScheduler().runTask(core, () -> {
                     Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
                     person.insertLeveling();

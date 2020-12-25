@@ -28,7 +28,9 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordSRVUtils extends JavaPlugin {
 
@@ -68,8 +70,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         return new DiscordSRVUtils();
     }
     public Long parseStringToMillies(String s) {
-        if (s.endsWith("s")) {
-            String v = s.replace("s", "");
+        String slc = s.toLowerCase();
+        if (slc.endsWith("s")) {
+            String v = slc.replace("s", "");
             try {
                 Integer.parseInt(v);
                 String v2 = v + "000";
@@ -77,8 +80,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             } catch (NumberFormatException ex) {
                 return Long.parseLong("-1");
             }
-        } else if (s.endsWith("m")) {
-            String v = s.replace("m", "");
+        } else if (slc.endsWith("m")) {
+            String v = slc.replace("m", "");
             try {
                 Integer.parseInt(v);
                 return Integer.parseInt(v) * 60000L;
@@ -86,8 +89,8 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return Long.parseLong("-1");
             }
 
-        } else if (s.endsWith("h")) {
-            String v = s.replace("h", "");
+        } else if (slc.endsWith("h")) {
+            String v = slc.replace("h", "");
             try {
                 Integer.parseInt(v);
                 return Integer.parseInt(v) * 3600000L;
@@ -95,8 +98,8 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return Long.parseLong("-1");
             }
 
-        } else if (s.endsWith("d")) {
-            String v = s.replace("d", "");
+        } else if (slc.endsWith("d")) {
+            String v = slc.replace("d", "");
             try {
                 Integer.parseInt(v);
                 return Integer.parseInt(v) * 86400000L;
@@ -111,6 +114,10 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        TimerManager time = new TimerManager();
+        String duration = time.getTimeFormatter().getDuration(parseStringToMillies("1d"));
+        System.out.println(duration);
+
 
         try {
             SQLConfigManager.reloadConfig();

@@ -1,4 +1,5 @@
 tech\bedev\discordsrvutils\events\EssentialsAfk.class
+tech\bedev\discordsrvutils\Managers\TimeFormatter.class
 tech\bedev\discordsrvutils\commands\setlevelCommand.class
 tech\bedev\discordsrvutils\events\PlayerLevelupEvent.class
 tech\bedev\discordsrvutils\commands\setxpCommand.class

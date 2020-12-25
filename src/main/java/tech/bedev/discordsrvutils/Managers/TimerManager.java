@@ -17,4 +17,8 @@ public class  TimerManager {
         String Mins = Seconds + "000";
         return System.currentTimeMillis() + Integer.parseInt(Mins);
     }
+
+    public TimeFormatter getTimeFormatter() {
+        return new TimeFormatter();
+    }
 }
