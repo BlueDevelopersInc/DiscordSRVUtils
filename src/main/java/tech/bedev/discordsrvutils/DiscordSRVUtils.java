@@ -78,7 +78,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return Long.parseLong("-1");
             }
         } else if (s.endsWith("m")) {
-            String v = s.replace("s", "");
+            String v = s.replace("m", "");
             try {
                 Integer.parseInt(v);
                 return Integer.parseInt(v) * 60000L;
@@ -87,10 +87,19 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
 
         } else if (s.endsWith("h")) {
-            String v = s.replace("s", "");
+            String v = s.replace("h", "");
             try {
                 Integer.parseInt(v);
                 return Integer.parseInt(v) * 3600000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+
+        } else if (s.endsWith("d")) {
+            String v = s.replace("d", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 86400000L;
             } catch (NumberFormatException ex) {
                 return Long.parseLong("-1");
             }

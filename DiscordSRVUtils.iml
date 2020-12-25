@@ -16,22 +16,18 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.ess3:NMSReflectionProvider:2.17.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.ess3:PaperProvider:2.17.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.ess3:1_8Provider:2.17.2" level="project" />
-    <orderEntry type="library" name="Maven: space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: space.arim.dazzleconf:dazzleconf-core:1.2.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Maven: org.hsqldb:hsqldb:2.3.2" level="project" />
-    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.27" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.DevLeoko:AdvancedBan:b4bbb6a" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.discordsrv:discordsrv:1.20.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.dv8tion:JDA:4.2.0_204" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:16.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.squareup.okhttp3:okhttp:3.13.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.squareup.okio:okio:1.17.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.commons:commons-collections4:4.1" level="project" />
@@ -74,8 +70,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bstats:bstats-bukkit:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.mariadb.jdbc:mariadb-java-client:2.7.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.9.2" level="project" />
   </component>
 </module>
