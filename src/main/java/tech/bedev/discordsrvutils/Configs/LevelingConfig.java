@@ -1,5 +1,6 @@
 package tech.bedev.discordsrvutils.Configs;
 
+import org.springframework.core.annotation.Order;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
@@ -27,6 +28,11 @@ public interface LevelingConfig {
     @ConfComments("\n#Message sent when levels up on Discord.")
     @AnnotationBasedSorter.Order(30)
     List<String> levelup_Discord();
+
+    @ConfDefault.DefaultLong(000000000000000000L)
+    @ConfComments("\n#Where to send the levelup messages.")
+    @Order(40)
+    Long levelup_channel();
 
 
 }

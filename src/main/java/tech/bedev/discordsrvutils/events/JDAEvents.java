@@ -11,6 +11,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import jdk.tools.jaotc.collect.directory.DirectorySource;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
@@ -27,12 +28,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 public class JDAEvents extends ListenerAdapter {
+    private static final Long EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
 
     private DiscordSRVUtils core;
     private ConfOptionsManager conf;
@@ -392,6 +395,8 @@ public class JDAEvents extends ListenerAdapter {
                 embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
                 embed.setDescription("Use `" + prefix + "<Command>` to execute a command.");
                 embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
+                embed.addField("Leveling", "`rank`", false);
+                embed.addField("Moderation", "`ban`, `unban`, `mute`, `unmute`", false);
                 embed.setColor(Color.GREEN);
                 e.getChannel().sendMessage(embed.build()).queue();
             }
@@ -1156,7 +1161,15 @@ public class JDAEvents extends ListenerAdapter {
             if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
                 if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                     Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
-                    if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getMember().getId()) != null) {
+                    if (person.isLinked()) {
+                        Long val = core.lastchattime.get(person.getMinecraftUUID());
+                        if (val == null) {
+                            core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
+                        } else {
+                            if (!(System.nanoTime() - val >= EXPIRATION_NANOS)) return;
+                            core.lastchattime.remove(person.getMinecraftUUID());
+                            core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
+                        }
                         person.insertLeveling();
                         person.addXP(BukkitEventListener.RANDOM.nextInt(25));
                         if (person.getXP() >= 300) {
@@ -1165,7 +1178,11 @@ public class JDAEvents extends ListenerAdapter {
                             Bukkit.getPluginManager().callEvent(ev);
                             if (!ev.isCancelled()) {
                                 person.addLevels(1);
-                                e.getChannel().sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
+                                if (e.getGuild().getTextChannelById(DiscordSRVUtils.Levelingconfig.levelup_channel()) == null) {
+                                    e.getChannel().sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
+                                } else {
+                                    e.getGuild().getTextChannelById(DiscordSRVUtils.Levelingconfig.levelup_channel()).sendMessage(conf.getConfigWithPapi(person.getMinecraftUUID(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_Discord())).replace("[Level]", person.getLevel() + "").replace("[User_Mention]", e.getMember().getAsMention())).queue();
+                                }
                             }
                         }
                     }
@@ -1173,6 +1190,7 @@ public class JDAEvents extends ListenerAdapter {
             }
         });
     }
+
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e) {
         if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;

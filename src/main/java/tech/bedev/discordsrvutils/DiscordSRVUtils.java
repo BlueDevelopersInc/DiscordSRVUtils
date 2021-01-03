@@ -33,7 +33,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class DiscordSRVUtils extends JavaPlugin {
-
+    public final Map<UUID, Long> lastchattime = new HashMap<>();
     public static boolean isReady = false;
     public static boolean PAPI;
     Path databaseFile;

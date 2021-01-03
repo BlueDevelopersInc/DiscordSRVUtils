@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -57,12 +58,21 @@ public class BukkitEventListener implements Listener {
             }
         }
     }
+    private static final Long EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
         if (!DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) return;
         Bukkit.getScheduler().runTask(core, () -> {
-                    Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
+            Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+            Long val = core.lastchattime.get(person.getMinecraftUUID());
+            if (val == null) {
+                core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
+            } else {
+                if (!(System.nanoTime() - val >= EXPIRATION_NANOS)) return;
+                core.lastchattime.remove(person.getMinecraftUUID());
+                core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
+            }
                     person.insertLeveling();
                     person.addXP(RANDOM.nextInt(25));
                     if (person.getXP() >= 300) {
