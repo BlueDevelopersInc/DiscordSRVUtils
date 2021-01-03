@@ -15,7 +15,7 @@ Put these into your pom.xml
         <dependency>
             <groupId>com.github.BlueTree242</groupId>
             <artifactId>DiscordSRVUtils</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.1</version>
       </dependency>
 ```
 
@@ -30,7 +30,7 @@ For gradle
 ```
 ```
 	dependencies {
-	        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.0.0'
+	        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.1.1'
 	}
 ```
       
