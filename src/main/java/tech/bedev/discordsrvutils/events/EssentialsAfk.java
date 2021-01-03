@@ -25,15 +25,15 @@ public class EssentialsAfk implements Listener {
     public void onPlayerAfkChange(AfkStatusChangeEvent e) {
         if (e.getAffected().isVanished()) return;
         if (!e.getAffected().isAfk()) {
-            if (conf.getBoolean("essentials_afk_to_discord")) {
-                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(DiscordSRVUtils.BotSettingsconfig.chat_channel()).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), conf.StringListToString("essentials_player_afk_message"))
+            if (DiscordSRVUtils.Config.isEssentialsAfkMessages()) {
+                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(DiscordSRVUtils.BotSettingsconfig.chat_channel()).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), String.join("\n", DiscordSRVUtils.Config.EssentialsAfkMessage()))
                 .replace("[Player_Name]", e.getAffected().getBase().getName())
                 ).queue();
 
             }
         } else {
-            if (conf.getBoolean("essentials_afk_to_discord")) {
-                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(DiscordSRVUtils.BotSettingsconfig.chat_channel()).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), conf.StringListToString("essentials_player_no_longer_afk_message"))
+            if (DiscordSRVUtils.Config.isEssentialsAfkMessages()) {
+                DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(DiscordSRVUtils.BotSettingsconfig.chat_channel()).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), String.join("\n", DiscordSRVUtils.Config.EssentialsNoLongerAfkMessage()))
                         .replace("[Player_Name]", e.getAffected().getBase().getName())
                 ).queue();
             }

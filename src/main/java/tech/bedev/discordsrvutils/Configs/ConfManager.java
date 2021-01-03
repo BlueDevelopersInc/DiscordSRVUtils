@@ -25,7 +25,9 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
     public static <C> ConfManager<C> create(Path configFolder, String fileName, Class<C> configClass) {
         // SnakeYaml example
         SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder()
-                .useCommentingWriter(true) // Enables writing YAML comments
+                .useCommentingWriter(true)
+                .commentFormat("%s")
+                // Enables writing YAML comments
                 .build();
         return new ConfManager<>(configFolder, fileName,
                 new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));

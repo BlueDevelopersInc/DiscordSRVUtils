@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
@@ -19,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,7 +37,7 @@ public class BukkitEventListener implements Listener {
     public void onJoin(org.bukkit.event.player.PlayerJoinEvent e) {
         Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
         person.insertLeveling();
-        if (!core.getConfig().getBoolean("update_checker")) return;
+        if (!DiscordSRVUtils.Config.isUpdateChecker()) return;
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
             String newVersion = UpdateChecker.getLatestVersion();
             if (newVersion.equalsIgnoreCase(core.getDescription().getVersion())) {
@@ -56,25 +58,34 @@ public class BukkitEventListener implements Listener {
             }
         }
     }
+    private static final Long EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
+        if (!DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) return;
         Bukkit.getScheduler().runTask(core, () -> {
-            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
-                Person person = core.getPersonByUUID(Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId());
-                person.insertLeveling();
-                person.addXP(RANDOM.nextInt(25));
-                if (person.getXP() >= 300) {
-                    person.clearXP();
-                    PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
-                    Bukkit.getPluginManager().callEvent(ev);
-                    if (!ev.isCancelled()) {
-                        person.addLevels(1);
-                        e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_minecraft()))).replace("[Level]", person.getLevel() + ""));
-                    }
-                }
+            Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
+            Long val = core.lastchattime.get(person.getMinecraftUUID());
+            if (val == null) {
+                core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
+            } else {
+                if (!(System.nanoTime() - val >= EXPIRATION_NANOS)) return;
+                core.lastchattime.remove(person.getMinecraftUUID());
+                core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
             }
+                    person.insertLeveling();
+                    person.addXP(RANDOM.nextInt(25));
+                    if (person.getXP() >= 300) {
+                        person.clearXP();
+                        PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
+                        Bukkit.getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            person.addLevels(1);
+                            e.getPlayer().sendMessage(conf.StringToColorCodes(conf.getConfigWithPapi(e.getPlayer().getUniqueId(), String.join("\n", DiscordSRVUtils.Levelingconfig.levelup_minecraft()))).replace("[Level]", person.getLevel() + ""));
+                        }
+                    }
         });
+
     }
 
 

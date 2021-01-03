@@ -47,8 +47,8 @@ public class Tickets {
                     p2.setInt(1, id);
                     p2.setLong(2, RoleID);
                     p2.execute();
-                    msg.addReaction("\uD83D\uDCE9").queue();
                 }
+                msg.addReaction("\uD83D\uDCE9").queue();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();

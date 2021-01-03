@@ -14,6 +14,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.StatusUpdater;
+import tech.bedev.discordsrvutils.TimeHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,7 +87,7 @@ public class DiscordSRVEventListener {
             if (r1.next()) {
                 PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=? WHERE unique_id=?");
                 p2.setLong(1, e.getUser().getIdLong());
-                p2.setString(2, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
+                p2.setString(2, Bukkit.getOfflinePlayer(e.getPlayer().getUniqueId()).getUniqueId().toString());
                 p2.execute();
             }
         } catch (SQLException ex) {
@@ -103,7 +104,7 @@ public class DiscordSRVEventListener {
             ResultSet r1 = p1.executeQuery();
             if (r1.next()) {
                 PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET userID=NULL WHERE unique_id=?");
-                p2.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());
+                p2.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getUniqueId()).getUniqueId().toString());
                 p2.execute();
             }
         } catch (SQLException ex) {

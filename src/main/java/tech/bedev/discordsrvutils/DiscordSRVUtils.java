@@ -1,5 +1,7 @@
 package tech.bedev.discordsrvutils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
@@ -10,11 +12,10 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
-import tech.bedev.discordsrvutils.Configs.BotSettingsConfig;
-import tech.bedev.discordsrvutils.Configs.ConfManager;
-import tech.bedev.discordsrvutils.Configs.LevelingConfig;
-import tech.bedev.discordsrvutils.Configs.SQLConfig;
+import sun.jvm.hotspot.debugger.cdbg.LineNumberVisitor;
+import tech.bedev.discordsrvutils.Configs.*;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
+import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.Person.PersonImpl;
 import tech.bedev.discordsrvutils.commands.*;
@@ -23,22 +24,29 @@ import tech.bedev.discordsrvutils.events.*;
 
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordSRVUtils extends JavaPlugin {
-
+    public final Map<UUID, Long> lastchattime = new HashMap<>();
     public static boolean isReady = false;
     public static boolean PAPI;
     Path databaseFile;
     String jdbcUrl;
     public DiscordSRVEventListener discordListener;
     public JDAEvents JDALISTENER;
+    public HikariDataSource sql;
+    public String username;
+    public String password;
+    public int port;
+    public String host;
+    public boolean SQLEnabled;
+
 
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
@@ -50,11 +58,67 @@ public class DiscordSRVUtils extends JavaPlugin {
     public ConfManager<LevelingConfig> LevelingConfigManager = ConfManager.create(getDataFolder().toPath(),"Leveling.yml", LevelingConfig.class);
     public static BotSettingsConfig BotSettingsconfig;
     public ConfManager<BotSettingsConfig> BotSettingsConfigManager = ConfManager.create(getDataFolder().toPath(),"BotSettings.yml", BotSettingsConfig.class);
+    public static ModerationConfig Moderationconfig;
+    public ConfManager<ModerationConfig> ModerationConfigManager = ConfManager.create(getDataFolder().toPath(),"Moderation.yml", ModerationConfig.class);
+    public static BansIntegrationConfig BansIntegrationconfig;
+    public ConfManager<BansIntegrationConfig> BansIntegrationConfigManager = ConfManager.create(getDataFolder().toPath(),"BansIntegration.yml", BansIntegrationConfig.class);
+    public static MainConfConfig Config;
+    public ConfManager<MainConfConfig> MainConfManager = ConfManager.create(getDataFolder().toPath(),"config.yml", MainConfConfig.class);
+    public static Timer timer2 = new Timer();
+    public Map<Long, Long> tempmute = new HashMap<>();
+    public static DiscordSRVUtils getMainClass() {
+        return new DiscordSRVUtils();
+    }
+    public Long parseStringToMillies(String s) {
+        String slc = s.toLowerCase();
+        if (slc.endsWith("s")) {
+            String v = slc.replace("s", "");
+            try {
+                Integer.parseInt(v);
+                String v2 = v + "000";
+                return Long.parseLong(v2);
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+        } else if (slc.endsWith("m")) {
+            String v = slc.replace("m", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 60000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
 
+        } else if (slc.endsWith("h")) {
+            String v = slc.replace("h", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 3600000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+
+        } else if (slc.endsWith("d")) {
+            String v = slc.replace("d", "");
+            try {
+                Integer.parseInt(v);
+                return Integer.parseInt(v) * 86400000L;
+            } catch (NumberFormatException ex) {
+                return Long.parseLong("-1");
+            }
+
+        }
+        return Long.parseLong("-1");
+    }
 
 
     @Override
     public void onEnable() {
+        TimerManager time = new TimerManager();
+        String duration = time.getTimeFormatter().getDuration(parseStringToMillies("1d"));
+        System.out.println(duration);
+
+
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -62,6 +126,31 @@ public class DiscordSRVUtils extends JavaPlugin {
             SQLconfig = SQLConfigManager.reloadConfigData();
             BotSettingsConfigManager.reloadConfig();
             BotSettingsconfig = BotSettingsConfigManager.reloadConfigData();
+            ModerationConfigManager.reloadConfig();
+            Moderationconfig = ModerationConfigManager.reloadConfigData();
+            BansIntegrationConfigManager.reloadConfig();
+            BansIntegrationconfig = BansIntegrationConfigManager.reloadConfigData();
+            MainConfManager.reloadConfig();
+            Config = MainConfManager.reloadConfigData();
+            if (SQLconfig.isEnabled()) {
+                HikariConfig hikariConf = new HikariConfig();
+                hikariConf.setJdbcUrl("jdbc:" + "mysql" + "://" +
+                        SQLconfig.Host() +
+                        ":" + SQLconfig.Port() + "/" + SQLconfig.DatabaseName());
+                hikariConf.setUsername(SQLconfig.UserName());
+                hikariConf.setPassword(SQLconfig.Password());
+                hikariConf.setMaximumPoolSize(20);
+                sql = new HikariDataSource(hikariConf);
+                port = SQLconfig.Port();
+                username = SQLconfig.UserName();
+                host = SQLconfig.Host();
+                SQLEnabled = true;
+            } else {
+                port = 3306;
+                username = null;
+                host = null;
+                SQLEnabled = false;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidConfigException e) {
@@ -74,8 +163,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                 System.out.println("[DiscordSRVUtils] Detected plugin name change.");
                 return;
             }
-            this.saveDefaultConfig();
-            this.reloadConfig();
             String storage = "Unknown";
             if (SQLconfig.isEnabled()) {
                 storage = "MySQL";
@@ -152,13 +239,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             getCommand("addxp").setExecutor(new addxpCommand(this));
             getCommand("removexp").setExecutor(new removeXPCommand(this));
 
-
-            if (getConfig().getLong("welcomer_channel") == 0) {
-                getLogger().warning("Welcomer messages channel not specified");
-            }
             if (DiscordSRV.isReady) {
                 getJda().addEventListener(JDALISTENER);
-                String status = getConfig().getString("bot_status");
+                String status = BotSettingsconfig.status();
                 if (status != null) {
                     switch (status.toUpperCase()) {
                         case "DND":
@@ -197,6 +280,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+        timer2.schedule(new TimeHandler(this), 0, 1000);
 
     }
     @Override
@@ -212,23 +296,11 @@ public class DiscordSRVUtils extends JavaPlugin {
         return new DiscordSRVUtils().getDatabaseFile();
     }
     public Connection getDatabaseFile() throws SQLException {
-        if (!SQLconfig.isEnabled()) {
+        if (!SQLEnabled) {
             return DriverManager.getConnection("jdbc:hsqldb:file:" + getDataFolder().toPath().resolve("Database") + ";hsqldb.lock_file=false", "SA", "");
         }
-        Connection conn = null;
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", SQLconfig.UserName());
-        connectionProps.put("password", SQLconfig.Password());
-        connectionProps.put("useSSL", "false");
 
-        if (true) {
-            conn = DriverManager.getConnection(
-                    "jdbc:" + "mysql" + "://" +
-                            SQLconfig.Host() +
-                            ":" + SQLconfig.Port() + "/" + SQLconfig.DatabaseName(),
-                    connectionProps);
-        }
-        return conn;
+        return sql.getConnection();
     }
     public Connection getMemoryConnection() throws SQLException{
         return DriverManager.getConnection("jdbc:hsqldb:mem:MemoryDatabase", "SA", "");
@@ -239,7 +311,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Person getPersonByUUID(UUID uuid) {
-        if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) return null;
+        if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) {
+            if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
+
+            } else return null;
+        }
         String UserID = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
         if (UserID == null) {
             return new PersonImpl(uuid, null, this);

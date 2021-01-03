@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: space.arim.dazzleconf:dazzleconf-core:1.2.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/space/arim/dazzleconf/dazzleconf-core/1.2.0-SNAPSHOT/dazzleconf-core-1.2.0-20201219.224234-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/space/arim/dazzleconf/dazzleconf-core/1.2.0-SNAPSHOT/dazzleconf-core-1.2.0-20201219.224234-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/space/arim/dazzleconf/dazzleconf-core/1.2.0-SNAPSHOT/dazzleconf-core-1.2.0-20201219.224234-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
