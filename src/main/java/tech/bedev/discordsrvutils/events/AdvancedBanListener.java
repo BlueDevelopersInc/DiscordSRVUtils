@@ -12,9 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import tech.bedev.discordsrvutils.Configs.BansIntegrationConfig;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.utils.PlayerUtil;
-
-import java.util.UUID;
 
 public class AdvancedBanListener implements Listener {
     private final DiscordSRVUtils core;

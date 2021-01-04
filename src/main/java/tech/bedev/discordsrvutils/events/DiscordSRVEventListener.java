@@ -4,17 +4,12 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
-import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
-import me.leoko.advancedban.shaded.org.apache.commons.lang3.ObjectUtils;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.StatusUpdater;
-import tech.bedev.discordsrvutils.TimeHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

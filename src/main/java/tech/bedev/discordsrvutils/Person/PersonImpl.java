@@ -1,7 +1,6 @@
 package tech.bedev.discordsrvutils.Person;
 
 
-
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PersonImpl implements Person {
 

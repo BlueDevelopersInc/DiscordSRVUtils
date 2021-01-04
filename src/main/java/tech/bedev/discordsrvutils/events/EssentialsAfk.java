@@ -2,13 +2,11 @@ package tech.bedev.discordsrvutils.events;
 
 
 import github.scarsz.discordsrv.DiscordSRV;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
-import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 public class EssentialsAfk implements Listener {
 

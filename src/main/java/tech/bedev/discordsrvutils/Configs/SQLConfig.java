@@ -1,10 +1,8 @@
 package tech.bedev.discordsrvutils.Configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
-import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
-import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter.Order;
 

@@ -11,15 +11,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import jdk.tools.jaotc.collect.directory.DirectorySource;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import tech.bedev.discordsrvutils.Configs.SuggestionsConfig;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
@@ -816,6 +815,26 @@ public class JDAEvents extends ListenerAdapter {
                 e.getChannel().sendMessage("You don't have perms to use this command.").queue();
             }
             return;
+        } else if (args[0].equalsIgnoreCase(prefix + "suggest")) {
+            if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
+            if (!DiscordSRVUtils.SuggestionsConfig.isEnabled()) return;
+            try (Connection conn = core.getMemoryConnection()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions_Awaiting WHERE User=? AND Channel=?");
+                p1.setLong(1, e.getMember().getIdLong());
+                p1.setLong(2, e.getChannel().getIdLong());
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) {
+                    PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_Awaiting (User, Channel, LastOutput) VALUES (?, ?, ?)");
+                    p2.setLong(1, e.getMember().getIdLong());
+                    p2.setLong(2, e.getChannel().getIdLong());
+                    p2.setLong(3, System.currentTimeMillis());
+                    p2.execute();
+                    e.getChannel().sendMessage("Please enter your Suggestion.").queue();
+                    return;
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
         try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
@@ -1140,6 +1159,66 @@ public class JDAEvents extends ListenerAdapter {
                                             }
                                         });
 
+                                    }
+                                }
+                            }
+                        } else {
+                            PreparedStatement p3 = conn.prepareStatement("SELECT * FROM suggestions_Awaiting WHERE User=? AND Channel=?");
+                            p3.setLong(1, e.getMember().getIdLong());
+                            p3.setLong(2, e.getChannel().getIdLong());
+                            ResultSet r3 = p3.executeQuery();
+                            if (r3.next()) {
+                                TextChannel channel = e.getGuild().getTextChannelById(DiscordSRVUtils.SuggestionsConfig.channel());
+                                if (channel == null) {
+                                    e.getChannel().sendMessage("You are unable to suggest at the moment. Please try again later.").queue();
+                                    try (Connection c2 = core.getMemoryConnection()) {
+                                        PreparedStatement p6 = c2.prepareStatement("DELETE FROM suggestions_Awaiting WHERE User=? AND Channel=?");
+                                        p6.setLong(1, e.getMember().getIdLong());
+                                        p6.setLong(2, e.getChannel().getIdLong());
+                                        p6.execute();
+                                    } catch (SQLException ex) {
+                                        ex.printStackTrace();
+                                    }
+
+                                    return;
+                                } else {
+                                    int ID;
+                                    try (Connection cc = core.getDatabaseFile()) {
+                                        PreparedStatement p4 = cc.prepareStatement("SELECT * FROM discordsrvutils_suggestions ORDER BY ID DESC");
+                                        ResultSet r4 = p4.executeQuery();
+                                        if (r4.next()) {
+                                            ID = r4.getInt("ID") + 1;
+                                        } else {
+                                            ID = 1;
+                                        }
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setColor(Color.ORANGE);
+                                        embed.setThumbnail(e.getMember().getUser().getEffectiveAvatarUrl());
+                                        embed.setDescription("**Suggested by:** " + e.getMember().getUser().getAsTag() + "\n" +
+                                                "**Suggestion Number:** " + ID);
+                                        embed.addField("Suggestion", e.getMessage().getContentRaw(), false);
+                                        channel.sendMessage(embed.build()).queue(msg -> {
+                                            try (Connection c1 = core.getDatabaseFile(); Connection c2 = core.getMemoryConnection()) {
+                                                    PreparedStatement p5 = c1.prepareStatement("INSERT INTO discordsrvutils_suggestions (User, Channel, Message, Suggestion, ID) VALUES (?, ?, ?, ?, ?)");
+                                                    p5.setLong(1, e.getMember().getIdLong());
+                                                    p5.setLong(2, channel.getIdLong());
+                                                    p5.setLong(3, msg.getIdLong());
+                                                    p5.setString(4, e.getMessage().getContentRaw());
+                                                    p5.setInt(5, ID);
+                                                    p5.execute();
+                                                    PreparedStatement p6 = c2.prepareStatement("DELETE FROM  suggestions_Awaiting WHERE User=? AND Channel=?");
+                                                    p6.setLong(1, e.getMember().getIdLong());
+                                                    p6.setLong(2, e.getChannel().getIdLong());
+                                                    p6.execute();
+                                                    msg.addReaction("✅").queue();
+                                                    msg.addReaction("❎").queue();
+                                                    e.getChannel().sendMessage("Your Suggestion has been recorded.").queue();
+                                            } catch (SQLException ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        });
+                                    } catch (SQLException ex) {
+                                        ex.printStackTrace();
                                     }
                                 }
                             }

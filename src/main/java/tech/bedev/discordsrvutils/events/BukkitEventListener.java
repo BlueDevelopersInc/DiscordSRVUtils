@@ -1,6 +1,5 @@
 package tech.bedev.discordsrvutils.events;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -12,14 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
-import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.UpdateChecker;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Random;
 import java.util.Timer;

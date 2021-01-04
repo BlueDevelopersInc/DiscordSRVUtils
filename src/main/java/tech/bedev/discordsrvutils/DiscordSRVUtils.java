@@ -69,6 +69,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static DiscordSRVUtils getMainClass() {
         return new DiscordSRVUtils();
     }
+    public static SuggestionsConfig SuggestionsConfig;
+    public ConfManager<SuggestionsConfig> SuggestionsConfManager = ConfManager.create(getDataFolder().toPath(),"suggestions.yml", SuggestionsConfig.class);
     public Long parseStringToMillies(String s) {
         String slc = s.toLowerCase();
         if (slc.endsWith("s")) {
@@ -132,6 +134,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             BansIntegrationconfig = BansIntegrationConfigManager.reloadConfigData();
             MainConfManager.reloadConfig();
             Config = MainConfManager.reloadConfigData();
+            SuggestionsConfManager.reloadConfig();
+            SuggestionsConfig = SuggestionsConfManager.reloadConfigData();
             if (SQLconfig.isEnabled()) {
                 HikariConfig hikariConf = new HikariConfig();
                 hikariConf.setJdbcUrl("jdbc:" + "mysql" + "://" +
@@ -205,12 +209,13 @@ public class DiscordSRVUtils extends JavaPlugin {
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (User Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int)").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
 
             }
             try (Connection conn = getMemoryConnection()) {
-
+                conn.prepareStatement("CREATE TABLE suggestions_Awaiting (User Bigint, Channel Bigint, LastOutput Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE status (Status int)").execute();
                 conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();

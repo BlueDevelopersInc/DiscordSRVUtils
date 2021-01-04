@@ -1,44 +1,30 @@
 package tech.bedev.discordsrvutils.commands;
 
 
-import com.google.common.base.Charsets;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import me.leoko.advancedban.manager.PunishmentManager;
-import me.leoko.advancedban.manager.UUIDManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.PluginConfiguration;
 import tech.bedev.discordsrvutils.StatusUpdater;
 import tech.bedev.discordsrvutils.UpdateChecker;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Timer;
 
 public class DiscordSRVUtilsCommand implements CommandExecutor {
@@ -87,6 +73,8 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         DiscordSRVUtils.BansIntegrationconfig = core.BansIntegrationConfigManager.reloadConfigData();
                         core.MainConfManager.reloadConfig();
                         DiscordSRVUtils.Config = core.MainConfManager.reloadConfigData();
+                        core.SuggestionsConfManager.reloadConfig();
+                        DiscordSRVUtils.SuggestionsConfig = core.SuggestionsConfManager.reloadConfigData();
                     } catch (IOException |InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
