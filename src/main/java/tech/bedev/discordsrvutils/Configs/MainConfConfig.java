@@ -9,7 +9,14 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 
-@ConfHeader("#DiscordSRVUtils main config\n#Most options are in other configs")
+@ConfHeader("#_____  _                       _  _____ _______      ___    _ _   _ _     \n" +
+            "#|  __ \\(_)                     | |/ ____|  __ \\ \\    / / |  | | | (_) |    \n" +
+            "#| |  | |_ ___  ___ ___  _ __ __| | (___ | |__) \\ \\  / /| |  | | |_ _| |___ \n" +
+            "#| |  | | / __|/ __/ _ \\| '__/ _` |\\___ \\|  _  / \\ \\/ / | |  | | __| | / __|\n" +
+            "#| |__| | \\__ \\ (__ (_) | | | (_| |____) | | \\ \\  \\  /  | |__| | |_| | \\__ \\\n" +
+            "#|_____/|_|___/\\___\\___/|_|  \\__,_|_____/|_|  \\_\\  \\/    \\____/ \\__|_|_|___/\n" +
+            "                                                                            \n" +
+            "                ")
 public interface MainConfConfig {
 
     @ConfKey("update_checker")
@@ -75,13 +82,13 @@ public interface MainConfConfig {
     boolean isEssentialsAfkMessages();
 
     @ConfKey("essentials_player_afk_message")
-    @ConfDefault.DefaultStrings({""})
+    @ConfDefault.DefaultStrings({"**[Player_Name] is now afk**"})
     @ConfComments("\n#Message to send when someone is essentials afk")
     @AnnotationBasedSorter.Order(80)
     List<String> EssentialsAfkMessage();
 
     @ConfKey("essentials_player_no_longer_afk_message")
-    @ConfDefault.DefaultStrings({""})
+    @ConfDefault.DefaultStrings({"**[Player_Name]** is no longer afk**"})
     @ConfComments("\n#Message to send when someone is no longer essentials afk")
     @AnnotationBasedSorter.Order(90)
     List<String> EssentialsNoLongerAfkMessage();

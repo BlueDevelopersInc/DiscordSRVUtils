@@ -3,7 +3,7 @@ softdepend:
   - DiscordSRV
   - Essentials
   - Advancedban
-version: 1.1.2
+version: 1.1.4
 main: tech.bedev.discordsrvutils.DiscordSRVUtils
 author: Blue_Tree
 api-version: 1.13

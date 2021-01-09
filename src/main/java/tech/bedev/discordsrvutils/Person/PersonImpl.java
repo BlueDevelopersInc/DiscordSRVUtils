@@ -359,15 +359,16 @@ public class PersonImpl implements Person {
 
     @Override
     public String getRank() {
-        if (!DiscordSRVUtils.SQLconfig.isEnabled()) return "Currently not supported in local database.";
             insertLeveling();
             if (uuid != null) {
                 try (Connection conn = core.getDatabaseFile()) {
-                    PreparedStatement p1 = conn.prepareStatement("SELECT *, RANK() OVER w AS 'rank' FROM discordsrvutils_leveling WINDOW w AS (ORDER BY level DESC)");
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling ORDER BY Level DESC");
                     ResultSet r1 = p1.executeQuery();
+                    int rank = 0;
                     while (r1.next()) {
+                        rank++;
                             if (r1.getString("unique_id").equals(uuid.toString())) {
-                                return r1.getInt("rank") + "";
+                                return Integer.toString(rank);
                             }
                     }
                 } catch (SQLException ex) {
@@ -425,4 +426,48 @@ public class PersonImpl implements Person {
                 }
         }
 
+    @Override
+    public Long getDiscordMessages() {
+        insertLeveling();
+        return -1L;
     }
+
+    @Override
+    public Long getMinecraftMessages() {
+        insertLeveling();
+        return -1L;
+    }
+
+    @Override
+    public Long getTotalMessages() {
+        insertLeveling();
+        return -1L;
+    }
+
+    @Override
+    public void addMessages(MessageType msg, int number) {
+        insertLeveling();
+        try (Connection conn = core.getDatabaseFile()) {
+            switch (msg) {
+                case Discord:
+                    break;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void removeMessages(MessageType msg, int number) {
+        insertLeveling();
+
+    }
+
+    @Override
+    public void setMessages(MessageType msg, int number) {
+        insertLeveling();
+
+    }
+
+}

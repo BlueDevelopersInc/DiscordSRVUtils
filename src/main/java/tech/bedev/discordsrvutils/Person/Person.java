@@ -34,4 +34,11 @@ public interface Person {
 
     void insertLeveling();
 
+    Long getDiscordMessages();
+    Long getMinecraftMessages();
+    Long getTotalMessages();
+    void addMessages(MessageType msg, int number);
+    void removeMessages(MessageType msg, int number);
+    void setMessages(MessageType msg, int number);
+
 }

@@ -7,15 +7,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.objects.Lag;
+import jdk.jfr.internal.Logger;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
-import sun.jvm.hotspot.debugger.cdbg.LineNumberVisitor;
 import tech.bedev.discordsrvutils.Configs.*;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.Person.PersonImpl;
 import tech.bedev.discordsrvutils.commands.*;
@@ -25,12 +24,8 @@ import tech.bedev.discordsrvutils.events.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class DiscordSRVUtils extends JavaPlugin {
     public final Map<UUID, Long> lastchattime = new HashMap<>();
@@ -78,6 +73,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 Integer.parseInt(v);
                 String v2 = v + "000";
+
                 return Long.parseLong(v2);
             } catch (NumberFormatException ex) {
                 return Long.parseLong("-1");
@@ -116,11 +112,6 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        TimerManager time = new TimerManager();
-        String duration = time.getTimeFormatter().getDuration(parseStringToMillies("1d"));
-        System.out.println(duration);
-
-
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -208,18 +199,27 @@ public class DiscordSRVUtils extends JavaPlugin {
                         "Closed_Category Bigint, ChannelID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
-                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int)").execute();
-                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (User Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int, DiscordMessages Bigint, MinecraftMessages Bigint)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (Userid Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int)").execute();
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
+                p1.setString(1, "discordsrvutils_leveling");
+                p1.setString(2, "DiscordMessages");
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) {
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN DiscordMessages Bigint").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
+                }
             } catch (SQLException exception) {
                 exception.printStackTrace();
 
             }
             try (Connection conn = getMemoryConnection()) {
-                conn.prepareStatement("CREATE TABLE suggestions_Awaiting (User Bigint, Channel Bigint, LastOutput Bigint)").execute();
+                conn.prepareStatement("CREATE TABLE suggestions_Awaiting (userid Bigint, Channel Bigint, LastOutput Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE status (Status int)").execute();
                 conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
+                conn.prepareStatement("CREATE TABLE helpmsges (userid Bigint, Channel Bigint, MessageID Bigint, lastOutput Bigint, Page int)").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
@@ -263,9 +263,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
             String newVersion = UpdateChecker.getLatestVersion();
             if (newVersion.equalsIgnoreCase(getDescription().getVersion())) {
-                getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+                getLogger().info(ChatColor.GREEN + "No new version available. (" + newVersion + ")");
             } else {
-                getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + newVersion);
+                getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + newVersion);
             }
 
             int pluginId = 9456; // <-- Replace with the id of your plugin!
