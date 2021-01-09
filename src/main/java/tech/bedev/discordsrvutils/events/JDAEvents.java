@@ -17,11 +17,16 @@ import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.springframework.util.StopWatch;
 import tech.bedev.discordsrvutils.Configs.SuggestionsConfig;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
+import tech.bedev.discordsrvutils.Managers.Stopwatch;
 import tech.bedev.discordsrvutils.Managers.Tickets;
+import tech.bedev.discordsrvutils.Managers.TimerManager;
+import tech.bedev.discordsrvutils.Person.MessageType;
 import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
@@ -853,6 +858,41 @@ public class JDAEvents extends ListenerAdapter {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+        } else if (args[0].equalsIgnoreCase(prefix + "leaderboard")) {
+            Stopwatch stopwatch = new TimerManager().getStopwatch();
+            stopwatch.start();
+            LeaderBoardManager manager = core.getLeaderBoardManager();
+            int count = 0;
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Leaderboard");
+            String description = "";
+            embed.setColor(Color.ORANGE);
+            for (Person currentPerson : manager.getLeaderBoardFromTo(1, 10)) {
+                count++;
+                if (description.equals("")) {
+                    description = "**" + count + ".**" + DiscordSRVUtils.Levelingconfig.leaderboard_format()
+                    .replace("[Minecraft_Name]", Bukkit.getOfflinePlayer(currentPerson.getMinecraftUUID()).getName())
+                    .replace("[Level]", Integer.toString(currentPerson.getLevel()))
+                    .replace("[TotalMessages]", currentPerson.getTotalMessages().toString())
+                    .replace("[DiscordMessages]", currentPerson.getDiscordMessages().toString())
+                    .replace("[MinecraftMessages]", currentPerson.getMinecraftMessages().toString())
+                            .replace("[XP]", Integer.toString(currentPerson.getXP()))
+
+                    ;
+                } else {
+                    description = description + "\n" + "**" + count + ".**" + DiscordSRVUtils.Levelingconfig.leaderboard_format()
+                            .replace("[Minecraft_Name]", Bukkit.getOfflinePlayer(currentPerson.getMinecraftUUID()).getName())
+                            .replace("[Level]", Integer.toString(currentPerson.getLevel()))
+                            .replace("[TotalMessages]", currentPerson.getTotalMessages().toString())
+                            .replace("[DiscordMessages]", currentPerson.getDiscordMessages().toString())
+                            .replace("[MinecraftMessages]", currentPerson.getMinecraftMessages().toString())
+                             .replace("[XP]", Integer.toString(currentPerson.getXP()))
+                    ;
+                }
+            }
+            embed.setDescription(description);
+            e.getChannel().sendMessage(embed.build()).queue();
+            System.out.println(stopwatch.getElapsedTime() + "ms");
         }
         try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
@@ -1260,6 +1300,7 @@ public class JDAEvents extends ListenerAdapter {
                 if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                     Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
                     if (person.isLinked()) {
+                        person.addMessages(MessageType.Discord, 1);
                         Long val = core.lastchattime.get(person.getMinecraftUUID());
                         if (val == null) {
                             core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());

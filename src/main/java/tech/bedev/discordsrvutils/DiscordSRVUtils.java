@@ -20,6 +20,8 @@ import tech.bedev.discordsrvutils.Person.PersonImpl;
 import tech.bedev.discordsrvutils.commands.*;
 import tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
 import tech.bedev.discordsrvutils.events.*;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManagerImpl;
 
 
 import java.io.IOException;
@@ -210,6 +212,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
                 }
             } catch (SQLException exception) {
+                if (SQLEnabled)
                 exception.printStackTrace();
 
             }
@@ -316,6 +319,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Person getPersonByUUID(UUID uuid) {
+        if (uuid == null) return null;
         if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) {
             if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
 
@@ -333,4 +337,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (uuid == null) return new PersonImpl(null, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);
         return new PersonImpl(uuid, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);
     }
+    public LeaderBoardManager getLeaderBoardManager() {
+        return new LeaderBoardManagerImpl(this);
+    }
+
 }

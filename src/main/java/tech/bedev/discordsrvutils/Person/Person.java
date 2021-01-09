@@ -40,5 +40,8 @@ public interface Person {
     void addMessages(MessageType msg, int number);
     void removeMessages(MessageType msg, int number);
     void setMessages(MessageType msg, int number);
+    boolean isBukkitCached();
+
+    void reloadCache();
 
 }

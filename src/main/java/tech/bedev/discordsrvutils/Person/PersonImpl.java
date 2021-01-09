@@ -17,15 +17,23 @@ public class PersonImpl implements Person {
     private final UUID uuid;
     private final Member DiscordUser;
     private DiscordSRVUtils core;
+    private int level = -1;
+    private int xp = -1;
+    private Long minecraftmsges = -1L;
+    private Long discordmsges = -1L;
 
     public PersonImpl(UUID uuid, Member DiscordUser, DiscordSRVUtils core) {
         this.DiscordUser = DiscordUser;
         this.core = core;
         if (uuid != null) {
-            this.uuid = Bukkit.getOfflinePlayer(uuid).getUniqueId();
+            UUID uuid2 = Bukkit.getOfflinePlayer(uuid).getUniqueId();
+            this.uuid = uuid;
         } else {
             this.uuid = null;
         }
+        insertLeveling();
+        reloadCache();
+
     }
     @Override
     public void setLevel(int level) {
@@ -41,6 +49,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, level);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.level = level;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -53,6 +62,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, level);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.level = level;
                     }
 
                 }
@@ -77,6 +87,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("level") + levels);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.level = r1.getInt("level") + levels;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -89,6 +100,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("level") + levels);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.level = r1.getInt("level") + levels;
                     }
 
                 }
@@ -112,6 +124,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("level") - levels);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.level = r1.getInt("level") - levels;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -124,6 +137,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("level") - levels);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.level = r1.getInt("level") - levels;
                     }
 
                 }
@@ -148,6 +162,7 @@ public class PersonImpl implements Person {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET level=0 WHERE unique_id=?");
                         p2.setString(1, uuid.toString());
                         p2.execute();
+                        this.level = 0;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -159,6 +174,7 @@ public class PersonImpl implements Person {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET level=0 WHERE userID=?");
                         p2.setLong(1, DiscordUser.getIdLong());
                         p2.execute();
+                        this.level = 0;
                     }
                 }
             } catch (SQLException ex) {
@@ -182,6 +198,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, xp);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.xp = xp;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -194,6 +211,7 @@ public class PersonImpl implements Person {
                         p2.setInt(2, xp);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.xp = xp;
                     }
 
                 }
@@ -219,6 +237,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("XP") + xp);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.xp = r1.getInt("XP") + xp;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -231,6 +250,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("XP") + xp);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.xp = r1.getInt("XP") + xp;
                     }
 
                 }
@@ -255,6 +275,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("XP") - xp);
                         p2.setString(2, uuid.toString());
                         p2.execute();
+                        this.xp = r1.getInt("XP") - xp;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -267,6 +288,7 @@ public class PersonImpl implements Person {
                         p2.setInt(1, r1.getInt("XP") - xp);
                         p2.setLong(2, DiscordUser.getIdLong());
                         p2.execute();
+                        this.xp = r1.getInt("XP") - xp;
                     }
 
                 }
@@ -290,6 +312,7 @@ public class PersonImpl implements Person {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET XP=0 WHERE unique_id=?");
                         p2.setString(1, uuid.toString());
                         p2.execute();
+                        this.xp = 0;
                     }
                 } else {
                     if (DiscordUser == null) return;
@@ -301,6 +324,7 @@ public class PersonImpl implements Person {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET XP=0 WHERE userID=?");
                         p2.setLong(1, DiscordUser.getIdLong());
                         p2.execute();
+                        this.xp = 0;
                     }
                 }
             } catch (SQLException ex) {
@@ -321,40 +345,12 @@ public class PersonImpl implements Person {
 
     @Override
     public int getLevel() {
-            insertLeveling();
-            if (uuid != null) {
-                try (Connection conn = core.getDatabaseFile()) {
-                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
-                    p1.setString(1, uuid.toString());
-                    p1.execute();
-                    ResultSet r1 = p1.executeQuery();
-                    if (r1.next()) {
-                        return r1.getInt("level");
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        return -1;
+        return level;
     }
 
     @Override
     public int getXP() {
-            insertLeveling();
-            if (uuid != null) {
-                try (Connection conn = core.getDatabaseFile()) {
-                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
-                    p1.setString(1, uuid.toString());
-                    p1.execute();
-                    ResultSet r1 = p1.executeQuery();
-                    if (r1.next()) {
-                        return r1.getInt("XP");
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        return -1;
+        return xp;
     }
 
     @Override
@@ -428,29 +424,61 @@ public class PersonImpl implements Person {
 
     @Override
     public Long getDiscordMessages() {
-        insertLeveling();
-        return -1L;
+        return discordmsges;
     }
 
     @Override
     public Long getMinecraftMessages() {
-        insertLeveling();
-        return -1L;
+        return discordmsges;
     }
 
     @Override
     public Long getTotalMessages() {
         insertLeveling();
+        if (uuid != null) {
+            try (Connection conn = core.getDatabaseFile()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                p1.setString(1, uuid.toString());
+                ResultSet r1 = p1.executeQuery();
+                if (r1.next()) {
+                    return r1.getLong("DiscordMessages") + r1.getLong("MinecraftMessages");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
         return -1L;
     }
 
     @Override
     public void addMessages(MessageType msg, int number) {
+        if (uuid == null) return;
         insertLeveling();
         try (Connection conn = core.getDatabaseFile()) {
             switch (msg) {
                 case Discord:
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p1.setString(1, uuid.toString());
+                    ResultSet r1 = p1.executeQuery();
+                    if (r1.next()) {
+                        PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET DiscordMessages=? WHERE unique_id=?");
+                        p2.setLong(1, r1.getLong("DiscordMessages") + number);
+                        p2.setString(2, uuid.toString());
+                        p2.execute();
+                        discordmsges = r1.getLong("DiscordMessages") + number;
+                    }
                     break;
+                case Minecraft:
+                    PreparedStatement p2 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p2.setString(1, uuid.toString());
+                    ResultSet r2 = p2.executeQuery();
+                    if (r2.next()) {
+                        PreparedStatement p3 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET MinecraftMessages=? WHERE unique_id=?");
+                        p3.setLong(1, r2.getLong("MinecraftMessages") + number);
+                        p3.setString(2, uuid.toString());
+                        p3.execute();
+                        minecraftmsges = r2.getLong("MinecraftMessages") + number;
+                    }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -460,14 +488,97 @@ public class PersonImpl implements Person {
 
     @Override
     public void removeMessages(MessageType msg, int number) {
+        if (uuid == null) return;
         insertLeveling();
+        try (Connection conn = core.getDatabaseFile()) {
+            switch (msg) {
+                case Discord:
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p1.setString(1, uuid.toString());
+                    ResultSet r1 = p1.executeQuery();
+                    if (r1.next()) {
+                        PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET DiscordMessages=? WHERE unique_id=?");
+                        p2.setLong(1, r1.getLong("DiscordMessages") - number);
+                        p2.setString(2, uuid.toString());
+                        p2.execute();
+                        discordmsges = r1.getLong("DiscordMessages") - number;
+                    }
+                    break;
+                case Minecraft:
+                    PreparedStatement p2 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p2.setString(1, uuid.toString());
+                    ResultSet r2 = p2.executeQuery();
+                    if (r2.next()) {
+                        PreparedStatement p3 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET MinecraftMessages=? WHERE unique_id=?");
+                        p3.setLong(1, r2.getLong("MinecraftMessages") - number);
+                        p3.setString(2, uuid.toString());
+                        p3.execute();
+                        minecraftmsges = r2.getLong("DiscordMessages") - number;
+                    }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
     }
 
     @Override
     public void setMessages(MessageType msg, int number) {
+        if (uuid == null) return;
         insertLeveling();
+        try (Connection conn = core.getDatabaseFile()) {
+            switch (msg) {
+                case Discord:
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p1.setString(1, uuid.toString());
+                    ResultSet r1 = p1.executeQuery();
+                    if (r1.next()) {
+                        PreparedStatement p2 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET DiscordMessages=? WHERE unique_id=?");
+                        p2.setLong(1, number);
+                        p2.setString(2, uuid.toString());
+                        p2.execute();
+                        discordmsges = Long.parseLong(number + "");
+                    }
+                    break;
+                case Minecraft:
+                    PreparedStatement p2 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+                    p2.setString(1, uuid.toString());
+                    ResultSet r2 = p2.executeQuery();
+                    if (r2.next()) {
+                        PreparedStatement p3 = conn.prepareStatement("UPDATE discordsrvutils_leveling SET MinecraftMessages=? WHERE unique_id=?");
+                        p3.setLong(1, number);
+                        p3.setString(2, uuid.toString());
+                        p3.execute();
+                        minecraftmsges = Long.parseLong(number + "");
+                    }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 
+    @Override
+    public boolean isBukkitCached() {
+        if (uuid == null) return false;
+        if (Bukkit.getOfflinePlayer(uuid).getName() == null) return false;
+        return true;
+    }
+
+    @Override
+    public void reloadCache() {
+        try (Connection conn = core.getDatabaseFile()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
+            p1.setString(1, uuid.toString());
+            ResultSet r1 = p1.executeQuery();
+            if (r1.next()) {
+                level = r1.getInt("Level");
+                xp = r1.getInt("XP");
+                minecraftmsges = r1.getLong("MinecraftMessages");
+                discordmsges = r1.getLong("DiscordMessages");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
