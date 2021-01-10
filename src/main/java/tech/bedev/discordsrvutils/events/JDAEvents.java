@@ -162,7 +162,9 @@ public class JDAEvents extends ListenerAdapter {
 
 
                 }
-                        e.getGuild().getTextChannelById(DiscordSRVUtils.Config.WelcomerChannel()).sendMessage(embed.build()).queue();
+                TextChannel ch = e.getGuild().getTextChannelById(DiscordSRVUtils.Config.WelcomerChannel());
+                        if (ch != null)
+                        ch.sendMessage(embed.build()).queue();
 
                     }
             if (DiscordSRVUtils.Config.isJoinMessageToOnlinePlayers()) {
@@ -1720,7 +1722,7 @@ public class JDAEvents extends ListenerAdapter {
                                                             embed.setTitle("Page " + newpages + " | " + val);
                                                             embed.setColor(Color.GREEN);
                                                             if (val.equalsIgnoreCase("Suggestions")) {
-                                                                embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply");
+                                                                embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply`");
                                                         } else if (val.equalsIgnoreCase("Leveling")) {
                                                                 embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                             } else if (val.equalsIgnoreCase("Moderation")) {
@@ -1762,7 +1764,7 @@ public class JDAEvents extends ListenerAdapter {
                                                                 embed.setTitle("Page " + newpages + " | " + val);
                                                                 embed.setColor(Color.GREEN);
                                                                 if (val.equalsIgnoreCase("Suggestions")) {
-                                                                    embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply");
+                                                                    embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply`");
                                                                 } else if (val.equalsIgnoreCase("Leveling")) {
                                                                     embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                                 } else if (val.equalsIgnoreCase("Moderation")) {

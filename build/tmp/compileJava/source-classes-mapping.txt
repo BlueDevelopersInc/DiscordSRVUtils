@@ -1,15 +1,15 @@
-tech/bedev/discordsrvutils/commands/removelevelsCommand.java
- tech.bedev.discordsrvutils.commands.removelevelsCommand
-tech/bedev/discordsrvutils/commands/setlevelCommand.java
- tech.bedev.discordsrvutils.commands.setlevelCommand
-tech/bedev/discordsrvutils/events/DiscordSRVEventListener.java
- tech.bedev.discordsrvutils.events.DiscordSRVEventListener
-tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.java
- tech.bedev.discordsrvutils.leaderboard.LeaderBoardManagerImpl
+tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java
+ tech.bedev.discordsrvutils.Configs.BansIntegrationConfig
+tech/bedev/discordsrvutils/Managers/TimerManager.java
+ tech.bedev.discordsrvutils.Managers.TimerManager
+tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.java
+ tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager
+tech/bedev/discordsrvutils/utils/StringUtils.java
+ tech.bedev.discordsrvutils.utils.StringUtils
 tech/bedev/discordsrvutils/UpdateChecker.java
  tech.bedev.discordsrvutils.UpdateChecker
-tech/bedev/discordsrvutils/StatusUpdater.java
- tech.bedev.discordsrvutils.StatusUpdater
+tech/bedev/discordsrvutils/Configs/ModerationConfig.java
+ tech.bedev.discordsrvutils.Configs.ModerationConfig
 tech/bedev/discordsrvutils/PluginConfiguration.java
  tech.bedev.discordsrvutils.PluginConfiguration
 tech/bedev/discordsrvutils/events/DiscordLevelupEvent.java
@@ -20,78 +20,78 @@ tech/bedev/discordsrvutils/commands/tabCompleters/DiscordSRVUtilsTabCompleter.ja
  tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter
 tech/bedev/discordsrvutils/Configs/BotSettingsConfig.java
  tech.bedev.discordsrvutils.Configs.BotSettingsConfig
+tech/bedev/discordsrvutils/Configs/ConfManager.java
+ tech.bedev.discordsrvutils.Configs.ConfManager
+tech/bedev/discordsrvutils/TPSCounter.java
+ tech.bedev.discordsrvutils.TPSCounter
+tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java
+ tech.bedev.discordsrvutils.Configs.SuggestionsConfig
+tech/bedev/discordsrvutils/Managers/StopWatchImpl.java
+ tech.bedev.discordsrvutils.Managers.StopWatchImpl
+tech/bedev/discordsrvutils/utils/PlayerUtil.java
+ tech.bedev.discordsrvutils.utils.PlayerUtil
+tech/bedev/discordsrvutils/Exceptions/StartupException.java
+ tech.bedev.discordsrvutils.Exceptions.StartupException
+tech/bedev/discordsrvutils/Configs/SQLConfig.java
+ tech.bedev.discordsrvutils.Configs.SQLConfig
+tech/bedev/discordsrvutils/Managers/TimeFormatter.java
+ tech.bedev.discordsrvutils.Managers.TimeFormatter
+tech/bedev/discordsrvutils/events/PlayerLevelupEvent.java
+ tech.bedev.discordsrvutils.events.PlayerLevelupEvent
+tech/bedev/discordsrvutils/Person/MessageType.java
+ tech.bedev.discordsrvutils.Person.MessageType
+tech/bedev/discordsrvutils/Managers/Stopwatch.java
+ tech.bedev.discordsrvutils.Managers.Stopwatch
+tech/bedev/discordsrvutils/Configs/LevelingConfig.java
+ tech.bedev.discordsrvutils.Configs.LevelingConfig
+tech/bedev/discordsrvutils/Configs/MainConfConfig.java
+ tech.bedev.discordsrvutils.Configs.MainConfConfig
+tech/bedev/discordsrvutils/commands/removelevelsCommand.java
+ tech.bedev.discordsrvutils.commands.removelevelsCommand
+tech/bedev/discordsrvutils/commands/setlevelCommand.java
+ tech.bedev.discordsrvutils.commands.setlevelCommand
+tech/bedev/discordsrvutils/events/EssentialsAfk.java
+ tech.bedev.discordsrvutils.events.EssentialsAfk
+tech/bedev/discordsrvutils/events/JDAEvents.java
+ tech.bedev.discordsrvutils.events.JDAEvents
+tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.java
+ tech.bedev.discordsrvutils.leaderboard.LeaderBoardManagerImpl
+tech/bedev/discordsrvutils/commands/setxpCommand.java
+ tech.bedev.discordsrvutils.commands.setxpCommand
+tech/bedev/discordsrvutils/StatusUpdater.java
+ tech.bedev.discordsrvutils.StatusUpdater
+tech/bedev/discordsrvutils/TimeHandler.java
+ tech.bedev.discordsrvutils.TimeHandler
+tech/bedev/discordsrvutils/commands/addxpCommand.java
+ tech.bedev.discordsrvutils.commands.addxpCommand
 tech/bedev/discordsrvutils/commands/addlevelsCommand.java
  tech.bedev.discordsrvutils.commands.addlevelsCommand
 tech/bedev/discordsrvutils/DiscordSRVUtils.java
  tech.bedev.discordsrvutils.DiscordSRVUtils
-tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java
- tech.bedev.discordsrvutils.Configs.SuggestionsConfig
+tech/bedev/discordsrvutils/Managers/ConfOptionsManager.java
+ tech.bedev.discordsrvutils.Managers.ConfOptionsManager
 tech/bedev/discordsrvutils/PlaceholderAPI.java
  tech.bedev.discordsrvutils.PlaceholderAPI
+tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.java
+ tech.bedev.discordsrvutils.commands.DiscordSRVUtilsCommand
 tech/bedev/discordsrvutils/Managers/Tickets.java
  tech.bedev.discordsrvutils.Managers.Tickets
+tech/bedev/discordsrvutils/SuggestionsIdleHandler.java
+ tech.bedev.discordsrvutils.SuggestionsIdleHandler
 tech/bedev/discordsrvutils/events/AdvancedBanListener.java
  tech.bedev.discordsrvutils.events.AdvancedBanListener
  tech.bedev.discordsrvutils.events.AdvancedBanListener$1
 tech/bedev/discordsrvutils/commands/removeXPCommand.java
  tech.bedev.discordsrvutils.commands.removeXPCommand
-tech/bedev/discordsrvutils/Managers/TimeFormatter.java
- tech.bedev.discordsrvutils.Managers.TimeFormatter
+tech/bedev/discordsrvutils/Person/PersonImpl.java
+ tech.bedev.discordsrvutils.Person.PersonImpl
+ tech.bedev.discordsrvutils.Person.PersonImpl$1
 tech/bedev/discordsrvutils/events/BukkitEventListener.java
  tech.bedev.discordsrvutils.events.BukkitEventListener
  tech.bedev.discordsrvutils.events.BukkitEventListener$1
 tech/bedev/discordsrvutils/helpDeleter.java
  tech.bedev.discordsrvutils.helpDeleter
-tech/bedev/discordsrvutils/events/EssentialsAfk.java
- tech.bedev.discordsrvutils.events.EssentialsAfk
-tech/bedev/discordsrvutils/Configs/LevelingConfig.java
- tech.bedev.discordsrvutils.Configs.LevelingConfig
-tech/bedev/discordsrvutils/Configs/MainConfConfig.java
- tech.bedev.discordsrvutils.Configs.MainConfConfig
-tech/bedev/discordsrvutils/Managers/Stopwatch.java
- tech.bedev.discordsrvutils.Managers.Stopwatch
-tech/bedev/discordsrvutils/events/JDAEvents.java
- tech.bedev.discordsrvutils.events.JDAEvents
-tech/bedev/discordsrvutils/Person/MessageType.java
- tech.bedev.discordsrvutils.Person.MessageType
-tech/bedev/discordsrvutils/events/PlayerLevelupEvent.java
- tech.bedev.discordsrvutils.events.PlayerLevelupEvent
-tech/bedev/discordsrvutils/commands/setxpCommand.java
- tech.bedev.discordsrvutils.commands.setxpCommand
-tech/bedev/discordsrvutils/Configs/SQLConfig.java
- tech.bedev.discordsrvutils.Configs.SQLConfig
-tech/bedev/discordsrvutils/Exceptions/StartupException.java
- tech.bedev.discordsrvutils.Exceptions.StartupException
-tech/bedev/discordsrvutils/TimeHandler.java
- tech.bedev.discordsrvutils.TimeHandler
-tech/bedev/discordsrvutils/utils/PlayerUtil.java
- tech.bedev.discordsrvutils.utils.PlayerUtil
-tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.java
- tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager
-tech/bedev/discordsrvutils/commands/addxpCommand.java
- tech.bedev.discordsrvutils.commands.addxpCommand
-tech/bedev/discordsrvutils/Configs/ConfManager.java
- tech.bedev.discordsrvutils.Configs.ConfManager
-tech/bedev/discordsrvutils/TPSCounter.java
- tech.bedev.discordsrvutils.TPSCounter
-tech/bedev/discordsrvutils/Managers/ConfOptionsManager.java
- tech.bedev.discordsrvutils.Managers.ConfOptionsManager
-tech/bedev/discordsrvutils/Managers/StopWatchImpl.java
- tech.bedev.discordsrvutils.Managers.StopWatchImpl
-tech/bedev/discordsrvutils/utils/StringUtils.java
- tech.bedev.discordsrvutils.utils.StringUtils
-tech/bedev/discordsrvutils/Configs/ModerationConfig.java
- tech.bedev.discordsrvutils.Configs.ModerationConfig
-tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.java
- tech.bedev.discordsrvutils.commands.DiscordSRVUtilsCommand
-tech/bedev/discordsrvutils/SuggestionsIdleHandler.java
- tech.bedev.discordsrvutils.SuggestionsIdleHandler
-tech/bedev/discordsrvutils/Managers/TimerManager.java
- tech.bedev.discordsrvutils.Managers.TimerManager
+tech/bedev/discordsrvutils/events/DiscordSRVEventListener.java
+ tech.bedev.discordsrvutils.events.DiscordSRVEventListener
 tech/bedev/discordsrvutils/SRCanceller.java
  tech.bedev.discordsrvutils.SRCanceller
-tech/bedev/discordsrvutils/Person/PersonImpl.java
- tech.bedev.discordsrvutils.Person.PersonImpl
- tech.bedev.discordsrvutils.Person.PersonImpl$1
-tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java
- tech.bedev.discordsrvutils.Configs.BansIntegrationConfig

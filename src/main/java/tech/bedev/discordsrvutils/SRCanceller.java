@@ -16,7 +16,7 @@ public class SRCanceller extends TimerTask {
     @Override
     public void run() {
         try (Connection conn = core.getMemoryConnection()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM helpmsges");
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM srmsgesreply");
             ResultSet r1 = p1.executeQuery();
             while (r1.next()) {
                 Long lastOutput = r1.getLong("LastOutput");

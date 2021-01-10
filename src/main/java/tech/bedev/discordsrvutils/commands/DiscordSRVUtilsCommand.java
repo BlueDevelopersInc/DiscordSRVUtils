@@ -163,8 +163,9 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                             sender.sendMessage(ChatColor.RED + "Could not clear memory.");
                             ex.printStackTrace();
                         }
+                        map.remove(sender.getName());
                     } else {
-                        sender.sendMessage("You are late! 10 seconds already passed");
+                        sender.sendMessage(ChatColor.RED + "You are late! 10 seconds already passed");
                     }
                 }
 
