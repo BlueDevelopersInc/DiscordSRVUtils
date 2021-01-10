@@ -490,7 +490,11 @@ public class JDAEvents extends ListenerAdapter {
                         Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
                         if (!p.isLinked()) {
                             e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
-                        } else {
+                        }  else if (!p.isBukkitCached()) {
+                            e.getChannel().sendMessage("You didnt join for a long time").queue();
+                            return;
+                        }
+                        else {
                             EmbedBuilder embed = new EmbedBuilder();
                             embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
                             embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
@@ -522,7 +526,10 @@ public class JDAEvents extends ListenerAdapter {
                                 embed.setColor(Color.CYAN);
                                 embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                                 e.getChannel().sendMessage(embed.build()).queue();
-                            } else {
+                            } else if (p.isBukkitCached()) {
+                                e.getChannel().sendMessage("This player has never joined before").queue();
+                                return;
+                            }else {
                                 e.getChannel().sendMessage("This user is not linked.").queue();
                             }
                         }
@@ -1444,6 +1451,7 @@ public class JDAEvents extends ListenerAdapter {
                 if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                     Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
                     if (person.isLinked()) {
+                        if (!person.isBukkitCached()) return;
                         person.addMessages(MessageType.Discord, 1);
                         Long val = core.lastchattime.get(person.getMinecraftUUID());
                         if (val == null) {
@@ -1710,7 +1718,7 @@ public class JDAEvents extends ListenerAdapter {
                                                             embed.setTitle("Page " + newpages + " | " + val);
                                                             embed.setColor(Color.GREEN);
                                                             if (val.equalsIgnoreCase("Suggestions")) {
-                                                                embed.setDescription("`" + prefix + "suggest`");
+                                                                embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply");
                                                         } else if (val.equalsIgnoreCase("Leveling")) {
                                                                 embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                             } else if (val.equalsIgnoreCase("Moderation")) {
@@ -1752,7 +1760,7 @@ public class JDAEvents extends ListenerAdapter {
                                                                 embed.setTitle("Page " + newpages + " | " + val);
                                                                 embed.setColor(Color.GREEN);
                                                                 if (val.equalsIgnoreCase("Suggestions")) {
-                                                                    embed.setDescription("`" + prefix + "suggest`");
+                                                                    embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply");
                                                                 } else if (val.equalsIgnoreCase("Leveling")) {
                                                                     embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                                 } else if (val.equalsIgnoreCase("Moderation")) {

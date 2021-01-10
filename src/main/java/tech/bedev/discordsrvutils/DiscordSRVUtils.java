@@ -153,7 +153,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         } catch (InvalidConfigException e) {
             e.printStackTrace();
         }
-        try {
 
             if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
                 setEnabled(false);
@@ -213,7 +212,9 @@ public class DiscordSRVUtils extends JavaPlugin {
                         conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
                     }
                 }catch (SQLException ex) {
-                    if (SQLEnabled) ex.printStackTrace();
+                    if (SQLEnabled) {
+                        ex.printStackTrace();
+                    }
                 }
                 PreparedStatement p2 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
                 p2.setString(1, "discordsrvutils_suggestions");
@@ -225,7 +226,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReplier Bigint").execute();
                 }
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                if (SQLEnabled) exception.printStackTrace();
 
             }
             try (Connection conn = getMemoryConnection()) {
@@ -294,13 +295,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 });
             }
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
-        } catch (Exception ex) {
-            try {
-                throw new StartupException();
-            } catch (StartupException e) {
-                e.printStackTrace();
-            }
-        }
+
         timer2.schedule(new TimeHandler(this), 0, 1000);
 
     }

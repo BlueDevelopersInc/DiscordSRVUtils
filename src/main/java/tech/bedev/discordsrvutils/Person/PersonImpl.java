@@ -376,6 +376,7 @@ public class PersonImpl implements Person {
 
         @Override
         public boolean isLinked() {
+        if (!isBukkitCached()) return false;
             int count = 0;
             if (uuid != null) count++;
             if (DiscordUser != null) count++;
@@ -553,6 +554,7 @@ public class PersonImpl implements Person {
 
     @Override
     public void reloadCache() {
+        if (uuid == null) return;
         try (Connection conn = core.getDatabaseFile()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
             p1.setString(1, uuid.toString());
