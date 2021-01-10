@@ -434,20 +434,7 @@ public class PersonImpl implements Person {
 
     @Override
     public Long getTotalMessages() {
-        insertLeveling();
-        if (uuid != null) {
-            try (Connection conn = core.getDatabaseFile()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
-                p1.setString(1, uuid.toString());
-                ResultSet r1 = p1.executeQuery();
-                if (r1.next()) {
-                    return r1.getLong("DiscordMessages") + r1.getLong("MinecraftMessages");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return -1L;
+        return discordmsges + minecraftmsges;
     }
 
     @Override

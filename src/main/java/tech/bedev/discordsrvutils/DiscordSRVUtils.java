@@ -202,14 +202,27 @@ public class DiscordSRVUtils extends JavaPlugin {
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int, DiscordMessages Bigint, MinecraftMessages Bigint)").execute();
-                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (Userid Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int)").execute();
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
-                p1.setString(1, "discordsrvutils_leveling");
-                p1.setString(2, "DiscordMessages");
-                ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) {
-                    conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN DiscordMessages Bigint").execute();
-                    conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (Userid Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int, isAccepted varchar(50), staffReply varchar(1000), staffReplier Bigint)").execute();
+                try {
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
+                    p1.setString(1, "discordsrvutils_leveling");
+                    p1.setString(2, "DiscordMessages");
+                    ResultSet r1 = p1.executeQuery();
+                    if (!r1.next()) {
+                        conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN DiscordMessages Bigint").execute();
+                        conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
+                    }
+                }finally {
+
+                }
+                PreparedStatement p2 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
+                p2.setString(1, "discordsrvutils_suggestions");
+                p2.setString(2, "isAccepted");
+                ResultSet r2 = p2.executeQuery();
+                if (!r2.next()) {
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN isAccepted varchar(50)").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReply varchar(1000)").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReplier Bigint").execute();
                 }
             } catch (SQLException exception) {
                 if (SQLEnabled)
@@ -223,6 +236,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
                 conn.prepareStatement("CREATE TABLE helpmsges (userid Bigint, Channel Bigint, MessageID Bigint, lastOutput Bigint, Page int)").execute();
+                conn.prepareStatement("CREATE TABLE helpmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50))").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }

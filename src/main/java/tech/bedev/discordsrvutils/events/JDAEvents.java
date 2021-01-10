@@ -1,12 +1,10 @@
 package tech.bedev.discordsrvutils.events;
 
+import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageReaction;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageDeleteEvent;
@@ -893,8 +891,70 @@ public class JDAEvents extends ListenerAdapter {
             embed.setDescription(description);
             e.getChannel().sendMessage(embed.build()).queue();
             System.out.println(stopwatch.getElapsedTime() + "ms");
+        } else if (args[0].equalsIgnoreCase(prefix + "suggestionreply") || args[0].equalsIgnoreCase(prefix + "sr")) {
+            if (!isModerator(e.getMember())) {
+                e.getChannel().sendMessage("You don't have permission to use this command").queue();
+            }
+            if (!(args.length >= 2)) {
+                e.getChannel().sendMessage("**Usage: **" + prefix + "sr <Suggestion Message ID>").queue();
+            } else {
+                try (Connection conn = core.getMemoryConnection(); Connection conn2 = core.getDatabaseFile()) {
+                    PreparedStatement pcheck1 = conn.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=?");
+                    pcheck1.setLong(1, e.getMember().getIdLong());
+                    pcheck1.setLong(2, e.getChannel().getIdLong());
+                    ResultSet rcheck1 = pcheck1.executeQuery();
+                    if (rcheck1.next()) return;
+                    if (!isNumberic(args[1])) {
+                        e.getChannel().sendMessage("Invalid ID, Please try Again").queue(); return;
+                    }
+                    PreparedStatement pcheck2 = conn2.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Message=?");
+                    pcheck2.setLong(1, Long.parseLong(args[1]));
+                    ResultSet rcheck2 = pcheck2.executeQuery();
+                    if (rcheck2.next()) {
+                        if (!(rcheck2.getString("isAccepted") == null)) {
+                            e.getChannel().sendMessage("This suggestion has been already Accepted/denied").queue();
+                            return;
+                        }
+                    } else {
+                        e.getChannel().sendMessage("Suggestion not found.").queue();
+                        return;
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(Color.CYAN);
+                embed.setDescription("Is this suggestion accepted?\n:regional_indicator_y: YES\n\n :regional_indicator_n: NO");
+                embed.setTitle("Reply a suggestion");
+                e.getChannel().sendMessage(embed.build()).queue(msg -> {
+                    try (Connection conn = core.getMemoryConnection()) {
+                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO helpmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted) VALUES (?, ?, ?, 1, ?)");
+                        p1.setLong(1, e.getMember().getIdLong());
+                        p1.setLong(2, e.getChannel().getIdLong());
+                        p1.setLong(3, Long.parseLong(args[1]));
+                        p1.setLong(4, msg.getIdLong());
+                        p1.execute();
+                        msg.addReaction("\uD83C\uDDFE").queue();
+                        msg.addReaction("\uD83C\uDDF3").queue();
+
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            }
         }
+
         try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
+            PreparedStatement pp1 = conn.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=?");
+            pp1.setLong(1, e.getMember().getIdLong());
+            pp1.setLong(2, e.getChannel().getIdLong());
+            ResultSet rr1 = pp1.executeQuery();
+            if (rr1.next()) {
+                if (rr1.getInt("step") == 2) {
+
+
+                }
+            }
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
                 p1.setLong(1, e.getMember().getIdLong());
                 p1.setLong(2, e.getChannel().getIdLong());
@@ -1258,6 +1318,34 @@ public class JDAEvents extends ListenerAdapter {
                                         embed.addField("Suggestion", e.getMessage().getContentRaw(), false);
                                         channel.sendMessage(embed.build()).queue(msg -> {
                                             try (Connection c1 = core.getDatabaseFile(); Connection c2 = core.getMemoryConnection()) {
+                                                String emote_yes = DiscordSRVUtils.SuggestionsConfig.emoji_yes();
+                                                String emote_no = DiscordSRVUtils.SuggestionsConfig.emoji_no();
+                                                String yesparsed = EmojiParser.parseToUnicode(":" + emote_yes + ":");
+                                                if (!yesparsed.equals(":" + emote_yes + ":")) {
+                                                    emote_yes = yesparsed;
+                                                } else {
+                                                    List<Emote> emotes = e.getGuild().getEmotesByName(emote_yes, true);
+                                                    if (emotes.isEmpty()) {
+                                                        emote_yes = "✅";
+                                                    } else {
+                                                        Emote emote = emotes.get(0);
+                                                        emote_yes = "a:" + emote.getName() + ":" + emote.getId();
+                                                    }
+                                                }
+                                                String noparesed = ":" + emote_no + ":";
+                                                if (!noparesed.equals(":" + emote_no + ":")) {
+                                                    emote_no = noparesed;
+                                                } else {
+                                                    List<Emote> emotes = e.getGuild().getEmotesByName(emote_no, true);
+                                                    if (emotes.isEmpty()) {
+                                                        emote_no = "❌";
+                                                    } else {
+                                                        Emote emote = emotes.get(0);
+                                                        emote_no = "a:" + emote.getName() + ":" + emote.getId();
+                                                    }
+                                                }
+                                                System.out.println(emote_yes);
+                                                System.out.println(emote_no);
                                                     PreparedStatement p5 = c1.prepareStatement("INSERT INTO discordsrvutils_suggestions (Userid, Channel, Message, Suggestion, Number) VALUES (?, ?, ?, ?, ?)");
                                                     p5.setLong(1, e.getMember().getIdLong());
                                                     p5.setLong(2, channel.getIdLong());
@@ -1269,8 +1357,8 @@ public class JDAEvents extends ListenerAdapter {
                                                     p6.setLong(1, e.getMember().getIdLong());
                                                     p6.setLong(2, e.getChannel().getIdLong());
                                                     p6.execute();
-                                                    msg.addReaction("✅").queue();
-                                                    msg.addReaction("❎").queue();
+                                                    msg.addReaction(emote_yes).queue();
+                                                    msg.addReaction(emote_no).queue();
                                                     e.getChannel().sendMessage("Your Suggestion has been recorded.").queue();
                                             } catch (SQLException ex) {
                                                 ex.printStackTrace();
@@ -1477,6 +1565,38 @@ public class JDAEvents extends ListenerAdapter {
                                             e.getTextChannel().delete().queue();
                                         }
                                     } else {
+                                        String emote_yes = DiscordSRVUtils.SuggestionsConfig.emoji_yes();
+                                        String emote_no = DiscordSRVUtils.SuggestionsConfig.emoji_no();
+                                        String remote_yes;
+                                        String remote_no;
+                                        String yesparsed = EmojiParser.parseToUnicode(":" + emote_yes + ":");
+                                        if (!yesparsed.equals(":" + emote_yes + ":")) {
+                                            remote_yes = yesparsed;
+                                            emote_yes = yesparsed;
+                                        } else {
+                                            List<Emote> emotes = e.getGuild().getEmotesByName(emote_yes, true);
+                                            if (emotes.isEmpty()) {
+                                                remote_yes = "✅";
+                                                emote_yes = "✅";
+                                            } else {
+                                                Emote emote = emotes.get(0);
+                                                remote_yes = "a:" + emote.getName() + ":" + emote.getId();
+                                            }
+                                        }
+                                        String noparesed = ":" + emote_no + ":";
+                                        if (!noparesed.equals(":" + emote_no + ":")) {
+                                            remote_no = noparesed;
+                                            emote_no = noparesed;
+                                        } else {
+                                            List<Emote> emotes = e.getGuild().getEmotesByName(emote_no, true);
+                                            if (emotes.isEmpty()) {
+                                                remote_no = "❌";
+                                                emote_no = "❌";
+                                            } else {
+                                                Emote emote = emotes.get(0);
+                                                remote_no = "a:" + emote.getName() + ":" + emote.getId();
+                                            }
+                                        }
                                         PreparedStatement p4 = conn5.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Userid=? AND Channel=? AND Message=?");
                                         p4.setLong(1, e.getMember().getIdLong());
                                         p4.setLong(2, e.getChannel().getIdLong());
@@ -1490,13 +1610,13 @@ public class JDAEvents extends ListenerAdapter {
                                             p5.setLong(2, e.getMessageIdLong());
                                             ResultSet r5 = p5.executeQuery();
                                             if (r5.next()) {
-                                                if (e.getReactionEmote().getName().equals("✅")) {
+                                                if (e.getReactionEmote().getName().equals(emote_yes)) {
                                                     e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
-                                                        msg.removeReaction("❎", e.getUser()).queue();
+                                                        msg.removeReaction(remote_no, e.getUser()).queue();
                                                     });
-                                                } else if (e.getReactionEmote().getName().equals("❎")) {
+                                                } else if (e.getReactionEmote().getName().equals(emote_no)) {
                                                     e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
-                                                        msg.removeReaction("✅", e.getUser()).queue();
+                                                        msg.removeReaction(remote_yes, e.getUser()).queue();
                                                     });
 
                                                 }
@@ -1536,7 +1656,7 @@ public class JDAEvents extends ListenerAdapter {
                                                             if (val.equalsIgnoreCase("Suggestions")) {
                                                                 embed.setDescription("`" + prefix + "suggest`");
                                                         } else if (val.equalsIgnoreCase("Leveling")) {
-                                                                embed.setDescription("`" + prefix + "level`");
+                                                                embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                             } else if (val.equalsIgnoreCase("Moderation")) {
                                                                 embed.setDescription("`" + prefix + "ban`, `" + prefix + "unban`, `"+ prefix + "mute`, `" + prefix + "unmute`" );
                                                             }
@@ -1578,7 +1698,7 @@ public class JDAEvents extends ListenerAdapter {
                                                                 if (val.equalsIgnoreCase("Suggestions")) {
                                                                     embed.setDescription("`" + prefix + "suggest`");
                                                                 } else if (val.equalsIgnoreCase("Leveling")) {
-                                                                    embed.setDescription("`" + prefix + "level`");
+                                                                    embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
                                                                 } else if (val.equalsIgnoreCase("Moderation")) {
                                                                     embed.setDescription("`" + prefix + "ban`, `" + prefix + "unban`, `"+ prefix + "mute`, `" + prefix + "unmute`" );
                                                                 } else if (val.equalsIgnoreCase("Tickets")) {
@@ -1610,6 +1730,33 @@ public class JDAEvents extends ListenerAdapter {
                                             }
                                         }
                                     }
+                                    }
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
+                                }
+                                try (Connection conni = core.getMemoryConnection()) {
+                                    PreparedStatement p3 = conni.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=? AND Awaiting_isAccepted=?");
+                                    p3.setLong(1, e.getUserIdLong());
+                                    p3.setLong(2, e.getChannel().getIdLong());
+                                    p3.setLong(3, e.getMessageIdLong());
+                                    ResultSet r3 = p3.executeQuery();
+                                    if (r3.next()) {
+                                        if (r3.getInt("step") == 1) {
+                                            e.getReaction().removeReaction(e.getUser()).queue();
+                                            if (e.getReactionEmote().getName().equals("\uD83C\uDDF3")) {
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE helpmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, e.getUserIdLong());
+                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                p4.execute();
+                                                e.getChannel().sendMessage("Suggestion was denied, Please enter your note below").queue();
+                                            } else if (e.getReactionEmote().getName().equals("\uD83C\uDDFE")) {
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE helpmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, e.getUserIdLong());
+                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                p4.execute();
+                                                e.getChannel().sendMessage("Suggestion was accepted, Please enter your note below").queue();
+                                            }
+                                        }
                                     }
                                 } catch (SQLException ex) {
                                     ex.printStackTrace();
@@ -1750,6 +1897,14 @@ public class JDAEvents extends ListenerAdapter {
             p1.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+    public static boolean isNumberic(String s) {
+        try  {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
         }
     }
 

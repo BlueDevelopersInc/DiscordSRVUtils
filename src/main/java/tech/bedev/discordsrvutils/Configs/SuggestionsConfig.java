@@ -21,5 +21,17 @@ public interface SuggestionsConfig {
     @AnnotationBasedSorter.Order(20)
     Long channel();
 
+    @ConfKey("yes-reaction")
+    @ConfDefault.DefaultString("white_check_mark")
+    @AnnotationBasedSorter.Order(30)
+    @ConfComments("\n#Emoji to react in suggestions if \"yes\". Use name for that.")
+    String emoji_yes();
+
+    @ConfKey("no-reaction")
+    @ConfDefault.DefaultString("x")
+    @AnnotationBasedSorter.Order(40)
+    @ConfComments("\n#Emoji to react in suggestions if \"no\". Use name for that.")
+    String emoji_no();
+
 
 }
