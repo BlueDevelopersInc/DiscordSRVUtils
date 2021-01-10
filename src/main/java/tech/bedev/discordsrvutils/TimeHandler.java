@@ -2,43 +2,49 @@ package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
+import tech.bedev.discordsrvutils.managers.TimerManager;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimerTask;
 
-public class TimeHandler extends TimerTask {
-    public TimerManager getTimerManager() {
-        return new TimerManager();
-    }
-    private final DiscordSRVUtils core;
-    public TimeHandler(DiscordSRVUtils core) {
-        this.core = core;
-    }
+public class TimeHandler extends TimerTask
+{
+	private final DiscordSRVUtils core;
 
-    @Override
-    public void run() {
-        if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
-        if (!DiscordSRVUtils.isReady) return;
-        Iterator it = core.tempmute.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            Long userID = (Long) pair.getKey();
-            Long expiration = (Long) pair.getValue();
-            if (expiration <= getTimerManager().getCurrentTime()) {
-                Member persontounmute = DiscordSRV.getPlugin().getMainGuild().getMemberById(userID);
-                if (persontounmute != null) {
-                    if (persontounmute.getRoles().contains(DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole()))) {
-                        DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(persontounmute, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole())).queue();
-                    }
-                }
-                core.tempmute.remove(userID);
-            }
+	public TimeHandler(DiscordSRVUtils core)
+	{
+		this.core = core;
+	}
 
-        }
+	public TimerManager getTimerManager()
+	{
+		return new TimerManager();
+	}
 
-    }
+	@Override
+	public void run()
+	{
+		if(DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
+		if(!DiscordSRVUtils.isReady) return;
+		for(Map.Entry<Long, Long> longLongEntry : core.tempmute.entrySet())
+		{
+			Long userID = longLongEntry.getKey();
+			Long expiration = longLongEntry.getValue();
+			if(expiration <= getTimerManager().getCurrentTime())
+			{
+				Member toUnmute = DiscordSRV.getPlugin().getMainGuild().getMemberById(userID);
+				if(toUnmute != null)
+				{
+					if(toUnmute.getRoles().contains(DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.getMutedRole())))
+					{
+						DiscordSRV.getPlugin().getMainGuild().removeRoleFromMember(toUnmute, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.getMutedRole())).queue();
+					}
+				}
+				core.tempmute.remove(userID);
+			}
+
+		}
+
+	}
 }

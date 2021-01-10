@@ -5,40 +5,52 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
-public final class DiscordLevelupEvent extends Event implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
-    private boolean cancelled;
-    private Person person;
-    private GuildMessageReceivedEvent getDiscordEvent;
-    public DiscordLevelupEvent(GuildMessageReceivedEvent e, Person person) {
-        this.person = person;
-        this.getDiscordEvent = e;
+public final class DiscordLevelupEvent extends Event implements Cancellable
+{
+	private static final HandlerList handlers = new HandlerList();
+	private boolean cancelled;
+	private Person person;
+	private GuildMessageReceivedEvent getDiscordEvent;
 
-    }
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
+	public DiscordLevelupEvent(GuildMessageReceivedEvent e, Person person)
+	{
+		this.person = person;
+		this.getDiscordEvent = e;
 
-    @Override
-    public void setCancelled(boolean cancel) {
-        this.cancelled = cancel;
+	}
 
-    }
+	public static @NotNull HandlerList getHandlerList()
+	{
+		return handlers;
+	}
 
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
-    }
-    public static @NotNull HandlerList getHandlerList() {
-        return handlers;
-    }
+	@Override
+	public boolean isCancelled()
+	{
+		return cancelled;
+	}
 
-    public Person getPerson() {
-        return person;
-    }
-    public GuildMessageReceivedEvent getDiscordEvent() {
-        return getDiscordEvent;
-    }
+	@Override
+	public void setCancelled(boolean cancel)
+	{
+		this.cancelled = cancel;
+
+	}
+
+	public @NotNull HandlerList getHandlers()
+	{
+		return handlers;
+	}
+
+	public Person getPerson()
+	{
+		return person;
+	}
+
+	public GuildMessageReceivedEvent getDiscordEvent()
+	{
+		return getDiscordEvent;
+	}
 }
