@@ -899,7 +899,7 @@ public class JDAEvents extends ListenerAdapter {
                 e.getChannel().sendMessage("**Usage: **" + prefix + "sr <Suggestion Message ID>").queue();
             } else {
                 try (Connection conn = core.getMemoryConnection(); Connection conn2 = core.getDatabaseFile()) {
-                    PreparedStatement pcheck1 = conn.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=?");
+                    PreparedStatement pcheck1 = conn.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=?");
                     pcheck1.setLong(1, e.getMember().getIdLong());
                     pcheck1.setLong(2, e.getChannel().getIdLong());
                     ResultSet rcheck1 = pcheck1.executeQuery();
@@ -928,7 +928,7 @@ public class JDAEvents extends ListenerAdapter {
                 embed.setTitle("Reply a suggestion");
                 e.getChannel().sendMessage(embed.build()).queue(msg -> {
                     try (Connection conn = core.getMemoryConnection()) {
-                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO helpmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted) VALUES (?, ?, ?, 1, ?)");
+                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO srmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted) VALUES (?, ?, ?, 1, ?)");
                         p1.setLong(1, e.getMember().getIdLong());
                         p1.setLong(2, e.getChannel().getIdLong());
                         p1.setLong(3, Long.parseLong(args[1]));
@@ -942,16 +942,72 @@ public class JDAEvents extends ListenerAdapter {
                     }
                 });
             }
+            return;
         }
 
         try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
-            PreparedStatement pp1 = conn.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=?");
+            PreparedStatement pp1 = conn.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=?");
             pp1.setLong(1, e.getMember().getIdLong());
             pp1.setLong(2, e.getChannel().getIdLong());
             ResultSet rr1 = pp1.executeQuery();
             if (rr1.next()) {
                 if (rr1.getInt("step") == 2) {
+                    PreparedStatement pp2 = fconn.prepareStatement("UPDATE discordsrvutils_suggestions SET isAccepted=?, staffReply=?, staffReplier=? WHERE Message=?");
+                    pp2.setString(1, rr1.getString("isAccepted"));
+                    pp2.setString(2, e.getMessage().getContentRaw());
+                    pp2.setLong(3, e.getMember().getIdLong());
+                    pp2.setLong(4, rr1.getLong("SuggestionID"));
+                    pp2.execute();
+                    PreparedStatement pp3 = fconn.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Message=?");
+                    pp3.setLong(1, rr1.getLong("SuggestionID"));
+                    ResultSet rr2 = pp3.executeQuery(); rr2.next();
+                    String isAccepted = rr1.getString("isAccepted");
+                    int SID = rr2.getInt("Number");
+                    String msgcontent = rr2.getString("Suggestion");
+                    String msg = rr2.getLong("Message")+"";
+                    String channel = rr2.getLong("Channel")+"";
+                    String url = "https://discord.com/channels/" + e.getGuild().getId() + "/" + rr2.getLong("Channel") + "/" + rr2.getLong("Message");
+                    e.getJDA().retrieveUserById(rr2.getLong("Userid")).queue(user -> {
+                        user.openPrivateChannel().queue(ch -> {
+                            EmbedBuilder embed = new EmbedBuilder();
+                            if (isAccepted.equals("true")) {
+                                embed.setTitle("Suggestion Accepted");
+                                embed.setColor(Color.GREEN);
+                            } else {
+                                embed.setTitle("Suggestion denied");
+                                embed.setColor(Color.RED);
+                            }
+                            embed.addField("Suggestion", "[Jump!](" + url + ")", true);
+                            embed.addField("Replied by", e.getMember().getUser().getAsTag(), true);
+                            embed.addField("Reply", e.getMessage().getContentRaw(), false);
 
+                            ch.sendMessage(embed.build()).queue();
+
+                        });
+                        EmbedBuilder embed = new EmbedBuilder();
+                        embed.setThumbnail(user.getEffectiveAvatarUrl());
+                        embed.setDescription("**Suggested by:** " + user.getAsTag() + "\n" +
+                                "**Suggestion Number:** #" + SID);
+                        embed.addField("Suggestion", msgcontent,false);
+                        embed.setColor(Color.YELLOW);
+                        embed.addField("Replied by", e.getMember().getUser().getAsTag(), false);
+                        if (isAccepted.equals("true")) {
+                            embed.addField("Accepted", "Yes", true);
+                        } else {
+                            embed.addField("Accepted", "No", true);
+                        }
+                        embed.addField("Reply", e.getMessage().getContentRaw(), false);
+                        e.getGuild().getTextChannelById(channel).editMessageById(Long.parseLong(msg), embed.build()).queue();
+                        e.getChannel().sendMessage("Successfully replied.").queue();
+                        try (Connection conni = core.getMemoryConnection()) {
+                            PreparedStatement pppppp1 = conni.prepareStatement("DELETE FROM srmsgesreply WHERE userid=? AND Channel=?");
+                            pppppp1.setLong(1, e.getMember().getIdLong());
+                            pppppp1.setLong(2, e.getChannel().getIdLong());
+                            pppppp1.execute();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
 
                 }
             }
@@ -1735,7 +1791,7 @@ public class JDAEvents extends ListenerAdapter {
                                     ex.printStackTrace();
                                 }
                                 try (Connection conni = core.getMemoryConnection()) {
-                                    PreparedStatement p3 = conni.prepareStatement("SELECT * FROM helpmsgesreply WHERE userid=? AND Channel=? AND Awaiting_isAccepted=?");
+                                    PreparedStatement p3 = conni.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=? AND Awaiting_isAccepted=?");
                                     p3.setLong(1, e.getUserIdLong());
                                     p3.setLong(2, e.getChannel().getIdLong());
                                     p3.setLong(3, e.getMessageIdLong());
@@ -1744,13 +1800,13 @@ public class JDAEvents extends ListenerAdapter {
                                         if (r3.getInt("step") == 1) {
                                             e.getReaction().removeReaction(e.getUser()).queue();
                                             if (e.getReactionEmote().getName().equals("\uD83C\uDDF3")) {
-                                                PreparedStatement p4 = conni.prepareStatement("UPDATE helpmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
                                                 p4.setLong(1, e.getUserIdLong());
                                                 p4.setLong(2, e.getChannel().getIdLong());
                                                 p4.execute();
                                                 e.getChannel().sendMessage("Suggestion was denied, Please enter your note below").queue();
                                             } else if (e.getReactionEmote().getName().equals("\uD83C\uDDFE")) {
-                                                PreparedStatement p4 = conni.prepareStatement("UPDATE helpmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true' WHERE userid=? AND Channel=?");
                                                 p4.setLong(1, e.getUserIdLong());
                                                 p4.setLong(2, e.getChannel().getIdLong());
                                                 p4.execute();

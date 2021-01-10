@@ -8,10 +8,7 @@ import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import org.bukkit.Bukkit;
-import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.StatusUpdater;
-import tech.bedev.discordsrvutils.SuggestionsIdleHandler;
-import tech.bedev.discordsrvutils.helpDeleter;
+import tech.bedev.discordsrvutils.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,11 +29,13 @@ public class DiscordSRVEventListener {
         return DiscordSRV.getPlugin().getJda();
     }
     Timer timer4 = new Timer();
+    Timer timer3 = new Timer();
 
     @Subscribe
     public void onReady(DiscordReadyEvent e) {
         idle.schedule(new SuggestionsIdleHandler(core), 0, 1000);
         timer4.schedule(new helpDeleter(core), 0, 1000);
+        timer4.schedule(new SRCanceller(core), 0, 1000);
 
         String status = DiscordSRVUtils.BotSettingsconfig.status();
         if (status != null) {

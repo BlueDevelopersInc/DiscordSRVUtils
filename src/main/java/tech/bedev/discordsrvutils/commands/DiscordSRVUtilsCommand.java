@@ -14,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
@@ -25,12 +26,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Timer;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 public class DiscordSRVUtilsCommand implements CommandExecutor {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
+    Map<String, Long> map = new HashMap<>();
 
     public static JDA jda;
 
@@ -130,7 +134,42 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.RED + "You don't have perms to use this command");
                 }
-            } else {
+            } else if (args[0].equalsIgnoreCase("clearmemory")) {
+                if (sender.hasPermission("discordsrvutils.clearmemory")) {
+                    sender.sendMessage(ChatColor.RED + "Are you sure you want to clear memory? This will cancel: \n\n" + ChatColor.DARK_BLUE +
+                            "People creating tickets\nPeople making suggestions\nPeople making suggestion reply\nHelp commands\nAnti-spam for leveling");
+                    sender.sendMessage(ChatColor.GREEN + "Type /" + label + " confirm to confirm in 10 seconds.");
+                    map.remove(sender.getName());
+                    map.putIfAbsent(sender.getName(), System.currentTimeMillis());
+                } else {
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                }
+            } else if (args[0].equals("confirm")) {
+                Long puttime = map.get(sender.getName());
+                if (puttime == null) {
+                    sender.sendMessage("You don't have anything to confirm");
+                } else {
+                    if ((System.currentTimeMillis() - puttime) <= 10000L) {
+                        try (Connection conn = core.getMemoryConnection()) {
+                            conn.prepareStatement("DELETE FROM suggestions_Awaiting").execute();
+                            conn.prepareStatement("DELETE FROM tickets_creating").execute();
+                            conn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles").execute();
+                            conn.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits").execute();
+                            conn.prepareStatement("DELETE FROM helpmsges").execute();
+                            conn.prepareStatement("DELETE FROM srmsgesreply").execute();
+                            core.lastchattime = new HashMap<>();
+                            sender.sendMessage(ChatColor.GREEN + "Memory cleared!");
+                        } catch (SQLException ex) {
+                            sender.sendMessage(ChatColor.RED + "Could not clear memory.");
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        sender.sendMessage("You are late! 10 seconds already passed");
+                    }
+                }
+
+            }
+            else {
                 sender.sendMessage(ChatColor.RED + "Unknown arg \"" + args[0] + "\"");
             }
         }

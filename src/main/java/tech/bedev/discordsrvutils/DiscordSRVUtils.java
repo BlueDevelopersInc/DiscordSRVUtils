@@ -30,7 +30,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DiscordSRVUtils extends JavaPlugin {
-    public final Map<UUID, Long> lastchattime = new HashMap<>();
+    public Map<UUID, Long> lastchattime = new HashMap<>();
     public static boolean isReady = false;
     public static boolean PAPI;
     Path databaseFile;
@@ -212,20 +212,19 @@ public class DiscordSRVUtils extends JavaPlugin {
                         conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN DiscordMessages Bigint").execute();
                         conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
                     }
-                }finally {
-
+                }catch (SQLException ex) {
+                    if (SQLEnabled) ex.printStackTrace();
                 }
                 PreparedStatement p2 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
                 p2.setString(1, "discordsrvutils_suggestions");
                 p2.setString(2, "isAccepted");
                 ResultSet r2 = p2.executeQuery();
                 if (!r2.next()) {
-                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN isAccepted varchar(50)").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN isAccepted varchar(225)").execute();
                     conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReply varchar(1000)").execute();
                     conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReplier Bigint").execute();
                 }
             } catch (SQLException exception) {
-                if (SQLEnabled)
                 exception.printStackTrace();
 
             }
@@ -236,7 +235,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
                 conn.prepareStatement("CREATE TABLE helpmsges (userid Bigint, Channel Bigint, MessageID Bigint, lastOutput Bigint, Page int)").execute();
-                conn.prepareStatement("CREATE TABLE helpmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50))").execute();
+                conn.prepareStatement("CREATE TABLE srmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50))").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
