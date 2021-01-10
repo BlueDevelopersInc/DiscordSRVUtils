@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.commands.tabCompleters;
+package tech.bedev.discordsrvutils.commands.tabcompletion;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -16,11 +16,17 @@ import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+<<<<<<< Updated upstream
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
+=======
+import tech.bedev.discordsrvutils.managers.ConfOptionsManager;
+import tech.bedev.discordsrvutils.managers.Tickets;
+import tech.bedev.discordsrvutils.person.Person;
+>>>>>>> Stashed changes
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
@@ -37,8 +43,8 @@ import java.util.UUID;
 public class JDAEvents extends ListenerAdapter {
     private static final Long EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
 
-    private DiscordSRVUtils core;
-    private ConfOptionsManager conf;
+    private final DiscordSRVUtils core;
+    private final ConfOptionsManager conf;
     public JDAEvents(DiscordSRVUtils core) {
         this.core = core;
         this.tickets = new Tickets(core);
@@ -1162,6 +1168,10 @@ public class JDAEvents extends ListenerAdapter {
                 if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                     Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
                     if (person.isLinked()) {
+<<<<<<< Updated upstream
+=======
+                        person.addMessages(MessageType.DISCORD, 1);
+>>>>>>> Stashed changes
                         Long val = core.lastchattime.get(person.getMinecraftUUID());
                         if (val == null) {
                             core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());

@@ -7,16 +7,19 @@ import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+<<<<<<< Updated upstream
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
+=======
+import tech.bedev.discordsrvutils.managers.ConfOptionsManager;
+
+>>>>>>> Stashed changes
 
 public class EssentialsAfk implements Listener {
 
-    private ConfOptionsManager conf;
-    private final DiscordSRVUtils core;
+    private final ConfOptionsManager conf;
 
     public EssentialsAfk(DiscordSRVUtils core) {
-        this.core = core;
         this.conf = new ConfOptionsManager(core);
 
     }

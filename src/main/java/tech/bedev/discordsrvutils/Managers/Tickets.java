@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Managers;
+package tech.bedev.discordsrvutils.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;

@@ -1,18 +1,21 @@
 package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Activity;
+<<<<<<< Updated upstream
 import org.springframework.util.StopWatch;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
 
+=======
+import me.clip.placeholderapi.PlaceholderAPI;
+>>>>>>> Stashed changes
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class StatusUpdater extends TimerTask {
-    private DiscordSRVUtils core;
+    private final DiscordSRVUtils core;
     public StatusUpdater(DiscordSRVUtils core) {
         this.core = core;
     }
@@ -47,7 +50,6 @@ public class StatusUpdater extends TimerTask {
                         p2.execute();
 
                     }
-
                 }
             }catch (SQLException ex) {
                 ex.printStackTrace();

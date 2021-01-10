@@ -2,10 +2,8 @@ package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
+import tech.bedev.discordsrvutils.managers.TimerManager;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimerTask;

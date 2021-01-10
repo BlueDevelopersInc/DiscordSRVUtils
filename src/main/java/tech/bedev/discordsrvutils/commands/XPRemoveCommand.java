@@ -6,15 +6,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 import java.util.UUID;
 
-public class removeXPCommand implements CommandExecutor {
+public class XPRemoveCommand implements CommandExecutor {
 
     private final DiscordSRVUtils core;
 
-    public removeXPCommand(DiscordSRVUtils core) {
+    public XPRemoveCommand(DiscordSRVUtils core) {
 
         this.core = core;
     }

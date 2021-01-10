@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Configs;
+package tech.bedev.discordsrvutils.configs;
 
 import jdk.jfr.BooleanFlag;
 import space.arim.dazzleconf.annote.ConfComments;

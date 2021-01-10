@@ -1,6 +1,10 @@
 package tech.bedev.discordsrvutils.events;
 
+<<<<<<< Updated upstream
 import net.md_5.bungee.api.ChatColor;
+=======
+
+>>>>>>> Stashed changes
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -11,10 +15,17 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
+<<<<<<< Updated upstream
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.UpdateChecker;
+=======
+import tech.bedev.discordsrvutils.UpdateChecker;
+import tech.bedev.discordsrvutils.managers.ConfOptionsManager;
+import tech.bedev.discordsrvutils.person.MessageType;
+import tech.bedev.discordsrvutils.person.Person;
+>>>>>>> Stashed changes
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +36,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class BukkitEventListener implements Listener {
+public class BukkitEventListener implements Listener
+{
     public static final Random RANDOM = new Random();
     private DiscordSRVUtils core;
     private ConfOptionsManager conf;
@@ -66,6 +78,10 @@ public class BukkitEventListener implements Listener {
         Bukkit.getScheduler().runTask(core, () -> {
             Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
             Long val = core.lastchattime.get(person.getMinecraftUUID());
+<<<<<<< Updated upstream
+=======
+            person.addMessages(MessageType.MINECRAFT, 1);
+>>>>>>> Stashed changes
             if (val == null) {
                 core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
             } else {

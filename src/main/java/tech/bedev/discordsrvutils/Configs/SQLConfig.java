@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Configs;
+package tech.bedev.discordsrvutils.configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;

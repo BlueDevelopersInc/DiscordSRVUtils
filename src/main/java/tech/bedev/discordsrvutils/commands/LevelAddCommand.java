@@ -6,14 +6,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 import java.util.UUID;
 
-public class setlevelCommand implements CommandExecutor {
+public class LevelAddCommand implements CommandExecutor {
     private final DiscordSRVUtils core;
 
-    public setlevelCommand(DiscordSRVUtils core) {
+    public LevelAddCommand(DiscordSRVUtils core) {
 
         this.core = core;
     }
@@ -24,7 +24,7 @@ public class setlevelCommand implements CommandExecutor {
             return true;
         }
         if (!(args.length >= 2)) {
-            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player> <newLevel>");
+            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player> <Levels to add>");
         } else {
             UUID target = Bukkit.getOfflinePlayer(args[0]).getUniqueId();
             Person person = core.getPersonByUUID(target);
@@ -34,8 +34,8 @@ public class setlevelCommand implements CommandExecutor {
                 try {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
-                    person.setLevel(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level has been set to " + ChatColor.GOLD + person.getLevel());
+                    person.addLevels(Integer.parseInt(args[1]));
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level is now " + ChatColor.GOLD + person.getLevel());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }
@@ -43,4 +43,4 @@ public class setlevelCommand implements CommandExecutor {
         }
         return true;
     }
-    }
+}

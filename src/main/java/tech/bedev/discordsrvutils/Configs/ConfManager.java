@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Configs;
+package tech.bedev.discordsrvutils.configs;
 
 import org.checkerframework.checker.units.qual.C;
 import space.arim.dazzleconf.ConfigurationFactory;

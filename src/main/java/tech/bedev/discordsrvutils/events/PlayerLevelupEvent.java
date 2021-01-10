@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 public final class PlayerLevelupEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();

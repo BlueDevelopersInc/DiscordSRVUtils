@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Managers;
+package tech.bedev.discordsrvutils.managers;
 
 public class  TimerManager {
 

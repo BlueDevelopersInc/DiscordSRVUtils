@@ -1,11 +1,10 @@
-package tech.bedev.discordsrvutils.Managers;
+package tech.bedev.discordsrvutils.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 

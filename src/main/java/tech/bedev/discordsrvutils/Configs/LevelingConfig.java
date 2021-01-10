@@ -1,9 +1,13 @@
-package tech.bedev.discordsrvutils.Configs;
+package tech.bedev.discordsrvutils.configs;
 
 import org.springframework.core.annotation.Order;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+<<<<<<< Updated upstream
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
+=======
+import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
+>>>>>>> Stashed changes
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
@@ -11,9 +15,6 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import java.util.List;
 
 public interface LevelingConfig {
-
-
-
     @ConfDefault.DefaultBoolean(true)
     @ConfComments("#Should we make leveling? (Synced with Discord, Discord user must be linked to increase in levek using Discord)")
     @AnnotationBasedSorter.Order(10)
@@ -29,7 +30,7 @@ public interface LevelingConfig {
     @AnnotationBasedSorter.Order(30)
     List<String> levelup_Discord();
 
-    @ConfDefault.DefaultLong(000000000000000000L)
+    @ConfDefault.DefaultLong(0L)
     @ConfComments("\n#Where to send the levelup messages.")
     @Order(40)
     Long levelup_channel();

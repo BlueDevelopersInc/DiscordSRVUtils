@@ -1,15 +1,10 @@
-package tech.bedev.discordsrvutils.Person;
+package tech.bedev.discordsrvutils.person;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 
 import java.util.UUID;
 
 public interface Person {
-
-
-
-
-
     void setLevel(int level);
     void addLevels(int levels);
     void removeLevels(int levels);
@@ -26,11 +21,9 @@ public interface Person {
     String getRank();
 
     boolean isLinked();
-
-
+    
     UUID getMinecraftUUID();
     Member getMemberOnMainGuild();
-
 
     void insertLeveling();
 

@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Exceptions;
+package tech.bedev.discordsrvutils.exceptions;
 
 public class StartupException extends Exception{
 }

@@ -6,15 +6,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 import java.util.UUID;
 
-public class addxpCommand implements CommandExecutor {
-
+public class LevelSetCommand implements CommandExecutor {
     private final DiscordSRVUtils core;
 
-    public addxpCommand(DiscordSRVUtils core) {
+    public LevelSetCommand(DiscordSRVUtils core) {
 
         this.core = core;
     }
@@ -35,8 +34,8 @@ public class addxpCommand implements CommandExecutor {
                 try {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
-                    person.addXP(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s XP is now " + ChatColor.GOLD + person.getXP());
+                    person.setLevel(Integer.parseInt(args[1]));
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level has been set to " + ChatColor.GOLD + person.getLevel());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }
@@ -44,4 +43,4 @@ public class addxpCommand implements CommandExecutor {
         }
         return true;
     }
-}
+    }

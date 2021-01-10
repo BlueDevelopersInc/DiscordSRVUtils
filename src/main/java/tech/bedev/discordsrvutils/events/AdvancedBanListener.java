@@ -10,7 +10,7 @@ import me.leoko.advancedban.utils.PunishmentType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import tech.bedev.discordsrvutils.Configs.BansIntegrationConfig;
+import tech.bedev.discordsrvutils.configs.BansIntegrationConfig;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 

@@ -1,4 +1,4 @@
-package tech.bedev.discordsrvutils.Person;
+package tech.bedev.discordsrvutils.person;
 
 
 

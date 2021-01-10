@@ -1,11 +1,9 @@
 package tech.bedev.discordsrvutils;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.leoko.advancedban.manager.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

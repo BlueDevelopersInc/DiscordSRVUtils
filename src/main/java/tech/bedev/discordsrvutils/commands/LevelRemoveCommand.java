@@ -6,15 +6,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.person.Person;
 
 import java.util.UUID;
 
-public class setxpCommand implements CommandExecutor {
+public class LevelRemoveCommand implements CommandExecutor {
 
     private final DiscordSRVUtils core;
 
-    public setxpCommand(DiscordSRVUtils core) {
+    public LevelRemoveCommand(DiscordSRVUtils core) {
 
         this.core = core;
     }
@@ -25,7 +25,7 @@ public class setxpCommand implements CommandExecutor {
             return true;
         }
         if (!(args.length >= 2)) {
-            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player> <newLevel>");
+            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player> <Levels to remove>");
         } else {
             UUID target = Bukkit.getOfflinePlayer(args[0]).getUniqueId();
             Person person = core.getPersonByUUID(target);
@@ -35,8 +35,8 @@ public class setxpCommand implements CommandExecutor {
                 try {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
-                    person.setXP(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s XP has been set to " + ChatColor.GOLD + person.getXP());
+                    person.removeLevels(Integer.parseInt(args[1]));
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level is now " + ChatColor.GOLD + person.getLevel());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }
