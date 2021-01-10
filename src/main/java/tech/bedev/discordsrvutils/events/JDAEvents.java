@@ -975,22 +975,24 @@ public class JDAEvents extends ListenerAdapter {
                     String channel = rr2.getLong("Channel")+"";
                     String url = "https://discord.com/channels/" + e.getGuild().getId() + "/" + rr2.getLong("Channel") + "/" + rr2.getLong("Message");
                     e.getJDA().retrieveUserById(rr2.getLong("Userid")).queue(user -> {
-                        user.openPrivateChannel().queue(ch -> {
-                            EmbedBuilder embed = new EmbedBuilder();
-                            if (isAccepted.equals("true")) {
-                                embed.setTitle("Suggestion Accepted");
-                                embed.setColor(Color.GREEN);
-                            } else {
-                                embed.setTitle("Suggestion denied");
-                                embed.setColor(Color.RED);
-                            }
-                            embed.addField("Suggestion", "[Jump!](" + url + ")", true);
-                            embed.addField("Replied by", e.getMember().getUser().getAsTag(), true);
-                            embed.addField("Reply", e.getMessage().getContentRaw(), false);
+                        if (DiscordSRVUtils.SuggestionsConfig.sendDMToUserWhenSuggestionReplied()) {
+                            user.openPrivateChannel().queue(ch -> {
+                                EmbedBuilder embed = new EmbedBuilder();
+                                if (isAccepted.equals("true")) {
+                                    embed.setTitle("Suggestion Accepted");
+                                    embed.setColor(Color.GREEN);
+                                } else {
+                                    embed.setTitle("Suggestion denied");
+                                    embed.setColor(Color.RED);
+                                }
+                                embed.addField("Suggestion", "[Jump!](" + url + ")", true);
+                                embed.addField("Replied by", e.getMember().getUser().getAsTag(), true);
+                                embed.addField("Reply", e.getMessage().getContentRaw(), false);
 
-                            ch.sendMessage(embed.build()).queue();
+                                ch.sendMessage(embed.build()).queue();
 
-                        });
+                            });
+                        }
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setThumbnail(user.getEffectiveAvatarUrl());
                         embed.setDescription("**Suggested by:** " + user.getAsTag() + "\n" +

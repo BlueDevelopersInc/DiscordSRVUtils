@@ -2,6 +2,7 @@ package tech.bedev.discordsrvutils.Configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
@@ -32,6 +33,12 @@ public interface SuggestionsConfig {
     @AnnotationBasedSorter.Order(40)
     @ConfComments("\n#Emoji to react in suggestions if \"no\". Use name for that.")
     String emoji_no();
+
+    @ConfKey("send-dm-to-user-when-suggestion-replied")
+    @DefaultBoolean(true)
+    @AnnotationBasedSorter.Order(50)
+    @ConfComments("\n#Should we send a DM to the user when their suggestion is replied (accepted or denied)")
+    boolean sendDMToUserWhenSuggestionReplied();
 
 
 }
