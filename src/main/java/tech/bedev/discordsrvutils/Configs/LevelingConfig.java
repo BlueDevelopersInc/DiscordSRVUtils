@@ -4,10 +4,11 @@ import org.springframework.core.annotation.Order;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
-import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public interface LevelingConfig {
@@ -33,6 +34,11 @@ public interface LevelingConfig {
     @ConfComments("\n#Where to send the levelup messages.")
     @Order(40)
     Long levelup_channel();
+
+    @DefaultString("[Minecraft_Name] - Level [Level] - [XP] XP - [TotalMessages] Msges")
+    @ConfComments("\n#Format for leaderboard command. You can use [TotalMessages], [DiscordMessages], [MinecraftMessages]")
+    @Order(50)
+    String leaderboard_format();
 
 
 }

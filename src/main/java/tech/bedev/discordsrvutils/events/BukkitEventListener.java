@@ -1,6 +1,5 @@
 package tech.bedev.discordsrvutils.events;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -12,14 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
-import tech.bedev.discordsrvutils.Managers.Tickets;
+import tech.bedev.discordsrvutils.Person.MessageType;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.UpdateChecker;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManagerImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Random;
 import java.util.Timer;
@@ -66,6 +63,7 @@ public class BukkitEventListener implements Listener {
         Bukkit.getScheduler().runTask(core, () -> {
             Person person = core.getPersonByUUID(e.getPlayer().getUniqueId());
             Long val = core.lastchattime.get(person.getMinecraftUUID());
+            person.addMessages(MessageType.Minecraft, 1);
             if (val == null) {
                 core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
             } else {
@@ -87,6 +85,7 @@ public class BukkitEventListener implements Listener {
         });
 
     }
+
 
 
 }

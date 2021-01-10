@@ -1,6 +1,5 @@
 package tech.bedev.discordsrvutils.Configs;
 
-import jdk.jfr.BooleanFlag;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;

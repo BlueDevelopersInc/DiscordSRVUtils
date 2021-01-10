@@ -7,33 +7,30 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.objects.Lag;
+import jdk.jfr.internal.Logger;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
-import sun.jvm.hotspot.debugger.cdbg.LineNumberVisitor;
 import tech.bedev.discordsrvutils.Configs.*;
 import tech.bedev.discordsrvutils.Exceptions.StartupException;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
 import tech.bedev.discordsrvutils.Person.Person;
 import tech.bedev.discordsrvutils.Person.PersonImpl;
 import tech.bedev.discordsrvutils.commands.*;
 import tech.bedev.discordsrvutils.commands.tabCompleters.DiscordSRVUtilsTabCompleter;
 import tech.bedev.discordsrvutils.events.*;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManagerImpl;
 
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class DiscordSRVUtils extends JavaPlugin {
-    public final Map<UUID, Long> lastchattime = new HashMap<>();
+    public Map<UUID, Long> lastchattime = new HashMap<>();
     public static boolean isReady = false;
     public static boolean PAPI;
     Path databaseFile;
@@ -69,6 +66,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static DiscordSRVUtils getMainClass() {
         return new DiscordSRVUtils();
     }
+    public static SuggestionsConfig SuggestionsConfig;
+    public ConfManager<SuggestionsConfig> SuggestionsConfManager = ConfManager.create(getDataFolder().toPath(),"suggestions.yml", SuggestionsConfig.class);
     public Long parseStringToMillies(String s) {
         String slc = s.toLowerCase();
         if (slc.endsWith("s")) {
@@ -76,6 +75,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 Integer.parseInt(v);
                 String v2 = v + "000";
+
                 return Long.parseLong(v2);
             } catch (NumberFormatException ex) {
                 return Long.parseLong("-1");
@@ -114,11 +114,6 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        TimerManager time = new TimerManager();
-        String duration = time.getTimeFormatter().getDuration(parseStringToMillies("1d"));
-        System.out.println(duration);
-
-
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -132,6 +127,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             BansIntegrationconfig = BansIntegrationConfigManager.reloadConfigData();
             MainConfManager.reloadConfig();
             Config = MainConfManager.reloadConfigData();
+            SuggestionsConfManager.reloadConfig();
+            SuggestionsConfig = SuggestionsConfManager.reloadConfigData();
             if (SQLconfig.isEnabled()) {
                 HikariConfig hikariConf = new HikariConfig();
                 hikariConf.setJdbcUrl("jdbc:" + "mysql" + "://" +
@@ -156,7 +153,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         } catch (InvalidConfigException e) {
             e.printStackTrace();
         }
-        try {
 
             if (!this.getDescription().getName().equals("DiscordSRVUtils")) {
                 setEnabled(false);
@@ -204,17 +200,43 @@ public class DiscordSRVUtils extends JavaPlugin {
                         "Closed_Category Bigint, ChannelID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Opened_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_Closed_Tickets (UserID Bigint, MessageID Bigint, TicketID Bigint, Channel_id Bigint, Closed_Message Bigint)").execute();
-                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_leveling (userID Bigint, unique_id varchar(36), level int, XP int, DiscordMessages Bigint, MinecraftMessages Bigint)").execute();
+                conn.prepareStatement("CREATE TABLE IF NOT EXISTS discordsrvutils_suggestions (Userid Bigint, Channel Bigint, Message Bigint, Suggestion varchar(10000), Number int, isAccepted varchar(50), staffReply varchar(1000), staffReplier Bigint)").execute();
+                try {
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
+                    p1.setString(1, "discordsrvutils_leveling");
+                    p1.setString(2, "DiscordMessages");
+                    ResultSet r1 = p1.executeQuery();
+                    if (!r1.next()) {
+                        conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN DiscordMessages Bigint").execute();
+                        conn.prepareStatement("ALTER TABLE discordsrvutils_leveling ADD COLUMN MinecraftMessages Bigint").execute();
+                    }
+                }catch (SQLException ex) {
+                    if (SQLEnabled) {
+                        ex.printStackTrace();
+                    }
+                }
+                PreparedStatement p2 = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?");
+                p2.setString(1, "discordsrvutils_suggestions");
+                p2.setString(2, "isAccepted");
+                ResultSet r2 = p2.executeQuery();
+                if (!r2.next()) {
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN isAccepted varchar(225)").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReply varchar(1000)").execute();
+                    conn.prepareStatement("ALTER TABLE discordsrvutils_suggestions ADD COLUMN staffReplier Bigint").execute();
+                }
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                if (SQLEnabled) exception.printStackTrace();
 
             }
             try (Connection conn = getMemoryConnection()) {
-
+                conn.prepareStatement("CREATE TABLE suggestions_Awaiting (userid Bigint, Channel Bigint, LastOutput Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE status (Status int)").execute();
                 conn.prepareStatement("CREATE TABLE tickets_creating (UserID Bigint, Channel_id Bigint, step int, Name Varchar(500), MessageId Bigint, Opened_Category Bigint, Closed_Category Bigint, TicketID int); ").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
+                conn.prepareStatement("CREATE TABLE helpmsges (userid Bigint, Channel Bigint, MessageID Bigint, lastOutput Bigint, Page int)").execute();
+                conn.prepareStatement("CREATE TABLE srmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50))").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
@@ -258,9 +280,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
             String newVersion = UpdateChecker.getLatestVersion();
             if (newVersion.equalsIgnoreCase(getDescription().getVersion())) {
-                getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+                getLogger().info(ChatColor.GREEN + "No new version available. (" + newVersion + ")");
             } else {
-                getLogger().info(net.md_5.bungee.api.ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + net.md_5.bungee.api.ChatColor.YELLOW + getDescription().getVersion() + net.md_5.bungee.api.ChatColor.GREEN + " New version: " + net.md_5.bungee.api.ChatColor.YELLOW + newVersion);
+                getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + newVersion);
             }
 
             int pluginId = 9456; // <-- Replace with the id of your plugin!
@@ -273,13 +295,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 });
             }
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
-        } catch (Exception ex) {
-            try {
-                throw new StartupException();
-            } catch (StartupException e) {
-                e.printStackTrace();
-            }
-        }
+
         timer2.schedule(new TimeHandler(this), 0, 1000);
 
     }
@@ -311,6 +327,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Person getPersonByUUID(UUID uuid) {
+        if (uuid == null) return null;
         if (!Bukkit.getOfflinePlayer(uuid).hasPlayedBefore()) {
             if (Bukkit.getOfflinePlayer(uuid).isOnline()) {
 
@@ -328,4 +345,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (uuid == null) return new PersonImpl(null, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);
         return new PersonImpl(uuid, DiscordSRV.getPlugin().getMainGuild().getMemberById(id), this);
     }
+    public LeaderBoardManager getLeaderBoardManager() {
+        return new LeaderBoardManagerImpl(this);
+    }
+
 }

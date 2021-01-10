@@ -1,6 +1,7 @@
 package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Activity;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.springframework.util.StopWatch;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
 
@@ -28,13 +29,29 @@ public class StatusUpdater extends TimerTask {
                     String current = DiscordSRVUtils.BotSettingsconfig.Statuses().get(r1.getInt("Status"));
 
                     if (current.startsWith("Playing ")) {
-                        core.getJda().getPresence().setActivity(Activity.playing(current.replaceFirst("Playing ", "")));
+                        if (!DiscordSRVUtils.PAPI) {
+                            core.getJda().getPresence().setActivity(Activity.playing(current.replaceFirst("Playing ", "")));
+                        } else {
+                            core.getJda().getPresence().setActivity(Activity.playing(PlaceholderAPI.setPlaceholders(null, current.replaceFirst("Playing ", ""))));
+                        }
                     } else if (current.startsWith("Watching ")) {
-                        core.getJda().getPresence().setActivity(Activity.watching(current.replaceFirst("Watching ", "")));
+                        if (!DiscordSRVUtils.PAPI) {
+                            core.getJda().getPresence().setActivity(Activity.watching(current.replaceFirst("Watching ", "")));
+                        } else {
+                            core.getJda().getPresence().setActivity(Activity.watching(PlaceholderAPI.setPlaceholders(null, current.replaceFirst("Watching ", ""))));
+                        }
                     } else if (current.startsWith("Listening to ")) {
-                        core.getJda().getPresence().setActivity(Activity.listening(current.replaceFirst("Listening to ", "")));
+                        if (!DiscordSRVUtils.PAPI) {
+                            core.getJda().getPresence().setActivity(Activity.listening(current.replaceFirst("Listening to ", "")));
+                        } else {
+                            core.getJda().getPresence().setActivity(Activity.listening(PlaceholderAPI.setPlaceholders(null, current.replaceFirst("Listening to ", ""))));
+                        }
                     } else {
-                        core.getJda().getPresence().setActivity(Activity.playing(current));
+                        if (!DiscordSRVUtils.PAPI) {
+                            core.getJda().getPresence().setActivity(Activity.playing(current));
+                        } else {
+                            core.getJda().getPresence().setActivity(Activity.playing(PlaceholderAPI.setPlaceholders(null, current)));
+                        }
                     }
                     if (DiscordSRVUtils.BotSettingsconfig.Statuses().size() -1 == r1.getInt("Status")) {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=0 WHERE Status=?");

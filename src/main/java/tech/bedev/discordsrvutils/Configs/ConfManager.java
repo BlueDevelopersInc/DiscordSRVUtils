@@ -1,6 +1,5 @@
 package tech.bedev.discordsrvutils.Configs;
 
-import org.checkerframework.checker.units.qual.C;
 import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;

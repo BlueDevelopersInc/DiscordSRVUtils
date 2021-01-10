@@ -1,26 +1,30 @@
 package tech.bedev.discordsrvutils.events;
 
+import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import jdk.tools.jaotc.collect.directory.DirectorySource;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.manager.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.springframework.util.StopWatch;
+import tech.bedev.discordsrvutils.Configs.SuggestionsConfig;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
+import tech.bedev.discordsrvutils.Managers.Stopwatch;
 import tech.bedev.discordsrvutils.Managers.Tickets;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
+import tech.bedev.discordsrvutils.Person.MessageType;
 import tech.bedev.discordsrvutils.Person.Person;
+import tech.bedev.discordsrvutils.leaderboard.LeaderBoardManager;
 import tech.bedev.discordsrvutils.utils.PlayerUtil;
 
 import java.awt.*;
@@ -29,10 +33,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class JDAEvents extends ListenerAdapter {
     private static final Long EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
@@ -160,7 +162,9 @@ public class JDAEvents extends ListenerAdapter {
 
 
                 }
-                        e.getGuild().getTextChannelById(DiscordSRVUtils.Config.WelcomerChannel()).sendMessage(embed.build()).queue();
+                TextChannel ch = e.getGuild().getTextChannelById(DiscordSRVUtils.Config.WelcomerChannel());
+                        if (ch != null)
+                        ch.sendMessage(embed.build()).queue();
 
                     }
             if (DiscordSRVUtils.Config.isJoinMessageToOnlinePlayers()) {
@@ -181,6 +185,7 @@ public class JDAEvents extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+
         if (e.getAuthor().isFake()) return;
         if (e.getAuthor().isBot()) return;
         String[] args = e.getMessage().getContentRaw().split("\\s+");
@@ -391,14 +396,41 @@ public class JDAEvents extends ListenerAdapter {
         }
         else if (args[0].equalsIgnoreCase(prefix + "help")) {
             if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
+                Map<Integer, String> map = new HashMap<>();
+                int pages = 0;
+                pages++;
+                map.put(pages, "Tickets");
+                if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                    pages++;
+                    map.put(pages, "Leveling");
+                } if (DiscordSRVUtils.Moderationconfig.isModeratorCommandsEnabled()) {
+                    pages++;
+                    map.put(pages, "Moderation");
+                } if (DiscordSRVUtils.SuggestionsConfig.isEnabled()) {
+                    pages++;
+                    map.put(pages, "Suggestions");
+                }
                 EmbedBuilder embed = new EmbedBuilder();
-                embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
-                embed.setDescription("Use `" + prefix + "<Command>` to execute a command.");
-                embed.addField("Tickets", "`createticket`, `ticketlookup`, `editticket`, `close`, `deleteticket`, `editticket`", false);
-                embed.addField("Leveling", "`rank`", false);
-                embed.addField("Moderation", "`ban`, `unban`, `mute`, `unmute`", false);
+                embed.setTitle("Page 1 | Tickets");
+                embed.setDescription("`" +prefix + "createticket`, `" + prefix + "ticketlookup`, `" + prefix + "editticket`, `" + prefix + "close`, `" + prefix + "deleteticket`, `" + prefix + "editticket`");
                 embed.setColor(Color.GREEN);
-                e.getChannel().sendMessage(embed.build()).queue();
+                e.getChannel().sendMessage(embed.build()).queue(msg -> {
+                        try (Connection conn = core.getMemoryConnection()) {
+                            PreparedStatement p1 = conn.prepareStatement("INSERT INTO helpmsges (userid, Channel, MessageID, lastOutput, Page) VALUES (?, ?, ?, ?, ?)");
+                            p1.setLong(1, e.getMember().getIdLong());
+                            p1.setLong(2, e.getChannel().getIdLong());
+                            p1.setLong(3, msg.getIdLong());
+                            p1.setLong(4, System.currentTimeMillis());
+                            p1.setInt(5, 1);
+                            p1.execute();
+                            msg.addReaction("⬅️").queue();
+                            msg.addReaction("➡️").queue();
+                            msg.addReaction("\uD83D\uDDD1️").queue();
+                        } catch (SQLException ex) {
+                            e.getMessage().delete().queue();
+                            ex.printStackTrace();
+                        }
+                });
             }
         }
         else if (args[0].equalsIgnoreCase(prefix + "deleteticket")) {
@@ -460,13 +492,13 @@ public class JDAEvents extends ListenerAdapter {
                         Person p = core.getPersonByDiscordID(e.getMember().getIdLong());
                         if (!p.isLinked()) {
                             e.getChannel().sendMessage("You are not linked. Use `/discord link` to link your account.").queue();
-                        } else {
+                        }  else if (!p.isBukkitCached()) {
+                            e.getChannel().sendMessage("You didnt join for a long time").queue();
+                            return;
+                        }
+                        else {
                             EmbedBuilder embed = new EmbedBuilder();
-                            if (DiscordSRVUtils.SQLconfig.isEnabled()) {
-                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
-                            } else {
-                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                            }
+                            embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
                             embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
                             embed.setColor(Color.CYAN);
                             embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
@@ -480,11 +512,7 @@ public class JDAEvents extends ListenerAdapter {
                                 e.getChannel().sendMessage("Player has never joined before.").queue();
                             } else {
                                 EmbedBuilder embed = new EmbedBuilder();
-                                if (DiscordSRVUtils.SQLconfig.isEnabled()) {
-                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
-                                } else {
-                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-                                }
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
                                 embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
                                 embed.setColor(Color.CYAN);
                                 embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
@@ -495,17 +523,15 @@ public class JDAEvents extends ListenerAdapter {
                             Person p = core.getPersonByDiscordID(mm.getIdLong());
                             if (p.isLinked()) {
                                 EmbedBuilder embed = new EmbedBuilder();
-                                if (DiscordSRVUtils.SQLconfig.isEnabled()) {
-                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
-                                } else {
-                                    embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP());
-
-                                }
+                                embed.setDescription("**Level:** " + p.getLevel() + "\n\n**XP:** " + p.getXP() + "\n\n**Rank:** #" + p.getRank());
                                 embed.setTitle("Level for " + Bukkit.getOfflinePlayer(p.getMinecraftUUID()).getName());
                                 embed.setColor(Color.CYAN);
                                 embed.setThumbnail("https://crafatar.com/avatars/" + p.getMinecraftUUID());
                                 e.getChannel().sendMessage(embed.build()).queue();
-                            } else {
+                            } else if (p.isBukkitCached()) {
+                                e.getChannel().sendMessage("This player has never joined before").queue();
+                                return;
+                            }else {
                                 e.getChannel().sendMessage("This user is not linked.").queue();
                             }
                         }
@@ -816,8 +842,186 @@ public class JDAEvents extends ListenerAdapter {
                 e.getChannel().sendMessage("You don't have perms to use this command.").queue();
             }
             return;
+        } else if (args[0].equalsIgnoreCase(prefix + "suggest")) {
+            System.out.println(e.getMember().getIdLong());
+            System.out.println(e.getChannel().getIdLong());
+            if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
+            if (!DiscordSRVUtils.SuggestionsConfig.isEnabled()) return;
+
+            try (Connection conn = core.getMemoryConnection()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions_Awaiting WHERE userid=? AND channel=?");
+                p1.setLong(1, e.getMember().getIdLong());
+                p1.setLong(2, e.getChannel().getIdLong());
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) {
+                    PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_Awaiting (userid, channel, LastOutput) VALUES (?, ?, ?)");
+                    p2.setLong(1, e.getMember().getIdLong());
+                    p2.setLong(2, e.getChannel().getIdLong());
+                    p2.setLong(3, System.currentTimeMillis());
+                    p2.execute();
+                    e.getChannel().sendMessage("Please enter your Suggestion.").queue();
+                    return;
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else if (args[0].equalsIgnoreCase(prefix + "leaderboard")) {
+            Stopwatch stopwatch = new TimerManager().getStopwatch();
+            stopwatch.start();
+            LeaderBoardManager manager = core.getLeaderBoardManager();
+            int count = 0;
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Leaderboard");
+            String description = "";
+            embed.setColor(Color.ORANGE);
+            for (Person currentPerson : manager.getLeaderBoardFromTo(1, 10)) {
+                count++;
+                if (description.equals("")) {
+                    description = "**" + count + ".**" + DiscordSRVUtils.Levelingconfig.leaderboard_format()
+                    .replace("[Minecraft_Name]", Bukkit.getOfflinePlayer(currentPerson.getMinecraftUUID()).getName())
+                    .replace("[Level]", Integer.toString(currentPerson.getLevel()))
+                    .replace("[TotalMessages]", currentPerson.getTotalMessages().toString())
+                    .replace("[DiscordMessages]", currentPerson.getDiscordMessages().toString())
+                    .replace("[MinecraftMessages]", currentPerson.getMinecraftMessages().toString())
+                            .replace("[XP]", Integer.toString(currentPerson.getXP()))
+
+                    ;
+                } else {
+                    description = description + "\n" + "**" + count + ".**" + DiscordSRVUtils.Levelingconfig.leaderboard_format()
+                            .replace("[Minecraft_Name]", Bukkit.getOfflinePlayer(currentPerson.getMinecraftUUID()).getName())
+                            .replace("[Level]", Integer.toString(currentPerson.getLevel()))
+                            .replace("[TotalMessages]", currentPerson.getTotalMessages().toString())
+                            .replace("[DiscordMessages]", currentPerson.getDiscordMessages().toString())
+                            .replace("[MinecraftMessages]", currentPerson.getMinecraftMessages().toString())
+                             .replace("[XP]", Integer.toString(currentPerson.getXP()))
+                    ;
+                }
+            }
+            embed.setDescription(description);
+            e.getChannel().sendMessage(embed.build()).queue();
+            System.out.println(stopwatch.getElapsedTime() + "ms");
+        } else if (args[0].equalsIgnoreCase(prefix + "suggestionreply") || args[0].equalsIgnoreCase(prefix + "sr")) {
+            if (!isModerator(e.getMember())) {
+                e.getChannel().sendMessage("You don't have permission to use this command").queue();
+            }
+            if (!(args.length >= 2)) {
+                e.getChannel().sendMessage("**Usage: **" + prefix + "sr <Suggestion Message ID>").queue();
+            } else {
+                try (Connection conn = core.getMemoryConnection(); Connection conn2 = core.getDatabaseFile()) {
+                    PreparedStatement pcheck1 = conn.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=?");
+                    pcheck1.setLong(1, e.getMember().getIdLong());
+                    pcheck1.setLong(2, e.getChannel().getIdLong());
+                    ResultSet rcheck1 = pcheck1.executeQuery();
+                    if (rcheck1.next()) return;
+                    if (!isNumberic(args[1])) {
+                        e.getChannel().sendMessage("Invalid ID, Please try Again").queue(); return;
+                    }
+                    PreparedStatement pcheck2 = conn2.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Message=?");
+                    pcheck2.setLong(1, Long.parseLong(args[1]));
+                    ResultSet rcheck2 = pcheck2.executeQuery();
+                    if (rcheck2.next()) {
+                        if (!(rcheck2.getString("isAccepted") == null)) {
+                            e.getChannel().sendMessage("This suggestion has been already Accepted/denied").queue();
+                            return;
+                        }
+                    } else {
+                        e.getChannel().sendMessage("Suggestion not found.").queue();
+                        return;
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(Color.CYAN);
+                embed.setDescription("Is this suggestion accepted?\n:regional_indicator_y: YES\n\n :regional_indicator_n: NO");
+                embed.setTitle("Reply a suggestion");
+                e.getChannel().sendMessage(embed.build()).queue(msg -> {
+                    try (Connection conn = core.getMemoryConnection()) {
+                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO srmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted) VALUES (?, ?, ?, 1, ?)");
+                        p1.setLong(1, e.getMember().getIdLong());
+                        p1.setLong(2, e.getChannel().getIdLong());
+                        p1.setLong(3, Long.parseLong(args[1]));
+                        p1.setLong(4, msg.getIdLong());
+                        p1.execute();
+                        msg.addReaction("\uD83C\uDDFE").queue();
+                        msg.addReaction("\uD83C\uDDF3").queue();
+
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            }
+            return;
         }
+
         try (Connection conn = core.getMemoryConnection(); Connection fconn = core.getDatabaseFile()) {
+            PreparedStatement pp1 = conn.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=?");
+            pp1.setLong(1, e.getMember().getIdLong());
+            pp1.setLong(2, e.getChannel().getIdLong());
+            ResultSet rr1 = pp1.executeQuery();
+            if (rr1.next()) {
+                if (rr1.getInt("step") == 2) {
+                    PreparedStatement pp2 = fconn.prepareStatement("UPDATE discordsrvutils_suggestions SET isAccepted=?, staffReply=?, staffReplier=? WHERE Message=?");
+                    pp2.setString(1, rr1.getString("isAccepted"));
+                    pp2.setString(2, e.getMessage().getContentRaw());
+                    pp2.setLong(3, e.getMember().getIdLong());
+                    pp2.setLong(4, rr1.getLong("SuggestionID"));
+                    pp2.execute();
+                    PreparedStatement pp3 = fconn.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Message=?");
+                    pp3.setLong(1, rr1.getLong("SuggestionID"));
+                    ResultSet rr2 = pp3.executeQuery(); rr2.next();
+                    String isAccepted = rr1.getString("isAccepted");
+                    int SID = rr2.getInt("Number");
+                    String msgcontent = rr2.getString("Suggestion");
+                    String msg = rr2.getLong("Message")+"";
+                    String channel = rr2.getLong("Channel")+"";
+                    String url = "https://discord.com/channels/" + e.getGuild().getId() + "/" + rr2.getLong("Channel") + "/" + rr2.getLong("Message");
+                    e.getJDA().retrieveUserById(rr2.getLong("Userid")).queue(user -> {
+                        if (DiscordSRVUtils.SuggestionsConfig.sendDMToUserWhenSuggestionReplied()) {
+                            user.openPrivateChannel().queue(ch -> {
+                                EmbedBuilder embed = new EmbedBuilder();
+                                if (isAccepted.equals("true")) {
+                                    embed.setTitle("Suggestion Accepted");
+                                    embed.setColor(Color.GREEN);
+                                } else {
+                                    embed.setTitle("Suggestion denied");
+                                    embed.setColor(Color.RED);
+                                }
+                                embed.addField("Suggestion", "[Jump!](" + url + ")", true);
+                                embed.addField("Replied by", e.getMember().getUser().getAsTag(), true);
+                                embed.addField("Reply", e.getMessage().getContentRaw(), false);
+
+                                ch.sendMessage(embed.build()).queue();
+
+                            });
+                        }
+                        EmbedBuilder embed = new EmbedBuilder();
+                        embed.setThumbnail(user.getEffectiveAvatarUrl());
+                        embed.setDescription("**Suggested by:** " + user.getAsTag() + "\n" +
+                                "**Suggestion Number:** #" + SID);
+                        embed.addField("Suggestion", msgcontent,false);
+                        embed.setColor(Color.YELLOW);
+                        embed.addField("Replied by", e.getMember().getUser().getAsTag(), false);
+                        if (isAccepted.equals("true")) {
+                            embed.addField("Accepted", "Yes", true);
+                        } else {
+                            embed.addField("Accepted", "No", true);
+                        }
+                        embed.addField("Reply", e.getMessage().getContentRaw(), false);
+                        e.getGuild().getTextChannelById(channel).editMessageById(Long.parseLong(msg), embed.build()).queue();
+                        e.getChannel().sendMessage("Successfully replied.").queue();
+                        try (Connection conni = core.getMemoryConnection()) {
+                            PreparedStatement pppppp1 = conni.prepareStatement("DELETE FROM srmsgesreply WHERE userid=? AND Channel=?");
+                            pppppp1.setLong(1, e.getMember().getIdLong());
+                            pppppp1.setLong(2, e.getChannel().getIdLong());
+                            pppppp1.execute();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+
+                }
+            }
             try (PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets_creating WHERE UserID=? AND Channel_id=?")) {
                 p1.setLong(1, e.getMember().getIdLong());
                 p1.setLong(2, e.getChannel().getIdLong());
@@ -1143,6 +1347,95 @@ public class JDAEvents extends ListenerAdapter {
                                     }
                                 }
                             }
+                        } else {
+                            PreparedStatement p3 = conn.prepareStatement("SELECT * FROM suggestions_Awaiting WHERE userid=? AND Channel=?");
+                            p3.setLong(1, e.getMember().getIdLong());
+                            p3.setLong(2, e.getChannel().getIdLong());
+                            ResultSet r3 = p3.executeQuery();
+                            if (r3.next()) {
+                                TextChannel channel = e.getGuild().getTextChannelById(DiscordSRVUtils.SuggestionsConfig.channel());
+                                if (channel == null) {
+                                    e.getChannel().sendMessage("You are unable to suggest at the moment. If you are the owner, check console for details.").queue();
+                                    core.getLogger().severe("Suggestions channel in the config was not found.");
+                                    try (Connection c2 = core.getMemoryConnection()) {
+                                        PreparedStatement p6 = c2.prepareStatement("DELETE FROM suggestions_Awaiting WHERE userid=? AND Channel=?");
+                                        p6.setLong(1, e.getMember().getIdLong());
+                                        p6.setLong(2, e.getChannel().getIdLong());
+                                        p6.execute();
+                                    } catch (SQLException ex) {
+                                        ex.printStackTrace();
+                                    }
+
+                                    return;
+                                } else {
+                                    int ID;
+                                    try (Connection cc = core.getDatabaseFile()) {
+                                        PreparedStatement p4 = cc.prepareStatement("SELECT * FROM discordsrvutils_suggestions ORDER BY Number DESC");
+                                        ResultSet r4 = p4.executeQuery();
+                                        if (r4.next()) {
+                                            ID = r4.getInt("Number") + 1;
+                                        } else {
+                                            ID = 1;
+                                        }
+                                        EmbedBuilder embed = new EmbedBuilder();
+                                        embed.setColor(Color.ORANGE);
+                                        embed.setThumbnail(e.getMember().getUser().getEffectiveAvatarUrl());
+                                        embed.setDescription("**Suggested by:** " + e.getMember().getUser().getAsTag() + "\n" +
+                                                "**Suggestion Number:** #" + ID);
+                                        embed.addField("Suggestion", e.getMessage().getContentRaw(), false);
+                                        channel.sendMessage(embed.build()).queue(msg -> {
+                                            try (Connection c1 = core.getDatabaseFile(); Connection c2 = core.getMemoryConnection()) {
+                                                String emote_yes = DiscordSRVUtils.SuggestionsConfig.emoji_yes();
+                                                String emote_no = DiscordSRVUtils.SuggestionsConfig.emoji_no();
+                                                String yesparsed = EmojiParser.parseToUnicode(":" + emote_yes + ":");
+                                                if (!yesparsed.equals(":" + emote_yes + ":")) {
+                                                    emote_yes = yesparsed;
+                                                } else {
+                                                    List<Emote> emotes = e.getGuild().getEmotesByName(emote_yes, true);
+                                                    if (emotes.isEmpty()) {
+                                                        emote_yes = "✅";
+                                                    } else {
+                                                        Emote emote = emotes.get(0);
+                                                        emote_yes = "a:" + emote.getName() + ":" + emote.getId();
+                                                    }
+                                                }
+                                                String noparesed = ":" + emote_no + ":";
+                                                if (!noparesed.equals(":" + emote_no + ":")) {
+                                                    emote_no = noparesed;
+                                                } else {
+                                                    List<Emote> emotes = e.getGuild().getEmotesByName(emote_no, true);
+                                                    if (emotes.isEmpty()) {
+                                                        emote_no = "❌";
+                                                    } else {
+                                                        Emote emote = emotes.get(0);
+                                                        emote_no = "a:" + emote.getName() + ":" + emote.getId();
+                                                    }
+                                                }
+                                                System.out.println(emote_yes);
+                                                System.out.println(emote_no);
+                                                    PreparedStatement p5 = c1.prepareStatement("INSERT INTO discordsrvutils_suggestions (Userid, Channel, Message, Suggestion, Number) VALUES (?, ?, ?, ?, ?)");
+                                                    p5.setLong(1, e.getMember().getIdLong());
+                                                    p5.setLong(2, channel.getIdLong());
+                                                    p5.setLong(3, msg.getIdLong());
+                                                    p5.setString(4, e.getMessage().getContentRaw());
+                                                    p5.setInt(5, ID);
+                                                    p5.execute();
+                                                    PreparedStatement p6 = c2.prepareStatement("DELETE FROM  suggestions_Awaiting WHERE userid=? AND Channel=?");
+                                                    p6.setLong(1, e.getMember().getIdLong());
+                                                    p6.setLong(2, e.getChannel().getIdLong());
+                                                    p6.execute();
+                                                    msg.addReaction(emote_yes).queue();
+                                                    msg.addReaction(emote_no).queue();
+                                                    e.getChannel().sendMessage("Your Suggestion has been recorded.").queue();
+                                            } catch (SQLException ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        });
+                                    } catch (SQLException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
                         }
                         if (!DiscordSRVUtils.BotSettingsconfig.isBungee()) {
                             if (e.getMessage().getMentionedMembers().contains(e.getGuild().getSelfMember())) {
@@ -1162,6 +1455,8 @@ public class JDAEvents extends ListenerAdapter {
                 if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
                     Person person = core.getPersonByDiscordID(e.getMember().getIdLong());
                     if (person.isLinked()) {
+                        if (!person.isBukkitCached()) return;
+                        person.addMessages(MessageType.Discord, 1);
                         Long val = core.lastchattime.get(person.getMinecraftUUID());
                         if (val == null) {
                             core.lastchattime.put(person.getMinecraftUUID(), System.nanoTime());
@@ -1327,7 +1622,6 @@ public class JDAEvents extends ListenerAdapter {
                             }
                         } else {
                             //Message must be nothing or a complete closure message
-                            if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
 
                                 try (Connection conn5 = core.getDatabaseFile();){
                                     PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
@@ -1335,13 +1629,207 @@ public class JDAEvents extends ListenerAdapter {
                                     p3.execute();
                                     ResultSet r3 = p3.executeQuery();
                                     if (r3.next()) {
-                                        e.getTextChannel().delete().queue();
+                                        if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
+                                            e.getTextChannel().delete().queue();
+                                        }
+                                    } else {
+                                        String emote_yes = DiscordSRVUtils.SuggestionsConfig.emoji_yes();
+                                        String emote_no = DiscordSRVUtils.SuggestionsConfig.emoji_no();
+                                        String remote_yes;
+                                        String remote_no;
+                                        String yesparsed = EmojiParser.parseToUnicode(":" + emote_yes + ":");
+                                        if (!yesparsed.equals(":" + emote_yes + ":")) {
+                                            remote_yes = yesparsed;
+                                            emote_yes = yesparsed;
+                                        } else {
+                                            List<Emote> emotes = e.getGuild().getEmotesByName(emote_yes, true);
+                                            if (emotes.isEmpty()) {
+                                                remote_yes = "✅";
+                                                emote_yes = "✅";
+                                            } else {
+                                                Emote emote = emotes.get(0);
+                                                remote_yes = "a:" + emote.getName() + ":" + emote.getId();
+                                            }
+                                        }
+                                        String noparesed = ":" + emote_no + ":";
+                                        if (!noparesed.equals(":" + emote_no + ":")) {
+                                            remote_no = noparesed;
+                                            emote_no = noparesed;
+                                        } else {
+                                            List<Emote> emotes = e.getGuild().getEmotesByName(emote_no, true);
+                                            if (emotes.isEmpty()) {
+                                                remote_no = "❌";
+                                                emote_no = "❌";
+                                            } else {
+                                                Emote emote = emotes.get(0);
+                                                remote_no = "a:" + emote.getName() + ":" + emote.getId();
+                                            }
+                                        }
+                                        PreparedStatement p4 = conn5.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Userid=? AND Channel=? AND Message=?");
+                                        p4.setLong(1, e.getMember().getIdLong());
+                                        p4.setLong(2, e.getChannel().getIdLong());
+                                        p4.setLong(3, e.getMessageIdLong());
+                                        ResultSet r4 = p4.executeQuery();
+                                        if (r4.next()) {
+                                            e.getReaction().removeReaction(e.getUser()).queue();
+                                        } else {
+                                            PreparedStatement p5 = conn5.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Channel=? AND Message=?");
+                                            p5.setLong(1, e.getChannel().getIdLong());
+                                            p5.setLong(2, e.getMessageIdLong());
+                                            ResultSet r5 = p5.executeQuery();
+                                            if (r5.next()) {
+                                                if (e.getReactionEmote().getName().equals(emote_yes)) {
+                                                    e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
+                                                        msg.removeReaction(remote_no, e.getUser()).queue();
+                                                    });
+                                                } else if (e.getReactionEmote().getName().equals(emote_no)) {
+                                                    e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
+                                                        msg.removeReaction(remote_yes, e.getUser()).queue();
+                                                    });
+
+                                                }
+                                            } else {
+                                                try (Connection conni = core.getMemoryConnection()) {
+                                                PreparedStatement p6 = conni.prepareStatement("SELECT * FROM helpmsges WHERE userid=? AND Channel=? AND MessageID=?");
+                                                p6.setLong(1, e.getUserIdLong());
+                                                p6.setLong(2, e.getChannel().getIdLong());
+                                                p6.setLong(3, e.getMessageIdLong());
+                                                ResultSet r6 = p6.executeQuery();
+                                                if (r6.next()) {
+                                                    String prefix = DiscordSRVUtils.BotSettingsconfig.BotPrefix();
+                                                    if (e.getReactionEmote().getName().equals("➡️")) {
+                                                        Map<Integer, String> map = new HashMap<>();
+                                                        int pages = 0;
+                                                        pages++;
+                                                        map.put(pages, "Tickets");
+                                                        if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                                                            pages++;
+                                                            map.put(pages, "Leveling");
+                                                        }
+                                                        if (DiscordSRVUtils.Moderationconfig.isModeratorCommandsEnabled()) {
+                                                            pages++;
+                                                            map.put(pages, "Moderation");
+                                                        }
+                                                        if (DiscordSRVUtils.SuggestionsConfig.isEnabled()) {
+                                                            pages++;
+                                                            map.put(pages, "Suggestions");
+                                                        }
+                                                        e.getReaction().removeReaction(e.getUser()).queue();
+                                                        int newpages = r6.getInt("Page") + 1;
+                                                        if (pages >= newpages) {
+                                                            EmbedBuilder embed = new EmbedBuilder();
+                                                            String val = map.get(newpages);
+                                                            embed.setTitle("Page " + newpages + " | " + val);
+                                                            embed.setColor(Color.GREEN);
+                                                            if (val.equalsIgnoreCase("Suggestions")) {
+                                                                embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply`");
+                                                        } else if (val.equalsIgnoreCase("Leveling")) {
+                                                                embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
+                                                            } else if (val.equalsIgnoreCase("Moderation")) {
+                                                                embed.setDescription("`" + prefix + "ban`, `" + prefix + "unban`, `"+ prefix + "mute`, `" + prefix + "unmute`" );
+                                                            }
+                                                            e.getChannel().editMessageById(e.getMessageId(), embed.build()).queue();
+                                                            PreparedStatement p7 = conni.prepareStatement("UPDATE helpmsges SET Page=? WHERE userid=? AND Channel=? AND MessageID=?");
+                                                            p7.setLong(1, newpages);
+                                                            p7.setLong(2, e.getUserIdLong());
+                                                            p7.setLong(3, e.getChannel().getIdLong());
+                                                            p7.setLong(4, e.getMessageIdLong());
+                                                            p7.execute();
+                                                        }
+
+
+                                                    }else if (e.getReactionEmote().getName().equals("⬅️")) {
+                                                        if (e.getReactionEmote().getName().equals("⬅️")) {
+                                                            Map<Integer, String> map = new HashMap<>();
+                                                            int pages = 0;
+                                                            pages++;
+                                                            map.put(pages, "Tickets");
+                                                            if (DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) {
+                                                                pages++;
+                                                                map.put(pages, "Leveling");
+                                                            }
+                                                            if (DiscordSRVUtils.Moderationconfig.isModeratorCommandsEnabled()) {
+                                                                pages++;
+                                                                map.put(pages, "Moderation");
+                                                            }
+                                                            if (DiscordSRVUtils.SuggestionsConfig.isEnabled()) {
+                                                                pages++;
+                                                                map.put(pages, "Suggestions");
+                                                            }
+                                                            e.getReaction().removeReaction(e.getUser()).queue();
+                                                            int newpages = r6.getInt("Page") - 1;
+                                                            if (pages != 0) {
+                                                                EmbedBuilder embed = new EmbedBuilder();
+                                                                String val = map.get(newpages);
+                                                                embed.setTitle("Page " + newpages + " | " + val);
+                                                                embed.setColor(Color.GREEN);
+                                                                if (val.equalsIgnoreCase("Suggestions")) {
+                                                                    embed.setDescription("`" + prefix + "suggest`, `" + prefix + "suggestionreply`");
+                                                                } else if (val.equalsIgnoreCase("Leveling")) {
+                                                                    embed.setDescription("`" + prefix + "level`, `" + prefix + "leaderboard`");
+                                                                } else if (val.equalsIgnoreCase("Moderation")) {
+                                                                    embed.setDescription("`" + prefix + "ban`, `" + prefix + "unban`, `"+ prefix + "mute`, `" + prefix + "unmute`" );
+                                                                } else if (val.equalsIgnoreCase("Tickets")) {
+                                                                    embed.setDescription("`" +prefix + "createticket`, `" + prefix + "ticketlookup`, `" + prefix + "editticket`, `" + prefix + "close`, `" + prefix + "deleteticket`, `" + prefix + "editticket`");
+                                                                }
+                                                                e.getChannel().editMessageById(e.getMessageId(), embed.build()).queue();
+                                                                PreparedStatement p7 = conni.prepareStatement("UPDATE helpmsges SET Page=? WHERE userid=? AND Channel=? AND MessageID=?");
+                                                                p7.setLong(1, newpages);
+                                                                p7.setLong(2, e.getUserIdLong());
+                                                                p7.setLong(3, e.getChannel().getIdLong());
+                                                                p7.setLong(4, e.getMessageIdLong());
+                                                                p7.execute();
+                                                            }
+
+
+                                                        }
+                                                    } else if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
+                                                        e.getReaction().removeReaction(e.getUser()).queue();
+                                                        e.getChannel().editMessageById(e.getMessageId(), "Deleted by User").embed(null).override(true).queue(msg -> {
+                                                            for (MessageReaction reaction : msg.getReactions()) {
+                                                                reaction.removeReaction().queue();
+                                                            }
+                                                        });
+                                                        PreparedStatement p7 = conni.prepareStatement("DELETE FROM helpmsges WHERE MessageID=?");
+                                                        p7.setLong(1, e.getMessageIdLong());
+                                                        p7.execute();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     }
                                 } catch (SQLException ex) {
                                     ex.printStackTrace();
                                 }
-                            }
-                            else if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
+                                try (Connection conni = core.getMemoryConnection()) {
+                                    PreparedStatement p3 = conni.prepareStatement("SELECT * FROM srmsgesreply WHERE userid=? AND Channel=? AND Awaiting_isAccepted=?");
+                                    p3.setLong(1, e.getUserIdLong());
+                                    p3.setLong(2, e.getChannel().getIdLong());
+                                    p3.setLong(3, e.getMessageIdLong());
+                                    ResultSet r3 = p3.executeQuery();
+                                    if (r3.next()) {
+                                        if (r3.getInt("step") == 1) {
+                                            e.getReaction().removeReaction(e.getUser()).queue();
+                                            if (e.getReactionEmote().getName().equals("\uD83C\uDDF3")) {
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, e.getUserIdLong());
+                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                p4.execute();
+                                                e.getChannel().sendMessage("Suggestion was denied, Please enter your note below").queue();
+                                            } else if (e.getReactionEmote().getName().equals("\uD83C\uDDFE")) {
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true' WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, e.getUserIdLong());
+                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                p4.execute();
+                                                e.getChannel().sendMessage("Suggestion was accepted, Please enter your note below").queue();
+                                            }
+                                        }
+                                    }
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
+                                }
+
                                 try (Connection conn5 = core.getDatabaseFile();){
                                     PreparedStatement p3 = conn5.prepareStatement("SELECT * FROM discordsrvutils_Closed_Tickets WHERE Closed_Message=?");
                                     p3.setLong(1, e.getMessageIdLong());
@@ -1351,7 +1839,7 @@ public class JDAEvents extends ListenerAdapter {
                                     ex.printStackTrace();
                                 }
 
-                            }
+
                             try (Connection con = core.getMemoryConnection()){
                                 PreparedStatement p3 = con.prepareStatement("SELECT * FROM discordsrvutils_Awaiting_Edits WHERE UserID=? AND Channel_id=? AND MessageID=?");
                                 p3.setLong(1, e.getMember().getIdLong());
@@ -1438,13 +1926,16 @@ public class JDAEvents extends ListenerAdapter {
     }
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        try  (Connection conn = core.getDatabaseFile()){
+        try  (Connection conn = core.getDatabaseFile(); Connection mconn = core.getMemoryConnection()){
             PreparedStatement p1 = conn.prepareStatement("DELETE FROM discordsrvutils_Opened_Tickets WHERE Channel_id=?");
             p1.setLong(1, e.getChannel().getIdLong());
             p1.execute();
             PreparedStatement p2 = conn.prepareStatement("DELETE FROM discordsrvutils_Closed_Tickets WHERE Channel_id=?");
             p2.setLong(1, e.getChannel().getIdLong());
             p2.execute();
+            PreparedStatement p3 = conn.prepareStatement("DELETE FROM helpmsges WHERE Channel=?");
+            p3.setLong(1, e.getChannel().getIdLong());
+            p3.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -1466,6 +1957,23 @@ public class JDAEvents extends ListenerAdapter {
             }
         } else return true;
         return false;
+    }
+    public void onMessageDelete(MessageDeleteEvent e) {
+        try (Connection conn = core.getMemoryConnection()) {
+            PreparedStatement p1 = conn.prepareStatement("DELETE FROM helpmsges WHERE MessageID=?");
+            p1.setLong(1, e.getMessageIdLong());
+            p1.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public static boolean isNumberic(String s) {
+        try  {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 
 

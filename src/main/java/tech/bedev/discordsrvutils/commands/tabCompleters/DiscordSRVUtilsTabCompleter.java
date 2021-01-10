@@ -18,6 +18,10 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
             if (sender.hasPermission("discordsrvutils.updatecheck")) {
                 arg0.add("updatecheck");
             }
+            if (sender.hasPermission("discordsrvutils.clearmemory")) {
+                arg0.add("clearmemory");
+                arg0.add("confirm");
+            }
 
             List<String> result = new ArrayList<>();
             for (String a : arg0) {

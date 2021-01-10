@@ -1,50 +1,40 @@
 package tech.bedev.discordsrvutils.commands;
 
 
-import com.google.common.base.Charsets;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import me.leoko.advancedban.manager.PunishmentManager;
-import me.leoko.advancedban.manager.UUIDManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
-import tech.bedev.discordsrvutils.PluginConfiguration;
 import tech.bedev.discordsrvutils.StatusUpdater;
 import tech.bedev.discordsrvutils.UpdateChecker;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Timer;
+import java.util.*;
 
 public class DiscordSRVUtilsCommand implements CommandExecutor {
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
+    Map<String, Long> map = new HashMap<>();
 
     public static JDA jda;
 
@@ -87,6 +77,8 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         DiscordSRVUtils.BansIntegrationconfig = core.BansIntegrationConfigManager.reloadConfigData();
                         core.MainConfManager.reloadConfig();
                         DiscordSRVUtils.Config = core.MainConfManager.reloadConfigData();
+                        core.SuggestionsConfManager.reloadConfig();
+                        DiscordSRVUtils.SuggestionsConfig = core.SuggestionsConfManager.reloadConfigData();
                     } catch (IOException |InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
@@ -142,7 +134,43 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.RED + "You don't have perms to use this command");
                 }
-            } else {
+            } else if (args[0].equalsIgnoreCase("clearmemory")) {
+                if (sender.hasPermission("discordsrvutils.clearmemory")) {
+                    sender.sendMessage(ChatColor.RED + "Are you sure you want to clear memory? This will cancel: \n\n" + ChatColor.DARK_BLUE +
+                            "People creating tickets\nPeople making suggestions\nPeople making suggestion reply\nHelp commands\nAnti-spam for leveling");
+                    sender.sendMessage(ChatColor.GREEN + "Type /" + label + " confirm to confirm in 10 seconds.");
+                    map.remove(sender.getName());
+                    map.putIfAbsent(sender.getName(), System.currentTimeMillis());
+                } else {
+                    sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                }
+            } else if (args[0].equals("confirm")) {
+                Long puttime = map.get(sender.getName());
+                if (puttime == null) {
+                    sender.sendMessage("You don't have anything to confirm");
+                } else {
+                    if ((System.currentTimeMillis() - puttime) <= 10000L) {
+                        try (Connection conn = core.getMemoryConnection()) {
+                            conn.prepareStatement("DELETE FROM suggestions_Awaiting").execute();
+                            conn.prepareStatement("DELETE FROM tickets_creating").execute();
+                            conn.prepareStatement("DELETE FROM discordsrvutils_ticket_allowed_roles").execute();
+                            conn.prepareStatement("DELETE FROM discordsrvutils_Awaiting_Edits").execute();
+                            conn.prepareStatement("DELETE FROM helpmsges").execute();
+                            conn.prepareStatement("DELETE FROM srmsgesreply").execute();
+                            core.lastchattime = new HashMap<>();
+                            sender.sendMessage(ChatColor.GREEN + "Memory cleared!");
+                        } catch (SQLException ex) {
+                            sender.sendMessage(ChatColor.RED + "Could not clear memory.");
+                            ex.printStackTrace();
+                        }
+                        map.remove(sender.getName());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You are late! 10 seconds already passed");
+                    }
+                }
+
+            }
+            else {
                 sender.sendMessage(ChatColor.RED + "Unknown arg \"" + args[0] + "\"");
             }
         }
