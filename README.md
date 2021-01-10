@@ -5,37 +5,34 @@ Download: https://www.spigotmc.org/resources/discordsrvutils.85958/
 
 # API
 Put these into your pom.xml
+```maven
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
 ```
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-```
-```
-        <dependency>
-            <groupId>com.github.BlueTree242</groupId>
-            <artifactId>DiscordSRVUtils</artifactId>
-            <version>1.1.1</version>
-      </dependency>
+```maven
+    <dependency>
+        <groupId>com.github.BlueTree242</groupId>
+        <artifactId>DiscordSRVUtils</artifactId>
+        <version>1.1.1</version>
+    </dependency>
 ```
 
 For gradle
+```gradle
+    repositories {
+        // Any other repository...
+        maven { url 'https://jitpack.io' }
+    }
 ```
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
-```
-```
-	dependencies {
-	        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.1.1'
-	}
+```gradle
+    dependencies {
+        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.1.1'
+    }
 ```
       
-You also need to add DiscordSRV's dependecy and repository, which is found
-
+You also need to add DiscordSRV's dependecy and repository, which you can find here:  
 https://github.com/DiscordSRV/DiscordSRV/wiki#developers
   
   
