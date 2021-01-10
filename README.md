@@ -5,13 +5,13 @@ Download: https://www.spigotmc.org/resources/discordsrvutils.85958/
 
 # API
 Put these into your pom.xml
-```maven
+```xml
     <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
     </repository>
 ```
-```maven
+```xml
     <dependency>
         <groupId>com.github.BlueTree242</groupId>
         <artifactId>DiscordSRVUtils</artifactId>
