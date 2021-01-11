@@ -60,7 +60,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'net.dv8tion:JDA:4.2.0_227'
     implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
