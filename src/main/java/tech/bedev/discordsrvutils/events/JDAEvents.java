@@ -906,6 +906,8 @@ public class JDAEvents extends ListenerAdapter {
             e.getChannel().sendMessage(embed.build()).queue();
             System.out.println(stopwatch.getElapsedTime() + "ms");
         } else if (args[0].equalsIgnoreCase(prefix + "suggestionreply") || args[0].equalsIgnoreCase(prefix + "sr")) {
+            if (!DiscordSRVUtils.SuggestionsConfig.isEnabled()) return;
+            if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
             if (!isModerator(e.getMember())) {
                 e.getChannel().sendMessage("You don't have permission to use this command").queue();
                 return;
