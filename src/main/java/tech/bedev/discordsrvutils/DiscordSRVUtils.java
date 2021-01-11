@@ -236,7 +236,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 conn.prepareStatement("CREATE TABLE discordsrvutils_ticket_allowed_roles (UserID Bigint, Channel_id Bigint, RoleID Bigint)").execute();
                 conn.prepareStatement("CREATE TABLE discordsrvutils_Awaiting_Edits (Channel_id Bigint, UserID Bigint, Type int, MessageID Bigint, TicketID int)").execute();
                 conn.prepareStatement("CREATE TABLE helpmsges (userid Bigint, Channel Bigint, MessageID Bigint, lastOutput Bigint, Page int)").execute();
-                conn.prepareStatement("CREATE TABLE srmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50))").execute();
+                conn.prepareStatement("CREATE TABLE srmsgesreply (userid Bigint, Channel Bigint, SuggestionID Bigint, step int, Awaiting_isAccepted Bigint, isAccepted varchar(50), LastOutput Bigint)").execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }

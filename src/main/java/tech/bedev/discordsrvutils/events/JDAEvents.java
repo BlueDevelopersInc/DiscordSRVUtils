@@ -902,7 +902,7 @@ public class JDAEvents extends ListenerAdapter {
             System.out.println(stopwatch.getElapsedTime() + "ms");
         } else if (args[0].equalsIgnoreCase(prefix + "suggestionreply") || args[0].equalsIgnoreCase(prefix + "sr")) {
             if (!isModerator(e.getMember())) {
-                e.getChannel().sendMessage("You don't have permission to use this command").queue();
+                e.getChannel().sendMessage("You don't have permission to use this command").queue(); return;
             }
             if (!(args.length >= 2)) {
                 e.getChannel().sendMessage("**Usage: **" + prefix + "sr <Suggestion Message ID>").queue();
@@ -937,11 +937,12 @@ public class JDAEvents extends ListenerAdapter {
                 embed.setTitle("Reply a suggestion");
                 e.getChannel().sendMessage(embed.build()).queue(msg -> {
                     try (Connection conn = core.getMemoryConnection()) {
-                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO srmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted) VALUES (?, ?, ?, 1, ?)");
+                        PreparedStatement p1 = conn.prepareStatement("INSERT INTO srmsgesreply (userid, Channel, SuggestionID, step, Awaiting_isAccepted, LastOutput) VALUES (?, ?, ?, 1, ?, ?)");
                         p1.setLong(1, e.getMember().getIdLong());
                         p1.setLong(2, e.getChannel().getIdLong());
                         p1.setLong(3, Long.parseLong(args[1]));
                         p1.setLong(4, msg.getIdLong());
+                        p1.setLong(5, System.currentTimeMillis());
                         p1.execute();
                         msg.addReaction("\uD83C\uDDFE").queue();
                         msg.addReaction("\uD83C\uDDF3").queue();
@@ -1812,15 +1813,17 @@ public class JDAEvents extends ListenerAdapter {
                                         if (r3.getInt("step") == 1) {
                                             e.getReaction().removeReaction(e.getUser()).queue();
                                             if (e.getReactionEmote().getName().equals("\uD83C\uDDF3")) {
-                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='false' WHERE userid=? AND Channel=?");
-                                                p4.setLong(1, e.getUserIdLong());
-                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='false', LastOutput=? WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, System.currentTimeMillis());
+                                                p4.setLong(2, e.getUserIdLong());
+                                                p4.setLong(3, e.getChannel().getIdLong());
                                                 p4.execute();
                                                 e.getChannel().sendMessage("Suggestion was denied, Please enter your note below").queue();
                                             } else if (e.getReactionEmote().getName().equals("\uD83C\uDDFE")) {
-                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true' WHERE userid=? AND Channel=?");
-                                                p4.setLong(1, e.getUserIdLong());
-                                                p4.setLong(2, e.getChannel().getIdLong());
+                                                PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true', LastOutput WHERE userid=? AND Channel=?");
+                                                p4.setLong(1, System.currentTimeMillis());
+                                                p4.setLong(2, e.getUserIdLong());
+                                                p4.setLong(3, e.getChannel().getIdLong());
                                                 p4.execute();
                                                 e.getChannel().sendMessage("Suggestion was accepted, Please enter your note below").queue();
                                             }
