@@ -23,57 +23,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8c5baa4-c655-4f7e-ad36-95c165c566e0" name="Default Changelist" comment="v1.1.8">
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ConfManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ConfManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/LevelingConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/LevelingConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/MainConfConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/MainConfConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ModerationConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ModerationConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SQLConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SQLConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/DiscordSRVUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/DiscordSRVUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Exceptions/StartupException.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Exceptions/StartupException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/StopWatchImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/StopWatchImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Stopwatch.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Stopwatch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Tickets.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Tickets.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimeFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimeFormatter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimerManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimerManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/MessageType.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/MessageType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/Person.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/Person.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PlaceholderAPI.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PlaceholderAPI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PluginConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PluginConfiguration.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SRCanceller.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SRCanceller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/StatusUpdater.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/StatusUpdater.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SuggestionsIdleHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SuggestionsIdleHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TPSCounter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TPSCounter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TimeHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TimeHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/UpdateChecker.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/UpdateChecker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addlevelsCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addlevelsCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addxpCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addxpCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removeXPCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removeXPCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removelevelsCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removelevelsCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setlevelCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setlevelCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setxpCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setxpCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/tabCompleters/DiscordSRVUtilsTabCompleter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/tabCompleters/DiscordSRVUtilsTabCompleter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/EssentialsAfk.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/EssentialsAfk.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/JDAEvents.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/JDAEvents.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/helpDeleter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/helpDeleter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/PlayerUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/PlayerUtil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,7 +115,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.35287356" />
@@ -275,10 +236,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.DiscordSRVUtils [shadowJar]" />
+        <item itemvalue="Gradle.DiscordSRVUtils [clean]" />
         <item itemvalue="Gradle.DiscordSRVUtils [cleanBuildCache]" />
         <item itemvalue="Gradle.DiscordSRVUtils [compileJava]" />
         <item itemvalue="Gradle.DiscordSRVUtils [build]" />
-        <item itemvalue="Gradle.DiscordSRVUtils [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -385,7 +346,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610327918585</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="v1.1.8">
+      <created>1610328254619</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1610328254619</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -432,34 +400,34 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1610278211229" />
-    <state x="463" y="118" key="FileChooserDialogImpl" timestamp="1610321684999">
+    <state x="463" y="118" key="FileChooserDialogImpl" timestamp="1610328487252">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="463" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1610321684999" />
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom" timestamp="1610328194754">
+    <state x="463" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1610328487252" />
+    <state width="1323" height="172" key="GridCell.Tab.0.bottom" timestamp="1610329813293">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
-    <state width="1323" height="172" key="GridCell.Tab.0.center" timestamp="1610328194754">
+    <state width="1323" height="172" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610329813293" />
+    <state width="1323" height="172" key="GridCell.Tab.0.center" timestamp="1610329813293">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
-    <state width="1323" height="172" key="GridCell.Tab.0.left" timestamp="1610328194754">
+    <state width="1323" height="172" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610329813293" />
+    <state width="1323" height="172" key="GridCell.Tab.0.left" timestamp="1610329813293">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
-    <state width="1323" height="172" key="GridCell.Tab.0.right" timestamp="1610328194754">
+    <state width="1323" height="172" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610329813293" />
+    <state width="1323" height="172" key="GridCell.Tab.0.right" timestamp="1610329813293">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
+    <state width="1323" height="172" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610329813293" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1610327145083">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="184" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1610327145083" />
-    <state x="275" y="92" key="Vcs.Push.Dialog.v2" timestamp="1610327898116">
+    <state x="275" y="92" key="Vcs.Push.Dialog.v2" timestamp="1610328260632">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="275" y="92" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1610327898116" />
+    <state x="275" y="92" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1610328260632" />
     <state x="501" y="277" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1610327159736">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
