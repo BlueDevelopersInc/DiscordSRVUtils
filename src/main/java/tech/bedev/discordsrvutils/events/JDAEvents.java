@@ -871,6 +871,8 @@ public class JDAEvents extends ListenerAdapter {
                 ex.printStackTrace();
             }
         } else if (args[0].equalsIgnoreCase(prefix + "leaderboard")) {
+            if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
+            if (!DiscordSRVUtils.Levelingconfig.Leveling_Enabled()) return;
             Stopwatch stopwatch = new TimerManager().getStopwatch();
             stopwatch.start();
             LeaderBoardManager manager = core.getLeaderBoardManager();
