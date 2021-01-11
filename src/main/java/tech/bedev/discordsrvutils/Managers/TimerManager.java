@@ -1,6 +1,6 @@
 package tech.bedev.discordsrvutils.Managers;
 
-public class  TimerManager {
+public class TimerManager {
 
     public Stopwatch getStopwatch() {
         return new StopWatchImpl();
@@ -9,6 +9,7 @@ public class  TimerManager {
     public long getCurrentTime() {
         return System.currentTimeMillis();
     }
+
     public int getCurrentTimeApproximated() {
         return Math.round(System.currentTimeMillis());
     }

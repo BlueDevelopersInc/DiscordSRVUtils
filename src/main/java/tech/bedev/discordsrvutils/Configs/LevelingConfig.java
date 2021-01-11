@@ -3,16 +3,13 @@ package tech.bedev.discordsrvutils.Configs;
 import org.springframework.core.annotation.Order;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
-import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public interface LevelingConfig {
-
 
 
     @ConfDefault.DefaultBoolean(true)

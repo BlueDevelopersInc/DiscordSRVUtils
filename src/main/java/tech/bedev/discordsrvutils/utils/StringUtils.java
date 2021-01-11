@@ -10,11 +10,11 @@ public class StringUtils {
     public String translateplaceholdersdiscorduser(Member member, String msg) {
         if (DiscordSRVUtils.PAPI) {
             return PlaceholderAPI.setPlaceholders(null, msg
-            .replace("[User_Name]", member.getUser().getName())
-            .replace("[User_Avatar_Url]", member.getUser().getEffectiveAvatarUrl())
-            .replace("[User_Tag]", member.getUser().getAsTag())
-            .replace("[User_ID]", member.getId())
-            .replace("[User_OnlineStatus]", member.getOnlineStatus().toString())
+                    .replace("[User_Name]", member.getUser().getName())
+                    .replace("[User_Avatar_Url]", member.getUser().getEffectiveAvatarUrl())
+                    .replace("[User_Tag]", member.getUser().getAsTag())
+                    .replace("[User_ID]", member.getId())
+                    .replace("[User_OnlineStatus]", member.getOnlineStatus().toString())
             );
         } else {
             return msg
@@ -26,6 +26,7 @@ public class StringUtils {
 
         }
     }
+
     public String translateplaceholdersdiscorduser(User member, String msg) {
         if (DiscordSRVUtils.PAPI) {
             return PlaceholderAPI.setPlaceholders(null, msg

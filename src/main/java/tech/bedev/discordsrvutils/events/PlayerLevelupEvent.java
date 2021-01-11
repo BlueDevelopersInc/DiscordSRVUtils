@@ -12,15 +12,18 @@ public final class PlayerLevelupEvent extends Event implements Cancellable {
     private boolean cancelled;
     private Person person;
     private Player player;
+
     public PlayerLevelupEvent(Person person, Player player) {
         this.person = person;
         this.player = player;
     }
-    @Override
-    public @NotNull HandlerList getHandlers() {
+
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
-    public static @NotNull HandlerList getHandlerList() {
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

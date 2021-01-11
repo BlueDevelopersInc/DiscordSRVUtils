@@ -1,17 +1,10 @@
 package tech.bedev.discordsrvutils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Consumer;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 
 public class UpdateChecker {
-
-
 
 
     public static String getLatestVersion() {

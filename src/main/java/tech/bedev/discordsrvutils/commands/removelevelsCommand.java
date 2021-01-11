@@ -36,7 +36,7 @@ public class removelevelsCommand implements CommandExecutor {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
                     person.removeLevels(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level is now " + ChatColor.GOLD + person.getLevel());
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE + "'s Level is now " + ChatColor.GOLD + person.getLevel());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }

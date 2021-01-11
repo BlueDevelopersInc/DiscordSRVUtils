@@ -2,7 +2,6 @@ package tech.bedev.discordsrvutils.Configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
-import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
@@ -10,13 +9,13 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import java.util.List;
 
 @ConfHeader("#_____  _                       _  _____ _______      ___    _ _   _ _     \n" +
-            "#|  __ \\(_)                     | |/ ____|  __ \\ \\    / / |  | | | (_) |    \n" +
-            "#| |  | |_ ___  ___ ___  _ __ __| | (___ | |__) \\ \\  / /| |  | | |_ _| |___ \n" +
-            "#| |  | | / __|/ __/ _ \\| '__/ _` |\\___ \\|  _  / \\ \\/ / | |  | | __| | / __|\n" +
-            "#| |__| | \\__ \\ (__ (_) | | | (_| |____) | | \\ \\  \\  /  | |__| | |_| | \\__ \\\n" +
-            "#|_____/|_|___/\\___\\___/|_|  \\__,_|_____/|_|  \\_\\  \\/    \\____/ \\__|_|_|___/\n" +
-            "                                                                            \n" +
-            "                ")
+        "#|  __ \\(_)                     | |/ ____|  __ \\ \\    / / |  | | | (_) |    \n" +
+        "#| |  | |_ ___  ___ ___  _ __ __| | (___ | |__) \\ \\  / /| |  | | |_ _| |___ \n" +
+        "#| |  | | / __|/ __/ _ \\| '__/ _` |\\___ \\|  _  / \\ \\/ / | |  | | __| | / __|\n" +
+        "#| |__| | \\__ \\ (__ (_) | | | (_| |____) | | \\ \\  \\  /  | |__| | |_| | \\__ \\\n" +
+        "#|_____/|_|___/\\___\\___/|_|  \\__,_|_____/|_|  \\_\\  \\/    \\____/ \\__|_|_|___/\n" +
+        "                                                                            \n" +
+        "                ")
 public interface MainConfConfig {
 
     @ConfKey("update_checker")

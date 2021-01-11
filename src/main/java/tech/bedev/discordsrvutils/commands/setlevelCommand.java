@@ -35,7 +35,7 @@ public class setlevelCommand implements CommandExecutor {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
                     person.setLevel(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s Level has been set to " + ChatColor.GOLD + person.getLevel());
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE + "'s Level has been set to " + ChatColor.GOLD + person.getLevel());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }
@@ -43,4 +43,4 @@ public class setlevelCommand implements CommandExecutor {
         }
         return true;
     }
-    }
+}

@@ -36,7 +36,7 @@ public class addxpCommand implements CommandExecutor {
                     Integer.parseInt(args[1]);
                     person.insertLeveling();
                     person.addXP(Integer.parseInt(args[1]));
-                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE  + "'s XP is now " + ChatColor.GOLD + person.getXP());
+                    sender.sendMessage(ChatColor.GREEN + args[0] + ChatColor.BLUE + "'s XP is now " + ChatColor.GOLD + person.getXP());
                 } catch (NumberFormatException ex) {
                     sender.sendMessage(ChatColor.RED + "Invalid level set.");
                 }

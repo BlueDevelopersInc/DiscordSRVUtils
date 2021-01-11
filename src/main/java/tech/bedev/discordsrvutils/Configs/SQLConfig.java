@@ -6,7 +6,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter.Order;
 
-import static space.arim.dazzleconf.annote.ConfDefault.*;
+import static space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 
 public interface SQLConfig {
 

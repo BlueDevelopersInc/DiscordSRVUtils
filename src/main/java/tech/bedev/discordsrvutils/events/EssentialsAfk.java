@@ -10,8 +10,8 @@ import tech.bedev.discordsrvutils.Managers.ConfOptionsManager;
 
 public class EssentialsAfk implements Listener {
 
-    private ConfOptionsManager conf;
     private final DiscordSRVUtils core;
+    private ConfOptionsManager conf;
 
     public EssentialsAfk(DiscordSRVUtils core) {
         this.core = core;
@@ -25,7 +25,7 @@ public class EssentialsAfk implements Listener {
         if (!e.getAffected().isAfk()) {
             if (DiscordSRVUtils.Config.isEssentialsAfkMessages()) {
                 DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(DiscordSRVUtils.BotSettingsconfig.chat_channel()).sendMessage(conf.getConfigWithPapi(e.getAffected().getBase().getUniqueId(), String.join("\n", DiscordSRVUtils.Config.EssentialsAfkMessage()))
-                .replace("[Player_Name]", e.getAffected().getBase().getName())
+                        .replace("[Player_Name]", e.getAffected().getBase().getName())
                 ).queue();
 
             }
@@ -37,5 +37,5 @@ public class EssentialsAfk implements Listener {
             }
         }
     }
-    }
+}
 

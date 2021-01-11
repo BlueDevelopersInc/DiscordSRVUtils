@@ -2,18 +2,16 @@ package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Activity;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.springframework.util.StopWatch;
-import tech.bedev.discordsrvutils.Managers.TimerManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class StatusUpdater extends TimerTask {
     private DiscordSRVUtils core;
+
     public StatusUpdater(DiscordSRVUtils core) {
         this.core = core;
     }
@@ -53,20 +51,20 @@ public class StatusUpdater extends TimerTask {
                             core.getJda().getPresence().setActivity(Activity.playing(PlaceholderAPI.setPlaceholders(null, current)));
                         }
                     }
-                    if (DiscordSRVUtils.BotSettingsconfig.Statuses().size() -1 == r1.getInt("Status")) {
+                    if (DiscordSRVUtils.BotSettingsconfig.Statuses().size() - 1 == r1.getInt("Status")) {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=0 WHERE Status=?");
                         p2.setInt(1, r1.getInt("Status"));
                         p2.execute();
                     } else {
                         PreparedStatement p2 = conn.prepareStatement("UPDATE status SET Status=? WHERE Status=?");
-                        p2.setInt(1, r1.getInt("Status") +1);
+                        p2.setInt(1, r1.getInt("Status") + 1);
                         p2.setInt(2, r1.getInt("Status"));
                         p2.execute();
 
                     }
 
                 }
-            }catch (SQLException ex) {
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }

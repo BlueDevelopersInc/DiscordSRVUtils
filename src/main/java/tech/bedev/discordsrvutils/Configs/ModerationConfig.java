@@ -2,7 +2,6 @@ package tech.bedev.discordsrvutils.Configs;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
-import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultLong;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
@@ -31,8 +30,6 @@ public interface ModerationConfig {
     @ConfComments("\n#Role to give to muted members")
     @Order(20)
     Long MutedRole();
-
-
 
 
 }

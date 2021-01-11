@@ -7,7 +7,7 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter.Order;
 
 import java.util.List;
 
-public interface BotSettingsConfig{
+public interface BotSettingsConfig {
 
     @ConfDefault.DefaultString("!")
     @ConfComments("#Prefix used to execute commands.")

@@ -12,11 +12,17 @@ public final class DiscordLevelupEvent extends Event implements Cancellable {
     private boolean cancelled;
     private Person person;
     private GuildMessageReceivedEvent getDiscordEvent;
+
     public DiscordLevelupEvent(GuildMessageReceivedEvent e, Person person) {
         this.person = person;
         this.getDiscordEvent = e;
 
     }
+
+    public static @NotNull HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public boolean isCancelled() {
         return cancelled;
@@ -31,13 +37,11 @@ public final class DiscordLevelupEvent extends Event implements Cancellable {
     public @NotNull HandlerList getHandlers() {
         return handlers;
     }
-    public static @NotNull HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public Person getPerson() {
         return person;
     }
+
     public GuildMessageReceivedEvent getDiscordEvent() {
         return getDiscordEvent;
     }
