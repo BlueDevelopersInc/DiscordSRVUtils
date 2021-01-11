@@ -23,25 +23,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8c5baa4-c655-4f7e-ad36-95c165c566e0" name="Default Changelist" comment="v1.1.8">
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/classAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/jarAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ConfManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ConfManager.class" afterDir="false" />
@@ -92,12 +74,6 @@
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/PlayerUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/PlayerUtil.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +176,7 @@
       <command value="gradle build --refresh-dependencies" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.DiscordSRVUtils [build]">
+  <component name="RunManager" selected="Gradle.DiscordSRVUtils [shadowJar]">
     <configuration name="DiscordSRVUtils [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -298,8 +274,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.DiscordSRVUtils [cleanBuildCache]" />
         <item itemvalue="Gradle.DiscordSRVUtils [shadowJar]" />
+        <item itemvalue="Gradle.DiscordSRVUtils [cleanBuildCache]" />
         <item itemvalue="Gradle.DiscordSRVUtils [compileJava]" />
         <item itemvalue="Gradle.DiscordSRVUtils [build]" />
         <item itemvalue="Gradle.DiscordSRVUtils [clean]" />
@@ -402,7 +378,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610321349821</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="v1.1.8">
+      <created>1610327918585</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1610327918585</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,22 +436,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="463" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1610321684999" />
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom" timestamp="1610327768567">
+    <state width="1323" height="172" key="GridCell.Tab.0.bottom" timestamp="1610328194754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610327768567" />
-    <state width="1323" height="172" key="GridCell.Tab.0.center" timestamp="1610327768567">
+    <state width="1323" height="172" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
+    <state width="1323" height="172" key="GridCell.Tab.0.center" timestamp="1610328194754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610327768567" />
-    <state width="1323" height="172" key="GridCell.Tab.0.left" timestamp="1610327768567">
+    <state width="1323" height="172" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
+    <state width="1323" height="172" key="GridCell.Tab.0.left" timestamp="1610328194754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610327768567" />
-    <state width="1323" height="172" key="GridCell.Tab.0.right" timestamp="1610327768567">
+    <state width="1323" height="172" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
+    <state width="1323" height="172" key="GridCell.Tab.0.right" timestamp="1610328194754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610327768567" />
+    <state width="1323" height="172" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610328194754" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1610327145083">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
