@@ -10,9 +10,11 @@ import java.util.TimerTask;
 
 public class helpDeleter extends TimerTask {
     private DiscordSRVUtils core;
+
     public helpDeleter(DiscordSRVUtils core) {
         this.core = core;
     }
+
     @Override
     public void run() {
         try (Connection conn = core.getMemoryConnection()) {

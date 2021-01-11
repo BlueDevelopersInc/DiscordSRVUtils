@@ -2,21 +2,21 @@ package tech.bedev.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tech.bedev.discordsrvutils.Managers.TimerManager;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimerTask;
 
 public class TimeHandler extends TimerTask {
-    public TimerManager getTimerManager() {
-        return new TimerManager();
-    }
     private final DiscordSRVUtils core;
+
     public TimeHandler(DiscordSRVUtils core) {
         this.core = core;
+    }
+
+    public TimerManager getTimerManager() {
+        return new TimerManager();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class TimeHandler extends TimerTask {
         if (!DiscordSRVUtils.isReady) return;
         Iterator it = core.tempmute.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
             Long userID = (Long) pair.getKey();
             Long expiration = (Long) pair.getValue();
             if (expiration <= getTimerManager().getCurrentTime()) {

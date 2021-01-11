@@ -1,6 +1,6 @@
 package tech.bedev.discordsrvutils.Managers;
 
-public class StopWatchImpl implements Stopwatch{
+public class StopWatchImpl implements Stopwatch {
 
     private long startTime = 0;
     private long stopTime = 0;

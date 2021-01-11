@@ -2,7 +2,6 @@ package tech.bedev.discordsrvutils;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +24,7 @@ public class PluginConfiguration {
     }
 
     @NotNull
-    public static YamlConfiguration loadConfiguration(@NotNull Reader reader) throws InvalidConfigurationException, IOException{
+    public static YamlConfiguration loadConfiguration(@NotNull Reader reader) throws InvalidConfigurationException, IOException {
         Validate.notNull(reader, "Stream cannot be null");
 
         YamlConfiguration config = new YamlConfiguration();

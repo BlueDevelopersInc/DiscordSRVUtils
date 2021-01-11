@@ -14,7 +14,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
@@ -28,29 +27,27 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
 
 public class DiscordSRVUtilsCommand implements CommandExecutor {
-    public static JDA getJda() {
-        return DiscordSRV.getPlugin().getJda();
-    }
-    Map<String, Long> map = new HashMap<>();
-
     public static JDA jda;
-
+    private final DiscordSRVUtils core;
+    Map<String, Long> map = new HashMap<>();
     int warnings = 0;
     int errors = 0;
-    private final DiscordSRVUtils core;
+    private FileConfiguration newConfig = null;
+    private File configFile = null;
+
 
     public DiscordSRVUtilsCommand(DiscordSRVUtils core) {
         this.core = core;
     }
 
-
-    private FileConfiguration newConfig = null;
-
-
-    private File configFile = null;
+    public static JDA getJda() {
+        return DiscordSRV.getPlugin().getJda();
+    }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(args.length >= 1)) {
@@ -79,7 +76,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                         DiscordSRVUtils.Config = core.MainConfManager.reloadConfigData();
                         core.SuggestionsConfManager.reloadConfig();
                         DiscordSRVUtils.SuggestionsConfig = core.SuggestionsConfManager.reloadConfigData();
-                    } catch (IOException |InvalidConfigException exception) {
+                    } catch (IOException | InvalidConfigException exception) {
                         sender.sendMessage(ChatColor.RED + "Config Broken. Check the error on console.");
                         exception.printStackTrace();
                         return true;
@@ -87,8 +84,8 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
 
                     if (DiscordSRVUtils.BotSettingsconfig.isStatusUpdates()) {
                         DiscordSRVUtils.timer = new Timer();
-                            String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";
-                            DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
+                        String l = DiscordSRVUtils.BotSettingsconfig.Status_Update_Interval() + "000";
+                        DiscordSRVUtils.timer.schedule(new StatusUpdater(core), 0, Integer.parseInt(l));
 
                     }
                     String status = DiscordSRVUtils.BotSettingsconfig.status();
@@ -169,8 +166,7 @@ public class DiscordSRVUtilsCommand implements CommandExecutor {
                     }
                 }
 
-            }
-            else {
+            } else {
                 sender.sendMessage(ChatColor.RED + "Unknown arg \"" + args[0] + "\"");
             }
         }

@@ -19,6 +19,7 @@ public class Tickets {
     public Tickets(DiscordSRVUtils core) {
         this.core = core;
     }
+
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
@@ -54,9 +55,9 @@ public class Tickets {
                 ex.printStackTrace();
             }
         });
-      }
+    }
 
-      public void deleteMemoryTicketCreation(Long channelID, Long userID) {
+    public void deleteMemoryTicketCreation(Long channelID, Long userID) {
         try (Connection mconn = core.getMemoryConnection()) {
             PreparedStatement last = mconn.prepareStatement("DELETE FROM tickets_creating WHERE Channel_id=? AND UserID=?");
             last.setLong(1, channelID);
@@ -65,5 +66,5 @@ public class Tickets {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-      }
+    }
 }

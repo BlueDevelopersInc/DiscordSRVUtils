@@ -10,13 +10,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-public class LeaderBoardManagerImpl implements LeaderBoardManager{
+public class LeaderBoardManagerImpl implements LeaderBoardManager {
     public DiscordSRVUtils core;
+
     public LeaderBoardManagerImpl(DiscordSRVUtils core) {
         this.core = core;
     }
+
     @Override
     public List<Person> getLeaderBoardFromTo(int from, int to) {
         Stopwatch swtch = new TimerManager().getStopwatch();
@@ -34,7 +38,10 @@ public class LeaderBoardManagerImpl implements LeaderBoardManager{
 
                     } else count--;
 
-                } else { System.out.println(swtch.getElapsedTime() + "ms"); return mem;}
+                } else {
+                    System.out.println(swtch.getElapsedTime() + "ms");
+                    return mem;
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -50,7 +57,8 @@ public class LeaderBoardManagerImpl implements LeaderBoardManager{
             ResultSet r1 = p1.executeQuery();
             while (r1.next()) {
                 count++;
-                if (count == position) return core.getPersonByUUID(Bukkit.getOfflinePlayer(r1.getString("unique_id")).getUniqueId());
+                if (count == position)
+                    return core.getPersonByUUID(Bukkit.getOfflinePlayer(r1.getString("unique_id")).getUniqueId());
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -19,17 +19,16 @@ import java.util.Timer;
 public class DiscordSRVEventListener {
     private final DiscordSRVUtils core;
     Timer idle = new Timer();
+    Timer timer4 = new Timer();
+    Timer timer3 = new Timer();
 
     public DiscordSRVEventListener(DiscordSRVUtils core) {
         this.core = core;
     }
 
-
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
-    Timer timer4 = new Timer();
-    Timer timer3 = new Timer();
 
     @Subscribe
     public void onReady(DiscordReadyEvent e) {
@@ -78,7 +77,7 @@ public class DiscordSRVEventListener {
     }
 
     @Subscribe
-    public void  onLink(AccountLinkedEvent e) {
+    public void onLink(AccountLinkedEvent e) {
         try (Connection conn = core.getDatabaseFile()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM discordsrvutils_leveling WHERE unique_id=?");
             p1.setString(1, Bukkit.getOfflinePlayer(e.getPlayer().getName()).getUniqueId().toString());

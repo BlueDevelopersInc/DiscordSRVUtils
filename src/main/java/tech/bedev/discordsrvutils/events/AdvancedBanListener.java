@@ -16,12 +16,12 @@ import tech.bedev.discordsrvutils.DiscordSRVUtils;
 public class AdvancedBanListener implements Listener {
     private final DiscordSRVUtils core;
 
-    public static JDA getJda() {
-        return DiscordSRV.getPlugin().getJda();
-    }
-
     public AdvancedBanListener(DiscordSRVUtils core) {
         this.core = core;
+    }
+
+    public static JDA getJda() {
+        return DiscordSRV.getPlugin().getJda();
     }
 
     @EventHandler
@@ -31,97 +31,101 @@ public class AdvancedBanListener implements Listener {
         BansIntegrationConfig conf = DiscordSRVUtils.BansIntegrationconfig;
         Bukkit.getScheduler().runTask(core, () -> {
             PunishmentType type = event.getPunishment().getType();
-           switch (type) {
-               case BAN:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                       DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.bannedMessage())
-                               .replace("[Player]", event.getPunishment().getName())
-                               .replace("[Operator]", event.getPunishment().getOperator())
-                               .replace("[Reason]", event.getPunishment().getReason())
-                       ).queue();
-               }
-                   break;
-               case TEMP_BAN:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                   DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.tempBannedMessage())
-                           .replace("[Player]", event.getPunishment().getName())
-                           .replace("[Operator]", event.getPunishment().getOperator())
-                           .replace("[Reason]", event.getPunishment().getReason())
-                           .replace("[Duration]", event.getPunishment().getDuration(true))
-                   ).queue();
-               }
-                   break;
-               case IP_BAN:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                   DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.IPBannedMessage())
-                           .replace("[Player]", event.getPunishment().getName())
-                           .replace("[Operator]", event.getPunishment().getOperator())
-                           .replace("[Reason]", event.getPunishment().getReason())
-                   ).queue();
-               }
-                   break;
-               case TEMP_IP_BAN:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                   DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.TempIPBannedMessage())
-                           .replace("[Player]", event.getPunishment().getName())
-                           .replace("[Operator]", event.getPunishment().getOperator())
-                           .replace("[Reason]", event.getPunishment().getReason())
-                           .replace("[Duration]", event.getPunishment().getDuration(true))
-                   ).queue();
-               }
-                   break;
-               case MUTE:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           if (DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole()) != null) {
-                               DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole())).queue();
-                           }
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                   DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.MutedMessage())
-                           .replace("[Player]", event.getPunishment().getName())
-                           .replace("[Operator]", event.getPunishment().getOperator())
-                           .replace("[Reason]", event.getPunishment().getReason())
-                   ).queue();
-               }
-                   break;
-               case TEMP_MUTE:
-                   if (conf.isSyncPunishmentsWithDiscord()) {
-                       if (userId != null) {
-                           if (DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole()) != null) {
-                               DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole())).queue();
-                           }
-                       }
-                   } if (conf.isSendPunishmentmsgesToDiscord()) {
-                   DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.TempMutedMessage())
-                           .replace("[Player]", event.getPunishment().getName())
-                           .replace("[Operator]", event.getPunishment().getOperator())
-                           .replace("[Reason]", event.getPunishment().getReason())
-                           .replace("[Duration]", event.getPunishment().getDuration(true))
-                   ).queue();
-               }
-                   break;
+            switch (type) {
+                case BAN:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.bannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
+                    break;
+                case TEMP_BAN:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.tempBannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                                .replace("[Duration]", event.getPunishment().getDuration(true))
+                        ).queue();
+                    }
+                    break;
+                case IP_BAN:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.IPBannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
+                    break;
+                case TEMP_IP_BAN:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.TempIPBannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                                .replace("[Duration]", event.getPunishment().getDuration(true))
+                        ).queue();
+                    }
+                    break;
+                case MUTE:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            if (DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole()) != null) {
+                                DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole())).queue();
+                            }
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.MutedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
+                    break;
+                case TEMP_MUTE:
+                    if (conf.isSyncPunishmentsWithDiscord()) {
+                        if (userId != null) {
+                            if (DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole()) != null) {
+                                DiscordSRV.getPlugin().getMainGuild().addRoleToMember(userId, DiscordSRV.getPlugin().getMainGuild().getRoleById(DiscordSRVUtils.Moderationconfig.MutedRole())).queue();
+                            }
+                        }
+                    }
+                    if (conf.isSendPunishmentmsgesToDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.TempMutedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                                .replace("[Duration]", event.getPunishment().getDuration(true))
+                        ).queue();
+                    }
+                    break;
 
 
-
-
-           }
+            }
         });
 
     }
@@ -140,13 +144,14 @@ public class AdvancedBanListener implements Listener {
                         if (userId != null) {
                             DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
                         }
-                    } if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unbannedMessage())
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                            .replace("[Reason]", event.getPunishment().getReason())
-                    ).queue();
-                }
+                    }
+                    if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unbannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
                     break;
                 case TEMP_BAN:
                     if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
@@ -175,13 +180,14 @@ public class AdvancedBanListener implements Listener {
                         if (userId != null) {
                             DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
                         }
-                    } if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unipbannedMessage())
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                            .replace("[Reason]", event.getPunishment().getReason())
-                    ).queue();
-                }
+                    }
+                    if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unipbannedMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
                     break;
                 case TEMP_IP_BAN:
                     if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
@@ -216,13 +222,14 @@ public class AdvancedBanListener implements Listener {
 
                             }
                         }
-                    } if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
-                    DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unmuteMessage())
-                            .replace("[Player]", event.getPunishment().getName())
-                            .replace("[Operator]", event.getPunishment().getOperator())
-                            .replace("[Reason]", event.getPunishment().getReason())
-                    ).queue();
-                }
+                    }
+                    if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
+                        DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unmuteMessage())
+                                .replace("[Player]", event.getPunishment().getName())
+                                .replace("[Operator]", event.getPunishment().getOperator())
+                                .replace("[Reason]", event.getPunishment().getReason())
+                        ).queue();
+                    }
                     break;
                 case TEMP_MUTE:
                     if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
@@ -252,9 +259,7 @@ public class AdvancedBanListener implements Listener {
                         }
 
                     }
-                    }
-
-
+            }
 
 
         });

@@ -5,7 +5,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tech.bedev.discordsrvutils.DiscordSRVUtils;
 
@@ -17,6 +16,7 @@ public class ConfOptionsManager {
     public ConfOptionsManager(DiscordSRVUtils core) {
         this.core = core;
     }
+
     public static JDA getJda() {
         return DiscordSRV.getPlugin().getJda();
     }
@@ -38,6 +38,7 @@ public class ConfOptionsManager {
 
         return String.join("\n", core.getConfig().getStringList(path));
     }
+
     public String StringListToStringColorCodes(@NotNull String path) {
 
         return ChatColor.translateAlternateColorCodes('&', String.join("\n", core.getConfig().getStringList(path)));
@@ -46,6 +47,7 @@ public class ConfOptionsManager {
     public String StringToColorCodes(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
+
     public String ConfigToColorCodes(String path) {
         return ChatColor.translateAlternateColorCodes('&', core.getConfig().getString(path));
     }
