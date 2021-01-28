@@ -1486,7 +1486,7 @@ public class JDAEvents extends ListenerAdapter {
                         }
                         person.insertLeveling();
                         person.addXP(BukkitEventListener.RANDOM.nextInt(25));
-                        if (person.getXP() >= 300) {
+                        if (person.getXP() >= DiscordSRVUtils.Levelingconfig.levelup_XP()) {
                             person.clearXP();
                             DiscordLevelupEvent ev = new DiscordLevelupEvent(e, person);
                             Bukkit.getPluginManager().callEvent(ev);
@@ -1694,6 +1694,7 @@ public class JDAEvents extends ListenerAdapter {
                                     p4.setLong(3, e.getMessageIdLong());
                                     ResultSet r4 = p4.executeQuery();
                                     if (r4.next()) {
+                                        if (DiscordSRVUtils.SuggestionsConfig.DisallowSubmitterToVote())
                                         e.getReaction().removeReaction(e.getUser()).queue();
                                     } else {
                                         PreparedStatement p5 = conn5.prepareStatement("SELECT * FROM discordsrvutils_suggestions WHERE Channel=? AND Message=?");
@@ -1701,15 +1702,17 @@ public class JDAEvents extends ListenerAdapter {
                                         p5.setLong(2, e.getMessageIdLong());
                                         ResultSet r5 = p5.executeQuery();
                                         if (r5.next()) {
-                                            if (e.getReactionEmote().getName().equals(emote_yes)) {
-                                                e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
-                                                    msg.removeReaction(remote_no, e.getUser()).queue();
-                                                });
-                                            } else if (e.getReactionEmote().getName().equals(emote_no)) {
-                                                e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
-                                                    msg.removeReaction(remote_yes, e.getUser()).queue();
-                                                });
+                                            if (DiscordSRVUtils.SuggestionsConfig.DisallowMoreThanOneVote()) {
+                                                if (e.getReactionEmote().getName().equals(emote_yes)) {
+                                                    e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
+                                                        msg.removeReaction(remote_no, e.getUser()).queue();
+                                                    });
+                                                } else if (e.getReactionEmote().getName().equals(emote_no)) {
+                                                    e.getChannel().retrieveMessageById(e.getMessageId()).queue(msg -> {
+                                                        msg.removeReaction(remote_yes, e.getUser()).queue();
+                                                    });
 
+                                                }
                                             }
                                         } else {
                                             try (Connection conni = core.getMemoryConnection()) {
@@ -1842,7 +1845,7 @@ public class JDAEvents extends ListenerAdapter {
                                             p4.execute();
                                             e.getChannel().sendMessage("Suggestion was denied, Please enter your note below").queue();
                                         } else if (e.getReactionEmote().getName().equals("\uD83C\uDDFE")) {
-                                            PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true', LastOutput WHERE userid=? AND Channel=?");
+                                            PreparedStatement p4 = conni.prepareStatement("UPDATE srmsgesreply SET step=2, isAccepted='true', LastOutput=? WHERE userid=? AND Channel=?");
                                             p4.setLong(1, System.currentTimeMillis());
                                             p4.setLong(2, e.getUserIdLong());
                                             p4.setLong(3, e.getChannel().getIdLong());

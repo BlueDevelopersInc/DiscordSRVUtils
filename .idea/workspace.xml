@@ -23,10 +23,69 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8c5baa4-c655-4f7e-ad36-95c165c566e0" name="Default Changelist" comment="v1.1.9">
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ConfManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/LevelingConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/MainConfConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/ModerationConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SQLConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/DiscordSRVUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Exceptions/StartupException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/StopWatchImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Stopwatch.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/Tickets.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimeFormatter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimerManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/MessageType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/Person.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PlaceholderAPI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/PluginConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SRCanceller.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/StatusUpdater.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/SuggestionsIdleHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TPSCounter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/TimeHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/UpdateChecker.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addlevelsCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/addxpCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removeXPCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/removelevelsCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setlevelCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/setxpCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/commands/tabCompleters/DiscordSRVUtilsTabCompleter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/EssentialsAfk.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/JDAEvents.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/helpDeleter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/PlayerUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/plugin.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/shadowJar/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/LevelingConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/LevelingConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/BukkitEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/BukkitEventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,28 +109,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="publishing" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -106,6 +143,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
     <property name="project.structure.last.edited" value="Project" />
@@ -146,7 +184,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -165,7 +205,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -184,7 +226,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [compileJava]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -203,7 +247,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -222,7 +268,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <recent_temporary>

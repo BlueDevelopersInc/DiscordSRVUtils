@@ -37,5 +37,10 @@ public interface LevelingConfig {
     @Order(50)
     String leaderboard_format();
 
+    @ConfDefault.DefaultInteger(300)
+    @ConfComments("\n#Number of XP needed to levelup to next level")
+    @Order(60)
+    int levelup_XP();
+
 
 }
