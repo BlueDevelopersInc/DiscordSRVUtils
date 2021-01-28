@@ -52,5 +52,17 @@ public interface SuggestionsConfig {
     @ConfComments("\n#Disallow people to vote yes and no together")
     boolean DisallowMoreThanOneVote();
 
+    @ConfKey("suggestion-banned-role")
+    @ConfDefault.DefaultLong(0L)
+    @AnnotationBasedSorter.Order(80)
+    @ConfComments("\n#This role wont be able to suggest.")
+    Long SuggeestionBannedRole();
+
+    @ConfKey("delete-suggestion-message-after-usage")
+    @DefaultBoolean(true)
+    @AnnotationBasedSorter.Order(90)
+    @ConfComments("\n#Should we delete the suggestion sent by player which should have been sent in the bot commands channel?")
+    Boolean DeleteSuggestionMessageAfterUsage();
+
 
 }

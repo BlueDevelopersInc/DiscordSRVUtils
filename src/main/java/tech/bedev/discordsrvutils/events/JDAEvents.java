@@ -848,6 +848,13 @@ public class JDAEvents extends ListenerAdapter {
             }
             return;
         } else if (args[0].equalsIgnoreCase(prefix + "suggest")) {
+            Role role = e.getGuild().getRoleById(DiscordSRVUtils.SuggestionsConfig.SuggeestionBannedRole());
+            if (role != null) {
+                if (e.getMember().getRoles().contains(role)) {
+                    e.getChannel().sendMessage("You are suggestion banned!").queue();
+                    return;
+                }
+            }
             System.out.println(e.getMember().getIdLong());
             System.out.println(e.getChannel().getIdLong());
             if (DiscordSRVUtils.BotSettingsconfig.isBungee()) return;
@@ -864,7 +871,7 @@ public class JDAEvents extends ListenerAdapter {
                     p2.setLong(2, e.getChannel().getIdLong());
                     p2.setLong(3, System.currentTimeMillis());
                     p2.execute();
-                    e.getChannel().sendMessage("Please enter your Suggestion.").queue();
+                    e.getChannel().sendMessage("I'm ready. Please enter your suggestion below").queue();
                     return;
                 }
             } catch (SQLException ex) {
@@ -1401,7 +1408,7 @@ public class JDAEvents extends ListenerAdapter {
                                         embed.setThumbnail(e.getMember().getUser().getEffectiveAvatarUrl());
                                         embed.setDescription("**Suggested by:** " + e.getMember().getUser().getAsTag() + "\n" +
                                                 "**Suggestion Number:** #" + ID);
-                                        embed.addField("Suggestion", e.getMessage().getContentRaw(), false);
+                                        embed.addField("Suggestion", e.getMessage().getContentRaw().replaceFirst(prefix + "suggest ", ""), false);
                                         channel.sendMessage(embed.build()).queue(msg -> {
                                             try (Connection c1 = core.getDatabaseFile(); Connection c2 = core.getMemoryConnection()) {
                                                 String emote_yes = DiscordSRVUtils.SuggestionsConfig.emoji_yes();
@@ -1445,7 +1452,11 @@ public class JDAEvents extends ListenerAdapter {
                                                 p6.execute();
                                                 msg.addReaction(emote_yes).queue();
                                                 msg.addReaction(emote_no).queue();
+                                                if (DiscordSRVUtils.SuggestionsConfig.DeleteSuggestionMessageAfterUsage()) {
+                                                    e.getMessage().delete().queue();
+                                                }
                                                 e.getChannel().sendMessage("Your Suggestion has been recorded.").queue();
+
                                             } catch (SQLException ex) {
                                                 ex.printStackTrace();
                                             }
@@ -1962,7 +1973,7 @@ public class JDAEvents extends ListenerAdapter {
             PreparedStatement p2 = conn.prepareStatement("DELETE FROM discordsrvutils_Closed_Tickets WHERE Channel_id=?");
             p2.setLong(1, e.getChannel().getIdLong());
             p2.execute();
-            PreparedStatement p3 = conn.prepareStatement("DELETE FROM helpmsges WHERE Channel=?");
+            PreparedStatement p3 = mconn.prepareStatement("DELETE FROM helpmsges WHERE Channel=?");
             p3.setLong(1, e.getChannel().getIdLong());
             p3.execute();
         } catch (SQLException ex) {

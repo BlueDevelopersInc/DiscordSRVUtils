@@ -91,5 +91,11 @@ public interface BansIntegrationConfig {
     @AnnotationBasedSorter.Order(120)
     List<String> unmuteMessage();
 
+    @ConfKey("banned-role")
+    @ConfComments("\n#Banned role. Instead of ban the player on discord server when banned on minecraft, give this role to the member\n#If this role is invalid the plugin will ban the player on discord (if punishments sync enabled)")
+    @ConfDefault.DefaultLong(0L)
+    @AnnotationBasedSorter.Order(130)
+    Long BannedRole();
+
 
 }

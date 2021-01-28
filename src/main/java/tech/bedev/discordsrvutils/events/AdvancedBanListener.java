@@ -2,6 +2,7 @@ package tech.bedev.discordsrvutils.events;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
@@ -30,12 +31,18 @@ public class AdvancedBanListener implements Listener {
         String channel = DiscordSRVUtils.BotSettingsconfig.chat_channel();
         BansIntegrationConfig conf = DiscordSRVUtils.BansIntegrationconfig;
         Bukkit.getScheduler().runTask(core, () -> {
+            Role bannedRole = getJda().getRoleById(DiscordSRVUtils.BansIntegrationconfig.BannedRole());
             PunishmentType type = event.getPunishment().getType();
+            Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
             switch (type) {
                 case BAN:
                     if (conf.isSyncPunishmentsWithDiscord()) {
                         if (userId != null) {
-                            DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                            if (bannedRole != null) {
+                                mainGuild.addRoleToMember(userId, bannedRole).queue();
+                            } else {
+                                DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
+                            }
                         }
                     }
                     if (conf.isSendPunishmentmsgesToDiscord()) {
@@ -48,7 +55,9 @@ public class AdvancedBanListener implements Listener {
                     break;
                 case TEMP_BAN:
                     if (conf.isSyncPunishmentsWithDiscord()) {
-                        if (userId != null) {
+                        if (bannedRole != null) {
+                            mainGuild.addRoleToMember(userId, bannedRole).queue();
+                        } else {
                             DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
                         }
                     }
@@ -63,7 +72,9 @@ public class AdvancedBanListener implements Listener {
                     break;
                 case IP_BAN:
                     if (conf.isSyncPunishmentsWithDiscord()) {
-                        if (userId != null) {
+                        if (bannedRole != null) {
+                            mainGuild.addRoleToMember(userId, bannedRole).queue();
+                        } else {
                             DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
                         }
                     }
@@ -77,7 +88,9 @@ public class AdvancedBanListener implements Listener {
                     break;
                 case TEMP_IP_BAN:
                     if (conf.isSyncPunishmentsWithDiscord()) {
-                        if (userId != null) {
+                        if (bannedRole != null) {
+                            mainGuild.addRoleToMember(userId, bannedRole).queue();
+                        } else {
                             DiscordSRV.getPlugin().getMainGuild().ban(userId, 0, "DiscordSRVUtils Ban plugins Sync").queue();
                         }
                     }
@@ -138,12 +151,19 @@ public class AdvancedBanListener implements Listener {
         Role muted = DiscordSRV.getPlugin().getMainGuild().getRoleById(core.getConfig().getLong("muted_role"));
         BansIntegrationConfig conf = DiscordSRVUtils.BansIntegrationconfig;
         Bukkit.getScheduler().runTask(core, () -> {
+            Role bannedRole = getJda().getRoleById(DiscordSRVUtils.BansIntegrationconfig.BannedRole());
+            Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
             switch (type) {
                 case BAN:
                     if (conf.isSyncUnpunishmentsWithDiscord()) {
                         if (userId != null) {
-                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            if (bannedRole != null) {
+                                mainGuild.removeRoleFromMember(userId, bannedRole).queue();
+                            } else {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }
                         }
+
                     }
                     if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unbannedMessage())
@@ -157,8 +177,11 @@ public class AdvancedBanListener implements Listener {
                     if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
                         if (conf.isSyncUnpunishmentsWithDiscord()) {
                             if (userId != null) {
-                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                            }
+                                if (bannedRole != null) {
+                                    mainGuild.removeRoleFromMember(userId, bannedRole).queue();
+                                } else {
+                                    DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                                }                            }
                         }
                     } else {
                         if (conf.isSyncUnpunishmentsWithDiscord()) {
@@ -178,8 +201,11 @@ public class AdvancedBanListener implements Listener {
                 case IP_BAN:
                     if (conf.isSyncUnpunishmentsWithDiscord()) {
                         if (userId != null) {
-                            DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                        }
+                            if (bannedRole != null) {
+                                mainGuild.removeRoleFromMember(userId, bannedRole).queue();
+                            } else {
+                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                            }                        }
                     }
                     if (conf.isSyncUnpunishmentsmsgWithDiscord()) {
                         DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel).sendMessage(String.join("\n", conf.unipbannedMessage())
@@ -193,8 +219,11 @@ public class AdvancedBanListener implements Listener {
                     if (TimeManager.getTime() >= event.getPunishment().getEnd()) {
                         if (conf.isSyncUnpunishmentsWithDiscord()) {
                             if (userId != null) {
-                                DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
-                            }
+                                if (bannedRole != null) {
+                                    mainGuild.removeRoleFromMember(userId, bannedRole).queue();
+                                } else {
+                                    DiscordSRV.getPlugin().getMainGuild().unban(userId).queue();
+                                }                            }
                         }
                     } else {
                         if (conf.isSyncUnpunishmentsWithDiscord()) {
