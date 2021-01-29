@@ -27,6 +27,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DiscordSRVUtils extends JavaPlugin {
+    Thread thread = new Thread();
     public static boolean isReady = false;
     public static boolean PAPI;
     public static Timer timer = new Timer();
@@ -115,6 +116,8 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        thread.setName("DiscordSRVUtils");
+        
         try {
             SQLConfigManager.reloadConfig();
             LevelingConfigManager.reloadConfig();
@@ -280,12 +283,13 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
         }
         String newVersion = UpdateChecker.getLatestVersion();
-        if (newVersion.equalsIgnoreCase(getDescription().getVersion())) {
-            getLogger().info(ChatColor.GREEN + "No new version available. (" + newVersion + ")");
-        } else {
-            getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + newVersion);
+        if (newVersion != null) {
+            if (newVersion.equalsIgnoreCase(getDescription().getVersion())) {
+                getLogger().info(ChatColor.GREEN + "No new version available. (" + newVersion + ")");
+            } else {
+                getLogger().info(ChatColor.GREEN + "A new version is available. Please update ASAP!" + " Your version: " + ChatColor.YELLOW + getDescription().getVersion() + ChatColor.GREEN + " New version: " + ChatColor.YELLOW + newVersion);
+            }
         }
-
         int pluginId = 9456; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
         PAPI = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
@@ -298,6 +302,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         timer2.schedule(new TimeHandler(this), 0, 1000);
+        thread.start();
 
     }
 
@@ -325,6 +330,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        thread.stop();
         timer.cancel();
     }
 

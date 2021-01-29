@@ -1,0 +1,164 @@
+<changelist name="Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]" date="1611864304332" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 1/28/2021 10:04 PM [Default Changelist]" />
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/TPSCounter.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/TPSCounter.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TPSCounter.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/UpdateChecker.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/UpdateChecker.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/UpdateChecker.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/BukkitEventListener.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener$1.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/AdvancedBanListener$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/buildOutputCleanup/buildOutputCleanup.lock" />
+    <option name="AFTER_PATH" value=".gradle/buildOutputCleanup/buildOutputCleanup.lock" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/buildOutputCleanup.lock" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimeFormatter.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimeFormatter.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimeFormatter.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/utils/StringUtils.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/StringUtils.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/StatusUpdater.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/StatusUpdater.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/StatusUpdater.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/TimeHandler.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/TimeHandler.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimeHandler.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/ConfOptionsManager.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/checksums/checksums.lock" />
+    <option name="AFTER_PATH" value=".gradle/checksums/checksums.lock" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/checksums.lock" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVUtilsCommand.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/helpDeleter.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/helpDeleter.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/helpDeleter.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PersonImpl.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/EssentialsAfk.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/EssentialsAfk.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/EssentialsAfk.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PlayerLevelupEvent.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/DiscordSRVUtils.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/DiscordSRVUtils.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVUtils.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/Tickets.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/Tickets.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/Tickets.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/PluginConfiguration.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/PluginConfiguration.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PluginConfiguration.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/Person.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/Person.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/Person.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/PlaceholderAPI.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/PlaceholderAPI.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PlaceholderAPI.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimerManager.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Managers/TimerManager.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimerManager.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/buildOutputCleanup/outputFiles.bin" />
+    <option name="AFTER_PATH" value=".gradle/buildOutputCleanup/outputFiles.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/outputFiles.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVEventListener.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener$1.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/BukkitEventListener$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/BukkitEventListener$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordLevelupEvent.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/LeaderBoardManagerImpl.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/AdvancedBanListener.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/AdvancedBanListener.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl$1.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/Person/PersonImpl$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PersonImpl$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/JDAEvents.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/events/JDAEvents.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/JDAEvents.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/SRCanceller.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/SRCanceller.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/SRCanceller.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/SuggestionsIdleHandler.class" />
+    <option name="AFTER_PATH" value="build/classes/java/main/tech/bedev/discordsrvutils/SuggestionsIdleHandler.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/SuggestionsIdleHandler.class" />
+  </binary>
+</changelist>

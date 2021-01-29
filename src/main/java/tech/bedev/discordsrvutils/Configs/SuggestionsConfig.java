@@ -40,5 +40,29 @@ public interface SuggestionsConfig {
     @ConfComments("\n#Should we send a DM to the user when their suggestion is replied (accepted or denied)")
     boolean sendDMToUserWhenSuggestionReplied();
 
+    @ConfKey("disallow-submitter-to-vote")
+    @DefaultBoolean(true)
+    @AnnotationBasedSorter.Order(60)
+    @ConfComments("\n#Disallow the person who submitted the suggestion to vote")
+    boolean DisallowSubmitterToVote();
+
+    @ConfKey("disallow-more-than-one-vote")
+    @DefaultBoolean(true)
+    @AnnotationBasedSorter.Order(70)
+    @ConfComments("\n#Disallow people to vote yes and no together")
+    boolean DisallowMoreThanOneVote();
+
+    @ConfKey("suggestion-banned-role")
+    @ConfDefault.DefaultLong(0L)
+    @AnnotationBasedSorter.Order(80)
+    @ConfComments("\n#This role wont be able to suggest.")
+    Long SuggeestionBannedRole();
+
+    @ConfKey("delete-suggestion-message-after-usage")
+    @DefaultBoolean(true)
+    @AnnotationBasedSorter.Order(90)
+    @ConfComments("\n#Should we delete the suggestion sent by player which should have been sent in the bot commands channel?")
+    Boolean DeleteSuggestionMessageAfterUsage();
+
 
 }

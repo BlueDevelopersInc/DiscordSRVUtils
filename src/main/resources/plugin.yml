@@ -3,6 +3,7 @@ softdepend:
   - DiscordSRV
   - Essentials
   - Advancedban
+  - PlaceholderAPI
 version: 1.1.9
 main: tech.bedev.discordsrvutils.DiscordSRVUtils
 author: Blue_Tree

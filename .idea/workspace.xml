@@ -24,9 +24,15 @@
   <component name="ChangeListManager">
     <list default="true" id="a8c5baa4-c655-4f7e-ad36-95c165c566e0" name="Default Changelist" comment="v1.1.9">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/AdvancedBanListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/AdvancedBanListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

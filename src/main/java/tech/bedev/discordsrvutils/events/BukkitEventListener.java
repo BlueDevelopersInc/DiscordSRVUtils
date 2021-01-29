@@ -73,7 +73,7 @@ public class BukkitEventListener implements Listener {
             }
             person.insertLeveling();
             person.addXP(RANDOM.nextInt(25));
-            if (person.getXP() >= 300) {
+            if (person.getXP() >= DiscordSRVUtils.Levelingconfig.levelup_XP()) {
                 person.clearXP();
                 PlayerLevelupEvent ev = new PlayerLevelupEvent(person, e.getPlayer());
                 Bukkit.getPluginManager().callEvent(ev);
