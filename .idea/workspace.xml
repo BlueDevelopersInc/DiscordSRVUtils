@@ -23,21 +23,192 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8c5baa4-c655-4f7e-ad36-95c165c566e0" name="Default Changelist" comment="v1.1.9">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries-with-intellij-classes.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/DiscordSRVUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/config/ConfManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/config/Config.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/config/SQLConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/embeds/EmbedManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/exceptions/EmbedNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/exceptions/PlaceholdException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/exceptions/StartupException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/listeners/discordsrv/DiscordSRVListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/placeholder/PlaceholdObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/placeholder/PlaceholdObjectList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tk/bluetree242/discordsrvutils/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__br_net_fabiozumbi12_UltimateChat_UltimateFancy_1_9_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_discordsrv_discordsrv_1_20_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_DevLeoko_AdvancedBan_b4bbb6a.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_kevinsawicki_http_request_6_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_zafarkhaja_java_semver_0_9_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_3_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_21_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_neovisionaries_nv_websocket_client_2_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_13_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_vdurmont_emoji_java_3_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_zaxxer_HikariCP_3_4_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_collections_commons_collections_3_2_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_lang_commons_lang_2_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__dev_vankka_MCDiscordReserializer_3_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__dev_vankka_SimpleAST_2_2_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__github_scarsz_configuralize_1_3_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_papermc_paperlib_1_0_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__me_clip_placeholderapi_2_9_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_dv8tion_JDA_4_2_0_204.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_ess3_1_8Provider_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_ess3_BaseProviders_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_ess3_EssentialsX_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_ess3_NMSReflectionProvider_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_ess3_PaperProvider_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_kyori_text_adapter_bukkit_3_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_kyori_text_api_3_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_kyori_text_serializer_gson_3_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_kyori_text_serializer_legacy_3_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_md_5_bungeecord_chat_1_16_R0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sf_trove4j_trove4j_3_0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_collections4_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_lang3_3_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_6_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_bstats_bstats_bukkit_1_7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_qual_2_5_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hsqldb_hsqldb_2_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_26_0_GA.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_annotations_16_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20140107.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mariadb_jdbc_mariadb_java_client_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_minidns_minidns_client_0_3_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_minidns_minidns_core_0_3_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_minidns_minidns_dnssec_0_3_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_minidns_minidns_hla_0_3_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_minidns_minidns_iterative_resolver_0_3_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_reflections_reflections_0_9_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_jdk14_1_7_25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_16_3_R0_1_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_javadoc_1_16_1_R0_1_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_5_2_7_RELEASE.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_expression_5_2_7_RELEASE.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jcl_5_2_7_RELEASE.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__redis_clients_jedis_3_2_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__space_arim_dazzleconf_dazzleconf_core_1_2_0_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__space_arim_dazzleconf_dazzleconf_ext_snakeyaml_1_2_0_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/AdvancedBanListener$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/AdvancedBanListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/BukkitEventListener$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/BukkitEventListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/ConfOptionsManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordLevelupEvent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVEventListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/DiscordSRVUtilsCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/EssentialsAfk.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/JDAEvents.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/LeaderBoardManagerImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/Person.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PersonImpl$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PersonImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PlaceholderAPI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PlayerLevelupEvent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/PluginConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/SRCanceller.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/StatusUpdater.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/StringUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/SuggestionsIdleHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TPSCounter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/Tickets.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimeFormatter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimeHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/TimerManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/UpdateChecker.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/buildOutputCleanup.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/checksums.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/helpDeleter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/outputFiles.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_28_2021_10_04_PM__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/AdvancedBanListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/AdvancedBanListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BansIntegrationConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/BotSettingsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/ConfManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/LevelingConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/MainConfConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/ModerationConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SQLConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Configs/SuggestionsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/DiscordSRVUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Exceptions/StartupException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/ConfOptionsManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/StopWatchImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/Stopwatch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/Tickets.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/TimeFormatter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Managers/TimerManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Person/MessageType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Person/Person.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/Person/PersonImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/PlaceholderAPI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/PluginConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/SRCanceller.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/StatusUpdater.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/SuggestionsIdleHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/TPSCounter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/TimeHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/UpdateChecker.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/DiscordSRVUtilsCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/addlevelsCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/addxpCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/removeXPCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/removelevelsCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/setlevelCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/setxpCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/commands/tabCompleters/DiscordSRVUtilsTabCompleter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/AdvancedBanListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/BukkitEventListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/DiscordLevelupEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/DiscordSRVEventListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/EssentialsAfk.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/JDAEvents.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/events/PlayerLevelupEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/helpDeleter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/leaderboard/LeaderBoardManagerImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/utils/PlayerUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tech/bedev/discordsrvutils/utils/StringUtils.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -66,13 +237,7 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="DiscordSRVUtils" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="publishing" type="c8890929:TasksNode$1" />
+                <item name="shadow" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -89,8 +254,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -98,26 +263,44 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.1\plugins\maven\lib\maven3" />
+        <option name="mavenHome" value="C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2020.2.1/plugins/maven/lib/maven3" />
       </MavenGeneralSettings>
     </option>
   </component>
   <component name="ProjectId" id="1m9Y0E0ppFo9YAHkkXzOmwqrzGb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.35287356" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
   <component name="RunAnythingCache">
@@ -136,6 +319,17 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.DiscordSRVUtils [shadowJar]">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="DiscordSRVUtils [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -152,7 +346,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -171,7 +367,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -190,7 +388,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [compileJava]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -209,7 +409,9 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="DiscordSRVUtils [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -228,16 +430,18 @@
         </option>
         <option name="vmOptions" value="" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.DiscordSRVUtils [shadowJar]" />
+        <item itemvalue="Gradle.DiscordSRVUtils [build]" />
         <item itemvalue="Gradle.DiscordSRVUtils [clean]" />
         <item itemvalue="Gradle.DiscordSRVUtils [cleanBuildCache]" />
         <item itemvalue="Gradle.DiscordSRVUtils [compileJava]" />
-        <item itemvalue="Gradle.DiscordSRVUtils [build]" />
       </list>
     </recent_temporary>
   </component>
@@ -252,6 +456,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1608907052643</updated>
+      <workItem from="1625758751808" duration="189000" />
+      <workItem from="1625758963963" duration="15776000" />
     </task>
     <task id="LOCAL-00001" summary="1.0.12">
       <created>1608934526426</created>
@@ -361,6 +567,9 @@
     <option name="localTasksCounter" value="16" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -389,70 +598,8 @@
     <MESSAGE value="v1.1.9" />
     <option name="LAST_COMMIT_MESSAGE" value="v1.1.9" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="488" y="67" key="#com.intellij.ide.util.MemberChooser" timestamp="1610290053724">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="488" y="67" key="#com.intellij.ide.util.MemberChooser/0.0.1366.728@0.0.1366.728" timestamp="1610290053724" />
-    <state x="413" y="11" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1609705568664">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="413" y="11" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/0.0.1366.728@0.0.1366.728" timestamp="1609705568664" />
-    <state x="363" y="99" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1610194009879">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="363" y="99" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1610194009879" />
-    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog" timestamp="1610278211229">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="92" y="92" width="1182" height="544" key="DiffContextDialog/0.0.1366.728@0.0.1366.728" timestamp="1610278211229" />
-    <state x="463" y="118" key="FileChooserDialogImpl" timestamp="1610328487252">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="463" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1610328487252" />
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom" timestamp="1610364510292">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610364510292" />
-    <state width="1323" height="172" key="GridCell.Tab.0.center" timestamp="1610364510292">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610364510292" />
-    <state width="1323" height="172" key="GridCell.Tab.0.left" timestamp="1610364510292">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610364510292" />
-    <state width="1323" height="172" key="GridCell.Tab.0.right" timestamp="1610364510292">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="172" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610364510292" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1610327145083">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1610327145083" />
-    <state x="275" y="92" key="Vcs.Push.Dialog.v2" timestamp="1610330318175">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="275" y="92" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1610330318175" />
-    <state x="501" y="277" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1610364646670">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="501" y="277" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1610364646670" />
-    <state x="391" y="81" width="583" height="566" key="find.popup" timestamp="1608934484308">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="391" y="81" width="583" height="566" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1608934484308" />
-    <state x="65" y="0" key="new project wizard" timestamp="1608934820969">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="65" y="0" key="new project wizard/0.0.1366.728@0.0.1366.728" timestamp="1608934820969" />
-    <state x="339" y="162" width="672" height="677" key="run.anything.popup" timestamp="1610327751100">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="339" y="162" width="672" height="677" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1610327751100" />
-    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1610199379156">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1610199379156" />
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
