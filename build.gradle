@@ -1,3 +1,4 @@
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
@@ -5,13 +6,13 @@ plugins {
 }
 shadowJar {
     classifier ''
-    relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependecies.emoji-java"
-    relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependecies.bstats"
-    relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependecies.dazzleconf"
-    relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependecies.hikariCP"
-    relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependecies.hsqldb"
-    relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependecies.mariadb"
-    relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependecies.yaml"
+    relocate 'com.vdurmont', "tech.bedev.discordsrvutils.dependecies.emoji-java"
+    relocate 'org.bstats', "tech.bedev.discordsrvutils.dependecies.bstats"
+    relocate 'space.arim.dazzleconf', "tech.bedev.discordsrvutils.dependecies.dazzleconf"
+    relocate 'com.zaxxer', "tech.bedev.discordsrvutils.dependecies.hikariCP"
+    relocate 'org.hsqldb', "tech.bedev.discordsrvutils.dependecies.hsqldb"
+    relocate 'org.mariadb.jdbc', "tech.bedev.discordsrvutils.dependecies.mariadb"
+    relocate 'org.yaml', "tech.bedev.discordsrvutils.dependecies.yaml"
 }
 build.finalizedBy shadowJar
 
