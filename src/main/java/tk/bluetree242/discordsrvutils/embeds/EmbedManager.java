@@ -114,11 +114,29 @@ public class EmbedManager {
         return msg;
     }
 
+    public MessageBuilder getMessageForEmbed(String name, PlaceholdObjectList holders, Player placehold) {
+        MessageBuilder msg = new MessageBuilder();
+        JSONObject json = getEmbedJSONByName(name);
+        if (!json.isNull("content")) {
+            msg.setContent(json.getString("content"));
+        }
+        if (!json.isNull("embed")) {
+            msg.setEmbed(parseFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+        }
+        return msg;
+    }
+
+    public MessageBuilder getMessageForEmbed(String name) {
+        return getMessageForEmbed(name, null, null);
+    }
+
 
 
     public MessageBuilder getMessage(String content) {
         return  getMessage(content, null, null);
     }
+
+
 
 
 

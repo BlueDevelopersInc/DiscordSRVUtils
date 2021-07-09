@@ -2,10 +2,14 @@ package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.dazzleconf.error.InvalidConfigException;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
+import tk.bluetree242.discordsrvutils.commands.TestEmbedCommand;
 import tk.bluetree242.discordsrvutils.config.ConfManager;
 import tk.bluetree242.discordsrvutils.config.Config;
 import tk.bluetree242.discordsrvutils.config.SQLConfig;
@@ -17,6 +21,10 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DiscordSRVUtils extends JavaPlugin {
     private static DiscordSRVUtils instance;
@@ -29,12 +37,15 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(getDataFolder().toPath(), "sql.yml", SQLConfig.class);
     private SQLConfig sqlconfig;
+    private ExecutorService pool = Executors.newFixedThreadPool(3);
     private DiscordSRVListener dsrvlistener;
-
+    private CommandListener commandListener;
     private void init() {
         instance = this;
         dsrvlistener = new DiscordSRVListener();
         new EmbedManager();
+        commandListener = new CommandListener();
+        new CommandManager();
     }
 
     public void onEnable() {
@@ -72,6 +83,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void onDisable() {
         instance = null;
         DiscordSRV.api.unsubscribe(dsrvlistener);
+        getJDA().removeEventListener(commandListener);
+        pool.shutdown();
     }
 
     private void whenStarted() {
@@ -80,7 +93,14 @@ public class DiscordSRVUtils extends JavaPlugin {
 
 
     public void registerListeners() {
+        getJDA().addEventListener(commandListener);
     }
+
+    public void registerCommands() {
+        CommandManager.get().registerCommand(new TestEmbedCommand());
+    }
+
+
 
     public boolean isReady() {
         return DiscordSRV.isReady;
@@ -101,8 +121,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         return sqlconfig;
     }
 
-    public void whenReady() {
+    public void executeAsync(Runnable r) {
+        pool.execute(r);
+    }
 
+    public void whenReady() {
+        registerCommands();
         registerListeners();
         getLogger().info("Plugin is ready to function.");
     }
@@ -112,5 +136,31 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public EmbedManager getEmbedManager() {
         return EmbedManager.get();
+    }
+
+    public List<Long> getAdminIds() {
+        return config.admins();
+    }
+
+    public List<User> getAdmins() {
+        List<User> admins = new ArrayList<>();
+        for (Long lng : getAdminIds()) {
+            User usr = getJDA().getUserById(lng);
+            if (usr != null) {
+                admins.add(usr);
+            } else {
+                admins.add(getJDA().retrieveUserById(lng).complete());
+            }
+        }
+        return admins;
+    }
+
+    public boolean isAdmin(long id) {
+        if (getAdminIds().contains(id)) return true;
+        return false;
+    }
+
+    public String getCommandPrefix() {
+        return config.prefix();
     }
 }

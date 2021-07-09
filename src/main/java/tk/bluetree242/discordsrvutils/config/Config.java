@@ -15,4 +15,9 @@ public interface Config {
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 
+    @AnnotationBasedSorter.Order(20)
+    @ConfComments("#Prefix used for Commands")
+    @ConfDefault.DefaultString("!")
+    String prefix();
+
 }

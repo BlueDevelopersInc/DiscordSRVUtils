@@ -57,7 +57,6 @@ public class PlaceholdObject {
                         if (method.getParameterTypes().length == 0) {
                             String str = method.getName().replaceFirst("get", "");
                             str = str.substring(0, 1).toLowerCase() + str.substring(1);
-                            System.out.println(str);
                             try {
                                 map.put(str, method.invoke(ob));
                             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -67,7 +66,6 @@ public class PlaceholdObject {
                     }
                 }
             }
-            System.out.println(map);
             return map;
         }
         return map;
