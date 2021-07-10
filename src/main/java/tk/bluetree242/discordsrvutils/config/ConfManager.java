@@ -8,13 +8,13 @@ import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlConfigurationFactory;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
+import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
 public class ConfManager<C> extends ConfigurationHelper<C> {
-
+    private String confname;
     private volatile C configData;
 
     private ConfManager(Path configFolder, String fileName, ConfigurationFactory<C> factory) {
@@ -28,27 +28,27 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
                 .commentFormat("%s")
                 // Enables writing YAML comments
                 .build();
-        return new ConfManager<>(configFolder, fileName,
+        ConfManager val = new ConfManager<>(configFolder, fileName,
                 new SnakeYamlConfigurationFactory<>(configClass, new ConfigurationOptions.Builder().sorter(new AnnotationBasedSorter()).build(), yamlOptions));
+        val.confname = fileName;
+        return val;
     }
 
     public void reloadConfig() {
         try {
             configData = reloadConfigData();
         } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
+            throw new ConfigurationLoadException(ex, confname);
 
         } catch (ConfigFormatSyntaxException ex) {
             configData = getFactory().loadDefaults();
-            System.err.println("Uh-oh! The syntax of your configuration are invalid. "
-                    + "Check your YAML syntax with a tool such as https://yaml-online-parser.appspot.com/");
-            ex.printStackTrace();
+
+            throw new ConfigurationLoadException(ex, confname);
 
         } catch (InvalidConfigException ex) {
             configData = getFactory().loadDefaults();
-            System.err.println("Uh-oh! The values in your configuration are invalid. "
-                    + "Check to make sure you have specified the right data types.");
-            ex.printStackTrace();
+
+            throw new ConfigurationLoadException(ex, confname);
         }
     }
 

@@ -1,19 +1,14 @@
-package tk.bluetree242.discordsrvutils.commands;
+package tk.bluetree242.discordsrvutils.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import net.dv8tion.jda.api.Permission;
 import org.json.JSONException;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.embeds.EmbedManager;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-public class TestEmbedCommand extends Command {
-    public TestEmbedCommand() {
-        super("testembed", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testembed <name>", null, "te");
+public class TestMessageCommand extends Command {
+    public TestMessageCommand() {
+        super("testmessage", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testmessage <name>", null, "tm");
         setAdminOnly(true);
     }
 
@@ -25,7 +20,7 @@ public class TestEmbedCommand extends Command {
         } else {
             String name = args[1];
             try {
-                e.replyMessage("embed:" + name).queue();
+                e.replyMessage("message:" + name).queue();
             } catch (EmbedNotFoundException ex) {
                 e.replyErr("Embed does not exist").queue();
             } catch (JSONException ex) {

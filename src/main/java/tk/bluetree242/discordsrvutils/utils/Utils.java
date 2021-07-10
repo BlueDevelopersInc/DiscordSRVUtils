@@ -1,5 +1,7 @@
 package tk.bluetree242.discordsrvutils.utils;
 
+import org.bukkit.ChatColor;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +15,10 @@ public class Utils {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         String fileContents = new String(encoded, StandardCharsets.UTF_8);
         return fileContents;
+    }
+
+    public static String colors(String msg) {
+        return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
     public static String getDuration(Long ms) {

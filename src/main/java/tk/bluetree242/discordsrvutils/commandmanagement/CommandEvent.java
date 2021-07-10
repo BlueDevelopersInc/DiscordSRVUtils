@@ -10,7 +10,7 @@ import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.embeds.EmbedManager;
+import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.exceptions.UncatchedRateLimitedException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
@@ -71,7 +71,7 @@ public class CommandEvent {
             holders.add(new PlaceholdObject(getGuild(), "guild"));
         }
         holders.add(new PlaceholdObject(getChannel(), "channel"));
-        return reply(EmbedManager.get().getMessage(content, holders, placehold).build());
+        return reply(MessageManager.get().getMessage(content, holders, placehold).build());
     }
 
     public MessageAction replyMessage(String content, PlaceholdObjectList holders) {

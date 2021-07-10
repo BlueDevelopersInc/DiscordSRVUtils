@@ -1,38 +1,43 @@
-package tk.bluetree242.discordsrvutils.embeds;
+package tk.bluetree242.discordsrvutils.messages;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.FileWriter;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Field;
 import java.time.Instant;
 
-public class EmbedManager {
-    private static EmbedManager instance;
+public class MessageManager {
+    private static MessageManager instance;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
-    public static EmbedManager get() {
+    public static MessageManager get() {
         return instance;
     }
 
-    public EmbedManager() {
+    public MessageManager() {
         instance = this;
     }
 
 
-    public EmbedBuilder parseFromJSON(JSONObject json, PlaceholdObjectList holders, Player placehold) {
+    public EmbedBuilder parseEmbedFromJSON(JSONObject json, PlaceholdObjectList holders, Player placehold) {
         EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
             if (!json.isNull("color")) {
-                embed.setColor(json.getInt("color"));
+                Integer color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
+                embed.setColor(color);
             }
             if (!json.isNull("footer")) {
                 JSONObject footer = json.getJSONObject("footer");
@@ -58,11 +63,27 @@ public class EmbedManager {
                     embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), field.isNull("inline") ? false : field.getBoolean("inline"));
                 }
             }
+            embed.setDescription(getStringFromJson(json, "description", holders, placehold));
             return embed;
     }
 
-    public EmbedBuilder parseFromJSON(JSONObject json) {
-        return parseFromJSON(json, null, null);
+    private Color colorOf(String color) {
+        for (Field clr : Color.class.getFields()) {
+            if (clr.getName().equalsIgnoreCase(color)) {
+                if (clr.getType() == Color.class) {
+                    try {
+                        return (Color) clr.get(null);
+                    } catch (IllegalAccessException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public EmbedBuilder parseEmbedFromJSON(JSONObject json) {
+        return parseEmbedFromJSON(json, null, null);
     }
 
 
@@ -82,9 +103,20 @@ public class EmbedManager {
         return getStringFromJson(ob, val, null, null);
     }
 
-    public JSONObject getEmbedJSONByName(String name) {
-        File file = new File(core.embedsDirectory + "/" + name + ".json");
+    public JSONObject getMessageJSONByName(String name) {
+        File file = new File(core.messagesDirectory + core.fileseparator + name + ".json");
         if (!file.exists()) {
+            if (core.defaultmessages.containsKey(name)) {
+                try {
+                    file.createNewFile();
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(core.defaultmessages.get(name));
+                    writer.close();
+                    return getMessageJSONByName(name);
+                } catch (Exception ex) {
+                    throw new EmbedNotFoundException(name);
+                }
+            }
             throw new EmbedNotFoundException(name);
         }
         try {
@@ -95,14 +127,14 @@ public class EmbedManager {
     }
     public MessageBuilder getMessage(String content, PlaceholdObjectList holders, Player placehold) {
         MessageBuilder msg = new MessageBuilder();
-        if (content.startsWith("embed:")) {
-            String embedname = content.replaceFirst("embed:", "");
-            JSONObject json = getEmbedJSONByName(embedname);
+        if (content.startsWith("message:")) {
+            String embedname = content.replaceFirst("message:", "");
+            JSONObject json = getMessageJSONByName(embedname);
             if (!json.isNull("content")) {
                 msg.setContent(json.getString("content"));
             }
             if (!json.isNull("embed")) {
-                msg.setEmbed(parseFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+                msg.setEmbed(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
             }
         } else {
             if (holders != null) {
@@ -114,21 +146,8 @@ public class EmbedManager {
         return msg;
     }
 
-    public MessageBuilder getMessageForEmbed(String name, PlaceholdObjectList holders, Player placehold) {
-        MessageBuilder msg = new MessageBuilder();
-        JSONObject json = getEmbedJSONByName(name);
-        if (!json.isNull("content")) {
-            msg.setContent(json.getString("content"));
-        }
-        if (!json.isNull("embed")) {
-            msg.setEmbed(parseFromJSON(json.getJSONObject("embed"), holders, placehold).build());
-        }
-        return msg;
-    }
 
-    public MessageBuilder getMessageForEmbed(String name) {
-        return getMessageForEmbed(name, null, null);
-    }
+
 
 
 
