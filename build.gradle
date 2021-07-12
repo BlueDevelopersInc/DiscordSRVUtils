@@ -75,7 +75,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
     compileOnly 'com.discordsrv:discordsrv:1.23.0'
-    compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly 'me.clip:placeholderapi:2.10.10'
 }
 
 group = 'me.bluetree.discordsrvutils'
