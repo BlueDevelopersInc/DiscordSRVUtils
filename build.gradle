@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
+    implementation 'com.zaxxer:HikariCP:5.0.0'
     implementation 'org.hsqldb:hsqldb:2.3.2'
     implementation 'org.bstats:bstats-bukkit:1.7'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
