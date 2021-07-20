@@ -50,4 +50,22 @@ public interface Config {
     @ConfDefault.DefaultString("message:welcome")
     String welcomer_message();
 
+    @AnnotationBasedSorter.Order(80)
+    @ConfKey("goodbye.enabled")
+    @ConfComments("#Should we send goodbye messages?")
+    @ConfDefault.DefaultBoolean(false)
+    boolean goodbye_enabled();
+
+    @AnnotationBasedSorter.Order(90)
+    @ConfKey("goodbye.channel")
+    @ConfDefault.DefaultLong(0)
+    @ConfComments("#Channel to send message in, DM unavailable because when they leave there is a big chance of no mutual servers")
+    long goodbye_channel();
+
+    @AnnotationBasedSorter.Order(100)
+    @ConfKey("goodbye.message")
+    @ConfComments("#Message to send")
+    @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
+    String goodbye_message();
+
 }

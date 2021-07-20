@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DiscordSRVUtilsTabCompleter implements TabCompleter {
@@ -18,6 +19,12 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
             if (sender.hasPermission("discordsrvutils.reload"))
             values.add("reload");
         }
-        return values.isEmpty() ? null : values;
+
+        List<String> result = new ArrayList<>();
+        for (String a : values) {
+            if (a.toLowerCase().startsWith(args[args.length -1].toLowerCase()))
+                result.add(a);
+        }
+        return result.isEmpty() ? Collections.emptyList() : result;
     }
 }

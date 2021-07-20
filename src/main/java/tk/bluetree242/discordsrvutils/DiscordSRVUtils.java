@@ -25,12 +25,14 @@ import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -270,6 +272,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         return admins;
     }
 
+    public void severe(String sv) {
+        getLogger().severe(sv);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.hasPermission("discordsrvutils.errornotifications"))
+            p.sendMessage(Utils.colors("&7[&eDSU&7] &c" + sv));
+        }
+    }
+
     public boolean isAdmin(long id) {
         if (getAdminIds().contains(id)) return true;
         return false;
@@ -277,5 +287,9 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public String getCommandPrefix() {
         return config.prefix();
+    }
+
+    public Connection getDatabase() throws SQLException{
+        return sql.getConnection();
     }
 }
