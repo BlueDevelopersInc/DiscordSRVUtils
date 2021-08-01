@@ -2,6 +2,7 @@ package tk.bluetree242.discordsrvutils.messages;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -94,7 +95,7 @@ public class MessageManager {
                 raw =holders.apply(raw);
             }
                raw = PlaceholdObject.applyPlaceholders(raw, placehold);
-            return raw;
+            return Utils.colors(raw);
         }
         return null;
     }
@@ -131,7 +132,7 @@ public class MessageManager {
             String embedname = content.replaceFirst("message:", "");
             JSONObject json = getMessageJSONByName(embedname);
             if (!json.isNull("content")) {
-                msg.setContent(json.getString("content"));
+                msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
             if (!json.isNull("embed")) {
                 msg.setEmbed(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
@@ -141,6 +142,7 @@ public class MessageManager {
                 content = holders.apply(content);
             }
             content = PlaceholdObject.applyPlaceholders(content, placehold);
+            content = Utils.colors(content);
             msg.setContent(content);
         }
         return msg;

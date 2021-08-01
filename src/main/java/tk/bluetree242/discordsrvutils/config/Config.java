@@ -26,6 +26,12 @@ public interface Config {
     @ConfDefault.DefaultString("ONLINE")
     String onlinestatus();
 
+    @AnnotationBasedSorter.Order(31)
+    @ConfKey("remove-discordsrv-link-listener")
+    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes")
+    @ConfDefault.DefaultBoolean(false)
+    boolean remove_discordsrv_link_listener();
+
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
     @ConfComments("#Should we do Welcomer?")
@@ -67,5 +73,29 @@ public interface Config {
     @ConfComments("#Message to send")
     @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
     String goodbye_message();
+
+
+    @AnnotationBasedSorter.Order(110)
+    @ConfKey("afk.enabled")
+    @ConfComments("#Should we send afk (and no longer afk) messages?")
+    @ConfDefault.DefaultBoolean(true)
+    boolean afk_message_enabled();
+
+    @AnnotationBasedSorter.Order(120)
+    @ConfKey("afk.channel")
+    @ConfComments("#AFK Channel. Leave 0 for default channel for discordsrv")
+    @ConfDefault.DefaultLong(0)
+    long afk_channel();
+
+    @AnnotationBasedSorter.Order(130)
+    @ConfKey("afk.message")
+    @ConfComments("#AFK Message")
+    @ConfDefault.DefaultString("message:afk")
+    String afk_message();
+
+    @AnnotationBasedSorter.Order(140)
+    @ConfKey("afk.no-longer-afk-message")
+    @ConfDefault.DefaultString("message:no-longer-afk")
+    String no_longer_afk_message();
 
 }

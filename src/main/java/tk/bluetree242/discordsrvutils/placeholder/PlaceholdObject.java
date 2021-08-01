@@ -60,7 +60,7 @@ public class PlaceholdObject {
                             try {
                                 map.put(str, method.invoke(ob));
                             } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new PlaceholdException(e);
+
                             }
                         }
                     }

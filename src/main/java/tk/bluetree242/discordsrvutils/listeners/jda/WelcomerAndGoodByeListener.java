@@ -20,7 +20,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         core.executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().welcomer_enabled()) {
-                    MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : e.getJDA().getTextChannelById(core.getMainConfig().welcomer_channel());
+                    MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getChannel(core.getMainConfig().welcomer_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().welcomer_channel() + ". Join Message was not sent for " + e.getUser().getAsTag());
                         return;
@@ -38,7 +38,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         core.executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().goodbye_enabled()) {
-                    MessageChannel channel = e.getJDA().getTextChannelById(core.getMainConfig().goodbye_channel());
+                    MessageChannel channel = core.getChannel(core.getMainConfig().goodbye_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().goodbye_channel() + ". Leave Message was not sent for " + e.getUser().getAsTag());
                         return;
