@@ -184,6 +184,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 .baselineOnMigrate(true)
                 .locations("classpath:migrations")
                 .validateMigrationNaming(true).group(true)
+                .table("discordsrvutils_schema")
                 .load();
         flyway.repair();
         flyway.migrate();
