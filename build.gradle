@@ -6,14 +6,15 @@ plugins {
 }
         shadowJar {
             classifier ''
-            relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependecies.emoji-java"
-            relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependecies.bstats"
-            relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependecies.dazzleconf"
-            relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependecies.hikariCP"
-            relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependecies.hsqldb"
-            relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependecies.mariadb"
-            relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependecies.yaml"
+            relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependencies.emoji-java"
+            relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
+            relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependencies.dazzleconf"
+            relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependencies.hikariCP"
+            relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependencies.hsqldb"
+            relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependencies.mariadb"
+            relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependencies.yaml"
             relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
+            relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
         }
 build.finalizedBy shadowJar
 repositories {
@@ -64,11 +65,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.vdurmont:emoji-java:5.1.1'
+    compileOnly 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.hsqldb:hsqldb:2.3.2'
+    implementation 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.bstats:bstats-bukkit:1.7'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
     compileOnly 'net.ess3:EssentialsX:2.17.2'
@@ -76,12 +77,12 @@ dependencies {
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
     compileOnly 'com.discordsrv:discordsrv:1.23.0'
     compileOnly 'me.clip:placeholderapi:2.9.2'
-    implementation "org.flywaydb:flyway-core:7.11.1"
+    implementation "org.flywaydb:flyway-core:7.5.3"
     implementation "com.squareup.okhttp3:mockwebserver:4.9.0"
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.0-BETA'
+version = '1.2.0-BETA-1'
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
 java.sourceCompatibility = JavaVersion.VERSION_1_8

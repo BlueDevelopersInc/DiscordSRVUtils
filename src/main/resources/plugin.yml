@@ -4,9 +4,9 @@ softdepend:
   - Essentials
   - Advancedban
   - PlaceholderAPI
-version: 1.2.0-BETA
+version: 1.2.0-BETA-1
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
-author: Blue_Tree
+author: BlueTree242
 api-version: 1.13
 
 commands:

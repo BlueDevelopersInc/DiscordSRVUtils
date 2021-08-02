@@ -52,7 +52,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
-    
+
     private static DiscordSRVUtils instance;
     public static DiscordSRVUtils get() {
         return instance;
@@ -134,7 +134,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cDiscord: &rhttps://discord.gg/MMMQHA4\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+            Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
             try {
                 setupDatabase();
@@ -157,7 +157,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand());
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
     }
-    
+
     private void setupDatabase() throws SQLException {
         HikariConfig settings = new HikariConfig();
         String jdbcurl = null;
@@ -246,7 +246,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         punishmentMessage.put("embed", punishmentEmbed);
         defaultmessages.put("unmute", punishmentMessage.toString());
     }
-    
+
     public void onDisable() {
         instance = null;
         DiscordSRV.api.unsubscribe(dsrvlistener);
@@ -375,7 +375,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getLogger().severe(sv);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
-            p.sendMessage(Utils.colors("&7[&eDSU&7] &c" + sv));
+                p.sendMessage(Utils.colors("&7[&eDSU&7] &c" + sv));
         }
     }
 
