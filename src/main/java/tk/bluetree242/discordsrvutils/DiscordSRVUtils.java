@@ -14,6 +14,7 @@ import okhttp3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,10 +27,7 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
-import tk.bluetree242.discordsrvutils.commands.discord.CreatePanelCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.PanelListCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.TestMessageCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -354,6 +352,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new HelpCommand());
         CommandManager.get().registerCommand(new CreatePanelCommand());
         CommandManager.get().registerCommand(new PanelListCommand());
+        CommandManager.get().registerCommand(new DeletePanelCommand());
     }
 
     public boolean bugoWasHere() {
@@ -537,7 +536,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             throw (RuntimeException) e;
         }
     }
-    public void defaultHandle(Throwable ex, TextChannel channel) {
+    public void defaultHandle(Throwable ex, MessageChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
         ex.printStackTrace();
     }

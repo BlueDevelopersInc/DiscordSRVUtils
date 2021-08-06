@@ -82,6 +82,10 @@ public class Panel {
                PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
                p2.setString(1, id);
                p2.execute();
+               TextChannel channel = core.getGuild().getTextChannelById(channelId);
+               if (channel != null) {
+                   channel.retrieveMessageById(getMessageId()).queue(msg -> {msg.delete().queue();});
+               }
                core.handleCFOnAnother(getTickets()).forEach(t -> {t.delete();});
                PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
                p3.setString(1, id);
