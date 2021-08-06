@@ -10,6 +10,7 @@ import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.BukkitCommand;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.awt.*;
@@ -35,6 +36,11 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                         sender.sendMessage(colors("&cCould not reload the " + e.getConfigName() + ". Please check server console"));
                         e.printStackTrace();
                     }
+                    return;
+                }
+            }else if (args[0].equalsIgnoreCase("debug")) {
+                if (sender.hasPermission("discordsrvutils.debug")) {
+                    sender.sendMessage(colors("&aYour Debug report is available at: &e" + DebugUtil.run()));
                     return;
                 }
             }

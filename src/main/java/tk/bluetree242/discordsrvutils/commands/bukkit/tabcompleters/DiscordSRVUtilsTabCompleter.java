@@ -18,6 +18,8 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
         if (args.length == 1) {
             if (sender.hasPermission("discordsrvutils.reload"))
             values.add("reload");
+            if (sender.hasPermission("discordsrvutils.debug"))
+                values.add("debug");
         }
 
         List<String> result = new ArrayList<>();

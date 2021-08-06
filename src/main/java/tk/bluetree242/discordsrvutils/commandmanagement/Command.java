@@ -19,6 +19,7 @@ public abstract class Command {
     private final String[] aliases;
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
+    private CommandCategory category = null;
 
     public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
         this.cmd = cmd;
@@ -27,6 +28,17 @@ public abstract class Command {
         this.usage = usage;
         this.aliases = aliases;
         this.requestPermission = requiredPermission;
+    }
+
+    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+        this.cmd = cmd;
+        this.type = type;
+        this.description = description;
+        this.usage = usage;
+        this.aliases = aliases;
+        this.requestPermission = requiredPermission;
+        this.category = category;
+        category.addCommand(this);
     }
 
     public abstract void run(CommandEvent e) throws Exception;

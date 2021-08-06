@@ -17,6 +17,27 @@ public class Utils {
         return fileContents;
     }
 
+    public static boolean isLong(String s) {
+        try {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean getDBoolean(String s) {
+        if (s.equalsIgnoreCase("true")) return true;
+        return false;
+    }
+
+    public static String parsePos(int num) {
+        if  (num == 1) return "1st";
+        if (num == 2) return "2nd";
+        if (num == 3) return "3rd";
+        return num + "th";
+    }
+
     public static String colors(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }

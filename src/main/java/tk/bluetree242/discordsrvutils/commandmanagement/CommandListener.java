@@ -7,6 +7,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageRecei
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageUpdateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import org.w3c.dom.Text;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
@@ -17,6 +18,7 @@ public class CommandListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent e) {
         main.executeAsync(() -> {
             if (e.getMessage().isWebhookMessage() || e.getAuthor().isBot()) return;
+
             String[] args = e.getMessage().getContentRaw().split(" ");
             String cmd = args[0].toLowerCase();
             if (cmd.startsWith(main.getCommandPrefix())) {
@@ -36,6 +38,9 @@ public class CommandListener extends ListenerAdapter {
                                 return;
                             }
                         }
+                    }
+                    if (e.getChannel() instanceof TextChannel) {
+                        if (e.getGuild().getIdLong() != DiscordSRVUtils.get().getGuild().getIdLong()) return;
                     }
                     if (executor.getRequiredPermission() != null) {
                         if (e.getChannel() instanceof TextChannel) {

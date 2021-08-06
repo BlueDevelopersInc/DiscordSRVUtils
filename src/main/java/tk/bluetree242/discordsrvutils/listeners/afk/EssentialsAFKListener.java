@@ -33,7 +33,7 @@ public class EssentialsAFKListener implements Listener {
                 } else {
                     msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
                 }
-                channel.sendMessage(msg).queue();
+                core.queueMsg(msg, channel).queue();
             }
         });
     }

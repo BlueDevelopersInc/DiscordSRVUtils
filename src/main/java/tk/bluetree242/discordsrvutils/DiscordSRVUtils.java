@@ -5,27 +5,33 @@ import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import github.scarsz.discordsrv.dependencies.jda.api.utils.AttachmentOption;
 import okhttp3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.flywaydb.core.Flyway;
+import org.jetbrains.annotations.NotNull;
+import org.json.CDL;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
+import tk.bluetree242.discordsrvutils.commands.discord.CreatePanelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.PanelListCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.TestMessageCommand;
-import tk.bluetree242.discordsrvutils.config.PunishmentsIntegrationConfig;
-import tk.bluetree242.discordsrvutils.config.ConfManager;
-import tk.bluetree242.discordsrvutils.config.Config;
-import tk.bluetree242.discordsrvutils.config.SQLConfig;
+import tk.bluetree242.discordsrvutils.config.*;
+import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
@@ -34,7 +40,11 @@ import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.Utils;
+import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
+import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
+import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,8 +57,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
@@ -65,22 +76,44 @@ public class DiscordSRVUtils extends JavaPlugin {
     private SQLConfig sqlconfig;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
     private PunishmentsIntegrationConfig bansIntegrationConfig;
+    private ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
+    private TicketsConfig ticketsConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
-    private ExecutorService pool = Executors.newFixedThreadPool(3);
+    private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
+        @Override
+        public Thread newThread(@NotNull Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("DSU-THREAD");
+            thread.setDaemon(true);
+            return thread;
+        }
+    });
     private DiscordSRVListener dsrvlistener;
     public Logger logger = getLogger();
     private HikariDataSource sql;
     private List<ListenerAdapter> listeners = new ArrayList<>();
+    public List<Plugin> hookedPlugins = new ArrayList<>();
     private void init() {
         instance = this;
         dsrvlistener = new DiscordSRVListener();
         new MessageManager();
         new CommandManager();
         new TicketManager();
+        new WaiterManager();
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
+        listeners.add(new CreatePanelListener());
+        listeners.add(new PaginationListener());
+        listeners.add(new TicketDeleteListener());
         initDefaultMessages();
 
+    }
+
+    public void onLoad() {
+        init();
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+        }
     }
 
     public void onEnable() {
@@ -91,7 +124,9 @@ public class DiscordSRVUtils extends JavaPlugin {
                         .build();
 
                 Request req = new Request.Builder().url("https://discordsrvutils.ml/updatecheck").post(form).build();
-                JSONObject res = new JSONObject(client.newCall(req).execute().body().string());
+                Response response = client.newCall(req).execute();
+                JSONObject res = new JSONObject(response.body().string());
+                response.close();
                 int versions_behind = res.getInt("versions_behind");
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
@@ -105,9 +140,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             } catch (Exception e) {
                 logger.severe("Could not check for updates: " + e.getMessage());
             }
+
         });
         try {
-            init();
             if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
                 logger.severe("Disabling...");
@@ -131,7 +166,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
-                    "|   &cDiscord: &rhttps://discord.gg/MMMQHA4\n" +
+                    "|   &cDiscord: &rhttps://discordsrvutils.ml/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
@@ -205,47 +240,56 @@ public class DiscordSRVUtils extends JavaPlugin {
                 "\uD83D\uDD38 **Store** | store.example.com");
         welcomeembed.put("thumbnail", new JSONObject().put("url", "[user.effectiveAvatarUrl]"));
         welcome.put("embed", welcomeembed);
-        defaultmessages.put("welcome", welcome.toString());
+        defaultmessages.put("welcome", welcome.toString(1));
         //afk message
         JSONObject afk = new JSONObject();
         JSONObject afkembed = new JSONObject();
         afkembed.put("color", "green");
         afkembed.put("author", new JSONObject().put("name", "[player.name] is now afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
         afk.put("embed", afkembed);
-        defaultmessages.put("afk", afk.toString());
+        defaultmessages.put("afk", afk.toString(1));
         afk = new JSONObject();
         afkembed = new JSONObject();
         afkembed.put("color", "green");
         afkembed.put("author", new JSONObject().put("name", "[player.name] is no longer afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
         afk.put("embed", afkembed);
-        defaultmessages.put("no-longer-afk", afk.toString());
+        defaultmessages.put("no-longer-afk", afk.toString(1));
         JSONObject punishmentMessage = new JSONObject();
         JSONObject punishmentEmbed = new JSONObject();
         punishmentEmbed.put("color", "red");
         punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was banned by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
         punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
         punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("ban", punishmentMessage.toString());
+        defaultmessages.put("ban", punishmentMessage.toString(1));
         punishmentMessage = new JSONObject();
         punishmentEmbed = new JSONObject();
         punishmentEmbed.put("color", "red");
         punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unbanned by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
         punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unban", punishmentMessage.toString());
+        defaultmessages.put("unban", punishmentMessage.toString(1));
         punishmentMessage = new JSONObject();
         punishmentEmbed = new JSONObject();
         punishmentEmbed.put("color", "red");
         punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was muted by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
         punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
         punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("mute", punishmentMessage.toString());
+        defaultmessages.put("mute", punishmentMessage.toString(1));
         punishmentMessage = new JSONObject();
         punishmentEmbed = new JSONObject();
         punishmentEmbed.put("color", "red");
         punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unmuted by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
         punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unmute", punishmentMessage.toString());
+        defaultmessages.put("unmute", punishmentMessage.toString(1));
+        JSONObject panel = new JSONObject();
+        JSONObject panelEmbed = new JSONObject();
+        panelEmbed.put("color", "cyan");
+        panelEmbed.put("title", "[panel.name]");
+        panelEmbed.put("description", "React with \uD83C\uDFAB to open a ticket");
+        panel.put("embed", panelEmbed);
+        defaultmessages.put("panel", panel.toString(1));
     }
+
+
 
     public void onDisable() {
         instance = null;
@@ -254,6 +298,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         pool.shutdown();
+        WaiterManager.get().timer.cancel();
         sql.close();
     }
 
@@ -282,6 +327,9 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void registerCommands() {
         CommandManager.get().registerCommand(new TestMessageCommand());
+        CommandManager.get().registerCommand(new HelpCommand());
+        CommandManager.get().registerCommand(new CreatePanelCommand());
+        CommandManager.get().registerCommand(new PanelListCommand());
     }
 
     public boolean bugoWasHere() {
@@ -301,6 +349,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         sqlconfig = sqlconfigmanager.reloadConfigData();
         bansIntegrationconfigmanager.reloadConfig();
         bansIntegrationConfig = bansIntegrationconfigmanager.reloadConfigData();
+        ticketsconfigManager.reloadConfig();
+        ticketsConfig = ticketsconfigManager.reloadConfigData();
         setSettings();
     }
 
@@ -316,6 +366,10 @@ public class DiscordSRVUtils extends JavaPlugin {
         return bansIntegrationConfig;
     }
 
+    public TicketsConfig getTicketsConfig() {
+        return ticketsConfig;
+    }
+
     public void executeAsync(Runnable r) {
         pool.execute(r);
     }
@@ -326,9 +380,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         registerListeners();
         if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
             getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
+            hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
         }
         if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
             getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
+            hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
+        }
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
         }
         if (getMainConfig().remove_discordsrv_link_listener()) {
             for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
@@ -399,5 +458,36 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public Guild getGuild() {
         return DiscordSRV.getPlugin().getMainGuild();
+    }
+
+    public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
+        return CompletableFuture.supplyAsync(v);
+    }
+
+    public CompletableFuture<Void> completableFutureRun(Runnable r) {
+        return CompletableFuture.runAsync(r);
+    }
+
+    public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
+        return channel.sendMessage(msg);
+    }
+
+    public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
+        if (success!=null)cf.thenAcceptAsync(success);
+        cf.handle((e, x) -> {
+            Exception ex = (Exception) x.getCause();
+            while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            if (failure != null) failure.accept(ex);
+            return x;
+        });
+    }
+    public void defaultHandle(Throwable ex, TextChannel channel) {
+        channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
+        ex.printStackTrace();
+
+    }
+    public void defaultHandle(Throwable ex) {
+        ex.printStackTrace();
+
     }
 }

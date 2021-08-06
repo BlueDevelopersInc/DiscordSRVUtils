@@ -56,7 +56,7 @@ public class AdvancedBanPunishmentListener implements Listener {
                             core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
                             return;
                         } else
-                        channel.sendMessage(msg).queue();
+                        core.queueMsg(msg, channel).queue();
                     }
                 }
                 syncPunishment(e.getPunishment(), false);
@@ -90,7 +90,7 @@ public class AdvancedBanPunishmentListener implements Listener {
                         core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For UnPunishment message");
                         return;
                     }
-                    channel.sendMessage(msg).queue();
+                    core.queueMsg(msg, channel).queue();
                 }
             }
             syncPunishment(e.getPunishment(), true);

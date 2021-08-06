@@ -1,0 +1,1 @@
+CREATE TABLE panel_allowed_roles(RoleID Bigint, PanelID varchar(10))

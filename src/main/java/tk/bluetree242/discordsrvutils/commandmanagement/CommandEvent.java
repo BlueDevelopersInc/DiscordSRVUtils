@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
-import tk.bluetree242.discordsrvutils.exceptions.UncatchedRateLimitedException;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -117,8 +117,8 @@ public class CommandEvent {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
-            if (ex instanceof UncatchedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UncatchedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+            if (ex instanceof UnCheckedRateLimitedException) {
+                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
@@ -141,8 +141,8 @@ public class CommandEvent {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
-            if (ex instanceof UncatchedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UncatchedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+            if (ex instanceof UnCheckedRateLimitedException) {
+                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
