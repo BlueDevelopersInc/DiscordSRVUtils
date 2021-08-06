@@ -53,6 +53,7 @@ public class DebugUtil {
                     "discordsrv version: " + DiscordSRV.getPlugin(),
                     "discordsrv config version: " + DiscordSRV.config().getString("ConfigVersion"),
                     "jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getGatewayPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getGatewayPing() + "ms" : "build not finished"),
+                    "Registered listeners: " + getRegisteredListeners(),
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
@@ -259,6 +260,15 @@ public class DebugUtil {
         output.add("Time zone: " + systemProperties.get("user.timezone"));
 
         return String.join("\n", output);
+    }
+
+    private static String getRegisteredListeners() {
+        if (!DiscordSRVUtils.get().isReady()) return "DSU not ready";
+        StringJoiner joiner = new StringJoiner(", ");
+        for (Object listener : DiscordSRVUtils.get().getJDA().getEventManager().getRegisteredListeners()) {
+            joiner.add(listener.getClass().getSimpleName());
+        }
+        return joiner.toString();
     }
 
 

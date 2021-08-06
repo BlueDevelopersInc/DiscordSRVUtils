@@ -13,6 +13,7 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.KeyGenerator;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -107,10 +108,16 @@ public class Panel {
 
     public CompletableFuture<@Nullable Ticket> openTicket(User user) {
         return core.completableFuture(() -> {
+            if (user.isBot()) return null;
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
                 check.setLong(1, user.getIdLong());
-                if (check.executeQuery().next()) return core.handleCFOnAnother(getTicketForUser(user));
+                ResultSet r = check.executeQuery();
+                if (r.next()) {
+                    if (!Utils.getDBoolean(r.getString("Closed"))) {
+                        return core.handleCFOnAnother(getTicketForUser(user));
+                    }
+                }
                 if (runningProcesses.containsKey(user.getIdLong())) return null;
                 runningProcesses.put(user.getIdLong(), id);
                 ChannelAction<TextChannel> action = core.getGuild().getCategoryById(openedCategory).createTextChannel("ticket-" + user.getName());
@@ -126,12 +133,13 @@ public class Panel {
                         new PlaceholdObject(user, "user")
                 ),null).build()).complete();
                 msg.addReaction("\uD83D\uDD12").queue();
-                PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID) VALUES (?, ?, ?, ?, ?)");
+                PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
                 p1.setLong(2, channel.getIdLong());
                 p1.setLong(3, msg.getIdLong());
                 p1.setString(4, "false");
                 p1.setLong(5, user.getIdLong());
+                p1.setLong(6, System.currentTimeMillis());
                 p1.execute();
                 runningProcesses.remove(user.getIdLong());
                 return new Ticket(id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());

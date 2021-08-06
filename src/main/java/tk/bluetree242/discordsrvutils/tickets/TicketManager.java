@@ -68,7 +68,7 @@ public class TicketManager {
         while (r2.next()) {
             allowedRoles.add(r2.getLong("RoleID"));
         }
-        return new Panel(r.getString("name"),
+        return new Panel(r.getString("Name"),
                 r.getString("ID"),
                 r.getLong("MessageID"),
                 r.getLong("Channel"),
@@ -92,6 +92,22 @@ public class TicketManager {
                 }
         });
     }
+
+    public CompletableFuture<Ticket> getTicketByMessageId(long messageId) {
+        return core.completableFuture(() -> {
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE MessageID=?");
+                p1.setLong(1, messageId);
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) {
+                    return null;
+                }
+                return getTicket(r1);
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
+        });
+    }
     public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
@@ -112,9 +128,10 @@ public class TicketManager {
         if (panel == null) {
             PreparedStatement p = r.getStatement().getConnection().prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
             p.setString(1, r.getString("ID"));
-            panel = getPanel(p.executeQuery());
+            ResultSet r1 = p.executeQuery();
+            if (r1.next()) panel = getPanel(r1);
         }
-        return new Ticket(r.getString("ID"), r.getLong("UserID"), r.getLong("ChannelID"), Utils.getDBoolean(r.getString("closed")), panel, r.getLong("MessageID"));
+        return new Ticket(r.getString("ID"), r.getLong("UserID"), r.getLong("Channel"), Utils.getDBoolean(r.getString("Closed")), panel, r.getLong("MessageID"));
     }
 
     protected Ticket getTicket(ResultSet r) throws SQLException{

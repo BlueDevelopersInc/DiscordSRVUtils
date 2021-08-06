@@ -11,12 +11,11 @@ public class PanelReactListener extends ListenerAdapter {
     public void onMessageReactionAdd(MessageReactionAddEvent e) {
         core.handleCF(TicketManager.get().getPanelByMessageId(e.getMessageIdLong()), panel -> {
             if (panel != null) {
+                if (e.getUser().isBot()) return;
                 e.getReaction().removeReaction(e.getUser()).queue();
-                core.handleCF(panel.openTicket(e.getUser()), null, er -> {core.defaultHandle(er);});
+                core.handleCF(panel.openTicket(e.getUser()), null, er -> {core.defaultHandle(er); });
             }
-        }, error -> {
-            core.defaultHandle(error);
-        });
+        }, null);
     }
 
 }

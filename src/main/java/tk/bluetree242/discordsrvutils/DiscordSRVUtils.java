@@ -32,6 +32,7 @@ import tk.bluetree242.discordsrvutils.commands.discord.PanelListCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
@@ -41,6 +42,7 @@ import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
+import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
@@ -53,6 +55,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,6 +111,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new PaginationListener());
         listeners.add(new TicketDeleteListener());
         listeners.add(new PanelReactListener());
+        listeners.add(new TicketCloseListener());
         initDefaultMessages();
 
     }
@@ -294,10 +299,18 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketOpened.put("content", "[user.asMention] Here is your ticket");
         ticketOpenedEmbed.put("description", String.join("\n", new String[]{
             "Staff will be here shortly",
-            "React with \uD83D\uDD12 to close this ticket"
+            "React with \uD83D\uDD12 to close this ticket",
+                "**Panel Name: **[panel.name]"
         }));
+        ticketOpenedEmbed.put("color", "green");
         ticketOpened.put("embed", ticketOpenedEmbed);
         defaultmessages.put("ticket-open", ticketOpened.toString(1));
+        JSONObject ticketClosed = new JSONObject();
+        JSONObject ticketClosedEmbed = new JSONObject();
+        ticketClosedEmbed.put("description", "Ticket Closed by [user.asMention]");
+        ticketClosedEmbed.put("color", "red");
+        ticketClosed.put("embed", ticketClosedEmbed);
+        defaultmessages.put("ticket-close", ticketClosed.toString(1));
     }
 
 
@@ -407,8 +420,24 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
             }
         }
-
+        fixTickets();
         logger.info("Plugin is ready to function.");
+    }
+    public void fixTickets() {
+        try (Connection conn = getDatabase()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
+            ResultSet r1 = p1.executeQuery();
+            while (r1.next()) {
+                TextChannel channel = getGuild().getTextChannelById(r1.getLong("Channel"));
+                if (channel == null) {
+                    PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
+                    p.setLong(1, r1.getLong("Channel"));
+                    p.execute();
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnCheckedSQLException(e);
+        }
     }
 
     public void setSettings() {
@@ -488,7 +517,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         cf.handle((e, x) -> {
             Exception ex = (Exception) x.getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            if (failure != null) failure.accept(ex);
+            if (failure != null) {
+                failure.accept(ex);
+            } else defaultHandle(ex);
             return x;
         });
     }
@@ -509,10 +540,9 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void defaultHandle(Throwable ex, TextChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
         ex.printStackTrace();
-
     }
     public void defaultHandle(Throwable ex) {
         ex.printStackTrace();
-
+        //Do nothing lol
     }
 }
