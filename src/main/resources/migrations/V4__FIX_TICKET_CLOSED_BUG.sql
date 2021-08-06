@@ -1,0 +1,1 @@
+ALTER TABLE tickets DROP COLUMN Closed, ADD COLUMN (Closed varchar(5));

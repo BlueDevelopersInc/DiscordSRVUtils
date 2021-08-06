@@ -40,6 +40,7 @@ import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
@@ -105,6 +106,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new CreatePanelListener());
         listeners.add(new PaginationListener());
         listeners.add(new TicketDeleteListener());
+        listeners.add(new PanelReactListener());
         initDefaultMessages();
 
     }
@@ -287,6 +289,15 @@ public class DiscordSRVUtils extends JavaPlugin {
         panelEmbed.put("description", "React with \uD83C\uDFAB to open a ticket");
         panel.put("embed", panelEmbed);
         defaultmessages.put("panel", panel.toString(1));
+        JSONObject ticketOpened = new JSONObject();
+        JSONObject ticketOpenedEmbed = new JSONObject();
+        ticketOpened.put("content", "[user.asMention] Here is your ticket");
+        ticketOpenedEmbed.put("description", String.join("\n", new String[]{
+            "Staff will be here shortly",
+            "React with \uD83D\uDD12 to close this ticket"
+        }));
+        ticketOpened.put("embed", ticketOpenedEmbed);
+        defaultmessages.put("ticket-open", ticketOpened.toString(1));
     }
 
 
@@ -480,6 +491,20 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (failure != null) failure.accept(ex);
             return x;
         });
+    }
+
+
+    /**
+     * For doing a cf inside another one
+     */
+    public <U> U handleCFOnAnother(CompletableFuture<U> cf) {
+        try {
+            return cf.get();
+        } catch (ExecutionException | InterruptedException ex) {
+            Exception e = ex;
+            while (ex instanceof ExecutionException) e = (Exception) ex.getCause();
+            throw (RuntimeException) e;
+        }
     }
     public void defaultHandle(Throwable ex, TextChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();

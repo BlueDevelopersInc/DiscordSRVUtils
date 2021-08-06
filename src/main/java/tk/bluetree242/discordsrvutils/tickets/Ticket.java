@@ -75,16 +75,6 @@ public class Ticket {
             TextChannel channel = core.getGuild().getTextChannelById(channelID);
             if (channel != null) {
                 channel.delete().queue();
-            } else {
-                try (Connection conn = core.getDatabase()) {
-                    PreparedStatement p1 = conn.prepareStatement("DELETE FROM tickets WHERE ID=? AND UserID=?");
-                    p1.setString(1, id);
-                    p1.setLong(2, userID);
-                    p1.execute();
-
-                } catch (SQLException e) {
-                    throw new UnCheckedSQLException(e);
-                }
             }
         });
     }

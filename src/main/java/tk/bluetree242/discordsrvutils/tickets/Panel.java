@@ -1,8 +1,12 @@
 package tk.bluetree242.discordsrvutils.tickets;
 
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
+import org.jetbrains.annotations.Nullable;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -14,8 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Panel {
@@ -28,6 +31,8 @@ public class Panel {
     private Long openedCategory;
     private Long closedCategory;
     private Set<Long> allowedRoles;
+
+    public static Map<Long, String> runningProcesses = new HashMap<>();
 
     public Panel(String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
         this.name = name;
@@ -76,12 +81,66 @@ public class Panel {
                PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
                p2.setString(1, id);
                p2.execute();
-               PreparedStatement p3 = conn.prepareStatement("DELETE FROM ticket_panels WHERE ID=?");
+               core.handleCFOnAnother(getTickets()).forEach(t -> {t.delete();});
+               PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
                p3.setString(1, id);
                p3.execute();
            }catch (SQLException ex) {
                throw new UnCheckedSQLException(ex);
            }
+        });
+    }
+
+    public CompletableFuture<Ticket> getTicketForUser(User user) {
+        return core.completableFuture(() -> {
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
+                p1.setLong(1, user.getIdLong());
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) return null;
+                return TicketManager.get().getTicket(r1, this);
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
+        });
+    }
+
+    public CompletableFuture<@Nullable Ticket> openTicket(User user) {
+        return core.completableFuture(() -> {
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
+                check.setLong(1, user.getIdLong());
+                if (check.executeQuery().next()) return core.handleCFOnAnother(getTicketForUser(user));
+                if (runningProcesses.containsKey(user.getIdLong())) return null;
+                runningProcesses.put(user.getIdLong(), id);
+                ChannelAction<TextChannel> action = core.getGuild().getCategoryById(openedCategory).createTextChannel("ticket-" + user.getName());
+                action.addMemberPermissionOverride(user.getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), EnumSet.noneOf(Permission.class));
+                for (Long role : allowedRoles) {
+                    action.addRolePermissionOverride(role, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), null);
+                }
+                action.addPermissionOverride(core.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
+                TextChannel channel = action.complete();
+                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
+                 new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(core.getGuild().getMember(user), "member"),
+                        new PlaceholdObject(user, "user")
+                ),null).build()).complete();
+                msg.addReaction("\uD83D\uDD12").queue();
+                PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID) VALUES (?, ?, ?, ?, ?)");
+                p1.setString(1, id);
+                p1.setLong(2, channel.getIdLong());
+                p1.setLong(3, msg.getIdLong());
+                p1.setString(4, "false");
+                p1.setLong(5, user.getIdLong());
+                p1.execute();
+                runningProcesses.remove(user.getIdLong());
+                return new Ticket(id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
+        }).handle((e, x) -> {
+            runningProcesses.remove(user.getIdLong());
+            return e;
         });
     }
 

@@ -1,10 +1,9 @@
 package tk.bluetree242.discordsrvutils.waiters;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 
 import java.util.ArrayList;
@@ -95,6 +94,8 @@ public class PaginationWaiter extends Waiter {
     @Override
     public void whenExpired() {
         message.editMessage(":timer: Timed out")/*setActionRows()*/.override(true).queue();
+        if (message.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
+            message.clearReactions().queue();
     }
 
 

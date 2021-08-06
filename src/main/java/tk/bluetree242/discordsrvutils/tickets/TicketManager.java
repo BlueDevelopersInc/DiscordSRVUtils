@@ -77,6 +77,21 @@ public class TicketManager {
                 allowedRoles);
     }
 
+    public CompletableFuture<Panel> getPanelByMessageId(long messageId) {
+        return core.completableFuture(() -> {
+                try (Connection conn = core.getDatabase()) {
+                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
+                    p1.setLong(1, messageId);
+                    ResultSet r1 = p1.executeQuery();
+                    if (!r1.next()) {
+                        return null;
+                    }
+                    return getPanel(r1);
+                } catch (SQLException e) {
+                    throw new UnCheckedSQLException(e);
+                }
+        });
+    }
     public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
