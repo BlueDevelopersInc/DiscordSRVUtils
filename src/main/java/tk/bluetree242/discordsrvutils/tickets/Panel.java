@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import org.jetbrains.annotations.Nullable;
@@ -96,14 +97,23 @@ public class Panel {
         });
     }
 
-    public CompletableFuture<Ticket> getTicketForUser(User user) {
+    public CompletableFuture<Set<Ticket>> getTicketsForUser(User user, boolean includeClosed) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
+                Set<Ticket> result = new HashSet<>();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
                 p1.setLong(1, user.getIdLong());
                 ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) return null;
-                return TicketManager.get().getTicket(r1, this);
+                while (r1.next()) {
+                    if (Utils.getDBoolean(r1.getString("Closed"))) {
+                        if (includeClosed)
+                        TicketManager.get().getTicket(r1, this);
+                    } else {
+                        TicketManager.get().getTicket(r1, this);
+                    }
+                }
+                return result;
+
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
@@ -114,12 +124,12 @@ public class Panel {
         return core.completableFuture(() -> {
             if (user.isBot()) return null;
             try (Connection conn = core.getDatabase()) {
-                PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
+                PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=? ORDER BY OpenTime");
                 check.setLong(1, user.getIdLong());
                 ResultSet r = check.executeQuery();
-                if (r.next()) {
+                while (r.next()) {
                     if (!Utils.getDBoolean(r.getString("Closed"))) {
-                        return core.handleCFOnAnother(getTicketForUser(user));
+                        return TicketManager.get().getTicket(r, this);
                     }
                 }
                 if (runningProcesses.containsKey(user.getIdLong())) return null;
@@ -134,7 +144,9 @@ public class Panel {
                 Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
                  new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(core.getGuild().getMember(user), "member"),
-                        new PlaceholdObject(user, "user")
+                        new PlaceholdObject(user, "user"),
+                        new PlaceholdObject(this, "panel"),
+                        new PlaceholdObject(core.getGuild(), "guild")
                 ),null).build()).complete();
                 msg.addReaction("\uD83D\uDD12").queue();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
@@ -238,6 +250,106 @@ public class Panel {
                     return panel;
                 } catch (SQLException e) {
                     throw new UnCheckedSQLException(e);
+                }
+            });
+        }
+    }
+
+    public Panel.Editor getEditor() {
+        return new Panel.Editor(this);
+    }
+    public static class Editor {
+        private final DiscordSRVUtils core = DiscordSRVUtils.get();
+        private String name;
+        private Panel panel;
+        private Long channelId;
+        private Long openedCategory;
+        private Long closedCategory;
+        private Set<Long> allowedRoles;
+
+        public Editor(Panel panel) {
+            this.panel = panel;
+            this.name = panel.name;
+            this.channelId = panel.channelId;
+            this.openedCategory = panel.openedCategory;
+            this.closedCategory = panel.closedCategory;
+            this.allowedRoles = panel.allowedRoles;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setChannelId(Long channelId) {
+            this.channelId = channelId;
+        }
+
+        public void setOpenedCategory(Long openedCategory) {
+            this.openedCategory = openedCategory;
+        }
+
+        public void setClosedCategory(Long closedCategory) {
+            this.closedCategory = closedCategory;
+        }
+
+        public void setAllowedRoles(Set<Long> allowedRoles) {
+            this.allowedRoles = allowedRoles;
+        }
+
+        public CompletableFuture<Panel> apply() {
+            return core.completableFuture(() -> {
+                try (Connection conn = core.getDatabase()) {
+                    Checks.notNull(name, "Name");
+                    Checks.notNull(channelId, "Channel");
+                    Checks.notNull(openedCategory, "OpenedCategory");
+                    Checks.notNull(closedCategory, "ClosedCategory");
+                    if (core.getGuild().getCategoryById(openedCategory) == null)
+                        throw new IllegalArgumentException("Opened Category was not found");
+                    if (core.getGuild().getCategoryById(closedCategory) == null)
+                        throw new IllegalArgumentException("Closed Category was not found");
+                    TextChannel channel = core.getGuild().getTextChannelById(channelId);
+                    if (channel == null) {
+                        throw new IllegalArgumentException("Channel was not found");
+                    }
+                    Message msg;
+                    try {
+                        if (!panel.name.equals(name)) {
+                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
+                            msg.addReaction("\uD83C\uDFAB").queue();
+                        } else
+                        msg = channel.retrieveMessageById(panel.messageId).complete();
+                    } catch (ErrorResponseException ex) {
+                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
+                        msg.addReaction("\uD83C\uDFAB").queue();
+                    }
+                    PreparedStatement p1 = conn.prepareStatement("UPDATE ticket_panels SET Name=?, Channel=?, MessageID=?, OpenedCategory=?, ClosedCategory=? WHERE ID=?");
+                    p1.setString(1, name);
+                    p1.setLong(2, channel.getIdLong());
+                    p1.setLong(3, msg.getIdLong());
+                    p1.setLong(4, openedCategory);
+                    p1.setLong(5, closedCategory);
+                    p1.setString(6, panel.id);
+                    p1.execute();
+                    if (!panel.allowedRoles.equals(allowedRoles)) {
+                        PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
+                        p2.setString(1, panel.id);
+                        p2.execute();
+                        for (Long r : allowedRoles) {
+                            PreparedStatement p3 = conn.prepareStatement("INSERT INTO panel_allowed_roles(RoleID, PanelID) VALUES (?, ?)");
+                            p3.setLong(1, r);
+                            p3.setString(2, panel.id);
+                            p3.execute();
+                        }
+                    }
+                    panel.messageId = msg.getIdLong();
+                    panel.name = name;
+                    panel.channelId = channelId;
+                    panel.openedCategory = openedCategory;
+                    panel.closedCategory = closedCategory;
+                    panel.allowedRoles = allowedRoles;
+                    return panel;
+                } catch (SQLException ex) {
+                    throw new UnCheckedSQLException(ex);
                 }
             });
         }

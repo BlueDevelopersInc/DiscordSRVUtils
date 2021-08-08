@@ -1,6 +1,7 @@
 package tk.bluetree242.discordsrvutils.tickets.listeners;
 
 
+import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -10,7 +11,7 @@ public class TicketCloseListener extends ListenerAdapter {
 
     private DiscordSRVUtils core = DiscordSRVUtils.get();
 
-    public void onMessageReactionAdd(MessageReactionAddEvent e) {
+    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         core.handleCF(TicketManager.get().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
             if (ticket != null) {
                 if (e.getUser().isBot()) return;
@@ -22,6 +23,11 @@ public class TicketCloseListener extends ListenerAdapter {
                     e.getReaction().removeReaction(e.getUser()).queue();
                     if (ticket.isClosed()) {
                         ticket.delete();
+                    }
+                } if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
+                    e.getReaction().removeReaction(e.getUser()).queue();
+                    if (ticket.isClosed()) {
+                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {core.defaultHandle(ex);});
                     }
                 }
             }

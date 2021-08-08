@@ -29,6 +29,9 @@ public class PanelListCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         DiscordSRVUtils.get().handleCF(TicketManager.get().getPanels(), panels -> {
+            if (panels.isEmpty()) {
+                e.getChannel().sendMessage("There are no panels to show").queue();
+            }
             new PaginationWaiter(e.getChannel(), getEmbeds(panels), e.getAuthor());
         }, failure -> {
             DiscordSRVUtils.get().defaultHandle(failure, (TextChannel) e.getChannel());
@@ -67,8 +70,8 @@ public class PanelListCommand extends Command {
             embed.addField(panel.getName(), String.join("\n", new String[]{
                     "**ID: **" + panel.getId(),
                     "**Message Channel: **" + "<#" + panel.getChannelId() + ">",
-                    "**Opened Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()).getName()),
-                    "**Closed Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()).getName()),
+                    "**Opened Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()).getName()).toUpperCase(),
+                    "**Closed Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()).getName()).toUpperCase(),
                     "**Allowed Roles: **" + parseRoles(panel.getAllowedRoles()),
                     /*language=md*/ "\n[Panel Message](" + "https://discord.com/channels/" + DiscordSRVUtils.get().getGuild().getId() + "/" + panel.getChannelId() + "/" + panel.getMessageId() + ")"
             }), false);
@@ -79,6 +82,9 @@ public class PanelListCommand extends Command {
     }
 
     private String parseRoles(Set<Long> roles) {
+        if (roles.isEmpty()) {
+            return "None";
+        }
         StringJoiner joiner = new StringJoiner(", ");
         for (Long role : roles) {
             joiner.add(DiscordSRVUtils.get().getGuild().getRoleById(role) == null ? role + "" : DiscordSRVUtils.get().getGuild().getRoleById(role).getAsMention());

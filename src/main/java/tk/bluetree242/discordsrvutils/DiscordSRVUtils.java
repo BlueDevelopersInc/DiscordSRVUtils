@@ -11,6 +11,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.AttachmentOption;
 import okhttp3.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -45,6 +46,7 @@ import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
+import tk.bluetree242.discordsrvutils.waiters.listeners.EditPanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
 
 import java.io.File;
@@ -110,6 +112,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new TicketDeleteListener());
         listeners.add(new PanelReactListener());
         listeners.add(new TicketCloseListener());
+        listeners.add(new EditPanelListener());
         initDefaultMessages();
 
     }
@@ -188,6 +191,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 whenReady();
             }
             whenStarted();
+            Metrics metrics = new Metrics(this, 9456);
         } catch (Throwable ex) {
             throw new StartupException(ex);
         }
@@ -309,6 +313,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketClosedEmbed.put("color", "red");
         ticketClosed.put("embed", ticketClosedEmbed);
         defaultmessages.put("ticket-close", ticketClosed.toString(1));
+         ticketOpened = new JSONObject();
+         ticketOpenedEmbed = new JSONObject();
+        ticketOpenedEmbed.put("description","Ticket reopened by [user.asMention]");
+        ticketOpenedEmbed.put("color", "green");
+        ticketOpened.put("embed", ticketOpenedEmbed);
+        defaultmessages.put("ticket-reopen", ticketOpened.toString(1));
     }
 
 
@@ -353,6 +363,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new CreatePanelCommand());
         CommandManager.get().registerCommand(new PanelListCommand());
         CommandManager.get().registerCommand(new DeletePanelCommand());
+        CommandManager.get().registerCommand(new EditPanelCommand());
+        CommandManager.get().registerCommand(new CloseCommand());
+        CommandManager.get().registerCommand(new ReopenCommand());
     }
 
     public boolean bugoWasHere() {

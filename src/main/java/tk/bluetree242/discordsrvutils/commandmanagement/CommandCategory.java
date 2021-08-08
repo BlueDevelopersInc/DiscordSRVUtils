@@ -10,7 +10,7 @@ public class CommandCategory {
     public static final CommandCategory TICKETS_ADMIN = new CommandCategory("Tickets Admin", "\uD83C\uDF9F️");
 
     public static CommandCategory[] values() {
-        return new CommandCategory[]{TICKETS, TICKETS, ADMIN};
+        return new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN};
     }
 
     private List<Command> commands = new ArrayList<>();

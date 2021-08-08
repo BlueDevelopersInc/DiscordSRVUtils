@@ -15,6 +15,7 @@ shadowJar {
     relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependencies.yaml"
     relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
     relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
+    relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
 }
 build.finalizedBy shadowJar
 repositories {
@@ -70,7 +71,7 @@ dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
-    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
     compileOnly 'net.ess3:EssentialsX:2.17.2'
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
@@ -84,7 +85,7 @@ dependencies {
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.0-BETA-3'
+version = '1.2.0-BETA-4'
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
 java.sourceCompatibility = JavaVersion.VERSION_1_8

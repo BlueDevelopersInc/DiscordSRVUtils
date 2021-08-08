@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 public class DeletePanelCommand extends Command {
 
     public DeletePanelCommand() {
-        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel", null, CommandCategory.TICKETS_ADMIN, "dp");
+        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN, "dp");
         setAdminOnly(true);
     }
 

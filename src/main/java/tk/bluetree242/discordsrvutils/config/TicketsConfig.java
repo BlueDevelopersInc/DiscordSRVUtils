@@ -25,4 +25,10 @@ public interface TicketsConfig {
     @ConfDefault.DefaultString("message:ticket-close")
     @ConfComments("#Message to send in ticket when its closed")
     String ticket_closed_message();
+
+    @ConfKey("ticket-reopen-message")
+    @AnnotationBasedSorter.Order(30)
+    @ConfDefault.DefaultString("message:ticket-reopen")
+    @ConfComments("#Message to send in ticket when its reopened")
+    String ticket_reopen_message();
 }
