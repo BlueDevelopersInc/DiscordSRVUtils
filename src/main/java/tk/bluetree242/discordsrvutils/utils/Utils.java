@@ -2,6 +2,7 @@ package tk.bluetree242.discordsrvutils.utils;
 
 import org.bukkit.ChatColor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +14,13 @@ public class Utils {
     public static String readFile(String path)
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
+        String fileContents = new String(encoded, StandardCharsets.UTF_8);
+        return fileContents;
+    }
+
+    public static String readFile(File file)
+            throws IOException {
+        byte[] encoded = Files.readAllBytes(file.getAbsoluteFile().toPath());
         String fileContents = new String(encoded, StandardCharsets.UTF_8);
         return fileContents;
     }

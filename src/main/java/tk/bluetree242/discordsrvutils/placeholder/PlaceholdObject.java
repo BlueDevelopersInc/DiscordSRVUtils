@@ -4,18 +4,13 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import tk.bluetree242.discordsrvutils.exceptions.PlaceholdException;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PlaceholdObject {
-    private Map<String, Object> map = new HashMap<>();
+    private final Map<String, Method> map = new HashMap<>();
     private Object ob;
     protected String display;
     public PlaceholdObject(Object ob, String display) {
@@ -41,15 +36,24 @@ public class PlaceholdObject {
     }
 
     public String apply(@NotNull String s)  {
-        Map<String, Object> map = getholdersMap();
+        Map<String, Method> map = getholdersMap();
         final String[] val = {s};
-        map.forEach((key, value) -> {
-            val[0] = val[0].replace("[" + display + "."  + key + "]", value == null ? "null" : value.toString());
+        map.forEach((key, result) -> {
+            try {
+                if (val[0].contains("[" + this.display + "." + key + "]")) {
+                    Object invoked = result.invoke(this.getObject());
+                    String value = null;
+                    if (invoked != null) {
+                        value = invoked.toString();
+                    }
+                    val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
+                }
+            } catch (Exception e) {}
         });
         return val[0];
     }
 
-    public Map<String, Object> getholdersMap() {
+    public Map<String, Method> getholdersMap() {
         if (map.isEmpty()) {
             for (Method method : ob.getClass().getMethods()) {
                 if (method.getReturnType() != void.class) {
@@ -57,11 +61,7 @@ public class PlaceholdObject {
                         if (method.getParameterTypes().length == 0) {
                             String str = method.getName().replaceFirst("get", "");
                             str = str.substring(0, 1).toLowerCase() + str.substring(1);
-                            try {
-                                map.put(str, method.invoke(ob));
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-
-                            }
+                            map.put(str, method);
                         }
                     }
                 }

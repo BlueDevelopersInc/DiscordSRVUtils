@@ -32,6 +32,8 @@ import tk.bluetree242.discordsrvutils.commands.discord.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
@@ -49,9 +51,11 @@ import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.EditPanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -65,6 +69,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
@@ -83,6 +88,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     private PunishmentsIntegrationConfig bansIntegrationConfig;
     private ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
     private TicketsConfig ticketsConfig;
+    private ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
+    private LevelingConfig levelingConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
     private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
         @Override
@@ -105,6 +112,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         new CommandManager();
         new TicketManager();
         new WaiterManager();
+        new LevelingManager();
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
         listeners.add(new CreatePanelListener());
@@ -169,7 +177,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
                     "|   &cName: &rDiscordSRVUtils\n&r" +
-                    "|   &cDevelopers: &rBlueTree242 & bugo07\n&r" +
+                    "|   &cDevelopers: &rBlueTree242\n&r" +
                     "|   &cVersion: &r" + getDescription().getVersion() + "\n&r" +
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
@@ -300,8 +308,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         JSONObject ticketOpenedEmbed = new JSONObject();
         ticketOpened.put("content", "[user.asMention] Here is your ticket");
         ticketOpenedEmbed.put("description", String.join("\n", new String[]{
-            "Staff will be here shortly",
-            "React with \uD83D\uDD12 to close this ticket",
+                "Staff will be here shortly",
+                "React with \uD83D\uDD12 to close this ticket",
                 "**Panel Name: **[panel.name]"
         }));
         ticketOpenedEmbed.put("color", "green");
@@ -313,8 +321,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketClosedEmbed.put("color", "red");
         ticketClosed.put("embed", ticketClosedEmbed);
         defaultmessages.put("ticket-close", ticketClosed.toString(1));
-         ticketOpened = new JSONObject();
-         ticketOpenedEmbed = new JSONObject();
+        ticketOpened = new JSONObject();
+        ticketOpenedEmbed = new JSONObject();
         ticketOpenedEmbed.put("description","Ticket reopened by [user.asMention]");
         ticketOpenedEmbed.put("color", "green");
         ticketOpened.put("embed", ticketOpenedEmbed);
@@ -325,13 +333,13 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void onDisable() {
         instance = null;
-        DiscordSRV.api.unsubscribe(dsrvlistener);
+        if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         pool.shutdown();
-        WaiterManager.get().timer.cancel();
-        sql.close();
+        if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
+        if (sql != null)sql.close();
     }
 
     private void whenStarted() {
@@ -355,6 +363,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
+        Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), this);
     }
 
     public void registerCommands() {
@@ -368,9 +377,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new ReopenCommand());
     }
 
-    public boolean bugoWasHere() {
-        return true;
-    }
+
 
 
 
@@ -387,6 +394,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         bansIntegrationConfig = bansIntegrationconfigmanager.reloadConfigData();
         ticketsconfigManager.reloadConfig();
         ticketsConfig = ticketsconfigManager.reloadConfigData();
+        levelingconfigManager.reloadConfig();
+        levelingConfig = levelingconfigManager.reloadConfigData();
         setSettings();
     }
 
@@ -404,6 +413,10 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public TicketsConfig getTicketsConfig() {
         return ticketsConfig;
+    }
+
+    public LevelingConfig getLevelingConfig() {
+        return levelingConfig;
     }
 
     public void executeAsync(Runnable r) {
@@ -557,4 +570,5 @@ public class DiscordSRVUtils extends JavaPlugin {
         ex.printStackTrace();
         //Do nothing lol
     }
+
 }
