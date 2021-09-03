@@ -7,9 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.config.LevelingConfig;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
@@ -56,16 +58,32 @@ public class BukkitLevelingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent e) {
+        if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
             core.handleCF(LevelingManager.get().getPlayerStats(e.getPlayer().getUniqueId()), stats -> {
                 if (stats == null) {
                     return;
                 }
+                if (core.getLevelingConfig().antispam_messages()) {
+                    Long val = LevelingManager.get().antispamMap.get(stats.getUuid());
+                    if (val == null) {
+                        LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    } else {
+                        if (!(System.nanoTime() - val >= LevelingManager.get().MAP_EXPIRATION_NANOS)) return;
+                        LevelingManager.get().antispamMap.remove(stats.getUuid());
+                        LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    }
+                }
                 int toAdd = new SecureRandom().nextInt(50);
                 boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd));
+                core.handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
                 if (leveledUp) {
-                    e.getPlayer().sendMessage(Utils.colors(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"),  new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()))));
-                    DiscordSRV.api.callEvent(new MinecraftLevelupEvent(stats, e.getPlayer()));
+                    try {
+                        DiscordSRV.api.callEvent(new MinecraftLevelupEvent(stats, e.getPlayer()));
+                    } catch (Exception x) {}
+                    e.getPlayer().sendMessage(Utils.colors(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"),  new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer())));
+
+
                 }
             }, null);
     }

@@ -15,12 +15,16 @@ public class PlayerStats {
     private String name;
     private int level;
     private int xp;
+    private int minecraftMessages;
+    private int discordMessages;
 
-    public PlayerStats(UUID uuid, String name, int level, int xp) {
+    public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages) {
         this.uuid = uuid;
         this.name = name;
         this.level = level;
         this.xp = xp;
+        this.minecraftMessages = minecraftMessages;
+        this.discordMessages = discordMessages;
     }
 
     public UUID getUuid() {
@@ -79,6 +83,35 @@ public class PlayerStats {
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
             }
+        });
+    }
+
+    public int getMinecraftMessages() {
+        return minecraftMessages;
+    }
+    public int getDiscordMessages() {
+        return discordMessages;
+    }
+
+    public CompletableFuture<Void> addMessage(MessageType type) {
+        return core.completableFutureRun(() -> {
+           try (Connection conn = core.getDatabase()) {
+               PreparedStatement p1 = null;
+               switch (type) {
+                   case DISCORD:
+                       p1 = conn.prepareStatement("UPDATE leveling SET DiscordMessages=? WHERE UUID=?");
+                       p1.setInt(1, discordMessages + 1);
+                       break;
+                   case MINECRAFT:
+                       p1 = conn.prepareStatement("UPDATE leveling SET MinecraftMessages=? WHERE UUID=?");
+                       p1.setInt(1, minecraftMessages + 1);
+                       break;
+               }
+               p1.setString(2, uuid.toString());
+               p1.execute();
+            } catch (SQLException e) {
+               throw new UnCheckedSQLException(e);
+           }
         });
     }
 }

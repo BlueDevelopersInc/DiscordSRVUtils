@@ -34,6 +34,7 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
+import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
@@ -121,6 +122,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new PanelReactListener());
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
+        listeners.add(new DiscordLevelingListener());
         initDefaultMessages();
 
     }
@@ -516,10 +518,17 @@ public class DiscordSRVUtils extends JavaPlugin {
         return sql.getConnection();
     }
 
-    public TextChannel getChannel(long id) {
+    public TextChannel getChannel(long id, TextChannel channel) {
+        if (id == -1) {
+            if (channel != null) return channel;
+            return null;
+        }
         if (id == 0) {
             return DiscordSRV.getPlugin().getMainTextChannel();
         } else return getJDA().getTextChannelById(id);
+    }
+    public TextChannel getChannel(long id) {
+        return getChannel(id, null);
     }
     public Guild getGuild() {
         return DiscordSRV.getPlugin().getMainGuild();

@@ -10,11 +10,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class LevelingManager {
-
+    public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
+    public final Map<UUID, Long> antispamMap = new HashMap<>();
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private static LevelingManager main;
     public static LevelingManager get() {
@@ -48,6 +52,6 @@ public class LevelingManager {
     }
 
     public PlayerStats getPlayerStats(ResultSet r) throws SQLException {
-        return new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"));
+        return new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"));
     }
 }

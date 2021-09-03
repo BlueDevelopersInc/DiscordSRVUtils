@@ -82,10 +82,11 @@ dependencies {
     implementation "com.squareup.okhttp3:mockwebserver:4.9.0"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'gui.ava:html2image:0.9'
+
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.0-BETA-4'
+version = '1.2.0-BETA-5'
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
 java.sourceCompatibility = JavaVersion.VERSION_1_8

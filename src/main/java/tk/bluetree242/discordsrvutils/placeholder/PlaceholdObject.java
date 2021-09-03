@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Console;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,9 @@ public class PlaceholdObject {
 
     public static String applyPlaceholders(String s, Player player) {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, s);
+            String to = s.replace("&", "** ** *");
+            String fina = PlaceholderAPI.setPlaceholders(player, to);
+            return fina.replace("** ** *", "&");
         }
         return s;
     }
@@ -35,7 +38,7 @@ public class PlaceholdObject {
         return ob;
     }
 
-    public String apply(@NotNull String s)  {
+    public String apply(@NotNull String s, Player placehold)  {
         Map<String, Method> map = getholdersMap();
         final String[] val = {s};
         map.forEach((key, result) -> {
@@ -50,7 +53,11 @@ public class PlaceholdObject {
                 }
             } catch (Exception e) {}
         });
+            val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
         return val[0];
+    }
+    public String apply(@NotNull String s)  {
+        return apply(s, null);
     }
 
     public Map<String, Method> getholdersMap() {

@@ -95,7 +95,7 @@ public class MessageManager {
                 raw =holders.apply(raw);
             }
                raw = PlaceholdObject.applyPlaceholders(raw, placehold);
-            return Utils.colors(raw);
+            return raw;
         }
         return null;
     }

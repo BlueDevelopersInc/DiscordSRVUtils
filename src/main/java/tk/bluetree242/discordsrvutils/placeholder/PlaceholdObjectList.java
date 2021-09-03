@@ -1,5 +1,7 @@
 package tk.bluetree242.discordsrvutils.placeholder;
 
+import org.bukkit.entity.Player;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,7 +16,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         return list;
     }
 
-    public String apply(String s) {
+    public String apply(String s, Player placehold) {
         final String[] val = {s};
         for (PlaceholdObject holder : this) {
             Map<String, Method> map = holder.getholdersMap();
@@ -31,7 +33,11 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
                 } catch (Exception e) {}
             });
         }
+        val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
         return val[0];
+    }
+    public String apply(String s) {
+        return apply(s, null);
     }
 
 }
