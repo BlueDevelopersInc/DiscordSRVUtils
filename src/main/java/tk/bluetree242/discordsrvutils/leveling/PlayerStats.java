@@ -17,14 +17,15 @@ public class PlayerStats {
     private int xp;
     private int minecraftMessages;
     private int discordMessages;
-
-    public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages) {
+    private int rank;
+    public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages, int rank) {
         this.uuid = uuid;
         this.name = name;
         this.level = level;
         this.xp = xp;
         this.minecraftMessages = minecraftMessages;
         this.discordMessages = discordMessages;
+        this.rank = rank;
     }
 
     public UUID getUuid() {
@@ -113,5 +114,9 @@ public class PlayerStats {
                throw new UnCheckedSQLException(e);
            }
         });
+    }
+
+    public int getRank() {
+        return rank;
     }
 }

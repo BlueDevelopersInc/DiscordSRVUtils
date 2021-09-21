@@ -9,19 +9,16 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import github.scarsz.discordsrv.dependencies.jda.api.utils.AttachmentOption;
 import okhttp3.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.json.CDL;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
@@ -31,17 +28,17 @@ import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUt
 import tk.bluetree242.discordsrvutils.commands.discord.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
+import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
-import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.StartupException;
-import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
@@ -52,11 +49,9 @@ import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.EditPanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
 
-import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -70,7 +65,6 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
@@ -325,10 +319,23 @@ public class DiscordSRVUtils extends JavaPlugin {
         defaultmessages.put("ticket-close", ticketClosed.toString(1));
         ticketOpened = new JSONObject();
         ticketOpenedEmbed = new JSONObject();
-        ticketOpenedEmbed.put("description","Ticket reopened by [user.asMention]");
+        ticketOpenedEmbed.put("description", "Ticket reopened by [user.asMention]");
         ticketOpenedEmbed.put("color", "green");
         ticketOpened.put("embed", ticketOpenedEmbed);
         defaultmessages.put("ticket-reopen", ticketOpened.toString(1));
+        JSONObject level = new JSONObject();
+        JSONObject levelEmbed = new JSONObject();
+        levelEmbed.put("color", "cyan");
+        levelEmbed.put("title", "Level for [stats.name]");
+        levelEmbed.put("description", String.join("\n", new String[]{
+                        "**Level:** [stats.level]",
+                        "**XP:** [stats.xp]",
+                         "**Rank:**: #[stats.rank]"
+                }
+        ));
+        levelEmbed.put("thumbnail", new JSONObject().put("url", "https://minotar.net/avatar/[stats.name]"));
+        level.put("embed", levelEmbed);
+        defaultmessages.put("level", level.toString(1));
     }
 
 
@@ -377,6 +384,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new EditPanelCommand());
         CommandManager.get().registerCommand(new CloseCommand());
         CommandManager.get().registerCommand(new ReopenCommand());
+        CommandManager.get().registerCommand(new LevelCommand());
+        CommandManager.get().registerCommand(new LeaderboardCommand());
     }
 
 

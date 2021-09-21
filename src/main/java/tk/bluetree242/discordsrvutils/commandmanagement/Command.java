@@ -20,6 +20,7 @@ public abstract class Command {
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
+    public DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
         this.cmd = cmd;

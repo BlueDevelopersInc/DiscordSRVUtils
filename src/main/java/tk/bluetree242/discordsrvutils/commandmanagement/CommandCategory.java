@@ -1,17 +1,38 @@
 package tk.bluetree242.discordsrvutils.commandmanagement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CommandCategory {
 
     public static final CommandCategory TICKETS = new CommandCategory("Tickets", "\uD83C\uDFAB");
     public static final CommandCategory ADMIN = new CommandCategory("Admin", "⚒️");
     public static final CommandCategory TICKETS_ADMIN = new CommandCategory("Tickets Admin", "\uD83C\uDF9F️");
+    public static final CommandCategory LEVELING = new CommandCategory("Leveling", "\uD83C\uDFC5");
 
+    private static Set<CommandCategory> externals = new HashSet<>();
     public static CommandCategory[] values() {
-        return new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN};
+        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING}));
+        for (CommandCategory external : externals) {
+            list.add(external);
+        }
+        return list.toArray(new CommandCategory[0]);
     }
+
+    public static void registerCategory(String name, String prefix) {
+        for (CommandCategory external : values()) {
+            if (external.getName().equalsIgnoreCase(name)) return;
+        }
+        externals.add(new CommandCategory(name, prefix));
+    }
+
+    public static CommandCategory ofName(String name) {
+        for (CommandCategory value : values()) {
+            if (value.name.equalsIgnoreCase(name)) return value;
+        }
+        return null;
+    }
+
+
 
     private List<Command> commands = new ArrayList<>();
 

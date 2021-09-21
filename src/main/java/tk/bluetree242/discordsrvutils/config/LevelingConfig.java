@@ -41,4 +41,12 @@ public interface LevelingConfig{
         @AnnotationBasedSorter.Order(30)
         @ConfDefault.DefaultLong(-1)
         long discord_channel();
+
+
+        @ConfKey("level-command-message")
+        @ConfComments("#Message when user uses the level (aka rank) command")
+        @AnnotationBasedSorter.Order(40)
+        @ConfDefault.DefaultString("message:level")
+        String level_command_message();
+
 }

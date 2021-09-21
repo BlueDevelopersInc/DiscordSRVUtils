@@ -38,6 +38,7 @@ public class MessageManager {
             embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
             if (!json.isNull("color")) {
                 Integer color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
+
                 embed.setColor(color);
             }
             if (!json.isNull("footer")) {
