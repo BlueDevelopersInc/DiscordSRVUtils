@@ -11,11 +11,12 @@ Put these into your pom.xml
         <url>https://jitpack.io</url>
     </repository>
 ```
+
 ```xml
     <dependency>
         <groupId>com.github.BlueTree242</groupId>
         <artifactId>DiscordSRVUtils</artifactId>
-        <version>1.2.0-BETA-5</version>
+        <version>1.2.0-BETA-6</version>
     </dependency>
 ```
 
@@ -28,7 +29,7 @@ For gradle
 ```
 ```gradle
     dependencies {
-        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.2.0-BETA-5'
+        implementation 'com.github.BlueTree242:DiscordSRVUtils:1.2.0-BETA-6'
     }
 ```
       

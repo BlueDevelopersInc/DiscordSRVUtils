@@ -14,7 +14,7 @@ import java.util.StringJoiner;
 
 public class LeaderboardCommand extends Command {
     public LeaderboardCommand() {
-        super("leaderboard", CommandType.EVERYWHERE, "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING);
+        super("leaderboard", CommandType.GUILDS, "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING);
     }
 
     @Override
@@ -23,10 +23,22 @@ public class LeaderboardCommand extends Command {
         embed.setColor(Color.GREEN);
         StringJoiner joiner = new StringJoiner("\n");
         for (PlayerStats player : LevelingManager.get().getLeaderboard(10).get()) {
-            joiner.add("**" +player.getRank() + ".** " + player.getName() + " **Level:**" + player.getLevel());
+            String prefix = "";
+            switch (player.getRank()) {
+                case 1:
+                    prefix = ":first_place:";
+                    break;
+                case 2:
+                    prefix = ":second_place:";
+                    break;
+                case 3:
+                    prefix = ":third_place:";
+            }
+            joiner.add("**" +player.getRank() + ".** "  + prefix + player.getName() + " **Level:**" + player.getLevel());
         }
         embed.setTitle("Leaderboard");
         embed.setDescription(joiner.toString());
+        embed.setThumbnail(e.getGuild().getIconUrl());
         e.reply(embed.build()).queue();
     }
 }
