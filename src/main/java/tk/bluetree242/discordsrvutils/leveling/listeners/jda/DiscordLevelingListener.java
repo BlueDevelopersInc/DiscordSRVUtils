@@ -20,6 +20,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         core.executeAsync(() -> {
+            if (e.getMessage().isWebhookMessage()) return;
+            if (e.getAuthor().isBot()) return;
             if (e.getGuild().getIdLong() == core.getGuild().getIdLong()) {
                 if (core.getLevelingConfig().enabled()) {
                     core.handleCF(LevelingManager.get().getPlayerStats(e.getMember().getIdLong()), stats -> {

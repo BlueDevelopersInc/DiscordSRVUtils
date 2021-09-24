@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BukkitLevelingListener implements Listener {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent e) {
         core.executeAsync(() -> {
             try (Connection conn = core.getDatabase()) {
