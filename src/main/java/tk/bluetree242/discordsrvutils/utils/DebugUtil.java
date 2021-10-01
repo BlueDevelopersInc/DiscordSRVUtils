@@ -122,7 +122,7 @@ public class DebugUtil {
         files.add(fileMap("config.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "config.yml")));
         files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
         files.add(fileMap("tickets.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "tickets.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("leveling.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "leveling.yml")));
         return files;
     }
 

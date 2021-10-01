@@ -219,7 +219,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             pass = sqlconfig.Password();
         } else {
             logger.info("MySQL is disabled, using hsqldb");
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false";
+            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;syntax_mys=true";
             user = "SA";
             pass = "";
         }
