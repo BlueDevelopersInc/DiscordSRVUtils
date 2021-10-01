@@ -237,7 +237,7 @@ public class DebugUtil {
         File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
         output.put("Server storage", "");
         output.put("- total space (MB)", serverRoot.getTotalSpace() / 1024 / 1024 + "");
-        output.put("- free space (MB)", "serverRoot.getFreeSpace() / 1024 / 1024");
+        output.put("- free space (MB)", serverRoot.getFreeSpace() / 1024 / 1024 + "");
         output.put("- usable space (MB)",  serverRoot.getUsableSpace() / 1024 / 1024 + "");
 
         // java version

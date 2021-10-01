@@ -67,10 +67,11 @@ public class Ticket {
               User user = core.getJDA().retrieveUserById(userID).complete();
               Member member = core.getGuild().getMember(user);
               core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-              PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
-              if (override != null) {
-                  override.getManager().deny(Permission.VIEW_CHANNEL).queue();
-              }
+                  PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
+                  System.out.println(override);
+                  if (override != null) {
+                      override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
+                  }
               core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
                       new PlaceholdObject(userWhoClosed, "user"),
                       new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
@@ -106,7 +107,7 @@ public class Ticket {
                 core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
                 PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
                 if (override != null) {
-                    override.getManager().deny(Permission.VIEW_CHANNEL).queue();
+                    override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
                 } else {
                     return false;
                 }
