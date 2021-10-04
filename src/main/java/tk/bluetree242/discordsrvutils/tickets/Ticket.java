@@ -48,9 +48,11 @@ public class Ticket {
     public boolean isClosed() {
         return closed;
     }
+
     public Panel getPanel() {
         return panel;
     }
+
     public long getMessageID() {
         return messageID;
     }
@@ -60,40 +62,40 @@ public class Ticket {
         return core.completableFutureRun(() -> {
             if (closed) return;
             try (Connection conn = core.getDatabase()) {
-              PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
-              p1.setString(1, id);
-              p1.setLong(2, userID);
-              p1.execute();
-              User user = core.getJDA().retrieveUserById(userID).complete();
-              Member member = core.getGuild().getMember(user);
-              core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-                  PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
-                  System.out.println(override);
-                  if (override != null) {
-                      override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
-                  }
-              core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
-                      new PlaceholdObject(userWhoClosed, "user"),
-                      new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
-                      new PlaceholdObject(core.getGuild(), "guild"),
-                      new PlaceholdObject(panel, "panel")
-              ),null).build()).queue();
-              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("\uD83D\uDD13 Reopen Ticket\n\uD83D\uDDD1️ Delete Ticked").setFooter("More Options coming soon").build()).complete();
-              msg.addReaction("\uD83D\uDD13").queue();
-              msg.addReaction("\uD83D\uDDD1️").queue();
-              messageID = msg.getIdLong();
-              PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='true', OpenTime=? WHERE UserID=? AND ID=? ");
-              p2.setLong(1, messageID);
+                PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
+                p1.setString(1, id);
+                p1.setLong(2, userID);
+                p1.execute();
+                User user = core.getJDA().retrieveUserById(userID).complete();
+                Member member = core.getGuild().getMember(user);
+                core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
+                PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
+                if (override != null) {
+                    override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
+                }
+                core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
+                        new PlaceholdObject(userWhoClosed, "user"),
+                        new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
+                        new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(panel, "panel")
+                ), null).build()).queue();
+                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("\uD83D\uDD13 Reopen Ticket\n\uD83D\uDDD1️ Delete Ticket").setFooter("More Options coming soon").build()).complete();
+                msg.addReaction("\uD83D\uDD13").queue();
+                msg.addReaction("\uD83D\uDDD1️").queue();
+                messageID = msg.getIdLong();
+                PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='true', OpenTime=? WHERE UserID=? AND ID=? ");
+                p2.setLong(1, messageID);
                 p2.setLong(2, System.currentTimeMillis());
                 p2.setLong(3, userID);
-              p2.setString(4, id);
-              p2.execute();
+                p2.setString(4, id);
+                p2.execute();
 
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
         });
     }
+
     public CompletableFuture<Boolean> reopen(User userWhoOpened) {
         return core.completableFuture(() -> {
             if (!closed) return false;
@@ -116,7 +118,7 @@ public class Ticket {
                         new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
-                ),null).build()).complete();
+                ), null).build()).complete();
                 msg.addReaction("\uD83D\uDD12").queue();
                 messageID = msg.getIdLong();
                 PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='false' WHERE UserID=? AND ID=? ");
@@ -131,6 +133,7 @@ public class Ticket {
             }
         });
     }
+
     public CompletableFuture<Void> delete() {
         return core.completableFutureRun(() -> {
             TextChannel channel = core.getGuild().getTextChannelById(channelID);

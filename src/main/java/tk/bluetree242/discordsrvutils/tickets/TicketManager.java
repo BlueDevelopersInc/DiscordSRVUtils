@@ -53,7 +53,7 @@ public class TicketManager {
                 while (r1.next()) {
                     val.add(getPanel(r1));
                 }
-            return val;
+                return val;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
             }
@@ -79,17 +79,17 @@ public class TicketManager {
 
     public CompletableFuture<Panel> getPanelByMessageId(long messageId) {
         return core.completableFuture(() -> {
-                try (Connection conn = core.getDatabase()) {
-                    PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
-                    p1.setLong(1, messageId);
-                    ResultSet r1 = p1.executeQuery();
-                    if (!r1.next()) {
-                        return null;
-                    }
-                    return getPanel(r1);
-                } catch (SQLException e) {
-                    throw new UnCheckedSQLException(e);
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
+                p1.setLong(1, messageId);
+                ResultSet r1 = p1.executeQuery();
+                if (!r1.next()) {
+                    return null;
                 }
+                return getPanel(r1);
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
         });
     }
 
@@ -138,4 +138,4 @@ public class TicketManager {
         return getTicket(r, null);
     }
 
-    }
+}
