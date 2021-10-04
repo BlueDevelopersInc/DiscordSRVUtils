@@ -8,10 +8,10 @@ public class CommandCategory {
     public static final CommandCategory ADMIN = new CommandCategory("Admin", "⚒️");
     public static final CommandCategory TICKETS_ADMIN = new CommandCategory("Tickets Admin", "\uD83C\uDF9F️");
     public static final CommandCategory LEVELING = new CommandCategory("Leveling", "\uD83C\uDFC5");
-
+    public static final CommandCategory SUGGESTIONS = new CommandCategory("Suggestions", "\uD83D\uDCA1");
     private static Set<CommandCategory> externals = new HashSet<>();
     public static CommandCategory[] values() {
-        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING}));
+        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS}));
         for (CommandCategory external : externals) {
             list.add(external);
         }

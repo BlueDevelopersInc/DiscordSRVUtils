@@ -1,5 +1,6 @@
 package tk.bluetree242.discordsrvutils;
 
+import com.vdurmont.emoji.EmojiParser;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -9,6 +10,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import okhttp3.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -19,6 +21,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
@@ -39,6 +42,8 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
+import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
@@ -85,6 +90,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     private TicketsConfig ticketsConfig;
     private ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
     private LevelingConfig levelingConfig;
+    private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
+    private SuggestionsConfig suggestionsConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
     private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
         @Override
@@ -108,6 +115,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         new TicketManager();
         new WaiterManager();
         new LevelingManager();
+        new SuggestionManager();
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
         listeners.add(new CreatePanelListener());
@@ -117,6 +125,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
+        listeners.add(new SuggestionReactionListener());
         initDefaultMessages();
 
     }
@@ -125,6 +134,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         init();
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+            DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
         }
     }
 
@@ -181,6 +191,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cDiscord: &rhttps://discordsrvutils.ml/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
+
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
             try {
@@ -219,7 +230,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             pass = sqlconfig.Password();
         } else {
             logger.info("MySQL is disabled, using hsqldb");
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;syntax_mys=true";
+            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
             user = "SA";
             pass = "";
         }
@@ -227,6 +238,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         settings.setUsername(user);
         settings.setPassword(pass);
         sql = new HikariDataSource(settings);
+        if (!getSqlconfig().isEnabled()) {
+            try (Connection conn = sql.getConnection()) {
+                //language=hsqldb
+                String query = "SET DATABASE SQL SYNTAX MYS TRUE;";
+              conn.prepareStatement(query).execute();
+            }
+        }
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
                 .baselineOnMigrate(true)
@@ -336,6 +354,17 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelEmbed.put("thumbnail", new JSONObject().put("url", "https://minotar.net/avatar/[stats.name]"));
         level.put("embed", levelEmbed);
         defaultmessages.put("level", level.toString(1));
+        JSONObject suggestion = new JSONObject();
+        JSONObject suggestionEmbed = new JSONObject();
+        suggestionEmbed.put("color", "orange");
+        JSONArray suggestionFields = new JSONArray();
+        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
+        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
+        suggestionEmbed.put("fields", suggestionFields);
+        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
+        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
+        suggestion.put("embed", suggestionEmbed);
+        defaultmessages.put("suggestion", suggestion.toString(1));
     }
 
 
@@ -386,6 +415,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new ReopenCommand());
         CommandManager.get().registerCommand(new LevelCommand());
         CommandManager.get().registerCommand(new LeaderboardCommand());
+        CommandManager.get().registerCommand(new SuggestCommand());
     }
 
 
@@ -407,6 +437,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketsConfig = ticketsconfigManager.reloadConfigData();
         levelingconfigManager.reloadConfig();
         levelingConfig = levelingconfigManager.reloadConfigData();
+        suggestionsConfigManager.reloadConfig();
+        suggestionsConfig = suggestionsConfigManager.reloadConfigData();
         setSettings();
     }
 
@@ -416,6 +448,10 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public SQLConfig getSqlconfig() {
         return sqlconfig;
+    }
+
+    public SuggestionsConfig getSuggestionsConfig() {
+        return suggestionsConfig;
     }
 
     public PunishmentsIntegrationConfig getBansConfig() {

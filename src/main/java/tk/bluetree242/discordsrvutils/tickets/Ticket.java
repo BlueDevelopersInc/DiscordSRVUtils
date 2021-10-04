@@ -68,7 +68,6 @@ public class Ticket {
               Member member = core.getGuild().getMember(user);
               core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
                   PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
-                  System.out.println(override);
                   if (override != null) {
                       override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                   }
@@ -78,7 +77,7 @@ public class Ticket {
                       new PlaceholdObject(core.getGuild(), "guild"),
                       new PlaceholdObject(panel, "panel")
               ),null).build()).queue();
-              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("\uD83D\uDD13 Reopen Ticket\n\uD83D\uDDD1️ Delete Ticked").setFooter("More Options coming soon").build()).complete();
+              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("\uD83D\uDD13 Reopen Ticket\n\uD83D\uDDD1️ Delete Ticket").setFooter("More Options coming soon").build()).complete();
               msg.addReaction("\uD83D\uDD13").queue();
               msg.addReaction("\uD83D\uDDD1️").queue();
               messageID = msg.getIdLong();

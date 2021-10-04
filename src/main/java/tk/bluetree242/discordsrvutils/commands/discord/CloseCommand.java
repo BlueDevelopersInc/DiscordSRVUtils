@@ -16,6 +16,10 @@ public class CloseCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         DiscordSRVUtils.get().handleCF(TicketManager.get().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
+            if (ticket == null) {
+                e.replyErr("You are not in a ticket").queue();
+                return;
+            }
             if (ticket.isClosed()) {
                 e.replyErr("Ticket is already closed").queue();
             } else {
