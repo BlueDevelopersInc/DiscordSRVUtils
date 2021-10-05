@@ -76,7 +76,7 @@ dependencies {
     compileOnly 'net.ess3:EssentialsX:2.17.2'
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
-    compileOnly 'com.discordsrv:discordsrv:1.23.0'
+    compileOnly 'com.discordsrv:discordsrv:1.24.0'
     compileOnly 'me.clip:placeholderapi:2.9.2'
     implementation "org.flywaydb:flyway-core:7.5.3"
     implementation "com.squareup.okhttp3:mockwebserver:4.9.0"
