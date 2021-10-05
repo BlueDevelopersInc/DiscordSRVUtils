@@ -589,4 +589,10 @@ public class DiscordSRVUtils extends JavaPlugin {
         //Do nothing lol
     }
 
+
+    // Allow the user to set variables inside SpEL Strings and expression turns just nothing
+    public String execute(Object o) {
+        return "";
+    }
+
 }
