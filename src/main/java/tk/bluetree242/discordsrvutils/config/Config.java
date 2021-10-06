@@ -56,6 +56,12 @@ public interface Config {
     @ConfDefault.DefaultString("message:welcome")
     String welcomer_message();
 
+    @AnnotationBasedSorter.Order(71)
+    @ConfKey("welcomer.role")
+    @ConfComments("#Role to add when they join the server")
+    @ConfDefault.DefaultLong(0)
+    Long welcomer_role();
+
     @AnnotationBasedSorter.Order(80)
     @ConfKey("goodbye.enabled")
     @ConfComments("#Should we send goodbye messages?")

@@ -1,6 +1,7 @@
 package tk.bluetree242.discordsrvutils.listeners.jda;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -23,13 +24,21 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getChannel(core.getMainConfig().welcomer_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().welcomer_channel() + ". Join Message was not sent for " + e.getUser().getAsTag());
-                        return;
+                    } else {
+                        PlaceholdObjectList holders = new PlaceholdObjectList();
+                        holders.add(new PlaceholdObject(e.getUser(), "user"));
+                        holders.add(new PlaceholdObject(e.getGuild(), "guild"));
+                        holders.add(new PlaceholdObject(e.getMember(), "member"));
+                        channel.sendMessage(MessageManager.get().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
                     }
-                    PlaceholdObjectList holders = new PlaceholdObjectList();
-                    holders.add(new PlaceholdObject(e.getUser(), "user"));
-                    holders.add(new PlaceholdObject(e.getGuild(), "guild"));
-                    holders.add(new PlaceholdObject(e.getMember(), "member"));
-                    channel.sendMessage(MessageManager.get().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
+                    if (core.getMainConfig().welcomer_role() != 0) {
+                        Role role = core.getGuild().getRoleById(core.getMainConfig().welcomer_role());
+                        if (role == null) {
+                            core.severe("Welcomer Role not found... User did not receive any roles");
+                        } else {
+                            e.getGuild().addRoleToMember(e.getMember(), role).queue();
+                        }
+                    }
                 }
             }
         });
