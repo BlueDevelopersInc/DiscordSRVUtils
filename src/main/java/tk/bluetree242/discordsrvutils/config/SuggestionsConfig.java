@@ -50,4 +50,24 @@ public interface SuggestionsConfig {
     @ConfComments("# Message when the suggestion is noted (only latest note is previewed)")
     @ConfDefault.DefaultString("message:suggestion-noted")
     String suggestion_noted_message();
+
+    @AnnotationBasedSorter.Order(70)
+    @ConfComments("# Message when the suggestion is noted and also approved (only latest note is previewed)")
+    @ConfDefault.DefaultString("message:suggestion-noted-approved")
+    String suggestion_noted_approved();
+
+    @AnnotationBasedSorter.Order(80)
+    @ConfComments("# Message when the suggestion is approved")
+    @ConfDefault.DefaultString("message:suggestion-approved")
+    String suggestion_approved();
+
+    @AnnotationBasedSorter.Order(90)
+    @ConfComments("# Message when the suggestion is noted and also denied (only latest note is previewed)")
+    @ConfDefault.DefaultString("message:suggestion-noted-denied")
+    String suggestion_noted_denied();
+
+    @AnnotationBasedSorter.Order(90)
+    @ConfComments("# Message when the suggestion is denied")
+    @ConfDefault.DefaultString("message:suggestion-denied")
+    String suggestion_denied();
 }

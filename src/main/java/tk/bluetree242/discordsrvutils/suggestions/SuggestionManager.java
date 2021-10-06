@@ -93,7 +93,7 @@ public class SuggestionManager {
                 r.getInt("SuggestionNumber"),
                 r.getLong("Submitter"),
                 r.getLong("ChannelID"), r.getLong("CreationTime"), notes, r.getLong("MessageID"),
-                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")));
+                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"));
     }
 
 
@@ -119,7 +119,7 @@ public class SuggestionManager {
                     num = r1.getInt("SuggestionNumber") + 1;
                 }
 
-                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null);
+                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null);
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
                 Message msg = core.queueMsg(MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))

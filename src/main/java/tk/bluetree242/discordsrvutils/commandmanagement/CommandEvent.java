@@ -116,6 +116,7 @@ public class CommandEvent {
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();

@@ -53,6 +53,11 @@ public class Utils {
         return false;
     }
 
+    public static String getDBoolean(Boolean s) {
+        if (s) return "true";
+        return "false";
+    }
+
     public static String parsePos(int num) {
         if  (num == 1) return "1st";
         if (num == 2) return "2nd";
