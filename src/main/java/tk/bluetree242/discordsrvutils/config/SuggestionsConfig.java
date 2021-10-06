@@ -44,4 +44,10 @@ public interface SuggestionsConfig {
     @ConfComments("# Should users be able to vote both yes and no?")
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_both_vote();
+
+
+    @AnnotationBasedSorter.Order(60)
+    @ConfComments("# Message when the suggestion is noted (only latest note is previewed)")
+    @ConfDefault.DefaultString("message:suggestion-noted")
+    String suggestion_noted_message();
 }

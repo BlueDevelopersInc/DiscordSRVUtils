@@ -134,7 +134,7 @@ public class CommandEvent {
 
 
 
-    public CompletableFuture handleCF(CompletableFuture cf, boolean shouldDM, String failure) {
+    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, boolean shouldDM, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(failure, "Failure Message");
         cf.handleAsync((e, x) -> {

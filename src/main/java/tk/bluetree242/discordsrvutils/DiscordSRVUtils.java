@@ -365,6 +365,19 @@ public class DiscordSRVUtils extends JavaPlugin {
         suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
         suggestion.put("embed", suggestionEmbed);
         defaultmessages.put("suggestion", suggestion.toString(1));
+        suggestionEmbed = new JSONObject();
+        suggestion = new JSONObject();
+        suggestionFields = new JSONArray();
+        suggestionEmbed.put("color", "orange");
+        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
+        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
+        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
+        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
+        suggestionEmbed.put("fields", suggestionFields);
+        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
+        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
+        suggestion.put("embed", suggestionEmbed);
+        defaultmessages.put("suggestion-noted", suggestion.toString(1));
     }
 
 
@@ -416,6 +429,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new LevelCommand());
         CommandManager.get().registerCommand(new LeaderboardCommand());
         CommandManager.get().registerCommand(new SuggestCommand());
+        CommandManager.get().registerCommand(new SuggestionNoteCommand());
     }
 
 

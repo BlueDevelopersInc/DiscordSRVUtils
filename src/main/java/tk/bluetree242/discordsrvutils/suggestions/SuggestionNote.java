@@ -1,26 +1,24 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
-import java.util.Set;
-
 public class SuggestionNote {
 
-    private final Long Submitter;
+    private final Long staffID;
     private final String NoteText;
     private final int SuggestionNumber;
     private final Long CreationTime;
 
-    public SuggestionNote(Long submitter, String noteText, int suggestionNumber, Long creationTime) {
-        Submitter = submitter;
+    public SuggestionNote(Long staffID, String noteText, int suggestionNumber, Long creationTime) {
+        this.staffID = staffID;
         NoteText = noteText;
         SuggestionNumber = suggestionNumber;
         CreationTime = creationTime;
     }
 
-    public Long getSubmitter() {
-        return Submitter;
+    public Long getStaffID() {
+        return staffID;
     }
 
-    public String getNoteText() {
+    public String getText() {
         return NoteText;
     }
 

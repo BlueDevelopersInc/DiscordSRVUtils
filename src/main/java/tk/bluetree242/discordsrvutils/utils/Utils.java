@@ -39,6 +39,15 @@ public class Utils {
         }
     }
 
+    public static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public static boolean getDBoolean(String s) {
         if (s.equalsIgnoreCase("true")) return true;
         return false;
