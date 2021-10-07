@@ -7,24 +7,24 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageRecei
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageUpdateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import org.w3c.dom.Text;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
 import java.util.regex.Pattern;
 
 public class CommandListener extends ListenerAdapter {
-    private final DiscordSRVUtils main = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
 
     public void onMessageReceived(MessageReceivedEvent e) {
-        main.executeAsync(() -> {
+        if (core.getMainConfig().bungee_mode()) return;
+        core.executeAsync(() -> {
             if (e.getMessage().isWebhookMessage() || e.getAuthor().isBot()) return;
 
             String[] args = e.getMessage().getContentRaw().split(" ");
             String cmd = args[0].toLowerCase();
-            if (cmd.startsWith(main.getCommandPrefix())) {
-                cmd = cmd.replaceFirst(Pattern.quote(main.getCommandPrefix()), "");
+            if (cmd.startsWith(core.getCommandPrefix())) {
+                cmd = cmd.replaceFirst(Pattern.quote(core.getCommandPrefix()), "");
                 Command executor = CommandManager.get().getCommandHashMap().get(cmd);
                 if (executor == null) return;
                 try {
@@ -60,7 +60,7 @@ public class CommandListener extends ListenerAdapter {
                             }
                         }
                         if (executor.isAdminOnly()) {
-                            if (!main.isAdmin(e.getAuthor().getIdLong())) {
+                            if (!core.isAdmin(e.getAuthor().getIdLong())) {
                                 e.getMessage().reply(Embed.error("Only Admins can use this command.")).queue();
                                 return;
                             }
@@ -75,7 +75,7 @@ public class CommandListener extends ListenerAdapter {
                             return;
                         }
                     }
-                    main.getLogger().info(e.getAuthor().getAsTag() + " Used " + main.getCommandPrefix() + cmd + " Command");
+                    core.getLogger().info(e.getAuthor().getAsTag() + " Used " + core.getCommandPrefix() + cmd + " Command");
                     executor.run(new CommandEvent(e.getMember(), e.getMessage(), e.getAuthor(), e.getChannel(), e.getJDA()));
                 } catch (InsufficientPermissionException ex) {
                     ex.printStackTrace();

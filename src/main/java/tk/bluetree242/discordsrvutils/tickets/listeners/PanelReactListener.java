@@ -10,6 +10,7 @@ import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 public class PanelReactListener extends ListenerAdapter {
     private DiscordSRVUtils core= DiscordSRVUtils.get();
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
+        if (core.getMainConfig().bungee_mode()) return;
         core.handleCF(TicketManager.get().getPanelByMessageId(e.getMessageIdLong()), panel -> {
             if (panel != null) {
                 if (e.getUser().isBot()) return;

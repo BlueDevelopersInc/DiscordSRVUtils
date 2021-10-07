@@ -104,4 +104,10 @@ public interface Config {
     @ConfDefault.DefaultString("message:no-longer-afk")
     String no_longer_afk_message();
 
+    @AnnotationBasedSorter.Order(150)
+    @ConfKey("bungee-mode")
+    @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean bungee_mode();
+
 }

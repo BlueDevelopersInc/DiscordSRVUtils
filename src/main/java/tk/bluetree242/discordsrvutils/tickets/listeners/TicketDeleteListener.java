@@ -15,7 +15,8 @@ import java.sql.SQLException;
 public class TicketDeleteListener extends ListenerAdapter {
 
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-            DiscordSRVUtils.get().executeAsync(() -> {
+        if (DiscordSRVUtils.get().getMainConfig().bungee_mode()) return;
+        DiscordSRVUtils.get().executeAsync(() -> {
                 try (Connection conn = DiscordSRVUtils.get().getDatabase()) {
                     PreparedStatement p1 = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
                     p1.setLong(1, e.getChannel().getIdLong());

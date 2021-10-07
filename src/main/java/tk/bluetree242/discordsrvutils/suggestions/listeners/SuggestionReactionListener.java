@@ -14,6 +14,7 @@ public class SuggestionReactionListener extends ListenerAdapter {
 
     private DiscordSRVUtils core= DiscordSRVUtils.get();
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
+        if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
         core.handleCF(SuggestionManager.get().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
 
