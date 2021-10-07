@@ -11,6 +11,8 @@ import org.w3c.dom.Text;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
+import java.util.regex.Pattern;
+
 public class CommandListener extends ListenerAdapter {
     private final DiscordSRVUtils main = DiscordSRVUtils.get();
 
@@ -22,7 +24,7 @@ public class CommandListener extends ListenerAdapter {
             String[] args = e.getMessage().getContentRaw().split(" ");
             String cmd = args[0].toLowerCase();
             if (cmd.startsWith(main.getCommandPrefix())) {
-                cmd = cmd.replaceFirst(main.getCommandPrefix(), "");
+                cmd = cmd.replaceFirst(Pattern.quote(main.getCommandPrefix()), "");
                 Command executor = CommandManager.get().getCommandHashMap().get(cmd);
                 if (executor == null) return;
                 try {
