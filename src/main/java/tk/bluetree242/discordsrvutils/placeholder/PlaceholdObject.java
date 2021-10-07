@@ -1,9 +1,16 @@
 package tk.bluetree242.discordsrvutils.placeholder;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.NamedValueFormatter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
+import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 
 import java.io.Console;
 import java.lang.reflect.Method;
@@ -39,6 +46,10 @@ public class PlaceholdObject {
     }
 
     public String apply(@NotNull String s, Player placehold)  {
+        return apply(s, placehold, true);
+    }
+
+    public String apply(@NotNull String s, Player placehold, boolean doAllowCode)  {
         Map<String, Method> map = getholdersMap();
         final String[] val = {s};
         map.forEach((key, result) -> {
@@ -50,10 +61,24 @@ public class PlaceholdObject {
                         value = invoked.toString();
                     }
                     val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
+
                 }
             } catch (Exception e) {}
         });
-            val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
+
+        val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
+        if (doAllowCode) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("guild", DiscordSRVUtils.get().getGuild());
+            variables.put("jda", DiscordSRVUtils.get().getJDA());
+            variables.put("server", Bukkit.getServer());
+            variables.put("DSU", DiscordSRVUtils.get());
+            variables.put("TicketManager", TicketManager.get());
+            variables.put("LevelingManager", LevelingManager.get());
+            variables.put("CommandManager", CommandManager.get());
+            variables.put(display, ob);
+            val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
+        }
         return val[0];
     }
     public String apply(@NotNull String s)  {

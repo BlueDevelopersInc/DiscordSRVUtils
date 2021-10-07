@@ -76,24 +76,24 @@ public class Panel {
 
     public CompletableFuture<Void> delete() {
         return core.completableFutureRun(() -> {
-           try (Connection conn = core.getDatabase()) {
-               PreparedStatement p1 = conn.prepareStatement("DELETE FROM ticket_panels WHERE ID=?");
-               p1.setString(1, id);
-               p1.execute();
-               PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
-               p2.setString(1, id);
-               p2.execute();
-               TextChannel channel = core.getGuild().getTextChannelById(channelId);
-               if (channel != null) {
-                   channel.retrieveMessageById(getMessageId()).queue(msg -> {msg.delete().queue();});
-               }
-               core.handleCFOnAnother(getTickets()).forEach(t -> {t.delete();});
-               PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
-               p3.setString(1, id);
-               p3.execute();
-           }catch (SQLException ex) {
-               throw new UnCheckedSQLException(ex);
-           }
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("DELETE FROM ticket_panels WHERE ID=?");
+                p1.setString(1, id);
+                p1.execute();
+                PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
+                p2.setString(1, id);
+                p2.execute();
+                TextChannel channel = core.getGuild().getTextChannelById(channelId);
+                if (channel != null) {
+                    channel.retrieveMessageById(getMessageId()).queue(msg -> {msg.delete().queue();});
+                }
+                core.handleCFOnAnother(getTickets()).forEach(t -> {t.delete();});
+                PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
+                p3.setString(1, id);
+                p3.execute();
+            }catch (SQLException ex) {
+                throw new UnCheckedSQLException(ex);
+            }
         });
     }
 
@@ -107,7 +107,7 @@ public class Panel {
                 while (r1.next()) {
                     if (Utils.getDBoolean(r1.getString("Closed"))) {
                         if (includeClosed)
-                        TicketManager.get().getTicket(r1, this);
+                            TicketManager.get().getTicket(r1, this);
                     } else {
                         TicketManager.get().getTicket(r1, this);
                     }
@@ -142,7 +142,7 @@ public class Panel {
                 action.addPermissionOverride(core.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
                 TextChannel channel = action.complete();
                 Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
-                 new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(core.getGuild().getMember(user), "member"),
                         new PlaceholdObject(user, "user"),
                         new PlaceholdObject(this, "panel"),
@@ -176,7 +176,7 @@ public class Panel {
                 p1.setString(1, id);
                 ResultSet r1 = p1.executeQuery();
                 while (r1.next())
-                val.add(TicketManager.get().getTicket(r1, this));
+                    val.add(TicketManager.get().getTicket(r1, this));
                 return val;
             }  catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -317,7 +317,7 @@ public class Panel {
                             msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
                             msg.addReaction("\uD83C\uDFAB").queue();
                         } else
-                        msg = channel.retrieveMessageById(panel.messageId).complete();
+                            msg = channel.retrieveMessageById(panel.messageId).complete();
                     } catch (ErrorResponseException ex) {
                         msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
                         msg.addReaction("\uD83C\uDFAB").queue();

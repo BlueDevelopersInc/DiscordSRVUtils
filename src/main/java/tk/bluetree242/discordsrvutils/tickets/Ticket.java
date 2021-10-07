@@ -48,9 +48,11 @@ public class Ticket {
     public boolean isClosed() {
         return closed;
     }
+
     public Panel getPanel() {
         return panel;
     }
+
     public long getMessageID() {
         return messageID;
     }
@@ -85,14 +87,15 @@ public class Ticket {
               p2.setLong(1, messageID);
                 p2.setLong(2, System.currentTimeMillis());
                 p2.setLong(3, userID);
-              p2.setString(4, id);
-              p2.execute();
+                p2.setString(4, id);
+                p2.execute();
 
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
         });
     }
+
     public CompletableFuture<Boolean> reopen(User userWhoOpened) {
         return core.completableFuture(() -> {
             if (!closed) return false;
@@ -115,7 +118,7 @@ public class Ticket {
                         new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
-                ),null).build()).complete();
+                ), null).build()).complete();
                 msg.addReaction("\uD83D\uDD12").queue();
                 messageID = msg.getIdLong();
                 PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='false' WHERE UserID=? AND ID=? ");
@@ -130,6 +133,7 @@ public class Ticket {
             }
         });
     }
+
     public CompletableFuture<Void> delete() {
         return core.completableFutureRun(() -> {
             TextChannel channel = core.getGuild().getTextChannelById(channelID);
