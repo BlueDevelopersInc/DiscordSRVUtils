@@ -10,8 +10,8 @@ import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.embeds.EmbedManager;
-import tk.bluetree242.discordsrvutils.exceptions.UncatchedRateLimitedException;
+import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -71,7 +71,7 @@ public class CommandEvent {
             holders.add(new PlaceholdObject(getGuild(), "guild"));
         }
         holders.add(new PlaceholdObject(getChannel(), "channel"));
-        return reply(EmbedManager.get().getMessage(content, holders, placehold).build());
+        return reply(MessageManager.get().getMessage(content, holders, placehold).build());
     }
 
     public MessageAction replyMessage(String content, PlaceholdObjectList holders) {
@@ -116,9 +116,10 @@ public class CommandEvent {
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
-            if (ex instanceof UncatchedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UncatchedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+            if (ex instanceof UnCheckedRateLimitedException) {
+                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
@@ -134,15 +135,16 @@ public class CommandEvent {
 
 
 
-    public CompletableFuture handleCF(CompletableFuture cf, boolean shouldDM, String failure) {
+    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, boolean shouldDM, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(failure, "Failure Message");
         cf.handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
-            if (ex instanceof UncatchedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UncatchedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+            if (ex instanceof UnCheckedRateLimitedException) {
+                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();

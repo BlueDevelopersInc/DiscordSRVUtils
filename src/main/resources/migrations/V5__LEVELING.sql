@@ -1,0 +1,1 @@
+CREATE TABLE leveling(UUID varchar(1000) PRIMARY KEY , Name varchar(50), Level int, XP int, DiscordMessages int, MinecraftMessages int)
