@@ -4,27 +4,18 @@ package tk.bluetree242.discordsrvutils.waiters.listeners;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import gui.ava.html.image.generator.HtmlImageGenerator;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriter;
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CreatePanelListener extends ListenerAdapter {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
