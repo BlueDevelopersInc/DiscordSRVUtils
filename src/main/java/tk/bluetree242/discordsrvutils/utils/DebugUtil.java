@@ -71,7 +71,7 @@ public class DebugUtil {
             information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
             data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
             data.put(new JSONObject().put("type", "files").put("name", "Relevant Lines From Logs").put("data",
-                    new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Base64.getEncoder().encodeToString(getRelevantLinesFromServerLog().getBytes())))
+                    new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
                     ));
             data.put(new JSONObject().put("type", "key_value").put("name", "System Info").put("data", MapToKeyValue(getSystemInfo())));
             data.put(new JSONObject().put("type", "key_value").put("name", "Server Info").put("data", MapToKeyValue(getServerInfo())));
@@ -86,7 +86,7 @@ public class DebugUtil {
             data.put(new JSONObject().put("type", "files").put("name", "DSU Messages Files").put("data", FilesToArray(files)));
             int aesBits = 256;
             String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Base64.getEncoder().encodeToString(encrypt(key.getBytes(), data.toString().getBytes()))).build();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(new String(encrypt(key.getBytes(), data.toString().getBytes())))).build();
             Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.tk/api/v1/createDebug").build();
             try {
             Response response = client.newCall(request).execute();
@@ -123,6 +123,7 @@ public class DebugUtil {
         files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
         files.add(fileMap("tickets.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "tickets.yml")));
         files.add(fileMap("leveling.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "leveling.yml")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "suggestions.yml")));
         return files;
     }
 
@@ -145,7 +146,7 @@ public class DebugUtil {
     private static JSONObject fileMapToObject(Map<String, String> fileMap) {
         JSONObject output = new JSONObject();
         output.put("name", fileMap.get("name"));
-        output.put("content", Base64.getEncoder().encodeToString(fileMap.get("content").getBytes()));
+        output.put("content", Utils.b64Encode(fileMap.get("content")));
         output.put("type", fileMap.get("type"));
         return output;
     }

@@ -116,6 +116,7 @@ public class CommandEvent {
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
@@ -134,12 +135,13 @@ public class CommandEvent {
 
 
 
-    public CompletableFuture handleCF(CompletableFuture cf, boolean shouldDM, String failure) {
+    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, boolean shouldDM, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(failure, "Failure Message");
         cf.handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
+            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
