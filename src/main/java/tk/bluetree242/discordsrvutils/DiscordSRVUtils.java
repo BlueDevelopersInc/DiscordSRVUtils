@@ -38,6 +38,7 @@ import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
+import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
@@ -139,31 +140,6 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void onEnable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, ()-> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
-                        .build();
-
-                Request req = new Request.Builder().url("https://discordsrvutils.ml/updatecheck").post(form).build();
-                Response response = client.newCall(req).execute();
-                JSONObject res = new JSONObject(response.body().string());
-                response.close();
-                int versions_behind = res.getInt("versions_behind");
-                if (res.isNull("message")) {
-                    if (versions_behind != 0) {
-                        logger.info(ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
-                    } else {
-                        logger.info(ChatColor.GREEN + "Plugin is up to date!");
-                    }
-                } else {
-                    logger.info(res.getString("message"));
-                }
-            } catch (Exception e) {
-                logger.severe("Could not check for updates: " + e.getMessage());
-            }
-
-        });
         try {
             if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -471,6 +447,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
         Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), this);
     }
 
     public void registerCommands() {
