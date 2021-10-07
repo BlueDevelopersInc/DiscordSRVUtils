@@ -70,4 +70,16 @@ public interface SuggestionsConfig {
     @ConfComments("# Message when the suggestion is denied")
     @ConfDefault.DefaultString("message:suggestion-denied")
     String suggestion_denied();
+
+    /*
+    @AnnotationBasedSorter.Order(100)
+    @ConfComments("# Should DM the submitter of a suggestion when a note is added to it?")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean dm_submitter_when_note_added();
+
+    @AnnotationBasedSorter.Order(110)
+    @ConfComments("# Should DM the submitter of a suggestion when a approved/denied?")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean dm_submitter_when_approved();
+     */
 }

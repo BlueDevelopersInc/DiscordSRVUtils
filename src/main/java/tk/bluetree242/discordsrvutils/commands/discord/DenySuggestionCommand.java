@@ -1,6 +1,7 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
@@ -8,7 +9,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class DenySuggestionCommand extends Command {
     public DenySuggestionCommand() {
-        super("denysuggestion", CommandType.GUILDS, "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, "deny");
+        super("denysuggestion", CommandType.GUILDS, "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN, "deny");
         setAdminOnly(true);
     }
 

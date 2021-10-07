@@ -1,5 +1,6 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
+import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -120,6 +121,7 @@ public class Suggestion {
                this.Approved = approved;
                this.approver = staffID;
                getMessage().editMessage(getCurrentMsg()).queue();
+
            } catch (SQLException e) {
                throw new UnCheckedSQLException(e);
            }
