@@ -1,6 +1,7 @@
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
-import okhttp3.*;
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import github.scarsz.discordsrv.dependencies.okhttp3.Response;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
