@@ -3,6 +3,8 @@ package tk.bluetree242.discordsrvutils.utils;
 import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
@@ -145,16 +147,21 @@ public class Utils {
         return s;
     }
 
-    public static String b64Encode(String text) {
+    public static String b64Encode(@NotNull String text) {
         return Base64.getEncoder().encodeToString(text.getBytes());
     }
 
-    public static String b64Decode(String text) {
+    public static String b64Encode(@NotNull byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull String b64Decode(String text) {
         return new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8);
     }
 
 
-    public static String parseArgs(String[] args, int start, int end) {
+    public static @NotNull String parseArgs(String[] args, int start, int end) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             if (i <= end) {
@@ -164,7 +171,7 @@ public class Utils {
         return argss.replaceAll("\\s+$", "");
     }
 
-    public static String parseArgs(String[] args, int start) {
+    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             argss = argss + args[i] + " ";

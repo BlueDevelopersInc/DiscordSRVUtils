@@ -27,6 +27,7 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +87,7 @@ public class DebugUtil {
             data.put(new JSONObject().put("type", "files").put("name", "DSU Messages Files").put("data", FilesToArray(files)));
             int aesBits = 256;
             String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(new String(encrypt(key.getBytes(), data.toString().getBytes())))).build();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(encrypt(key.getBytes(), data.toString()))).build();
             Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.tk/api/v1/createDebug").build();
             try {
             Response response = client.newCall(request).execute();
@@ -297,12 +298,24 @@ public class DebugUtil {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     public static byte[] encrypt(byte[] key, byte[] data) throws Exception{
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-        byte[] iv = new byte[cipher.getBlockSize()];
-        RANDOM.nextBytes(iv);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
-        byte[] encrypted = cipher.doFinal(data);
-        return ArrayUtils.addAll(iv, encrypted);
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            byte[] iv = new byte[cipher.getBlockSize()];
+            RANDOM.nextBytes(iv);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
+            byte[] encrypted = cipher.doFinal(data);
+            return ArrayUtils.addAll(iv, encrypted);
+        } catch (InvalidKeyException e) {
+            if (e.getMessage().toLowerCase().contains("illegal key size")) {
+                throw new RuntimeException(e.getMessage(), e);
+            } else {
+                DiscordSRV.error(e);
+            }
+            return null;
+        } catch (Exception ex) {
+            DiscordSRV.error(ex);
+            return null;
+        }
     }
 
 
