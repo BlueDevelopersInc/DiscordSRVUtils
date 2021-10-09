@@ -52,10 +52,10 @@ public class JoinUpdateChecker implements Listener {
                 int versions_behind = res.getInt("versions_behind");
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
-                        e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c\"" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
+                        e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
                     }
                 } else {
-                    e.getPlayer().sendMessage(Utils.colors(res.getString("message")));
+                    e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
                 }
             } catch (Exception ex) {
                 DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
