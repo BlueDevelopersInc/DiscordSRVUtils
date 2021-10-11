@@ -20,4 +20,4 @@
  *  END
  */
 
-CREATE TABLE leveling(UUID varchar(1000) PRIMARY KEY , Name varchar(50), Level int, XP int, DiscordMessages int, MinecraftMessages int)
+CREATE TABLE leveling(UUID varchar(50) PRIMARY KEY , Name varchar(50), Level int, XP int, DiscordMessages int, MinecraftMessages int)
