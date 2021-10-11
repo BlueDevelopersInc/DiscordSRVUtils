@@ -1,3 +1,25 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
@@ -30,10 +52,10 @@ public class JoinUpdateChecker implements Listener {
                 int versions_behind = res.getInt("versions_behind");
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
-                        e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c\"" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
+                        e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
                     }
                 } else {
-                    e.getPlayer().sendMessage(Utils.colors(res.getString("message")));
+                    e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
                 }
             } catch (Exception ex) {
                 DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
