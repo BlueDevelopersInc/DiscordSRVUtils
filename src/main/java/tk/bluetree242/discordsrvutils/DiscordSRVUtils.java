@@ -35,6 +35,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -230,6 +232,18 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
             whenStarted();
             Metrics metrics = new Metrics(this, 9456);
+            metrics.addCustomChart(new AdvancedPie("features", () -> {
+                Map<String, Integer> valueMap = new HashMap<>();
+                if (!TicketManager.get().getPanels().get().isEmpty())
+                valueMap.put("Tickets", 1);
+                if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
+                if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
+                if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
+                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled()) valueMap.put("AFK Messages", 1);
+                return valueMap;
+            }));
+            metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
+            metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
             throw new StartupException(ex);
         }
