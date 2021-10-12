@@ -1,6 +1,6 @@
 name: DiscordSRVUtils
+depend: DiscordSRV
 softdepend:
-  - DiscordSRV
   - Essentials
   - Advancedban
   - PlaceholderAPI
