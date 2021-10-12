@@ -83,7 +83,7 @@ public class CommandListener extends ListenerAdapter {
                         }
                         if (executor.isAdminOnly()) {
                             if (!core.isAdmin(e.getAuthor().getIdLong())) {
-                                e.getMessage().reply(Embed.error("Only Admins can use this command.")).queue();
+                                e.getMessage().reply(Embed.error("Only Admins can use this command.", "Your id must be in admin list on the config.yml")).queue();
                                 return;
                             }
                         }
