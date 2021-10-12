@@ -36,7 +36,7 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import okhttp3.*;
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
