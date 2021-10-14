@@ -120,8 +120,9 @@ public class AdvancedBanPunishmentListener implements Listener {
     }
 
     private void syncPunishment(Punishment punishment, boolean un) {
-        User discordUser = core.getJDA().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId()));
-        if (discordUser == null) return;
+        String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId());
+        if (id == null) return;
+        User discordUser = core.getJDA().getUserById(id);
         if (!un) {
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
                 switch (punishment.getType()) {
