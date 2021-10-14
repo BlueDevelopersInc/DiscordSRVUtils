@@ -124,6 +124,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             Thread thread = new Thread(r);
             thread.setName("DSU-THREAD");
             thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler((t, e) -> logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord."));
             return thread;
         }
     });
@@ -690,11 +691,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
-        return CompletableFuture.supplyAsync(v);
+        return CompletableFuture.supplyAsync(v, pool);
     }
 
     public CompletableFuture<Void> completableFutureRun(Runnable r) {
-        return CompletableFuture.runAsync(r);
+        return CompletableFuture.runAsync(r, pool);
     }
 
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
@@ -728,11 +729,12 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
+        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
     public void defaultHandle(Throwable ex) {
+        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
         ex.printStackTrace();
-        //Do nothing lol
     }
 
 
