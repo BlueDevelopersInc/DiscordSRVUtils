@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -37,8 +38,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class SuggestionManager {
@@ -162,6 +162,8 @@ public class SuggestionManager {
             }
         });
     }
+
+
 
 
 

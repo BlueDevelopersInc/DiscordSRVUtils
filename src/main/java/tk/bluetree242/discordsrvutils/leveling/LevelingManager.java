@@ -23,10 +23,9 @@
 package tk.bluetree242.discordsrvutils.leveling;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
-import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +34,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class LevelingManager {
     public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
@@ -125,5 +125,33 @@ public class LevelingManager {
                 throw new UnCheckedSQLException(e);
             }
         });
+    }
+
+    public Role getRoleForLevel(int level) {
+        Map<String, Object> map = core.levelingRolesRaw.toMap();
+        List<String> keys = new ArrayList<>(map.keySet());
+        keys = keys.stream().filter(num -> Integer.parseInt(num) <= level).collect(Collectors.toList());
+        keys.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Integer.parseInt(o2) - Integer.parseInt(o1);
+            }
+        });
+        Long id = (Long) map.get(keys.get(0));
+        if (id != null) {
+            return core.getGuild().getRoleById(id);
+        }
+        return null;
+    }
+
+    public List<Role> getRolesToRemove() {
+        List<Role> roles = new ArrayList<>();
+        Map<String, Object> map = core.levelingRolesRaw.toMap();
+        List<Object> values = new ArrayList<>(map.values());
+        for (Object value : values) {
+            Long id = (Long) value;
+            roles.add(core.getGuild().getRoleById(id));
+        }
+        return roles;
     }
 }

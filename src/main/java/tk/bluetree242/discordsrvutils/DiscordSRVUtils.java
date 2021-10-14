@@ -103,6 +103,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static DiscordSRVUtils get() {
         return instance;
     }
+    public JSONObject levelingRolesRaw;
     private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
     public final String fileseparator = System.getProperty("file.separator");
@@ -503,6 +504,24 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
             });
         }
+        try {
+            File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+            if (!levelingRoles.exists()) {
+                levelingRoles.createNewFile();
+                FileWriter writer = new FileWriter(levelingRoles);
+                writer.write("{}");
+                writer.close();
+                levelingRolesRaw = new JSONObject();
+            } else {
+                levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
+            }
+        }catch (FileNotFoundException e) {
+            logger.severe("Error creating leveling-roles.json");
+        } catch (IOException e) {
+            logger.severe("Error creating leveling-roles.json");
+        }
+
+
     }
 
 
@@ -550,6 +569,16 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+        if (!levelingRoles.exists()) {
+            levelingRoles.createNewFile();
+            FileWriter writer = new FileWriter(levelingRoles);
+            writer.write("{}");
+            writer.close();
+            levelingRolesRaw = new JSONObject();
+        } else {
+            levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
+        }
         setSettings();
     }
 
