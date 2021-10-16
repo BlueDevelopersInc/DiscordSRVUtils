@@ -62,6 +62,7 @@ import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingList
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
+import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -103,6 +104,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         return instance;
     }
     public JSONObject levelingRolesRaw;
+    public boolean removedDiscordSRVAccountLinkListener = false;
     private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
     public final String fileseparator = System.getProperty("file.separator");
@@ -152,6 +154,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
         listeners.add(new SuggestionReactionListener());
+        listeners.add(new CustomDiscordAccountLinkListener());
         initDefaultMessages();
 
     }
@@ -632,6 +635,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
                 if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
                     getJDA().removeEventListener(listener);
+                    removedDiscordSRVAccountLinkListener = true;
                 }
             }
         }

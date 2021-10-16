@@ -50,9 +50,15 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(31)
     @ConfKey("remove-discordsrv-link-listener")
-    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes")
+    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes\n#NOTE: Plugin uses reflection to do this. Which is like hacking into DiscordSRV")
     @ConfDefault.DefaultBoolean(false)
     boolean remove_discordsrv_link_listener();
+
+    @AnnotationBasedSorter.Order(32)
+    @ConfKey("linkaccount-channel")
+    @ConfComments("#Custom LinkAccount Channel. ")
+    @ConfDefault.DefaultLong(0)
+    long linkaccount_channel();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
