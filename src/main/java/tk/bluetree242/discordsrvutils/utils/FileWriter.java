@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils;
+package tk.bluetree242.discordsrvutils.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

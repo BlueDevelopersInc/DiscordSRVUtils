@@ -72,6 +72,7 @@ public class DiscordSRVListener {
     @Subscribe
     public void onUnlink(AccountUnlinkedEvent e) {
         if (!core.isReady()) return;
+        
         LevelingManager manager = LevelingManager.get();
         core.executeAsync(() -> {
             Member member = core.getGuild().retrieveMemberById(e.getDiscordId()).complete();

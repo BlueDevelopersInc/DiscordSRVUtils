@@ -24,13 +24,11 @@ package tk.bluetree242.discordsrvutils.messages;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.FileWriter;
+import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;

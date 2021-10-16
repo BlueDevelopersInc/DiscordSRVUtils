@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils;
 
-import com.vdurmont.emoji.EmojiParser;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -39,7 +38,6 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -73,6 +71,7 @@ import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
@@ -521,6 +520,10 @@ public class DiscordSRVUtils extends JavaPlugin {
             logger.severe("Error creating leveling-roles.json");
         }
 
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PAPIExpansion().register();
+        }
+
 
     }
 
@@ -656,6 +659,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
+        LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
     }
 
     public JDA getJDA() {

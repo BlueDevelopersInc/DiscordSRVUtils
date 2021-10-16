@@ -22,6 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.leveling;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -44,11 +46,20 @@ public class LevelingManager {
     public static LevelingManager get() {
         return main;
     }
-
     public LevelingManager() {
         main = this;
     }
-
+    private boolean adding = false;
+    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                adding = true;
+                PlayerStats stats = getPlayerStats(key).get();
+                adding = false;
+                return stats;
+            });
     public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
         return core.completableFuture(() -> {
            try (Connection conn = core.getDatabase()) {
@@ -57,6 +68,21 @@ public class LevelingManager {
                throw new UnCheckedSQLException(e);
            }
         });
+    }
+
+    public PlayerStats getCachedStats(UUID uuid) {
+        return cachedUUIDS.get(uuid);
+    }
+    public PlayerStats getCachedStats(long discordID) {
+        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(discordID + "");
+        if (uuid == null) return null;
+        return cachedUUIDS.get(uuid);
+    }
+
+    public boolean isLinked(UUID uuid) {
+        String discord = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
+        if (discord == null) return false;
+        return true;
     }
 
     public CompletableFuture<PlayerStats> getPlayerStats(long discordID) {
@@ -104,7 +130,10 @@ public class LevelingManager {
         return null;
     }
     public PlayerStats getPlayerStats(ResultSet r, int rank) throws SQLException {
-        return new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
+        PlayerStats stats = new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
+        if (!adding)
+        cachedUUIDS.put(stats.getUuid(), stats);
+        return stats;
     }
 
     public CompletableFuture<List<PlayerStats>> getLeaderboard(int max) {
