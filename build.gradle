@@ -103,8 +103,6 @@ dependencies {
     implementation "org.flywaydb:flyway-core:7.5.3"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
-    implementation 'com.github.ben-manes.caffeine:guava:3.0.4'
-    implementation 'com.github.ben-manes.caffeine:jcache:3.0.4'
 }
 
 group = 'me.bluetree.discordsrvutils'
