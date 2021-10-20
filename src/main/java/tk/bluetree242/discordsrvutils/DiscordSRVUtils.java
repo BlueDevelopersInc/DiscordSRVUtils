@@ -179,14 +179,30 @@ public class DiscordSRVUtils extends JavaPlugin {
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
                 int versions_behind = res.getInt("versions_behind");
+                String logger = res.getString("type") != null ? res.getString("type") :"INFO";
+                String msg = null;
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
-                        logger.info(ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
+                        if (logger.equalsIgnoreCase("INFO")) {
+
+                        }
+                        msg = (ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
                     } else {
-                        logger.info(ChatColor.GREEN + "Plugin is up to date!");
+                        msg = (ChatColor.GREEN + "Plugin is up to date!");
                     }
                 } else {
-                    logger.info(res.getString("message"));
+                    msg = (res.getString("message"));
+                }
+                switch (logger) {
+                    case "INFO":
+                        getLogger().info(msg);
+                        break;
+                    case "WARNING":
+                        getLogger().warning(msg);
+                        break;
+                    case "ERROR":
+                        getLogger().warning(msg);
+                        break;
                 }
             } catch (Exception e) {
                 logger.severe("Could not check for updates: " + e.getMessage());
