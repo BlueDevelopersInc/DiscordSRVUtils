@@ -24,9 +24,7 @@ package tk.bluetree242.discordsrvutils.listeners.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
-import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
-import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
-import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
+import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import org.bukkit.Bukkit;
@@ -83,5 +81,11 @@ public class DiscordSRVListener {
                 }
             }
         });
+    }
+
+    @Subscribe
+    public void onDiscordMsg(DiscordGuildMessagePreProcessEvent e) {
+        if (e.getMessage().getContentRaw().toLowerCase().startsWith(core.getCommandPrefix().toLowerCase()))
+        e.setCancelled(true);
     }
 }
