@@ -21,6 +21,8 @@
  *  END
  */
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
@@ -116,5 +118,11 @@ publishing {
         maven(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
     }
 }
