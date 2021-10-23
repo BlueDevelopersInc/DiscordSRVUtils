@@ -60,6 +60,11 @@ public class SuggestCommand extends Command {
             return;
         }
 
+        if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getSuggestionsConfig().suggestion_muted_role()))) {
+            e.replyErr("You are suggestion muted").queue();
+            return;
+        }
+
         Long val = antispamMap.get(e.getAuthor().getIdLong());
         if (val == null) {
         } else {

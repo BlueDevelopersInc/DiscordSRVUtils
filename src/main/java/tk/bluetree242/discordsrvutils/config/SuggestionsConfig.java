@@ -104,4 +104,9 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean dm_submitter_when_approved();
      */
+
+    @AnnotationBasedSorter.Order(120)
+    @ConfComments("# Role that if user have they can't make suggestions")
+    @ConfDefault.DefaultLong(0)
+    Long suggestion_muted_role();
 }

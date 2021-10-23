@@ -132,6 +132,7 @@ public class SuggestionManager {
         if (channel == null) {
             throw new IllegalStateException("Suggestions Channel not found");
         }
+
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions ORDER BY SuggestionNumber DESC ");
