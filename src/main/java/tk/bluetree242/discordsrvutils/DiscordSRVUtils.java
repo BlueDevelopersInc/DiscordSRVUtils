@@ -382,7 +382,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         JSONObject panelEmbed = new JSONObject();
         panelEmbed.put("color", "cyan");
         panelEmbed.put("title", "[panel.name]");
-        panelEmbed.put("description", "React with \uD83C\uDFAB to open a ticket");
+        panelEmbed.put("description", "Click on The Button to open a ticket");
         panel.put("embed", panelEmbed);
         defaultmessages.put("panel", panel.toString(1));
         JSONObject ticketOpened = new JSONObject();
@@ -390,7 +390,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketOpened.put("content", "[user.asMention] Here is your ticket");
         ticketOpenedEmbed.put("description", String.join("\n", new String[]{
                 "Staff will be here shortly",
-                "React with \uD83D\uDD12 to close this ticket",
+                "Click `Close Ticket` to close this ticket",
                 "**Panel Name: **[panel.name]"
         }));
         ticketOpenedEmbed.put("color", "green");
