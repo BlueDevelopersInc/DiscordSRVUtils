@@ -34,6 +34,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
+import litebans.api.Events;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -66,6 +67,7 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
+import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
@@ -128,7 +130,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             Thread thread = new Thread(r);
             thread.setName("DSU-THREAD");
             thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord."));
+            thread.setUncaughtExceptionHandler((t, e) -> {
+                    logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
+                    e.printStackTrace();
+            }
+            );
             return thread;
         }
     });
@@ -653,6 +659,9 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
             getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
             hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
+        }
+        if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
+            Events.get().register(new LitebansPunishmentListener());
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));

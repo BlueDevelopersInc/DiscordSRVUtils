@@ -102,6 +102,7 @@ dependencies {
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
     compileOnly 'com.discordsrv:discordsrv:1.24.0'
     compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
     implementation "org.flywaydb:flyway-core:7.5.3"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
