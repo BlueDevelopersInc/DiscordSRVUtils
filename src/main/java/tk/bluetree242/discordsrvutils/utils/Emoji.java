@@ -65,5 +65,13 @@ public class Emoji {
         return nameInReaction;
     }
 
+    public github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji toJDAEmoji() {
+        if (emote) {
+            return github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromEmote(name, id, animated);
+        } else {
+            return github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode(name);
+        }
+    }
+
 
 }

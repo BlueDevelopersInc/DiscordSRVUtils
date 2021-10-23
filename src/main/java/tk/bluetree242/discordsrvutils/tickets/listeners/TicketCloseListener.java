@@ -23,8 +23,8 @@
 package tk.bluetree242.discordsrvutils.tickets.listeners;
 
 
+import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
@@ -53,6 +53,30 @@ public class TicketCloseListener extends ListenerAdapter {
                         core.handleCF(ticket.reopen(e.getUser()), null, ex -> {core.defaultHandle(ex);});
                     }
                 }
+            }
+        }, null);
+    }
+
+    public void onButtonClick(ButtonClickEvent e) {
+        if (core.getMainConfig().bungee_mode()) return;
+        core.handleCF(TicketManager.get().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
+            if (ticket != null) {
+                if (e.getUser().isBot()) return;
+                if (e.getButton().getId().equals("close_ticket")) {
+                    e.deferEdit().queue();
+                    if (!ticket.isClosed())
+                        ticket.close(e.getUser());
+                } else if (e.getButton().getId().equals("delete_ticket")) {
+                    e.deferEdit().queue();
+                    if (ticket.isClosed()) {
+                        ticket.delete();
+                    }
+                } if (e.getButton().getId().equals("reopen_ticket")) {
+                    e.deferEdit().queue();
+                    if (ticket.isClosed()) {
+                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {core.defaultHandle(ex);});
+                    }
+                } else return;
             }
         }, null);
     }

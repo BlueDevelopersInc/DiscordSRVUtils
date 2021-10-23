@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
@@ -68,6 +69,7 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
+import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
@@ -170,6 +172,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void onEnable() {
         Bukkit.getScheduler().runTaskAsynchronously(this, ()-> {
             try {
+                if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
                         .build();
@@ -236,6 +239,13 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cDiscord: &rhttps://discordsrvutils.ml/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
+            try {
+                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
+            } catch (ClassNotFoundException e) {
+                severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
+                setEnabled(false);
+                return;
+            }
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
@@ -668,6 +678,16 @@ public class DiscordSRVUtils extends JavaPlugin {
                     PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
                     p.setLong(1, r1.getLong("Channel"));
                     p.execute();
+                }
+            }
+            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
+            r1 = p1.executeQuery();
+            while (r1.next()) {
+                Panel panel = TicketManager.get().getPanel(r1);
+                Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                if (msg.getButtons().isEmpty()) {
+                    msg.clearReactions().queue();
+                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).queue();
                 }
             }
         } catch (SQLException e) {
