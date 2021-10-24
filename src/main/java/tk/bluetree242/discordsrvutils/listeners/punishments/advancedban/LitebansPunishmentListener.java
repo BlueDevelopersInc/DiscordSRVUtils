@@ -48,21 +48,21 @@ public class LitebansPunishmentListener extends Events.Listener{
             switch (e.getType().toUpperCase()) {
                 case "BAN":
                     msg = MessageManager.get().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "IP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_IP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    if (!e.isPermanent()) {
+                        msg =MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    }
+                    if (e.isIpban()) {
+                        msg =MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    }
+                    if (e.isPermanent() && e.isIpban()) {
+                        msg =MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    }
                     break;
                 case "MUTE" :
                     msg =MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_MUTE":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    if (!e.isPermanent()) {
+                        msg =MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    }
                     break;
                 default:
                     break;
@@ -91,23 +91,12 @@ public class LitebansPunishmentListener extends Events.Listener{
             switch (e.getType().toUpperCase()) {
                 case "BAN":
                     msg = MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "IP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_IP_BAN":
-                    msg =MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    if (e.isIpban()) {
+                        msg =MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    }
                     break;
                 case "MUTE" :
                     msg =MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                case "TEMP_MUTE":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
-                    break;
-                default:
                     break;
             }
             if (msg != null) {
@@ -132,13 +121,9 @@ public class LitebansPunishmentListener extends Events.Listener{
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case "BAN":
-                case "TEMP_BAN":
-                case "IP_BAN":
-                case "TEMP_IP_BAN":
                     core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
                     break;
                 case "MUTE":
-                case "TEMP_MUTE":
                     Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not mute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
@@ -153,13 +138,9 @@ public class LitebansPunishmentListener extends Events.Listener{
             if (!core.getBansConfig().isSyncUnpunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case "BAN":
-                case "TEMP_BAN":
-                case "IP_BAN":
-                case "TEMP_IP_BAN":
                     core.getGuild().unban(discordUser).reason("Minecraft Synced unban").queue();
                     break;
                 case "MUTE":
-                case "TEMP_MUTE":
                     Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not unmute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
