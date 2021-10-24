@@ -131,7 +131,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             thread.setName("DSU-THREAD");
             thread.setDaemon(true);
             thread.setUncaughtExceptionHandler((t, e) -> {
-                    logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
+                    logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
                     e.printStackTrace();
             }
             );
@@ -183,7 +183,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
                         .build();
 
-                Request req = new Request.Builder().url("https://discordsrvutils.ml/updatecheck").post(form).build();
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
                 Response response = client.newCall(req).execute();
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
@@ -242,7 +242,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
-                    "|   &cDiscord: &rhttps://discordsrvutils.ml/support\n" +
+                    "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
             try {
@@ -662,6 +662,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
             Events.get().register(new LitebansPunishmentListener());
+            hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
@@ -811,11 +812,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
-        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
+        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
     public void defaultHandle(Throwable ex) {
-        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.ml/support and not discordsrv's Discord.");
+        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
 

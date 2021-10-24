@@ -41,7 +41,7 @@ public class LitebansPunishmentListener extends Events.Listener{
     @Override
     public void entryAdded(Entry e) {
         core.executeAsync(() -> {
-            if (!core.isEnabled()) return;
+            if (!core.isReady()) return;
             LitebansPunishment punishment = new LitebansPunishment(e);
 
             Message msg = null;
@@ -82,6 +82,7 @@ public class LitebansPunishmentListener extends Events.Listener{
     }
 
     public void entryRemoved(Entry e) {
+        if (!core.isReady()) return;
         core.executeAsync(() -> {
             if (!core.isEnabled()) return;
             LitebansPunishment punishment = new LitebansPunishment(e);
