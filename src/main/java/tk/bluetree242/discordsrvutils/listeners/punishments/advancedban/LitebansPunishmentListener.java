@@ -67,6 +67,7 @@ public class LitebansPunishmentListener extends Events.Listener{
                 default:
                     break;
             }
+            if (!e.isSilent())
             if (msg != null) {
                 if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
                     TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
@@ -99,7 +100,8 @@ public class LitebansPunishmentListener extends Events.Listener{
                     msg =MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     break;
             }
-            if (msg != null) {
+            if (!e.isSilent())
+                if (msg != null) {
                 if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
                     TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
                     if (channel == null) {
