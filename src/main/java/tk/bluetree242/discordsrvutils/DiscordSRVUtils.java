@@ -34,7 +34,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
-import litebans.api.Events;
+
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -67,8 +67,9 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
-import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.LitebansPunishmentListener;
+import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
@@ -77,6 +78,7 @@ import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
@@ -124,17 +126,14 @@ public class DiscordSRVUtils extends JavaPlugin {
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
+    public SuggestionVoteMode voteMode;
     private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
         @Override
         public Thread newThread(@NotNull Runnable r) {
             Thread thread = new Thread(r);
             thread.setName("DSU-THREAD");
             thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> {
-                    logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
-                    e.printStackTrace();
-            }
-            );
+            thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
             return thread;
         }
     });
@@ -661,7 +660,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
         }
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
-            Events.get().register(new LitebansPunishmentListener());
+            litebans.api.Events.get().register(new LitebansPunishmentListener());
             hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -676,9 +675,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
         }
         fixTickets();
+        voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
+        doSuggestions();
         logger.info("Plugin is ready to function.");
     }
-    public void fixTickets() {
+    private void fixTickets() {
         try (Connection conn = getDatabase()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
             ResultSet r1 = p1.executeQuery();
@@ -698,6 +699,61 @@ public class DiscordSRVUtils extends JavaPlugin {
                 if (msg.getButtons().isEmpty()) {
                     msg.clearReactions().queue();
                     msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).queue();
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnCheckedSQLException(e);
+        }
+    }
+
+    private void doSuggestions() {
+        try (Connection conn = getDatabase()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
+            ResultSet r1 = p1.executeQuery();
+            while (r1.next()) {
+                Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
+                Message msg = suggestion.getMessage();
+                if (msg != null) {
+                    if (msg.getButtons().isEmpty()) {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            for (MessageReaction reaction : msg.getReactions()) {
+                                if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
+                                    List<User> users = reaction.retrieveUsers().complete();
+                                    PreparedStatement p = conn.prepareStatement("DELETE FROM suggestions_votes WHERE SuggestionNumber=?");
+                                    p.setInt(1, suggestion.getNumber());
+                                    p.execute();
+                                    for (User user : users) {
+                                        PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_votes (UserID, SuggestionNumber, Agree) VALUES (?,?,?)");
+                                        p2.setLong(1, user.getIdLong());
+                                        p2.setInt(2, suggestion.getNumber());
+                                        p2.setString(3, "true");
+                                        p2.execute();
+                                    }
+                                } else if (reaction.getReactionEmote().getName().equals(SuggestionManager.getNoEmoji().getName())) {
+                                    List<User> users = reaction.retrieveUsers().complete();
+                                    for (User user : users) {
+                                        PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_votes (UserID, SuggestionNumber, Agree) VALUES (?,?,?)");
+                                        p2.setLong(1, user.getIdLong());
+                                        p2.setInt(2, suggestion.getNumber());
+                                        p2.setString(3, "false");
+                                        p2.execute();
+                                    }
+                                }
+                            }
+                        } else {
+                            msg.clearReactions().queue();
+                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji())).queue();
+                        }
+                    } else {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            logger.severe("Suggestions Vote Mode was switched from BUTTONS to REACTIONS. Suggestion votes will be reset pretty soon until your users react to the messages");
+                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                            msg.editMessage(msg).setActionRow().queue();
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -816,8 +872,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         ex.printStackTrace();
     }
     public void defaultHandle(Throwable ex) {
-        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
-        ex.printStackTrace();
+        if (!config.minimize_errors()) {
+            logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            ex.printStackTrace();
+        } else {
+            logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
+        }
     }
 
 

@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.listeners.punishments.advancedban;
+package tk.bluetree242.discordsrvutils.listeners.punishments.litebans;
 
 import litebans.api.Entry;
 import org.bukkit.Bukkit;

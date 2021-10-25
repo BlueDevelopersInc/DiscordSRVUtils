@@ -22,16 +22,20 @@
 
 package tk.bluetree242.discordsrvutils.suggestions;
 
+import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
@@ -144,9 +148,15 @@ public class SuggestionManager {
 
                 Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null);
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
-                Message msg = core.queueMsg(MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
+                MessageBuilder builder = MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
-                        ,null).build(), channel).complete();
+                        ,null);
+                if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+                    builder.setActionRows(ActionRow.of(
+                            Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                            Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji())));
+                }
+                Message msg = core.queueMsg(builder.build(), channel).complete();
                 PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");
                 p2.setInt(1, num);
                 p2.setString(2, Utils.b64Encode(text));
@@ -155,14 +165,24 @@ public class SuggestionManager {
                 p2.setLong(5, channelId);
                 p2.setLong(6, System.currentTimeMillis());
                 p2.execute();
-                msg.addReaction(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getNameInReaction()).queue();
-                msg.addReaction(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getNameInReaction()).queue();
+                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                    msg.addReaction(getYesEmoji().getNameInReaction()).queue();
+                    msg.addReaction(getNoEmoji().getNameInReaction()).queue();
+                }
                 return suggestion;
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
         });
     }
+
+    public static Emoji getYesEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
+    }
+    public static Emoji getNoEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
+    }
+
 
 
 

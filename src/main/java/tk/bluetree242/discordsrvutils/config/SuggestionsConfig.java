@@ -109,4 +109,9 @@ public interface SuggestionsConfig {
     @ConfComments("# Role that if user have they can't make suggestions")
     @ConfDefault.DefaultLong(0)
     Long suggestion_muted_role();
+
+    @AnnotationBasedSorter.Order(130)
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart")
+    @ConfDefault.DefaultString("REACTIONS")
+    String suggestions_vote_mode();
 }
