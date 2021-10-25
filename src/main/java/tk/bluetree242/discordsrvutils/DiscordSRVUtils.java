@@ -67,7 +67,6 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
-import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
@@ -660,7 +659,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
         }
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
-            litebans.api.Events.get().register(new LitebansPunishmentListener());
+            litebans.api.Events.get().register(new tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener());
             hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
