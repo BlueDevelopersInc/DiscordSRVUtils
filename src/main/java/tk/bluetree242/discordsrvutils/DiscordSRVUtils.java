@@ -35,6 +35,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 
+
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -67,6 +68,7 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
+import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
@@ -93,10 +95,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -659,7 +658,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
         }
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
-            litebans.api.Events.get().register(new tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener());
+            new LitebansPunishmentListener();
             hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
         }
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -750,7 +749,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                             logger.severe("Suggestions Vote Mode was switched from BUTTONS to REACTIONS. Suggestion votes will be reset pretty soon until your users react to the messages");
                             msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
                             msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                            msg.editMessage(msg).setActionRow().queue();
+                            msg.editMessage(msg).setActionRow(Collections.EMPTY_LIST).queue();
                         }
                     }
                 }

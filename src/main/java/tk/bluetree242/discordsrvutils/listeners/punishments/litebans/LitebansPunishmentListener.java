@@ -35,9 +35,12 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 
-public class LitebansPunishmentListener extends Events.Listener{
+public class LitebansPunishmentListener extends Events.Listener {
+
+    public LitebansPunishmentListener() {
+        litebans.api.Events.get().register(this);
+    }
     private DiscordSRVUtils core = DiscordSRVUtils.get();
-    @Override
     public void entryAdded(Entry e) {
         core.executeAsync(() -> {
             if (!core.isReady()) return;
