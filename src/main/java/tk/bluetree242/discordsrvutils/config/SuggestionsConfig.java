@@ -107,7 +107,7 @@ public interface SuggestionsConfig {
     Long suggestion_muted_role();
 
     @AnnotationBasedSorter.Order(130)
-    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart")
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n#Another note is that your votes will be reset by changing this")
     @ConfDefault.DefaultString("REACTIONS")
     String suggestions_vote_mode();
 }
