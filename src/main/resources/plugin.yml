@@ -5,7 +5,7 @@ softdepend:
   - Essentials
   - Advancedban
   - PlaceholderAPI
-  -  Litebans
+  - Litebans
 version: @version@
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
 author: BlueTree242
