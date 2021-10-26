@@ -45,7 +45,7 @@ public class JoinUpdateChecker implements Listener {
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
                         .build();
 
-                Request req = new Request.Builder().url("https://discordsrvutils.ml/updatecheck").post(form).build();
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
                 Response response = client.newCall(req).execute();
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
