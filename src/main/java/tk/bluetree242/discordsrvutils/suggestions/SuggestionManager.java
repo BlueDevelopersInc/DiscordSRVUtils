@@ -185,9 +185,7 @@ public class SuggestionManager {
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
                         ,null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-                    builder.setActionRows(ActionRow.of(
-                            Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                            Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji())));
+                    builder.setActionRows(getActionRow());
                 }
                 Message msg = core.queueMsg(builder.build(), channel).complete();
                 PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");

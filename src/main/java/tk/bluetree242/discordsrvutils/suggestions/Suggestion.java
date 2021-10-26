@@ -129,7 +129,7 @@ public class Suggestion {
                 p1.execute();
                 SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
                 notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
                 return suggestionNote;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
@@ -147,7 +147,7 @@ public class Suggestion {
                p1.execute();
                this.Approved = approved;
                this.approver = staffID;
-               getMessage().editMessage(getCurrentMsg()).queue();
+               getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
 
            } catch (SQLException e) {
                throw new UnCheckedSQLException(e);
