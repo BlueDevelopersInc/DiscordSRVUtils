@@ -62,10 +62,6 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_submitter_vote();
 
-    @AnnotationBasedSorter.Order(50)
-    @ConfComments("# Should users be able to vote both yes and no?")
-    @ConfDefault.DefaultBoolean(false)
-    Boolean allow_both_vote();
 
 
     @AnnotationBasedSorter.Order(60)

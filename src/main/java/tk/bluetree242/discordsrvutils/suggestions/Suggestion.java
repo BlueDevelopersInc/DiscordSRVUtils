@@ -31,6 +31,7 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
@@ -159,13 +160,16 @@ public class Suggestion {
     }
 
     public int getYesCount() {
-        List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
-        return votes.size();
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+            List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
+            return votes.size();
+        } else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
     }
 
     public int getNoCount() {
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
         List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
-        return votes.size();
+        return votes.size();} else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
     }
 
     public Message getCurrentMsg() {

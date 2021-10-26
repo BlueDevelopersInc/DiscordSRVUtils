@@ -72,7 +72,7 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPun
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
+import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
@@ -158,7 +158,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
-        listeners.add(new SuggestionReactionListener());
+        listeners.add(new SuggestionVoteListener());
         listeners.add(new CustomDiscordAccountLinkListener());
         initDefaultMessages();
 
@@ -719,30 +719,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                 if (msg != null) {
                     if (msg.getButtons().isEmpty()) {
                         if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            for (MessageReaction reaction : msg.getReactions()) {
-                                if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
-                                    List<User> users = reaction.retrieveUsers().complete();
-                                    PreparedStatement p = conn.prepareStatement("DELETE FROM suggestions_votes WHERE SuggestionNumber=?");
-                                    p.setInt(1, suggestion.getNumber());
-                                    p.execute();
-                                    for (User user : users) {
-                                        PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_votes (UserID, SuggestionNumber, Agree) VALUES (?,?,?)");
-                                        p2.setLong(1, user.getIdLong());
-                                        p2.setInt(2, suggestion.getNumber());
-                                        p2.setString(3, "true");
-                                        p2.execute();
-                                    }
-                                } else if (reaction.getReactionEmote().getName().equals(SuggestionManager.getNoEmoji().getName())) {
-                                    List<User> users = reaction.retrieveUsers().complete();
-                                    for (User user : users) {
-                                        PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions_votes (UserID, SuggestionNumber, Agree) VALUES (?,?,?)");
-                                        p2.setLong(1, user.getIdLong());
-                                        p2.setInt(2, suggestion.getNumber());
-                                        p2.setString(3, "false");
-                                        p2.execute();
-                                    }
-                                }
-                            }
                         } else {
                             if (!sent) {
                                 logger.info(warnmsg);
@@ -757,7 +733,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                         }
                     } else {
                         if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            logger.severe("Suggestions Vote Mode was switched from BUTTONS to REACTIONS. Suggestion votes will be reset pretty soon until your users react to the messages");
                             if (!sent) {
                                 SuggestionManager.get().loading = true;
                                 logger.info(warnmsg);
@@ -778,6 +753,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             throw new UnCheckedSQLException(e);
         }
     }
+
 
     public void setSettings() {
         if (!isReady()) return;

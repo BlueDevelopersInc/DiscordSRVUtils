@@ -23,10 +23,7 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -108,6 +105,7 @@ public class SuggestionManager {
             p1.setInt(1, r.getInt("SuggestionNumber"));
             notesr = p1.executeQuery();
         }
+        if (core.voteMode != SuggestionVoteMode.REACTIONS)
         if (votesr == null) {
             PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
             p1.setInt(1, r.getInt("SuggestionNumber"));
@@ -123,15 +121,38 @@ public class SuggestionManager {
                     notesr.getLong("CreationTime")
             ));
         }
-        while (votesr.next()) {
-            votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
-        }
-        return new Suggestion(
+        Suggestion suggestion = new Suggestion(
                 Utils.b64Decode(r.getString("SuggestionText")),
                 r.getInt("SuggestionNumber"),
                 r.getLong("Submitter"),
                 r.getLong("ChannelID"), r.getLong("CreationTime"), notes, r.getLong("MessageID"),
                 r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"), votes);
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+            while (votesr.next()) {
+                votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
+            }
+
+        }else {
+            /*
+            for (MessageReaction reaction : suggestion.getMessage().getReactions()) {
+                if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
+                    List<User> users = reaction.retrieveUsers().complete();
+                    for (User user : users) {
+                        if (!user.isBot())
+                        votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
+                    }
+                } else if (reaction.getReactionEmote().getName().equals(SuggestionManager.getNoEmoji().getName())) {
+                    List<User> users = reaction.retrieveUsers().complete();
+                    for (User user : users) {
+                        if (!user.isBot())
+                            votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
+                    }
+                }
+            }
+
+             */
+        }
+        return suggestion;
     }
 
 
@@ -193,6 +214,12 @@ public class SuggestionManager {
     }
     public static Emoji getNoEmoji() {
         return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
+    }
+
+    public static ActionRow getActionRow() {
+        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
     }
 
 
