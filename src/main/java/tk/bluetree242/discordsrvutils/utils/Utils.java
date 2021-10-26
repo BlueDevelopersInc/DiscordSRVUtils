@@ -1,8 +1,32 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.utils;
 
 import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
@@ -145,16 +169,21 @@ public class Utils {
         return s;
     }
 
-    public static String b64Encode(String text) {
+    public static String b64Encode(@NotNull String text) {
         return Base64.getEncoder().encodeToString(text.getBytes());
     }
 
-    public static String b64Decode(String text) {
+    public static String b64Encode(@NotNull byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull String b64Decode(String text) {
         return new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8);
     }
 
 
-    public static String parseArgs(String[] args, int start, int end) {
+    public static @NotNull String parseArgs(String[] args, int start, int end) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             if (i <= end) {
@@ -164,7 +193,7 @@ public class Utils {
         return argss.replaceAll("\\s+$", "");
     }
 
-    public static String parseArgs(String[] args, int start) {
+    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             argss = argss + args[i] + " ";

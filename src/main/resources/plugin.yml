@@ -1,10 +1,12 @@
 name: DiscordSRVUtils
-softdepend:
+depend: 
   - DiscordSRV
+softdepend:
   - Essentials
   - Advancedban
   - PlaceholderAPI
-version: 1.2.0-BETA-8
+  - Litebans
+version: @version@
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
 author: BlueTree242
 api-version: 1.13

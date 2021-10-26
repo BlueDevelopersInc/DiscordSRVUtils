@@ -1,3 +1,25 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.utils;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -14,7 +36,7 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import okhttp3.*;
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,6 +49,7 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +69,6 @@ public class DebugUtil {
 
             JSONArray data = new JSONArray();
             Map<String, String> information = new HashMap<>();
-            information.put("name", "Information");
             information.put("DSU Version", core.getDescription().getVersion());
             information.put("Plugins Hooked", String.join(", " + core.hookedPlugins));
             information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
@@ -86,7 +108,7 @@ public class DebugUtil {
             data.put(new JSONObject().put("type", "files").put("name", "DSU Messages Files").put("data", FilesToArray(files)));
             int aesBits = 256;
             String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(new String(encrypt(key.getBytes(), data.toString().getBytes())))).build();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(encrypt(key.getBytes(), data.toString()))).build();
             Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.tk/api/v1/createDebug").build();
             try {
             Response response = client.newCall(request).execute();
@@ -297,12 +319,24 @@ public class DebugUtil {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     public static byte[] encrypt(byte[] key, byte[] data) throws Exception{
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-        byte[] iv = new byte[cipher.getBlockSize()];
-        RANDOM.nextBytes(iv);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
-        byte[] encrypted = cipher.doFinal(data);
-        return ArrayUtils.addAll(iv, encrypted);
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            byte[] iv = new byte[cipher.getBlockSize()];
+            RANDOM.nextBytes(iv);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
+            byte[] encrypted = cipher.doFinal(data);
+            return ArrayUtils.addAll(iv, encrypted);
+        } catch (InvalidKeyException e) {
+            if (e.getMessage().toLowerCase().contains("illegal key size")) {
+                throw new RuntimeException(e.getMessage(), e);
+            } else {
+                DiscordSRV.error(e);
+            }
+            return null;
+        } catch (Exception ex) {
+            DiscordSRV.error(ex);
+            return null;
+        }
     }
 
 

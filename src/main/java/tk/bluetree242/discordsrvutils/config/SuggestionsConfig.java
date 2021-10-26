@@ -1,3 +1,25 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
@@ -40,10 +62,6 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_submitter_vote();
 
-    @AnnotationBasedSorter.Order(50)
-    @ConfComments("# Should users be able to vote both yes and no?")
-    @ConfDefault.DefaultBoolean(false)
-    Boolean allow_both_vote();
 
 
     @AnnotationBasedSorter.Order(60)
@@ -82,4 +100,14 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean dm_submitter_when_approved();
      */
+
+    @AnnotationBasedSorter.Order(120)
+    @ConfComments("# Role that if user have they can't make suggestions")
+    @ConfDefault.DefaultLong(0)
+    Long suggestion_muted_role();
+
+    @AnnotationBasedSorter.Order(130)
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n#Another note is that your votes will be reset by changing this")
+    @ConfDefault.DefaultString("REACTIONS")
+    String suggestions_vote_mode();
 }

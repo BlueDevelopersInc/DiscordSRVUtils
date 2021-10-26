@@ -1,3 +1,25 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.config;
 
 
@@ -28,9 +50,15 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(31)
     @ConfKey("remove-discordsrv-link-listener")
-    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes")
+    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes\n#NOTE: Plugin uses reflection to do this. Which is like hacking into DiscordSRV")
     @ConfDefault.DefaultBoolean(false)
     boolean remove_discordsrv_link_listener();
+
+    @AnnotationBasedSorter.Order(32)
+    @ConfKey("linkaccount-channel")
+    @ConfComments("#Custom LinkAccount Channel. ")
+    @ConfDefault.DefaultLong(0)
+    long linkaccount_channel();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
@@ -103,5 +131,17 @@ public interface Config {
     @ConfKey("afk.no-longer-afk-message")
     @ConfDefault.DefaultString("message:no-longer-afk")
     String no_longer_afk_message();
+
+    @AnnotationBasedSorter.Order(150)
+    @ConfKey("bungee-mode")
+    @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean bungee_mode();
+
+    @AnnotationBasedSorter.Order(160)
+    @ConfKey("minimize-errors")
+    @ConfComments("# Replace errors with small error note. Please note that this is a bad practise. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean minimize_errors();
 
 }

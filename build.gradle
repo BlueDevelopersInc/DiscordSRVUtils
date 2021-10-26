@@ -1,4 +1,28 @@
 
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
@@ -78,23 +102,28 @@ dependencies {
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
     compileOnly 'com.discordsrv:discordsrv:1.24.0'
     compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
     implementation "org.flywaydb:flyway-core:7.5.3"
-    implementation "com.squareup.okhttp3:mockwebserver:4.9.2"
     implementation group: 'org.json', name: 'json', version: '20210307'
-    implementation 'gui.ava:html2image:2.0.1'
-
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.0-BETA-8'
+version = '1.2.3-BETA-1'
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 publishing {
     publications {
         maven(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
     }
 }

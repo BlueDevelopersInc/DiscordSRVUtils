@@ -1,6 +1,27 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils;
 
-import com.vdurmont.emoji.EmojiParser;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -8,14 +29,18 @@ import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
-import okhttp3.*;
+
+
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,16 +63,23 @@ import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
+import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
+import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
+import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionReactionListener;
+import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
+import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.utils.FileWriter;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
@@ -63,10 +95,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -78,6 +107,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     public static DiscordSRVUtils get() {
         return instance;
     }
+    public JSONObject levelingRolesRaw;
+    public boolean removedDiscordSRVAccountLinkListener = false;
     private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
     public final String fileseparator = System.getProperty("file.separator");
@@ -93,12 +124,14 @@ public class DiscordSRVUtils extends JavaPlugin {
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
+    public SuggestionVoteMode voteMode;
     private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
         @Override
         public Thread newThread(@NotNull Runnable r) {
             Thread thread = new Thread(r);
             thread.setName("DSU-THREAD");
             thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
             return thread;
         }
     });
@@ -125,7 +158,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
-        listeners.add(new SuggestionReactionListener());
+        listeners.add(new SuggestionVoteListener());
+        listeners.add(new CustomDiscordAccountLinkListener());
         initDefaultMessages();
 
     }
@@ -141,23 +175,40 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void onEnable() {
         Bukkit.getScheduler().runTaskAsynchronously(this, ()-> {
             try {
+                if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
                         .build();
 
-                Request req = new Request.Builder().url("https://discordsrvutils.ml/updatecheck").post(form).build();
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
                 Response response = client.newCall(req).execute();
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
                 int versions_behind = res.getInt("versions_behind");
+                String logger = res.getString("type") != null ? res.getString("type") :"INFO";
+                String msg = null;
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
-                        logger.info(ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
+                        if (logger.equalsIgnoreCase("INFO")) {
+
+                        }
+                        msg = (ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
                     } else {
-                        logger.info(ChatColor.GREEN + "Plugin is up to date!");
+                        msg = (ChatColor.GREEN + "Plugin is up to date!");
                     }
                 } else {
-                    logger.info(res.getString("message"));
+                    msg = (res.getString("message"));
+                }
+                switch (logger) {
+                    case "INFO":
+                        getLogger().info(msg);
+                        break;
+                    case "WARNING":
+                        getLogger().warning(msg);
+                        break;
+                    case "ERROR":
+                        getLogger().warning(msg);
+                        break;
                 }
             } catch (Exception e) {
                 logger.severe("Could not check for updates: " + e.getMessage());
@@ -188,9 +239,16 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
-                    "|   &cDiscord: &rhttps://discordsrvutils.ml/support\n" +
+                    "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
+            try {
+                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
+            } catch (ClassNotFoundException e) {
+                severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
+                setEnabled(false);
+                return;
+            }
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
@@ -207,6 +265,18 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
             whenStarted();
             Metrics metrics = new Metrics(this, 9456);
+            metrics.addCustomChart(new AdvancedPie("features", () -> {
+                Map<String, Integer> valueMap = new HashMap<>();
+                if (!TicketManager.get().getPanels().get().isEmpty())
+                valueMap.put("Tickets", 1);
+                if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
+                if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
+                if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
+                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled()) valueMap.put("AFK Messages", 1);
+                return valueMap;
+            }));
+            metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
+            metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
             throw new StartupException(ex);
         }
@@ -315,7 +385,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         JSONObject panelEmbed = new JSONObject();
         panelEmbed.put("color", "cyan");
         panelEmbed.put("title", "[panel.name]");
-        panelEmbed.put("description", "React with \uD83C\uDFAB to open a ticket");
+        panelEmbed.put("description", "Click on The Button to open a ticket");
         panel.put("embed", panelEmbed);
         defaultmessages.put("panel", panel.toString(1));
         JSONObject ticketOpened = new JSONObject();
@@ -323,7 +393,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         ticketOpened.put("content", "[user.asMention] Here is your ticket");
         ticketOpenedEmbed.put("description", String.join("\n", new String[]{
                 "Staff will be here shortly",
-                "React with \uD83D\uDD12 to close this ticket",
+                "Click `Close Ticket` to close this ticket",
                 "**Panel Name: **[panel.name]"
         }));
         ticketOpenedEmbed.put("color", "green");
@@ -465,12 +535,35 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
             });
         }
+        try {
+            File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+            if (!levelingRoles.exists()) {
+                levelingRoles.createNewFile();
+                FileWriter writer = new FileWriter(levelingRoles);
+                writer.write("{}");
+                writer.close();
+                levelingRolesRaw = new JSONObject();
+            } else {
+                levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
+            }
+        }catch (FileNotFoundException e) {
+            logger.severe("Error creating leveling-roles.json");
+        } catch (IOException e) {
+            logger.severe("Error creating leveling-roles.json");
+        }
+
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PAPIExpansion().register();
+        }
+
+
     }
 
 
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
         Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), this);
     }
 
     public void registerCommands() {
@@ -511,6 +604,16 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+        if (!levelingRoles.exists()) {
+            levelingRoles.createNewFile();
+            FileWriter writer = new FileWriter(levelingRoles);
+            writer.write("{}");
+            writer.close();
+            levelingRolesRaw = new JSONObject();
+        } else {
+            levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
+        }
         setSettings();
     }
 
@@ -543,31 +646,41 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void whenReady() {
-        registerCommands();
-        setSettings();
-        registerListeners();
-        if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
-        }
-        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
-            getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
-        }
-        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
-        }
-        if (getMainConfig().remove_discordsrv_link_listener()) {
-            for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
-                if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
-                    getJDA().removeEventListener(listener);
+        executeAsync(() -> {
+            registerCommands();
+            setSettings();
+            registerListeners();
+            if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
+                getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
+                getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
+                new LitebansPunishmentListener();
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
+            }
+            if (getMainConfig().remove_discordsrv_link_listener()) {
+                for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
+                    if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
+                        getJDA().removeEventListener(listener);
+                        removedDiscordSRVAccountLinkListener = true;
+                    }
                 }
             }
-        }
-        fixTickets();
-        logger.info("Plugin is ready to function.");
+            fixTickets();
+            voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
+            doSuggestions();
+            logger.info("Plugin is ready to function.");
+        });
+
     }
-    public void fixTickets() {
+    private void fixTickets() {
         try (Connection conn = getDatabase()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
             ResultSet r1 = p1.executeQuery();
@@ -579,15 +692,74 @@ public class DiscordSRVUtils extends JavaPlugin {
                     p.execute();
                 }
             }
+            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
+            r1 = p1.executeQuery();
+            while (r1.next()) {
+                Panel panel = TicketManager.get().getPanel(r1);
+                Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                if (msg.getButtons().isEmpty()) {
+                    msg.clearReactions().queue();
+                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).queue();
+                }
+            }
         } catch (SQLException e) {
             throw new UnCheckedSQLException(e);
         }
     }
 
+    private void doSuggestions() {
+        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
+        boolean sent = false;
+        try (Connection conn = getDatabase()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
+            ResultSet r1 = p1.executeQuery();
+            while (r1.next()) {
+                Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
+                Message msg = suggestion.getMessage();
+                if (msg != null) {
+                    if (msg.getButtons().isEmpty()) {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                        } else {
+                            if (!sent) {
+                                logger.info(warnmsg);
+                                sent = true;
+                                SuggestionManager.get().loading = true;
+                            }
+                            msg.clearReactions().queue();
+                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                    Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
+                        }
+                    } else {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            if (!sent) {
+                                SuggestionManager.get().loading = true;
+                                logger.info(warnmsg);
+                                sent = true;
+                            }
+                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                        }
+                    }
+                }
+            }
+            if (sent) {
+                logger.info("Suggestions Migration has finished.");
+            }
+            SuggestionManager.get().loading = false;
+        } catch (SQLException e) {
+            throw new UnCheckedSQLException(e);
+        }
+    }
+
+
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
+        LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
     }
 
     public JDA getJDA() {
@@ -652,11 +824,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
-        return CompletableFuture.supplyAsync(v);
+        return CompletableFuture.supplyAsync(v, pool);
     }
 
     public CompletableFuture<Void> completableFutureRun(Runnable r) {
-        return CompletableFuture.runAsync(r);
+        return CompletableFuture.runAsync(r, pool);
     }
 
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
@@ -690,11 +862,16 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
+        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
     public void defaultHandle(Throwable ex) {
-        ex.printStackTrace();
-        //Do nothing lol
+        if (!config.minimize_errors()) {
+            logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            ex.printStackTrace();
+        } else {
+            logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
+        }
     }
 
 

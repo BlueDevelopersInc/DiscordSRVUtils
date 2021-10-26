@@ -1,8 +1,31 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
 package tk.bluetree242.discordsrvutils.tickets;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -73,15 +96,15 @@ public class Ticket {
                   if (override != null) {
                       override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                   }
-              core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
+              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
                       new PlaceholdObject(userWhoClosed, "user"),
                       new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
                       new PlaceholdObject(core.getGuild(), "guild"),
                       new PlaceholdObject(panel, "panel")
-              ),null).build()).queue();
-              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("\uD83D\uDD13 Reopen Ticket\n\uD83D\uDDD1️ Delete Ticket").setFooter("More Options coming soon").build()).complete();
-              msg.addReaction("\uD83D\uDD13").queue();
-              msg.addReaction("\uD83D\uDDD1️").queue();
+              ),null).build()).setActionRow(
+                      Button.success("reopen_ticket", Emoji.fromUnicode("\uD83D\uDD13")).withLabel("Reopen Ticket"),
+                      Button.danger("delete_ticket", Emoji.fromUnicode("\uD83D\uDDD1️")).withLabel("Delete Ticket")
+                      ).complete();
               messageID = msg.getIdLong();
               PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='true', OpenTime=? WHERE UserID=? AND ID=? ");
               p2.setLong(1, messageID);
@@ -118,8 +141,7 @@ public class Ticket {
                         new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
-                ), null).build()).complete();
-                msg.addReaction("\uD83D\uDD12").queue();
+                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel("Close Ticket")).complete();
                 messageID = msg.getIdLong();
                 PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='false' WHERE UserID=? AND ID=? ");
                 p2.setLong(1, messageID);
