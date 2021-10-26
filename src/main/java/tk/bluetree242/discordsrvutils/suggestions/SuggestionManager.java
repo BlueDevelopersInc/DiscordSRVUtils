@@ -49,6 +49,7 @@ public class SuggestionManager {
 
     private static SuggestionManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+    public boolean loading = false;
 
     public static SuggestionManager get() {
         return main;
@@ -67,6 +68,8 @@ public class SuggestionManager {
             }
         });
     }
+
+
 
     public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
         return core.completableFuture(() -> {
@@ -96,16 +99,22 @@ public class SuggestionManager {
 
 
     public Suggestion getSuggestion(ResultSet r) throws SQLException {
-        return getSuggestion(r, null);
+        return getSuggestion(r, null, null);
     }
 
-    public Suggestion getSuggestion(ResultSet r, ResultSet notesr) throws SQLException {
+    public Suggestion getSuggestion(ResultSet r, ResultSet notesr, ResultSet votesr) throws SQLException {
         if (notesr == null) {
             PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestion_notes WHERE SuggestionNumber=?");
             p1.setInt(1, r.getInt("SuggestionNumber"));
             notesr = p1.executeQuery();
         }
+        if (votesr == null) {
+            PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
+            p1.setInt(1, r.getInt("SuggestionNumber"));
+            votesr = p1.executeQuery();
+        }
         Set<SuggestionNote> notes = new HashSet<>();
+        Set<SuggestionVote> votes = new HashSet<>();
         while (notesr.next()) {
             notes.add(new SuggestionNote(
                     notesr.getLong("StaffID"),
@@ -114,12 +123,15 @@ public class SuggestionManager {
                     notesr.getLong("CreationTime")
             ));
         }
+        while (votesr.next()) {
+            votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
+        }
         return new Suggestion(
                 Utils.b64Decode(r.getString("SuggestionText")),
                 r.getInt("SuggestionNumber"),
                 r.getLong("Submitter"),
                 r.getLong("ChannelID"), r.getLong("CreationTime"), notes, r.getLong("MessageID"),
-                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"));
+                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"), votes);
     }
 
 
@@ -146,7 +158,7 @@ public class SuggestionManager {
                     num = r1.getInt("SuggestionNumber") + 1;
                 }
 
-                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null);
+                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
                 MessageBuilder builder = MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))

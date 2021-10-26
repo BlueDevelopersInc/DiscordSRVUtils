@@ -53,8 +53,8 @@ public class Suggestion {
     protected Boolean Approved;
     protected Message msg;
     protected Long approver;
-
-    public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver) {
+    Set<SuggestionVote> votes;
+    public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
         this.text = text;
         this.number = number;
         this.submitter = submitter;
@@ -64,9 +64,13 @@ public class Suggestion {
         this.MessageID = MessageID;
         this.Approved = Approved;
         this.approver = approver;
+        this.votes = votes;
 
     }
 
+    public Set<SuggestionVote> getVotes() {
+        return votes;
+    }
 
     public Long getApprover() {
         return approver;
@@ -155,11 +159,13 @@ public class Suggestion {
     }
 
     public int getYesCount() {
-        return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+        List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
+        return votes.size();
     }
 
     public int getNoCount() {
-        return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+        List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
+        return votes.size();
     }
 
     public Message getCurrentMsg() {

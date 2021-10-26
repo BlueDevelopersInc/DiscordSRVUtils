@@ -646,36 +646,39 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void whenReady() {
-        registerCommands();
-        setSettings();
-        registerListeners();
-        if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
-            getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
-        }
-        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
-            getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
-        }
-        if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
-            new LitebansPunishmentListener();
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
-        }
-        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
-        }
-        if (getMainConfig().remove_discordsrv_link_listener()) {
-            for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
-                if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
-                    getJDA().removeEventListener(listener);
-                    removedDiscordSRVAccountLinkListener = true;
+        executeAsync(() -> {
+            registerCommands();
+            setSettings();
+            registerListeners();
+            if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
+                getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
+                getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
+                new LitebansPunishmentListener();
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
+            }
+            if (getMainConfig().remove_discordsrv_link_listener()) {
+                for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
+                    if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
+                        getJDA().removeEventListener(listener);
+                        removedDiscordSRVAccountLinkListener = true;
+                    }
                 }
             }
-        }
-        fixTickets();
-        voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
-        doSuggestions();
-        logger.info("Plugin is ready to function.");
+            fixTickets();
+            voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
+            doSuggestions();
+            logger.info("Plugin is ready to function.");
+        });
+
     }
     private void fixTickets() {
         try (Connection conn = getDatabase()) {
@@ -705,6 +708,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     private void doSuggestions() {
+        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
+        boolean sent = false;
         try (Connection conn = getDatabase()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
             ResultSet r1 = p1.executeQuery();
@@ -739,21 +744,36 @@ public class DiscordSRVUtils extends JavaPlugin {
                                 }
                             }
                         } else {
+                            if (!sent) {
+                                logger.info(warnmsg);
+                                sent = true;
+                                SuggestionManager.get().loading = true;
+                            }
                             msg.clearReactions().queue();
                             msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
                                     Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji())).queue();
+                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                    Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
                         }
                     } else {
                         if (voteMode == SuggestionVoteMode.REACTIONS) {
                             logger.severe("Suggestions Vote Mode was switched from BUTTONS to REACTIONS. Suggestion votes will be reset pretty soon until your users react to the messages");
+                            if (!sent) {
+                                SuggestionManager.get().loading = true;
+                                logger.info(warnmsg);
+                                sent = true;
+                            }
                             msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
                             msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                            msg.editMessage(msg).setActionRow(Collections.EMPTY_LIST).queue();
+                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                         }
                     }
                 }
             }
+            if (sent) {
+                logger.info("Suggestions Migration has finished.");
+            }
+            SuggestionManager.get().loading = false;
         } catch (SQLException e) {
             throw new UnCheckedSQLException(e);
         }

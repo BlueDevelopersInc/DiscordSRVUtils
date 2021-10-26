@@ -43,6 +43,10 @@ public class SuggestionReactionListener extends ListenerAdapter {
             Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
             Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
             Emoji no = Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌"));
+            if (SuggestionManager.get().loading) {
+                e.getReaction().removeReaction(e.getUser()).queue();
+                return;
+            }
             if(!core.getSuggestionsConfig().allow_submitter_vote()) {
             if (e.getUser().getIdLong() == suggestion.getSubmitter()) {
                 e.getReaction().removeReaction(e.getUser()).queue();
