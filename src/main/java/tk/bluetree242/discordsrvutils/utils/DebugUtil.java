@@ -36,7 +36,7 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import okhttp3.*;
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,7 +69,6 @@ public class DebugUtil {
 
             JSONArray data = new JSONArray();
             Map<String, String> information = new HashMap<>();
-            information.put("name", "Information");
             information.put("DSU Version", core.getDescription().getVersion());
             information.put("Plugins Hooked", String.join(", " + core.hookedPlugins));
             information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");

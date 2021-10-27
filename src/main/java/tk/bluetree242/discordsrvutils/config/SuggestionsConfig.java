@@ -62,10 +62,6 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_submitter_vote();
 
-    @AnnotationBasedSorter.Order(50)
-    @ConfComments("# Should users be able to vote both yes and no?")
-    @ConfDefault.DefaultBoolean(false)
-    Boolean allow_both_vote();
 
 
     @AnnotationBasedSorter.Order(60)
@@ -104,4 +100,14 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultBoolean(false)
     Boolean dm_submitter_when_approved();
      */
+
+    @AnnotationBasedSorter.Order(120)
+    @ConfComments("# Role that if user have they can't make suggestions")
+    @ConfDefault.DefaultLong(0)
+    Long suggestion_muted_role();
+
+    @AnnotationBasedSorter.Order(130)
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n#Another note is that your votes will be reset by changing this")
+    @ConfDefault.DefaultString("REACTIONS")
+    String suggestions_vote_mode();
 }

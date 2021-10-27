@@ -138,13 +138,13 @@ public class CommandEvent {
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
+                DiscordSRVUtils.get().defaultHandle(ex);
             }  else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
@@ -163,13 +163,13 @@ public class CommandEvent {
         cf.handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            ex.printStackTrace();
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else
             if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
+                DiscordSRVUtils.get().defaultHandle(ex);
             }  else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getGuildChannelById(exc.getChannelId());

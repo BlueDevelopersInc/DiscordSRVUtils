@@ -50,9 +50,15 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(31)
     @ConfKey("remove-discordsrv-link-listener")
-    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes")
+    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes\n#NOTE: Plugin uses reflection to do this. Which is like hacking into DiscordSRV")
     @ConfDefault.DefaultBoolean(false)
     boolean remove_discordsrv_link_listener();
+
+    @AnnotationBasedSorter.Order(32)
+    @ConfKey("linkaccount-channel")
+    @ConfComments("#Custom LinkAccount Channel. ")
+    @ConfDefault.DefaultLong(0)
+    long linkaccount_channel();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
@@ -131,5 +137,11 @@ public interface Config {
     @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee")
     @ConfDefault.DefaultBoolean(false)
     Boolean bungee_mode();
+
+    @AnnotationBasedSorter.Order(160)
+    @ConfKey("minimize-errors")
+    @ConfComments("# Replace errors with small error note. Please note that this is a bad practise. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean minimize_errors();
 
 }

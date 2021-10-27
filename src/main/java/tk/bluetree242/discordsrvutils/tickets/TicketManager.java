@@ -82,7 +82,7 @@ public class TicketManager {
         });
     }
 
-    protected Panel getPanel(ResultSet r) throws SQLException {
+    public Panel getPanel(ResultSet r) throws SQLException {
         Set<Long> allowedRoles = new HashSet<>();
         PreparedStatement p = r.getStatement().getConnection().prepareStatement("SELECT * FROM panel_allowed_roles WHERE PanelID=?");
         p.setString(1, r.getString("ID"));

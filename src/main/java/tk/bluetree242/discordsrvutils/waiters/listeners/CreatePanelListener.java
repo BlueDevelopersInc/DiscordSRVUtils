@@ -63,11 +63,11 @@ public class CreatePanelListener extends ListenerAdapter {
                 embed.setDescription("**Step 2: Please mention the channel the panel should be sent to**");
                 e.getChannel().sendMessage(embed.build()).queue();
             } else if (waiter.getStep() ==2) {
-                TextChannel channel = e.getMessage().getMentionedChannels().get(0);
-                if (channel == null) {
+                if (e.getMessage().getMentionedChannels().isEmpty()) {
                     e.getChannel().sendMessage(Embed.error("You did not mention a channel. Please try again")).queue();
                     return;
                 }
+                TextChannel channel = e.getMessage().getMentionedChannels().get(0);
                 if (channel.getGuild().getIdLong() != core.getGuild().getIdLong()) {
                     e.getChannel().sendMessage(Embed.error("Channel cannot be outside of the main guild")).queue();
                     return;

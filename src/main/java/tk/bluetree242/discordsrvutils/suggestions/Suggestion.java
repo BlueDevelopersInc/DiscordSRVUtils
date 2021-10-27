@@ -31,6 +31,7 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
@@ -53,8 +54,8 @@ public class Suggestion {
     protected Boolean Approved;
     protected Message msg;
     protected Long approver;
-
-    public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver) {
+    Set<SuggestionVote> votes;
+    public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
         this.text = text;
         this.number = number;
         this.submitter = submitter;
@@ -64,9 +65,13 @@ public class Suggestion {
         this.MessageID = MessageID;
         this.Approved = Approved;
         this.approver = approver;
+        this.votes = votes;
 
     }
 
+    public Set<SuggestionVote> getVotes() {
+        return votes;
+    }
 
     public Long getApprover() {
         return approver;
@@ -124,7 +129,7 @@ public class Suggestion {
                 p1.execute();
                 SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
                 notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
                 return suggestionNote;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
@@ -142,7 +147,7 @@ public class Suggestion {
                p1.execute();
                this.Approved = approved;
                this.approver = staffID;
-               getMessage().editMessage(getCurrentMsg()).queue();
+               getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
 
            } catch (SQLException e) {
                throw new UnCheckedSQLException(e);
@@ -155,11 +160,16 @@ public class Suggestion {
     }
 
     public int getYesCount() {
-        return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+            List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
+            return votes.size();
+        } else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
     }
 
     public int getNoCount() {
-        return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
+        return votes.size();} else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
     }
 
     public Message getCurrentMsg() {

@@ -22,6 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.leveling;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
@@ -94,6 +97,19 @@ public class PlayerStats {
                     p1.execute();
                     this.level = level + 1;
                     this.xp = 0;
+                    String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
+                    if (id == null) return true;
+                    LevelingManager manager = LevelingManager.get();
+                    Member member = core.getGuild().retrieveMemberById(id).complete();
+                    if (member == null) return true;
+                    for (Role role : manager.getRolesToRemove()) {
+                        if (member.getRoles().contains(role))
+                        core.getGuild().removeRoleFromMember(member, role).queue();
+                    }
+                    Role toAdd = manager.getRoleForLevel(level);
+                    if (toAdd != null) {
+                        core.getGuild().addRoleToMember(member, toAdd).queue();
+                    }
                     return true;
                 }
                 PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=? WHERE UUID=?");

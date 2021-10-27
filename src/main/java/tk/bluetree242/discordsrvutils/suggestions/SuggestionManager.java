@@ -22,29 +22,31 @@
 
 package tk.bluetree242.discordsrvutils.suggestions;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
+import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class SuggestionManager {
 
     private static SuggestionManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+    public boolean loading = false;
 
     public static SuggestionManager get() {
         return main;
@@ -63,6 +65,8 @@ public class SuggestionManager {
             }
         });
     }
+
+
 
     public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
         return core.completableFuture(() -> {
@@ -92,16 +96,23 @@ public class SuggestionManager {
 
 
     public Suggestion getSuggestion(ResultSet r) throws SQLException {
-        return getSuggestion(r, null);
+        return getSuggestion(r, null, null);
     }
 
-    public Suggestion getSuggestion(ResultSet r, ResultSet notesr) throws SQLException {
+    public Suggestion getSuggestion(ResultSet r, ResultSet notesr, ResultSet votesr) throws SQLException {
         if (notesr == null) {
             PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestion_notes WHERE SuggestionNumber=?");
             p1.setInt(1, r.getInt("SuggestionNumber"));
             notesr = p1.executeQuery();
         }
+        if (core.voteMode != SuggestionVoteMode.REACTIONS)
+        if (votesr == null) {
+            PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
+            p1.setInt(1, r.getInt("SuggestionNumber"));
+            votesr = p1.executeQuery();
+        }
         Set<SuggestionNote> notes = new HashSet<>();
+        Set<SuggestionVote> votes = new HashSet<>();
         while (notesr.next()) {
             notes.add(new SuggestionNote(
                     notesr.getLong("StaffID"),
@@ -110,12 +121,38 @@ public class SuggestionManager {
                     notesr.getLong("CreationTime")
             ));
         }
-        return new Suggestion(
+        Suggestion suggestion = new Suggestion(
                 Utils.b64Decode(r.getString("SuggestionText")),
                 r.getInt("SuggestionNumber"),
                 r.getLong("Submitter"),
                 r.getLong("ChannelID"), r.getLong("CreationTime"), notes, r.getLong("MessageID"),
-                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"));
+                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"), votes);
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+            while (votesr.next()) {
+                votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
+            }
+
+        }else {
+            /*
+            for (MessageReaction reaction : suggestion.getMessage().getReactions()) {
+                if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
+                    List<User> users = reaction.retrieveUsers().complete();
+                    for (User user : users) {
+                        if (!user.isBot())
+                        votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
+                    }
+                } else if (reaction.getReactionEmote().getName().equals(SuggestionManager.getNoEmoji().getName())) {
+                    List<User> users = reaction.retrieveUsers().complete();
+                    for (User user : users) {
+                        if (!user.isBot())
+                            votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
+                    }
+                }
+            }
+
+             */
+        }
+        return suggestion;
     }
 
 
@@ -132,6 +169,7 @@ public class SuggestionManager {
         if (channel == null) {
             throw new IllegalStateException("Suggestions Channel not found");
         }
+
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions ORDER BY SuggestionNumber DESC ");
@@ -141,11 +179,15 @@ public class SuggestionManager {
                     num = r1.getInt("SuggestionNumber") + 1;
                 }
 
-                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null);
+                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
-                Message msg = core.queueMsg(MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
+                MessageBuilder builder = MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
-                        ,null).build(), channel).complete();
+                        ,null);
+                if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+                    builder.setActionRows(getActionRow());
+                }
+                Message msg = core.queueMsg(builder.build(), channel).complete();
                 PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");
                 p2.setInt(1, num);
                 p2.setString(2, Utils.b64Encode(text));
@@ -154,14 +196,32 @@ public class SuggestionManager {
                 p2.setLong(5, channelId);
                 p2.setLong(6, System.currentTimeMillis());
                 p2.execute();
-                msg.addReaction(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getNameInReaction()).queue();
-                msg.addReaction(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getNameInReaction()).queue();
+                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                    msg.addReaction(getYesEmoji().getNameInReaction()).queue();
+                    msg.addReaction(getNoEmoji().getNameInReaction()).queue();
+                }
                 return suggestion;
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
         });
     }
+
+    public static Emoji getYesEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
+    }
+    public static Emoji getNoEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
+    }
+
+    public static ActionRow getActionRow() {
+        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
+    }
+
+
+
 
 
 

@@ -23,10 +23,12 @@
 package tk.bluetree242.discordsrvutils.tickets;
 
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import org.jetbrains.annotations.Nullable;
@@ -169,8 +171,7 @@ public class Panel {
                         new PlaceholdObject(user, "user"),
                         new PlaceholdObject(this, "panel"),
                         new PlaceholdObject(core.getGuild(), "guild")
-                ),null).build()).complete();
-                msg.addReaction("\uD83D\uDD12").queue();
+                ),null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel("Close Ticket")).complete();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
                 p1.setLong(2, channel.getIdLong());
@@ -251,8 +252,7 @@ public class Panel {
                     throw new IllegalArgumentException("Channel was not found");
                 }
                 Panel panel = new Panel(name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
-                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
-                msg.addReaction("\uD83C\uDFAB").queue();
+                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
                 panel.messageId = msg.getIdLong();
                 try (Connection conn = core.getDatabase()) {
                     PreparedStatement p1 = conn.prepareStatement("INSERT INTO ticket_panels(Name, ID, Channel, MessageID, OpenedCategory, ClosedCategory) VALUES (?, ?, ?, ?, ?, ?)");
@@ -336,13 +336,11 @@ public class Panel {
                     Message msg;
                     try {
                         if (!panel.name.equals(name)) {
-                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
-                            msg.addReaction("\uD83C\uDFAB").queue();
+                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
                         } else
                             msg = channel.retrieveMessageById(panel.messageId).complete();
                     } catch (ErrorResponseException ex) {
-                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).complete();
-                        msg.addReaction("\uD83C\uDFAB").queue();
+                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
                     }
                     PreparedStatement p1 = conn.prepareStatement("UPDATE ticket_panels SET Name=?, Channel=?, MessageID=?, OpenedCategory=?, ClosedCategory=? WHERE ID=?");
                     p1.setString(1, name);

@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.commandmanagement;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.PrivateChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
@@ -31,6 +32,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPerm
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.events.CommandExecuteEvent;
 
 import java.util.regex.Pattern;
 
@@ -83,7 +85,7 @@ public class CommandListener extends ListenerAdapter {
                         }
                         if (executor.isAdminOnly()) {
                             if (!core.isAdmin(e.getAuthor().getIdLong())) {
-                                e.getMessage().reply(Embed.error("Only Admins can use this command.")).queue();
+                                e.getMessage().reply(Embed.error("Only Admins can use this command.", "Your id must be in admin list on the config.yml")).queue();
                                 return;
                             }
                         }
@@ -98,6 +100,11 @@ public class CommandListener extends ListenerAdapter {
                         }
                     }
                     core.getLogger().info(e.getAuthor().getAsTag() + " Used " + core.getCommandPrefix() + cmd + " Command");
+                    try {
+                        DiscordSRV.api.callEvent(new CommandExecuteEvent(executor, e.getChannel(), e.getAuthor(), e));
+                    } catch (Exception ex) {
+
+                    }
                     executor.run(new CommandEvent(e.getMember(), e.getMessage(), e.getAuthor(), e.getChannel(), e.getJDA()));
                 } catch (InsufficientPermissionException ex) {
                     ex.printStackTrace();

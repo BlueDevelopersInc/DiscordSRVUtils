@@ -104,27 +104,27 @@ public class Utils {
         remaining = remaining - TimeUnit.MINUTES.toMillis(minutes);
         Long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
         if (days != 0) {
-            val = days + " Days";
+            val = days + " Day" + (days <= 1 ? "" : "s");
         }
         if (hours != 0) {
             if (val.equals("")) {
-                val = hours + " hours";
+                val = hours + " hour"+ (hours <= 1 ? "" : "s");
             } else {
-                val = val + ", " + hours + " hours";
+                val = val + ", " + hours + " hour" + (hours <= 1 ? "" : "s");
             }
         }
         if (minutes != 0) {
             if (val.equals("")) {
-                val = minutes + " minutes";
+                val = minutes + " minute" + (minutes <= 1 ? "" : "s");
             } else {
-                val = val + ", " + minutes + " minutes";
+                val = val + ", " + minutes + " minute" + (minutes <= 1 ? "" : "s");
             }
         }
         if (seconds != 0) {
             if (val.equals("")) {
-                val = seconds + " seconds";
+                val = seconds + " second" + (seconds <= 1 ? "" : "s");
             } else {
-                val = val + ", " + seconds + " seconds";
+                val = val + ", " + seconds + " second" + (days <= 1 ? "" : "s");
             }
         }
         if (val.equals("")) {
