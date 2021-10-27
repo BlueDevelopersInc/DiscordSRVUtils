@@ -273,6 +273,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
                 if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
                 if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
+                if (getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled()) valueMap.put("Punishment Messages", 1);
                 if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled()) valueMap.put("AFK Messages", 1);
                 return valueMap;
             }));
@@ -877,6 +878,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         } else {
             logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
+    }
+
+    private boolean isAnyPunishmentsPluginInstalled() {
+        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) return true;
+        if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;
+        if (getServer().getPluginManager().isPluginEnabled("Libertybans")) return true;
+        return false;
     }
 
 
