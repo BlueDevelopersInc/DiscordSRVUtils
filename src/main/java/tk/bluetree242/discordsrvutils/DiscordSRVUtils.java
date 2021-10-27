@@ -295,7 +295,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         String user = null;
         String pass = null;
         if (getSqlconfig().isEnabled()) {
-            jdbcurl = "jdbc:mysql://" + // lets continue
+            jdbcurl = "jdbc:mysql://" +
                     getSqlconfig().Host() +
                     ":" + getSqlconfig().Port() + "/" + getSqlconfig().DatabaseName() + "?useSSL=false";
             user = sqlconfig.UserName();
