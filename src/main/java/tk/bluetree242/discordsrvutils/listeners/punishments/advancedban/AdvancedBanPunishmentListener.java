@@ -23,10 +23,7 @@
 package tk.bluetree242.discordsrvutils.listeners.punishments.advancedban;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
 import me.leoko.advancedban.utils.Punishment;
@@ -123,7 +120,11 @@ public class AdvancedBanPunishmentListener implements Listener {
         String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId());
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
+
         if (!un) {
+            Member discordMember = core.getGuild().retrieveMember(discordUser).complete();
+            if (discordMember == null) return;
+            if (!core.getGuild().getSelfMember().canInteract(discordMember)) return;
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
                 switch (punishment.getType()) {
                 case BAN:
