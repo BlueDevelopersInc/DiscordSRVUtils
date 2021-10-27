@@ -53,4 +53,10 @@ public interface TicketsConfig {
     @ConfDefault.DefaultString("message:ticket-reopen")
     @ConfComments("#Message to send in ticket when its reopened")
     String ticket_reopen_message();
+
+    @AnnotationBasedSorter.Order(40)
+    @ConfKey("ticket-banned-role")
+    @ConfComments("# If user have this role they can't open a ticket")
+    @ConfDefault.DefaultLong(0)
+    Long ticket_banned_role();
 }
