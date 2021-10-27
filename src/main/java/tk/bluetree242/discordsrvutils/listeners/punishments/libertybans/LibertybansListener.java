@@ -24,10 +24,7 @@ package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
 
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import org.bukkit.Bukkit;
 import space.arim.libertybans.api.LibertyBans;
 import space.arim.libertybans.api.PlayerVictim;
@@ -153,6 +150,9 @@ public class LibertybansListener{
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
         if (!un) {
+            Member discordMember = core.getGuild().retrieveMember(discordUser).complete();
+            if (discordMember == null) return;
+            if (!core.getGuild().getSelfMember().canInteract(discordMember)) return;
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case BAN:
