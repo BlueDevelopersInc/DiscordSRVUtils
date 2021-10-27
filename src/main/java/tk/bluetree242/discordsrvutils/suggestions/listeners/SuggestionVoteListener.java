@@ -122,7 +122,7 @@ public class SuggestionVoteListener extends ListenerAdapter {
                         core.defaultHandle(ex);
                         return;
                     }
-                    e.deferReply(true).setContent("You now agree with this suggestion").queue();
+                    e.deferEdit().queue();
                 } else if (e.getButton().getId().equals("no")) {
                     try (Connection conn = core.getDatabase()){
                         PreparedStatement p1 = conn.prepareStatement("DELETE FROM suggestions_votes WHERE UserID=? AND SuggestionNumber=?");
@@ -143,7 +143,7 @@ public class SuggestionVoteListener extends ListenerAdapter {
                         core.defaultHandle(ex);
                         return;
                     }
-                    e.deferReply(true).setContent("You now disagree with this suggestion").queue();
+                    e.deferEdit().queue();
                 } else if (e.getButton().getId().equals("reset")) {
                     try (Connection conn = core.getDatabase()){
                         PreparedStatement p1 = conn.prepareStatement("DELETE FROM suggestions_votes WHERE UserID=? AND SuggestionNumber=?");
@@ -153,7 +153,7 @@ public class SuggestionVoteListener extends ListenerAdapter {
                         for (SuggestionVote vote : suggestion.getVotes()) {
                             if (vote.getId() == e.getUser().getIdLong()) suggestion.getVotes().remove(vote);
                         }
-                        e.deferReply(true).setContent("Cleared your vote to this suggestion").queue();
+                        e.deferEdit().queue();
                     } catch (SQLException ex) {
                         core.defaultHandle(ex);
                         return;
