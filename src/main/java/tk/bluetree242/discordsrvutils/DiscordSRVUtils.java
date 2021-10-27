@@ -68,6 +68,7 @@ import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
+import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
@@ -452,7 +453,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         suggestion = new JSONObject();
         suggestionFields = new JSONArray();
         suggestionEmbed.put("color", "green");
-            suggestionFields.put(new JSONObject().put("name", "Result").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
+        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
         suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
         suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
         suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
@@ -467,7 +468,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         suggestion = new JSONObject();
         suggestionFields = new JSONArray();
         suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Result").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
+        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
         suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
         suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
         suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
@@ -480,7 +481,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         suggestion = new JSONObject();
         suggestionFields = new JSONArray();
         suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Result").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
+        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
         suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
         suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
         suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
@@ -493,7 +494,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         suggestion = new JSONObject();
         suggestionFields = new JSONArray();
         suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Result").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
+        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
         suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
         suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
         suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
@@ -661,6 +662,10 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
                 new LitebansPunishmentListener();
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Litebans"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("LibertyBans")) {
+                new LibertybansListener();
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("LibertyBans"));
             }
             if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
