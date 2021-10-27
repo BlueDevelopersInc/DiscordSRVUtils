@@ -38,7 +38,7 @@ public class LibertyBansPunishment implements Punishment {
     @Override
     public String getDuration() {
         if (punishment.isPermanent()) return "Permanent";
-        return Utils.getDuration((punishment.getEndDate().toEpochMilli() - punishment.getStartDate().getEpochSecond()));
+        return Utils.getDuration((punishment.getEndDate().toEpochMilli() - punishment.getStartDate().toEpochMilli()));
     }
 
     @Override
