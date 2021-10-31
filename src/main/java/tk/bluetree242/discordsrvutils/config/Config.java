@@ -144,4 +144,10 @@ public interface Config {
     @ConfDefault.DefaultBoolean(false)
     Boolean minimize_errors();
 
+    @AnnotationBasedSorter.Order(170)
+    @ConfKey("pool-size")
+    @ConfComments("# Thread Pool Size. The more it increase the more it gets better. But will use more CPU.")
+    @ConfDefault.DefaultInteger(5)
+    int pool_size();
+
 }

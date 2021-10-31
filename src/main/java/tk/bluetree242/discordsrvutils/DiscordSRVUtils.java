@@ -124,13 +124,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
-    private ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3, new ThreadFactory() {
-        @Override
-        public Thread newThread(@NotNull Runnable r) {
-
-            return newDSUThread(r);
-        }
-    });
+    private ThreadPoolExecutor pool;
     private DiscordSRVListener dsrvlistener;
     private HikariDataSource sql;
     private List<ListenerAdapter> listeners = new ArrayList<>();
@@ -233,6 +227,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 setEnabled(false);
                 return;
             }
+
             try {
                 reloadConfigs();
             } catch (ConfigurationLoadException ex) {
@@ -261,6 +256,14 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return;
             }
 
+             pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
+                @Override
+                public Thread newThread(@NotNull Runnable r) {
+
+                    return newDSUThread(r);
+                }
+            });
+
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
             try {
@@ -279,7 +282,6 @@ public class DiscordSRVUtils extends JavaPlugin {
                 /*
                 if (!TicketManager.get().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
-
                  */
                 if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
                 if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
