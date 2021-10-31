@@ -365,182 +365,31 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     private void initDefaultMessages() {
-        //welcome message
-        JSONObject welcome = new JSONObject();
-        JSONObject welcomeembed = new JSONObject();
-        welcomeembed.put("color", "cyan");
-        welcomeembed.put("description", "\uD83D\uDD38 **Welcome [user.name] To The server!**\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Server ip** | play.example.com\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Store** | store.example.com");
-        welcomeembed.put("thumbnail", new JSONObject().put("url", "[user.effectiveAvatarUrl]"));
-        welcome.put("embed", welcomeembed);
-        defaultmessages.put("welcome", welcome.toString(1));
-        //afk message
-        JSONObject afk = new JSONObject();
-        JSONObject afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is now afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("afk", afk.toString(1));
-        afk = new JSONObject();
-        afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is no longer afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("no-longer-afk", afk.toString(1));
-        JSONObject punishmentMessage = new JSONObject();
-        JSONObject punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was banned by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("ban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unbanned by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was muted by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("mute", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unmuted by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unmute", punishmentMessage.toString(1));
-        JSONObject panel = new JSONObject();
-        JSONObject panelEmbed = new JSONObject();
-        panelEmbed.put("color", "cyan");
-        panelEmbed.put("title", "[panel.name]");
-        panelEmbed.put("description", "Click on The Button to open a ticket");
-        panel.put("embed", panelEmbed);
-        defaultmessages.put("panel", panel.toString(1));
-        JSONObject ticketOpened = new JSONObject();
-        JSONObject ticketOpenedEmbed = new JSONObject();
-        ticketOpened.put("content", "[user.asMention] Here is your ticket");
-        ticketOpenedEmbed.put("description", String.join("\n", new String[]{
-                "Staff will be here shortly",
-                "Click `Close Ticket` to close this ticket",
-                "**Panel Name: **[panel.name]"
-        }));
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-open", ticketOpened.toString(1));
-        JSONObject ticketClosed = new JSONObject();
-        JSONObject ticketClosedEmbed = new JSONObject();
-        ticketClosedEmbed.put("description", "Ticket Closed by [user.asMention]");
-        ticketClosedEmbed.put("color", "red");
-        ticketClosed.put("embed", ticketClosedEmbed);
-        defaultmessages.put("ticket-close", ticketClosed.toString(1));
-        ticketOpened = new JSONObject();
-        ticketOpenedEmbed = new JSONObject();
-        ticketOpenedEmbed.put("description", "Ticket reopened by [user.asMention]");
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-reopen", ticketOpened.toString(1));
-        JSONObject level = new JSONObject();
-        JSONObject levelEmbed = new JSONObject();
-        levelEmbed.put("color", "cyan");
-        levelEmbed.put("title", "Level for [stats.name]");
-        levelEmbed.put("description", String.join("\n", new String[]{
-                        "**Level:** [stats.level]",
-                        "**XP:** [stats.xp]",
-                        "**Rank:**: #[stats.rank]"
-                }
-        ));
-        levelEmbed.put("thumbnail", new JSONObject().put("url", "https://minotar.net/avatar/[stats.name]"));
-        level.put("embed", levelEmbed);
-        defaultmessages.put("level", level.toString(1));
-        JSONObject suggestion = new JSONObject();
-        JSONObject suggestionEmbed = new JSONObject();
-        suggestionEmbed.put("color", "orange");
-        JSONArray suggestionFields = new JSONArray();
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "orange");
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-denied", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-denied", suggestion.toString(1));
+        String[] messages = new String[]{"afk",
+                "ban",
+                "level",
+                "mute",
+                "no-longer-afk",
+                "panel",
+                "suggestion",
+                "suggestion-approved",
+                "suggestion-denied",
+                "suggestion-noted",
+                "suggestion-noted-approved",
+                "suggestion-noted-denied",
+                "ticket-close",
+                "ticket-open",
+                "ticket-reopen",
+                "unban",
+                "unmute",
+                "welcome"};
+        for (String msg : messages) {
+            try {
+                defaultmessages.put(msg, new String(getResource("messages/" + msg + ".json").readAllBytes()));
+            } catch (IOException e) {
+                logger.severe("Could not load " + msg + ".json");
+            }
+        }
     }
 
 
