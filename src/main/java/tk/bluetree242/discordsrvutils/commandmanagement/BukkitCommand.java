@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.commandmanagement;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,8 +35,7 @@ public abstract class BukkitCommand implements CommandExecutor {
 
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!DiscordSRVUtils.get().getPool().isShutdown())
-            DiscordSRVUtils.get().executeAsync(() -> {
+            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
                 try {
                     onRunAsync(sender, command, label, args);
                 } catch (Throwable ex) {
@@ -43,16 +43,6 @@ public abstract class BukkitCommand implements CommandExecutor {
                     sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
                 }
             });
-        else {
-            Thread thread = DiscordSRVUtils.get().newDSUThread(() -> {
-                try {
-                    onRunAsync(sender, command, label, args);
-                } catch (Throwable ex) {
-                    ex.printStackTrace();
-                    sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
-                }
-            });
-        }
         return true;
     }
 
