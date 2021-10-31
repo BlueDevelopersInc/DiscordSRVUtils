@@ -268,8 +268,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             Metrics metrics = new Metrics(this, 9456);
             metrics.addCustomChart(new AdvancedPie("features", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
+                /*
                 if (!TicketManager.get().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
+
+                 */
                 if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
                 if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
                 if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
