@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;

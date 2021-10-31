@@ -20,36 +20,35 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 
-public class CloseCommand extends Command {
-    public CloseCommand() {
-        super("close", CommandType.GUILDS, "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+import java.awt.*;
+
+public class CreatePanelCommand extends Command {
+    public CreatePanelCommand() {
+        super("createpanel", CommandType.GUILDS, "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+        setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
-            if (ticket == null) {
-                e.replyErr("You are not in a ticket").queue();
-                return;
-            }
-            if (ticket.isClosed()) {
-                e.replyErr("Ticket is already closed").queue();
-            } else {
-                DiscordSRVUtils.get().handleCF(ticket.close(e.getAuthor()), null, err -> {
-                    DiscordSRVUtils.get().defaultHandle(err);
-                });
-            }
-        }, err -> {
-            DiscordSRVUtils.get().defaultHandle(err);
-        });
+        if (CreatePanelWaiter.getWaiter((TextChannel) e.getChannel(), e.getMember().getUser()) != null) {
+            e.getChannel().sendMessage(Embed.error("You are already creating one")).queue();
+            return;
+        }
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setColor(Color.ORANGE);
+        embed.setDescription("**Step 1: Please Send the name of the panel**");
+        e.getChannel().sendMessage(embed.build()).queue();
+        new CreatePanelWaiter((TextChannel) e.getChannel(), e.getMember().getUser());
     }
 }

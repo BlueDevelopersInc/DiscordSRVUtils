@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;

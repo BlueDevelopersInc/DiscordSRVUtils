@@ -20,35 +20,35 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.admin;
 
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import org.json.JSONException;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
+import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 
-import java.awt.*;
-
-public class CreatePanelCommand extends Command {
-    public CreatePanelCommand() {
-        super("createpanel", CommandType.GUILDS, "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+public class TestMessageCommand extends Command {
+    public TestMessageCommand() {
+        super("testmessage", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN, "tm");
         setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        if (CreatePanelWaiter.getWaiter((TextChannel) e.getChannel(), e.getMember().getUser()) != null) {
-            e.getChannel().sendMessage(Embed.error("You are already creating one")).queue();
-            return;
+        String[] args = e.getArgs();
+        if (!(args.length >= 2)) {
+            e.reply(getHelpEmbed()).queue();
+        } else {
+            String name = args[1];
+            try {
+                e.replyMessage("message:" + name).queue();
+            } catch (EmbedNotFoundException ex) {
+                e.replyErr("Embed does not exist").queue();
+            } catch (JSONException ex) {
+                e.replyErr("Embed is invalid").queue();
+            }
         }
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setColor(Color.ORANGE);
-        embed.setDescription("**Step 1: Please Send the name of the panel**");
-        e.getChannel().sendMessage(embed.build()).queue();
-        new CreatePanelWaiter((TextChannel) e.getChannel(), e.getMember().getUser());
     }
 }
