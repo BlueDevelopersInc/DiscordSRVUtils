@@ -266,9 +266,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 setupDatabase();
             } catch (SQLException ex) {
-                logger.severe("Error could not connect to database: " + ex.getMessage());
-                setEnabled(false);
-                return;
+                startupError(ex, "Error could not connect to database: " + ex.getMessage());
             }
             DiscordSRV.api.subscribe(dsrvlistener);
             if (isReady()) {
@@ -295,21 +293,25 @@ public class DiscordSRVUtils extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
             metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
-            setEnabled(false);
-            logger.warning("DSU could not start.");
-            try {
-                logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            logger.severe("Send this to support at https://discordsrvutils.xyz/support");
-            ex.printStackTrace();
+            startupError(ex, "Plugin could not start");
         }
     }
 
     public void registerBukkitCommands() {
         getCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand());
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
+    }
+
+    private void startupError(Throwable ex,@NotNull String msg) {
+        setEnabled(false);
+        logger.warning(msg);
+        try {
+            logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+        ex.printStackTrace();
     }
 
     private void setupDatabase() throws SQLException {
