@@ -174,7 +174,7 @@ public class Panel {
                         new PlaceholdObject(user, "user"),
                         new PlaceholdObject(this, "panel"),
                         new PlaceholdObject(core.getGuild(), "guild")
-                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel("Close Ticket")).complete();
+                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
                 p1.setLong(2, channel.getIdLong());

@@ -59,4 +59,22 @@ public interface TicketsConfig {
     @ConfComments("# If user have this role they can't open a ticket")
     @ConfDefault.DefaultLong(0)
     Long ticket_banned_role();
+
+    @AnnotationBasedSorter.Order(50)
+    @ConfKey("ticket-close-button")
+    @ConfComments("# Text on Close Ticket Button")
+    @ConfDefault.DefaultString("Close Ticket")
+    String ticket_close_button();
+
+    @AnnotationBasedSorter.Order(60)
+    @ConfKey("ticket-reopen-button")
+    @ConfComments("# Text on Ticket Reopen Button")
+    @ConfDefault.DefaultString("Reopen Ticket")
+    String ticket_reopen_button();
+
+    @AnnotationBasedSorter.Order(70)
+    @ConfKey("ticket-delete-button")
+    @ConfComments("# Text on Delete Ticket Button")
+    @ConfDefault.DefaultString("Delete Ticket")
+    String delete_ticket_button();
 }
