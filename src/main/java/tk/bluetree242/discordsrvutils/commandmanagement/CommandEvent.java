@@ -32,12 +32,11 @@ import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
+import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Utils;
-
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -141,11 +140,10 @@ public class CommandEvent {
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
-            } else
-            if (!(ex instanceof InsufficientPermissionException)) {
+            } else if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
                 DiscordSRVUtils.get().defaultHandle(ex);
-            }  else {
+            } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
                 channel.sendMessage(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).queue();
@@ -154,7 +152,6 @@ public class CommandEvent {
         });
         return cf;
     }
-
 
 
     public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, boolean shouldDM, String failure) {
@@ -166,11 +163,10 @@ public class CommandEvent {
             MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
                 channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
-            } else
-            if (!(ex instanceof InsufficientPermissionException)) {
+            } else if (!(ex instanceof InsufficientPermissionException)) {
                 channel.sendMessage(Embed.error(failure)).queue();
                 DiscordSRVUtils.get().defaultHandle(ex);
-            }  else {
+            } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getGuildChannelById(exc.getChannelId());
                 channel.sendMessage(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + chnl == null ? "" : " In #" + chnl.getName())).queue();

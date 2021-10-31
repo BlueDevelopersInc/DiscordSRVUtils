@@ -22,17 +22,13 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.commandmanagement.*;
+import tk.bluetree242.discordsrvutils.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
-import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
-
-import java.awt.*;
-import java.time.Instant;
-import java.util.StringJoiner;
 
 public class DeletePanelCommand extends Command {
 
@@ -53,9 +49,13 @@ public class DeletePanelCommand extends Command {
                 } else {
                     DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
                         e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
-                    }, error -> {DiscordSRVUtils.get().defaultHandle(error, e.getChannel());});
+                    }, error -> {
+                        DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                    });
                 }
-            }, error -> {DiscordSRVUtils.get().defaultHandle(error, e.getChannel());});
+            }, error -> {
+                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+            });
         }
 
     }

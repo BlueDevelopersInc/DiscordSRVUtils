@@ -23,7 +23,9 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -39,21 +41,36 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class SuggestionManager {
 
     private static SuggestionManager main;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
     public boolean loading = false;
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+
+    public SuggestionManager() {
+        main = this;
+    }
 
     public static SuggestionManager get() {
         return main;
     }
 
-    public SuggestionManager() {
-        main = this;
+    public static Emoji getYesEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
+    }
+
+    public static Emoji getNoEmoji() {
+        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
+    }
+
+    public static ActionRow getActionRow() {
+        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
     }
 
     public CompletableFuture<Suggestion> getSuggestionByNumber(int num) {
@@ -66,8 +83,6 @@ public class SuggestionManager {
         });
     }
 
-
-
     public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
@@ -78,7 +93,7 @@ public class SuggestionManager {
         });
     }
 
-    public Suggestion getSuggestionByNumber(int number, Connection conn) throws SQLException{
+    public Suggestion getSuggestionByNumber(int number, Connection conn) throws SQLException {
         PreparedStatement p = conn.prepareStatement("SELECT * FROM suggestions WHERE SuggestionNumber=?");
         p.setInt(1, number);
         ResultSet r = p.executeQuery();
@@ -86,14 +101,13 @@ public class SuggestionManager {
         return getSuggestion(r);
     }
 
-    public Suggestion getSuggestionByMessageID(Long MessageID, Connection conn) throws SQLException{
+    public Suggestion getSuggestionByMessageID(Long MessageID, Connection conn) throws SQLException {
         PreparedStatement p = conn.prepareStatement("SELECT * FROM suggestions WHERE MessageID=?");
         p.setLong(1, MessageID);
         ResultSet r = p.executeQuery();
         if (!r.next()) return null;
         return getSuggestion(r);
     }
-
 
     public Suggestion getSuggestion(ResultSet r) throws SQLException {
         return getSuggestion(r, null, null);
@@ -106,11 +120,11 @@ public class SuggestionManager {
             notesr = p1.executeQuery();
         }
         if (core.voteMode != SuggestionVoteMode.REACTIONS)
-        if (votesr == null) {
-            PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
-            p1.setInt(1, r.getInt("SuggestionNumber"));
-            votesr = p1.executeQuery();
-        }
+            if (votesr == null) {
+                PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
+                p1.setInt(1, r.getInt("SuggestionNumber"));
+                votesr = p1.executeQuery();
+            }
         Set<SuggestionNote> notes = new HashSet<>();
         Set<SuggestionVote> votes = new HashSet<>();
         while (notesr.next()) {
@@ -132,7 +146,7 @@ public class SuggestionManager {
                 votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
             }
 
-        }else {
+        } else {
             /*
             for (MessageReaction reaction : suggestion.getMessage().getReactions()) {
                 if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
@@ -154,8 +168,6 @@ public class SuggestionManager {
         }
         return suggestion;
     }
-
-
 
     public CompletableFuture<Suggestion> makeSuggestion(String text, Long SubmitterID) {
         if (!core.getSuggestionsConfig().enabled()) {
@@ -183,7 +195,7 @@ public class SuggestionManager {
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
                 MessageBuilder builder = MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
-                        ,null);
+                        , null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
                     builder.setActionRows(getActionRow());
                 }
@@ -206,24 +218,6 @@ public class SuggestionManager {
             }
         });
     }
-
-    public static Emoji getYesEmoji() {
-        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
-    }
-    public static Emoji getNoEmoji() {
-        return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
-    }
-
-    public static ActionRow getActionRow() {
-        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
-    }
-
-
-
-
-
 
 
 }

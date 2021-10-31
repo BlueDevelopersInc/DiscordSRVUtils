@@ -22,11 +22,11 @@
 
 package tk.bluetree242.discordsrvutils.exceptions;
 
-public class StartupException extends RuntimeException{
+public class StartupException extends RuntimeException {
 
     private Throwable cause;
 
-    public StartupException(Throwable ex){
+    public StartupException(Throwable ex) {
         this.cause = ex;
     }
 

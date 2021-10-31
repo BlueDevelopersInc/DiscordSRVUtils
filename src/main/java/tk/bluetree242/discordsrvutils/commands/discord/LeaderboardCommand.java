@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
@@ -56,7 +55,7 @@ public class LeaderboardCommand extends Command {
                 case 3:
                     prefix = ":third_place:";
             }
-            joiner.add("**" +player.getRank() + ".** "  + prefix + player.getName() + " **Level:**" + player.getLevel());
+            joiner.add("**" + player.getRank() + ".** " + prefix + player.getName() + " **Level:**" + player.getLevel());
         }
         embed.setTitle("Leaderboard");
         embed.setDescription(joiner.toString());

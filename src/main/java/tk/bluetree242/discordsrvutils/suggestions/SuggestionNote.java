@@ -45,7 +45,6 @@ public class SuggestionNote {
     }
 
 
-
     public int getSuggestionNumber() {
         return SuggestionNumber;
     }

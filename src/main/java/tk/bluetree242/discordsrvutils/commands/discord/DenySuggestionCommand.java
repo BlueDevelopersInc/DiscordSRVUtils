@@ -59,4 +59,5 @@ public class DenySuggestionCommand extends Command {
                 e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), false, "Successfully denied suggestion", "Could not deny suggestion");
             });
         }
-    }}
+    }
+}

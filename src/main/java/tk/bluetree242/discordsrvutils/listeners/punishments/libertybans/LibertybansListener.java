@@ -25,30 +25,25 @@ package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
-import org.bukkit.Bukkit;
 import space.arim.libertybans.api.LibertyBans;
 import space.arim.libertybans.api.PlayerVictim;
-import space.arim.libertybans.api.PunishmentType;
 import space.arim.libertybans.api.Victim;
-import space.arim.libertybans.api.event.PardonEvent;
 import space.arim.libertybans.api.event.PostPardonEvent;
 import space.arim.libertybans.api.event.PostPunishEvent;
-import space.arim.libertybans.api.event.PunishEvent;
-import space.arim.libertybans.api.punish.DraftPunishment;
 import space.arim.libertybans.api.punish.Punishment;
 import space.arim.omnibus.Omnibus;
 import space.arim.omnibus.OmnibusProvider;
 import space.arim.omnibus.events.EventConsumer;
 import space.arim.omnibus.events.ListenerPriorities;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.AdvancedBanPunishment;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-public class LibertybansListener{
+public class LibertybansListener {
     private final LibertyBans plugin;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public LibertybansListener() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();
         plugin = omnibus.getRegistry().getProvider(LibertyBans.class).orElseThrow();
@@ -56,8 +51,52 @@ public class LibertybansListener{
         omnibus.getEventBus().registerListener(PostPardonEvent.class, ListenerPriorities.NORMAL, new PardonListener());
     }
 
-
-
+    private void syncPunishment(Punishment punishment, boolean un) {
+        if (punishment.getVictim().getType() == Victim.VictimType.ADDRESS) return;
+        PlayerVictim victim = (PlayerVictim) punishment.getVictim();
+        String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(victim.getUUID());
+        if (id == null) return;
+        User discordUser = core.getJDA().retrieveUserById(id).complete();
+        if (!un) {
+            Member discordMember = core.getGuild().retrieveMember(discordUser).complete();
+            if (discordMember == null) return;
+            if (!core.getGuild().getSelfMember().canInteract(discordMember)) return;
+            if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
+            switch (punishment.getType()) {
+                case BAN:
+                    core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    break;
+                case MUTE:
+                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    if (role == null) {
+                        if (core.getBansConfig().mutedRole() != 0)
+                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
+                        return;
+                    }
+                    core.getGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            if (!core.getBansConfig().isSyncUnpunishmentsWithDiscord()) return;
+            switch (punishment.getType()) {
+                case BAN:
+                    core.getGuild().unban(discordUser).reason("Minecraft Synced unban").queue();
+                    break;
+                case MUTE:
+                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    if (role == null) {
+                        if (core.getBansConfig().mutedRole() != 0)
+                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
+                        return;
+                    }
+                    core.getGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
+                default:
+                    break;
+            }
+        }
+    }
 
     public class PunishmentListener implements EventConsumer<PostPunishEvent> {
 
@@ -75,18 +114,18 @@ public class LibertybansListener{
                         }
                         if (e.getPunishment().getVictim().getType() == Victim.VictimType.ADDRESS) {
                             if (e.getPunishment().isTemporary())
-                            msg = MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                                msg = MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                             else {
                                 msg = MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                             }
                         }
-                        
+
                         break;
 
-                    case MUTE :
-                        msg =MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    case MUTE:
+                        msg = MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                         if (e.getPunishment().isTemporary()) {
-                            msg =MessageManager.get().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                            msg = MessageManager.get().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                         }
                         break;
                     default:
@@ -117,13 +156,13 @@ public class LibertybansListener{
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
                     case BAN:
-                        msg =MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                         if (e.getPunishment().getVictim().getType() == Victim.VictimType.ADDRESS) {
-                            msg =MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                            msg = MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                         }
                         break;
-                    case MUTE :
-                        msg =MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    case MUTE:
+                        msg = MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                         break;
                     default:
                         break;
@@ -140,50 +179,6 @@ public class LibertybansListener{
                 }
                 syncPunishment(e.getPunishment(), true);
             });
-        }
-    }
-
-    private void syncPunishment(Punishment punishment, boolean un) {
-        if (punishment.getVictim().getType() == Victim.VictimType.ADDRESS) return;
-        PlayerVictim victim = (PlayerVictim) punishment.getVictim();
-        String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(victim.getUUID());
-        if (id == null) return;
-        User discordUser = core.getJDA().retrieveUserById(id).complete();
-        if (!un) {
-            Member discordMember = core.getGuild().retrieveMember(discordUser).complete();
-            if (discordMember == null) return;
-            if (!core.getGuild().getSelfMember().canInteract(discordMember)) return;
-            if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
-            switch (punishment.getType()) {
-                case BAN:
-                    core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
-                    break;
-                case MUTE:
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
-                    if (role == null) {
-                        if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
-                        return;
-                    }
-                    core.getGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            if (!core.getBansConfig().isSyncUnpunishmentsWithDiscord()) return;
-            switch (punishment.getType()) {
-                case BAN:
-                    core.getGuild().unban(discordUser).reason("Minecraft Synced unban").queue();
-                    break;
-                case MUTE:
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
-                    if (role == null) {
-                        if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
-                        return;
-                    }
-                    core.getGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
-                default:break;
-            }
         }
     }
 }

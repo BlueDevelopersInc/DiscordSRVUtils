@@ -24,24 +24,14 @@ package tk.bluetree242.discordsrvutils.commands.bukkit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
-import space.arim.dazzleconf.error.InvalidConfigException;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.BukkitCommand;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.utils.DebugUtil;
-import tk.bluetree242.discordsrvutils.utils.Utils;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DiscordSRVUtilsCommand extends BukkitCommand {
-    public void onRunAsync(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws Throwable{
+    public void onRunAsync(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws Throwable {
         if (args.length == 0) {
             sender.sendMessage(colors("&eRunning DiscordSRVUtils v" + core.getDescription().getVersion()));
             sender.sendMessage(colors("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running")));
@@ -60,7 +50,7 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                     }
                     return;
                 }
-            }else if (args[0].equalsIgnoreCase("debug")) {
+            } else if (args[0].equalsIgnoreCase("debug")) {
                 if (sender.hasPermission("discordsrvutils.debug")) {
                     sender.sendMessage(ChatColor.GREEN + "Preparing Debug Report... Please wait");
                     try {

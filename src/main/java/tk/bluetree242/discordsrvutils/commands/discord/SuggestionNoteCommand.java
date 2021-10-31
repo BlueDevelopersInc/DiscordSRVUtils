@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;

@@ -43,6 +43,7 @@ public class PlayerStats {
     private int minecraftMessages;
     private int discordMessages;
     private int rank;
+
     public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages, int rank) {
         this.uuid = uuid;
         this.name = name;
@@ -71,15 +72,15 @@ public class PlayerStats {
 
     public CompletableFuture<Void> setLevel(int level) {
         return core.completableFutureRun(() -> {
-           try (Connection conn = core.getDatabase()) {
-               PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET Level=? WHERE UUID=?");
-               p1.setInt(1, level);
-               p1.setString(2, uuid.toString());
-               p1.execute();
-               this.level = level;
-           } catch (SQLException e) {
-               throw new UnCheckedSQLException(e);
-           }
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET Level=? WHERE UUID=?");
+                p1.setInt(1, level);
+                p1.setString(2, uuid.toString());
+                p1.execute();
+                this.level = level;
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
         });
     }
 
@@ -104,7 +105,7 @@ public class PlayerStats {
                     if (member == null) return true;
                     for (Role role : manager.getRolesToRemove()) {
                         if (member.getRoles().contains(role))
-                        core.getGuild().removeRoleFromMember(member, role).queue();
+                            core.getGuild().removeRoleFromMember(member, role).queue();
                     }
                     Role toAdd = manager.getRoleForLevel(level);
                     if (toAdd != null) {
@@ -128,29 +129,30 @@ public class PlayerStats {
     public int getMinecraftMessages() {
         return minecraftMessages;
     }
+
     public int getDiscordMessages() {
         return discordMessages;
     }
 
     public CompletableFuture<Void> addMessage(MessageType type) {
         return core.completableFutureRun(() -> {
-           try (Connection conn = core.getDatabase()) {
-               PreparedStatement p1 = null;
-               switch (type) {
-                   case DISCORD:
-                       p1 = conn.prepareStatement("UPDATE leveling SET DiscordMessages=? WHERE UUID=?");
-                       p1.setInt(1, discordMessages + 1);
-                       break;
-                   case MINECRAFT:
-                       p1 = conn.prepareStatement("UPDATE leveling SET MinecraftMessages=? WHERE UUID=?");
-                       p1.setInt(1, minecraftMessages + 1);
-                       break;
-               }
-               p1.setString(2, uuid.toString());
-               p1.execute();
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = null;
+                switch (type) {
+                    case DISCORD:
+                        p1 = conn.prepareStatement("UPDATE leveling SET DiscordMessages=? WHERE UUID=?");
+                        p1.setInt(1, discordMessages + 1);
+                        break;
+                    case MINECRAFT:
+                        p1 = conn.prepareStatement("UPDATE leveling SET MinecraftMessages=? WHERE UUID=?");
+                        p1.setInt(1, minecraftMessages + 1);
+                        break;
+                }
+                p1.setString(2, uuid.toString());
+                p1.execute();
             } catch (SQLException e) {
-               throw new UnCheckedSQLException(e);
-           }
+                throw new UnCheckedSQLException(e);
+            }
         });
     }
 

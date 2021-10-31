@@ -23,14 +23,11 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import tk.bluetree242.discordsrvutils.commandmanagement.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.StringJoiner;
 
 public class HelpCommand extends Command {

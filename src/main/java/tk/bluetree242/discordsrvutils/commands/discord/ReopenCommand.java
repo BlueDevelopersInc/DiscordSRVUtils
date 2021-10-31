@@ -44,8 +44,12 @@ public class ReopenCommand extends Command {
             if (!ticket.isClosed()) {
                 e.replyErr("Ticket is already opened").queue();
             } else {
-                DiscordSRVUtils.get().handleCF(ticket.reopen(e.getAuthor()), null, err -> {DiscordSRVUtils.get().defaultHandle(err);});
+                DiscordSRVUtils.get().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
+                    DiscordSRVUtils.get().defaultHandle(err);
+                });
             }
-        }, err -> {DiscordSRVUtils.get().defaultHandle(err);});
+        }, err -> {
+            DiscordSRVUtils.get().defaultHandle(err);
+        });
     }
 }

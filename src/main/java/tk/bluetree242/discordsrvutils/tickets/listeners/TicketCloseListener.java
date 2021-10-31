@@ -41,16 +41,19 @@ public class TicketCloseListener extends ListenerAdapter {
                 if (e.getReactionEmote().getName().equals("\uD83D\uDD12")) {
                     e.getReaction().removeReaction(e.getUser()).queue();
                     if (!ticket.isClosed())
-                    ticket.close(e.getUser());
+                        ticket.close(e.getUser());
                 } else if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
                     e.getReaction().removeReaction(e.getUser()).queue();
                     if (ticket.isClosed()) {
                         ticket.delete();
                     }
-                } if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
+                }
+                if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
                     e.getReaction().removeReaction(e.getUser()).queue();
                     if (ticket.isClosed()) {
-                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {core.defaultHandle(ex);});
+                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {
+                            core.defaultHandle(ex);
+                        });
                     }
                 }
             }
@@ -71,10 +74,13 @@ public class TicketCloseListener extends ListenerAdapter {
                     if (ticket.isClosed()) {
                         ticket.delete();
                     }
-                } if (e.getButton().getId().equals("reopen_ticket")) {
+                }
+                if (e.getButton().getId().equals("reopen_ticket")) {
                     e.deferEdit().queue();
                     if (ticket.isClosed()) {
-                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {core.defaultHandle(ex);});
+                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {
+                            core.defaultHandle(ex);
+                        });
                     }
                 } else return;
             }

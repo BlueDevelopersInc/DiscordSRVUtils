@@ -28,13 +28,10 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.entities.MessageReaction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.utils.Utils;
-import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 import java.awt.*;
@@ -55,7 +52,7 @@ public class EditPanelListener extends ListenerAdapter {
                 e.getChannel().sendMessage(Embed.error("Ok, Cancelled")).queue();
                 return;
             }
-            if (waiter.getStep() ==1) {
+            if (waiter.getStep() == 1) {
                 String name = e.getMessage().getContentDisplay();
                 if (name.length() > 32) {
                     e.getChannel().sendMessage(Embed.error("Name cannot be more than 32 characters. Try Again.")).queue();
@@ -67,7 +64,7 @@ public class EditPanelListener extends ListenerAdapter {
                     EditPanelWaiter.addReactions(msg);
                     waiter.setMessage(msg);
                 });
-            } else if (waiter.getStep() ==2) {
+            } else if (waiter.getStep() == 2) {
                 TextChannel channel = e.getMessage().getMentionedChannels().get(0);
                 if (channel == null) {
                     e.getChannel().sendMessage(Embed.error("You did not mention a channel. Please try again")).queue();
@@ -143,7 +140,9 @@ public class EditPanelListener extends ListenerAdapter {
                         }
                     }
                     Set<Long> rls = new HashSet<>();
-                    roles.forEach(r -> {rls.add(r.getIdLong());});
+                    roles.forEach(r -> {
+                        rls.add(r.getIdLong());
+                    });
                     waiter.getEditor().setAllowedRoles(rls);
                     waiter.setStep(0);
                     e.getChannel().sendMessage(EditPanelWaiter.getEmbed()).content("Ok, Want to edit anything else?").queue(msg -> {
@@ -172,18 +171,19 @@ public class EditPanelListener extends ListenerAdapter {
                         } else {
                             e.getChannel().sendMessage(Embed.success("Successfully applied changes")).queue();
                         }
-                    }, err -> {core.defaultHandle(err, e.getChannel());});
+                    }, err -> {
+                        core.defaultHandle(err, e.getChannel());
+                    });
                 } else if (name.equals("❌")) {
                     waiter.expire(false);
                     e.getChannel().sendMessage(Embed.error("Ok, Cancelled")).queue();
                 } else if (waiter.getStep() != 0) {
                     e.getReaction().removeReaction(e.getUser()).queue();
-                }
-                else if (name.equals("1️⃣")) {
+                } else if (name.equals("1️⃣")) {
 
-                     waiter.setStep(1);
-                     embed.setDescription("Please send the new name for the panel");
-                     e.getChannel().sendMessage(embed.build()).queue();
+                    waiter.setStep(1);
+                    embed.setDescription("Please send the new name for the panel");
+                    e.getChannel().sendMessage(embed.build()).queue();
                 } else if (name.equals("2️⃣")) {
                     waiter.setStep(2);
                     embed.setDescription("Please mention the new channel for the panel");

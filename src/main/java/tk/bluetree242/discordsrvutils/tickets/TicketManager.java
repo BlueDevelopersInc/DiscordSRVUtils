@@ -30,24 +30,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class TicketManager {
     private static TicketManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
-    public static TicketManager get() {
-        return main;
-    }
-    public static TicketManager getInstance() {
-        return get();
-    }
 
     public TicketManager() {
         main = this;
+    }
+
+    public static TicketManager get() {
+        return main;
+    }
+
+    public static TicketManager getInstance() {
+        return get();
     }
 
     public CompletableFuture<Panel> getPanelById(String id) {
@@ -130,6 +130,7 @@ public class TicketManager {
             }
         });
     }
+
     public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
@@ -146,7 +147,7 @@ public class TicketManager {
         });
     }
 
-    protected Ticket getTicket(ResultSet r, Panel panel) throws SQLException{
+    protected Ticket getTicket(ResultSet r, Panel panel) throws SQLException {
         if (panel == null) {
             PreparedStatement p = r.getStatement().getConnection().prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
             p.setString(1, r.getString("ID"));
@@ -156,7 +157,7 @@ public class TicketManager {
         return new Ticket(r.getString("ID"), r.getLong("UserID"), r.getLong("Channel"), Utils.getDBoolean(r.getString("Closed")), panel, r.getLong("MessageID"));
     }
 
-    protected Ticket getTicket(ResultSet r) throws SQLException{
+    protected Ticket getTicket(ResultSet r) throws SQLException {
         return getTicket(r, null);
     }
 

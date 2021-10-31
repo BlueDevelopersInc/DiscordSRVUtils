@@ -22,10 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
@@ -35,11 +32,9 @@ import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-import java.util.UUID;
-
 public class LevelCommand extends Command {
     public LevelCommand() {
-        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]",  null, CommandCategory.LEVELING, "rank");
+        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING, "rank");
     }
 
     @Override

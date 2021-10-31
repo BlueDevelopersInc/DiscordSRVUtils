@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
@@ -45,8 +44,12 @@ public class CloseCommand extends Command {
             if (ticket.isClosed()) {
                 e.replyErr("Ticket is already closed").queue();
             } else {
-                DiscordSRVUtils.get().handleCF(ticket.close(e.getAuthor()), null, err -> {DiscordSRVUtils.get().defaultHandle(err);});
+                DiscordSRVUtils.get().handleCF(ticket.close(e.getAuthor()), null, err -> {
+                    DiscordSRVUtils.get().defaultHandle(err);
+                });
             }
-        }, err -> {DiscordSRVUtils.get().defaultHandle(err);});
+        }, err -> {
+            DiscordSRVUtils.get().defaultHandle(err);
+        });
     }
 }

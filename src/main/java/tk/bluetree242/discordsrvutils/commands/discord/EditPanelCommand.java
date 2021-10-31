@@ -37,6 +37,7 @@ public class EditPanelCommand extends Command {
         super("editpanel", CommandType.GUILDS, "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN, "ep");
         setAdminOnly(true);
     }
+
     @Override
     public void run(CommandEvent e) throws Exception {
         String[] args = e.getArgs();
@@ -51,15 +52,21 @@ public class EditPanelCommand extends Command {
                         if (panel == null) {
                             e.reply(Embed.error("Panel not found, use " + getCommandPrefix() + "panelist for list of panels")).queue();
                         } else {
-                                e.getChannel().sendMessage(EditPanelWaiter.getEmbed()).queue(msg -> {
-                                    new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
-                                    EditPanelWaiter.addReactions(msg);
+                            e.getChannel().sendMessage(EditPanelWaiter.getEmbed()).queue(msg -> {
+                                new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
+                                EditPanelWaiter.addReactions(msg);
 
-                            }, error -> {DiscordSRVUtils.get().defaultHandle(error, e.getChannel());});
+                            }, error -> {
+                                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                            });
                         }
-                    }, error -> {DiscordSRVUtils.get().defaultHandle(error, e.getChannel());});
+                    }, error -> {
+                        DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                    });
                 }
-            }, error -> {DiscordSRVUtils.get().defaultHandle(error, e.getChannel());});
+            }, error -> {
+                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+            });
         }
     }
 }

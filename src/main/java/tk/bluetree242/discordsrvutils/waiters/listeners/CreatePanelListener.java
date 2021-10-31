@@ -51,7 +51,7 @@ public class CreatePanelListener extends ListenerAdapter {
                 e.getChannel().sendMessage(Embed.error("Ok, Cancelled")).queue();
                 return;
             }
-            if (waiter.getStep() ==1) {
+            if (waiter.getStep() == 1) {
                 String name = e.getMessage().getContentDisplay();
                 if (name.length() > 32) {
                     e.getChannel().sendMessage(Embed.error("Name cannot be more than 32 characters. Try Again.")).queue();
@@ -62,7 +62,7 @@ public class CreatePanelListener extends ListenerAdapter {
                 embed.setColor(Color.ORANGE);
                 embed.setDescription("**Step 2: Please mention the channel the panel should be sent to**");
                 e.getChannel().sendMessage(embed.build()).queue();
-            } else if (waiter.getStep() ==2) {
+            } else if (waiter.getStep() == 2) {
                 if (e.getMessage().getMentionedChannels().isEmpty()) {
                     e.getChannel().sendMessage(Embed.error("You did not mention a channel. Please try again")).queue();
                     return;
@@ -135,7 +135,9 @@ public class CreatePanelListener extends ListenerAdapter {
                         }
                     }
                     Set<Long> rls = new HashSet<>();
-                    roles.forEach(r -> {rls.add(r.getIdLong());});
+                    roles.forEach(r -> {
+                        rls.add(r.getIdLong());
+                    });
                     waiter.getBuilder().setAllowedRoles(rls);
                 }
                 waiter.expire(false);
