@@ -77,4 +77,10 @@ public interface TicketsConfig {
     @ConfComments("# Text on Delete Ticket Button")
     @ConfDefault.DefaultString("Delete Ticket")
     String delete_ticket_button();
+
+    @AnnotationBasedSorter.Order(80)
+    @ConfKey("ticket-open-ephemeral-msg")
+    @ConfComments("# Text on Delete Ticket Button")
+    @ConfDefault.DefaultString("Ticket Opened at [channel.asMention]")
+    String ticket_open_ephemeral_msg();
 }

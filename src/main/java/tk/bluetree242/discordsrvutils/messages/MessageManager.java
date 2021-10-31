@@ -24,6 +24,8 @@ package tk.bluetree242.discordsrvutils.messages;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -173,6 +175,12 @@ public class MessageManager {
 
     public MessageBuilder getMessage(String content) {
         return getMessage(content, null, null);
+    }
+
+    public ReplyAction messageToReplyAction(ReplyAction action, Message msg) {
+        action.addEmbeds(msg.getEmbeds());
+        action.setContent(msg.getContentRaw());
+        return action;
     }
 
 
