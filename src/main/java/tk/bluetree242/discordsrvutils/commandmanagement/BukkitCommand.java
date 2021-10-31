@@ -33,6 +33,7 @@ public  abstract class BukkitCommand implements CommandExecutor {
     protected  DiscordSRVUtils core = DiscordSRVUtils.get();
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!DiscordSRVUtils.get().getPool().isShutdown())
         DiscordSRVUtils.get().executeAsync(() -> {
             try {
                 onRunAsync(sender, command, label, args);
@@ -41,6 +42,16 @@ public  abstract class BukkitCommand implements CommandExecutor {
                 sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
             }
         });
+        else {
+            Thread thread = DiscordSRVUtils.get().newDSUThread(() -> {
+            try {
+                onRunAsync(sender, command, label, args);
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+                sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
+            }
+        });
+        }
         return true;
     }
 

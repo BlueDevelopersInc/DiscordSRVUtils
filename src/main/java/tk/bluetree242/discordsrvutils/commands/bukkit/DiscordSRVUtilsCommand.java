@@ -62,7 +62,12 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                 }
             }else if (args[0].equalsIgnoreCase("debug")) {
                 if (sender.hasPermission("discordsrvutils.debug")) {
-                    sender.sendMessage(colors("&aYour Debug report is available at: &e" + DebugUtil.run()));
+                    sender.sendMessage(ChatColor.GREEN + "Preparing Debug Report... Please wait");
+                    try {
+                        sender.sendMessage(colors("&aYour Debug report is available at: &e" + DebugUtil.run()));
+                    } catch (Exception e) {
+                        sender.sendMessage(colors("&cERROR: " + e.getMessage()));
+                    }
                     return;
                 }
             }

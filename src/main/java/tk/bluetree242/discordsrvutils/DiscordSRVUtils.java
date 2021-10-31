@@ -57,7 +57,6 @@ import tk.bluetree242.discordsrvutils.commands.discord.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
@@ -79,6 +78,7 @@ import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -126,16 +126,25 @@ public class DiscordSRVUtils extends JavaPlugin {
     private SuggestionsConfig suggestionsConfig;
     public final Map<String, String> defaultmessages = new HashMap<>();
     public SuggestionVoteMode voteMode;
-    private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
+    public String finalError = null;
+    private ThreadPoolExecutor pool = (ThreadPoolExecutor)Executors.newFixedThreadPool(3, new ThreadFactory() {
         @Override
         public Thread newThread(@NotNull Runnable r) {
-            Thread thread = new Thread(r);
-            thread.setName("DSU-THREAD");
-            thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
-            return thread;
+
+            return newDSUThread(r);
         }
     });
+
+    public Thread newDSUThread(Runnable r) {
+        Thread thread = new Thread(r);
+        thread.setName("DSU-THREAD");
+        thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
+        return thread;
+    }
+    public ThreadPoolExecutor getPool() {
+        return pool;
+    }
     private DiscordSRVListener dsrvlistener;
     public Logger logger = getLogger();
     private HikariDataSource sql;
@@ -283,7 +292,15 @@ public class DiscordSRVUtils extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
             metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
-            throw new StartupException(ex);
+            setEnabled(false);
+            logger.warning("DSU could not start.");
+            try {
+                logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+            ex.printStackTrace();
         }
     }
 
@@ -514,7 +531,6 @@ public class DiscordSRVUtils extends JavaPlugin {
 
 
     public void onDisable() {
-        instance = null;
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
@@ -881,6 +897,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         } else {
             logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
+        finalError = Utils.exceptionToStackTrack(ex);
     }
 
     private boolean isAnyPunishmentsPluginInstalled() {

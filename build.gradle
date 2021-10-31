@@ -115,7 +115,7 @@ dependencies {
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.3'
+version = '1.2.4-BETA'
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
 java.sourceCompatibility = JavaVersion.VERSION_11

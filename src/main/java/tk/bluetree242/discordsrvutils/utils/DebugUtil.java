@@ -63,10 +63,12 @@ import static github.scarsz.discordsrv.util.DebugUtil.b64;
 // I Copied some of the original discordsrv code for some reason. This code isn't 100% mine
 public class DebugUtil {
     private static OkHttpClient client = new OkHttpClient.Builder().build();
-    public static String run() {
-        try {
+    public static String run() throws Exception {
+        return run(null);
+    }
+    public static String run(String stacktrack) throws Exception{
             DiscordSRVUtils core = DiscordSRVUtils.get();
-
+            if (stacktrack == null) stacktrack = core.finalError;
             JSONArray data = new JSONArray();
             Map<String, String> information = new HashMap<>();
             information.put("DSU Version", core.getDescription().getVersion());
@@ -74,6 +76,7 @@ public class DebugUtil {
             information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
             information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
             information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
+            information.put("DSU Status", core.isEnabled() ? "Enabled" : "Disabled");
             information.put("JDA Status", (DiscordUtil.getJda() != null && DiscordUtil.getJda().getGatewayPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getGatewayPing() + "ms" : "build not finished"));
             information.put("Registered listeners", getRegisteredListeners());
             information.put("Channels",  DiscordSRV.getPlugin().getChannels() + "");
@@ -89,12 +92,18 @@ public class DebugUtil {
                             "\n    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()) +
                             "\n    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive())
             );
+            information.put("ExecutorService Status",  (core.getPool().isShutdown() ? "Shutdown" : "Q:" + core.getPool().getQueue() + ", R:" + core.getPool().getActiveCount() + ", AV:" + core.getPool().getPoolSize()));
             information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
             information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
             data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
-            data.put(new JSONObject().put("type", "files").put("name", "Relevant Lines From Logs").put("data",
+            JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                     new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
-                    ));
+            );
+            if (stacktrack != null) {
+                logs.getJSONArray("data").put(new JSONObject().put("type", "log").put("name", "Last Error").put("content", Utils.b64Encode(stacktrack)));
+            }
+            data.put(logs);
+
             data.put(new JSONObject().put("type", "key_value").put("name", "System Info").put("data", MapToKeyValue(getSystemInfo())));
             data.put(new JSONObject().put("type", "key_value").put("name", "Server Info").put("data", MapToKeyValue(getServerInfo())));
             data.put(new JSONObject().put("type", "files").put("name", "DiscordSRVUtils Conf Files").put("data", FilesToArray(getDSUFiles())));
@@ -110,7 +119,6 @@ public class DebugUtil {
             String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
             RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(encrypt(key.getBytes(), data.toString()))).build();
             Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.tk/api/v1/createDebug").build();
-            try {
             Response response = client.newCall(request).execute();
 
                 JSONObject bdy = new JSONObject(response.body().string());
@@ -119,16 +127,13 @@ public class DebugUtil {
                     return "ERROR: INVALID RESPONSE CODE " + response.code();
                 }
                 return "https://mcdebug.bluetree242.tk" + "/" + bdy.getString("id") + "#" + key;
-         } catch (IOException ex) {
-                return "ERROR " + ex.getMessage();
-            }
 
 
-        } catch (Exception ex) {
-            return "ERROR " + ex.getMessage();
-        }
+
+
 
     }
+
 
     private static JSONArray MapToKeyValue(Map<String, String> map) {
         JSONArray output = new JSONArray();

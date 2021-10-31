@@ -31,6 +31,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -214,5 +216,12 @@ public class Utils {
             } else return new Emoji(unicode);
 
         } else return new Emoji(emote.getIdLong(), emote.getName(), emote.isAnimated());
+    }
+
+    public static String exceptionToStackTrack(Throwable e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
     }
 }
