@@ -1,0 +1,6 @@
+{"embed": {
+ "thumbnail": {"url": "https://minotar.net/avatar/[stats.name]"},
+ "color": "cyan",
+ "description": "**Level:** [stats.level]\n**XP:** [stats.xp]\n**Rank:**: #[stats.rank]",
+ "title": "Level for [stats.name]"
+}}

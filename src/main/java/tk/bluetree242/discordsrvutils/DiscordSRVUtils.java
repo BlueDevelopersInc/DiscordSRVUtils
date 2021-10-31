@@ -32,10 +32,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
-
-
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -46,7 +44,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
@@ -54,10 +51,17 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
 import tk.bluetree242.discordsrvutils.commands.discord.*;
+import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
@@ -76,9 +80,10 @@ import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
-import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
+import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -105,15 +110,17 @@ import java.util.logging.Logger;
 public class DiscordSRVUtils extends JavaPlugin {
 
     private static DiscordSRVUtils instance;
-    public static DiscordSRVUtils get() {
-        return instance;
-    }
-    public JSONObject levelingRolesRaw;
-    public boolean removedDiscordSRVAccountLinkListener = false;
-    private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
-    private Config config;
     public final String fileseparator = System.getProperty("file.separator");
     public final Path messagesDirectory = Paths.get(getDataFolder() + fileseparator + "messages");
+    public final Map<String, String> defaultmessages = new HashMap<>();
+    public JSONObject levelingRolesRaw;
+    public boolean removedDiscordSRVAccountLinkListener = false;
+    public SuggestionVoteMode voteMode;
+    public String finalError = null;
+    public Logger logger = getLogger();
+    public List<Plugin> hookedPlugins = new ArrayList<>();
+    private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private Config config;
     private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(getDataFolder().toPath(), "sql.yml", SQLConfig.class);
     private SQLConfig sqlconfig;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
@@ -124,23 +131,27 @@ public class DiscordSRVUtils extends JavaPlugin {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
-    public final Map<String, String> defaultmessages = new HashMap<>();
-    public SuggestionVoteMode voteMode;
-    private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
-        @Override
-        public Thread newThread(@NotNull Runnable r) {
-            Thread thread = new Thread(r);
-            thread.setName("DSU-THREAD");
-            thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
-            return thread;
-        }
-    });
+    private ThreadPoolExecutor pool;
     private DiscordSRVListener dsrvlistener;
-    public Logger logger = getLogger();
     private HikariDataSource sql;
     private List<ListenerAdapter> listeners = new ArrayList<>();
-    public List<Plugin> hookedPlugins = new ArrayList<>();
+
+    public static DiscordSRVUtils get() {
+        return instance;
+    }
+
+    public Thread newDSUThread(Runnable r) {
+        Thread thread = new Thread(r);
+        thread.setName("DSU-THREAD");
+        thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
+        return thread;
+    }
+
+    public ThreadPoolExecutor getPool() {
+        return pool;
+    }
+
     private void init() {
         instance = this;
         dsrvlistener = new DiscordSRVListener();
@@ -155,7 +166,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new CreatePanelListener());
         listeners.add(new PaginationListener());
         listeners.add(new TicketDeleteListener());
-        listeners.add(new PanelReactListener());
+        listeners.add(new PanelOpenListener());
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
@@ -174,7 +185,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void onEnable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, ()-> {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
                 if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
@@ -186,7 +197,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
                 int versions_behind = res.getInt("versions_behind");
-                String logger = res.getString("type") != null ? res.getString("type") :"INFO";
+                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
                 String msg = null;
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
@@ -223,6 +234,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 setEnabled(false);
                 return;
             }
+
             try {
                 reloadConfigs();
             } catch (ConfigurationLoadException ex) {
@@ -251,14 +263,20 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return;
             }
 
+             pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
+                @Override
+                public Thread newThread(@NotNull Runnable r) {
+
+                    return newDSUThread(r);
+                }
+            });
+
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
             registerBukkitCommands();
             try {
                 setupDatabase();
             } catch (SQLException ex) {
-                logger.severe("Error could not connect to database: " + ex.getMessage());
-                setEnabled(false);
-                return;
+                startupError(ex, "Error could not connect to database: " + ex.getMessage());
             }
             DiscordSRV.api.subscribe(dsrvlistener);
             if (isReady()) {
@@ -268,18 +286,23 @@ public class DiscordSRVUtils extends JavaPlugin {
             Metrics metrics = new Metrics(this, 9456);
             metrics.addCustomChart(new AdvancedPie("features", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
+                /*
                 if (!TicketManager.get().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
+                 */
                 if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
                 if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
                 if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
-                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled()) valueMap.put("AFK Messages", 1);
+                if (getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled())
+                    valueMap.put("Punishment Messages", 1);
+                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled())
+                    valueMap.put("AFK Messages", 1);
                 return valueMap;
             }));
             metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
             metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
-            throw new StartupException(ex);
+            startupError(ex, "Plugin could not start");
         }
     }
 
@@ -288,13 +311,25 @@ public class DiscordSRVUtils extends JavaPlugin {
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
     }
 
+    private void startupError(Throwable ex,@NotNull String msg) {
+        setEnabled(false);
+        logger.warning(msg);
+        try {
+            logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+        ex.printStackTrace();
+    }
+
     private void setupDatabase() throws SQLException {
         HikariConfig settings = new HikariConfig();
         String jdbcurl = null;
         String user = null;
         String pass = null;
         if (getSqlconfig().isEnabled()) {
-            jdbcurl = "jdbc:mysql://" + // lets continue
+            jdbcurl = "jdbc:mysql://" +
                     getSqlconfig().Host() +
                     ":" + getSqlconfig().Port() + "/" + getSqlconfig().DatabaseName() + "?useSSL=false";
             user = sqlconfig.UserName();
@@ -313,7 +348,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             try (Connection conn = sql.getConnection()) {
                 //language=hsqldb
                 String query = "SET DATABASE SQL SYNTAX MYS TRUE;";
-              conn.prepareStatement(query).execute();
+                conn.prepareStatement(query).execute();
             }
         }
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
@@ -329,202 +364,49 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     private void initDefaultMessages() {
-        //welcome message
-        JSONObject welcome = new JSONObject();
-        JSONObject welcomeembed = new JSONObject();
-        welcomeembed.put("color", "cyan");
-        welcomeembed.put("description", "\uD83D\uDD38 **Welcome [user.name] To The server!**\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Server ip** | play.example.com\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Store** | store.example.com");
-        welcomeembed.put("thumbnail", new JSONObject().put("url", "[user.effectiveAvatarUrl]"));
-        welcome.put("embed", welcomeembed);
-        defaultmessages.put("welcome", welcome.toString(1));
-        //afk message
-        JSONObject afk = new JSONObject();
-        JSONObject afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is now afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("afk", afk.toString(1));
-        afk = new JSONObject();
-        afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is no longer afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("no-longer-afk", afk.toString(1));
-        JSONObject punishmentMessage = new JSONObject();
-        JSONObject punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was banned by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("ban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unbanned by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was muted by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("mute", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unmuted by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unmute", punishmentMessage.toString(1));
-        JSONObject panel = new JSONObject();
-        JSONObject panelEmbed = new JSONObject();
-        panelEmbed.put("color", "cyan");
-        panelEmbed.put("title", "[panel.name]");
-        panelEmbed.put("description", "Click on The Button to open a ticket");
-        panel.put("embed", panelEmbed);
-        defaultmessages.put("panel", panel.toString(1));
-        JSONObject ticketOpened = new JSONObject();
-        JSONObject ticketOpenedEmbed = new JSONObject();
-        ticketOpened.put("content", "[user.asMention] Here is your ticket");
-        ticketOpenedEmbed.put("description", String.join("\n", new String[]{
-                "Staff will be here shortly",
-                "Click `Close Ticket` to close this ticket",
-                "**Panel Name: **[panel.name]"
-        }));
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-open", ticketOpened.toString(1));
-        JSONObject ticketClosed = new JSONObject();
-        JSONObject ticketClosedEmbed = new JSONObject();
-        ticketClosedEmbed.put("description", "Ticket Closed by [user.asMention]");
-        ticketClosedEmbed.put("color", "red");
-        ticketClosed.put("embed", ticketClosedEmbed);
-        defaultmessages.put("ticket-close", ticketClosed.toString(1));
-        ticketOpened = new JSONObject();
-        ticketOpenedEmbed = new JSONObject();
-        ticketOpenedEmbed.put("description", "Ticket reopened by [user.asMention]");
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-reopen", ticketOpened.toString(1));
-        JSONObject level = new JSONObject();
-        JSONObject levelEmbed = new JSONObject();
-        levelEmbed.put("color", "cyan");
-        levelEmbed.put("title", "Level for [stats.name]");
-        levelEmbed.put("description", String.join("\n", new String[]{
-                        "**Level:** [stats.level]",
-                        "**XP:** [stats.xp]",
-                         "**Rank:**: #[stats.rank]"
-                }
-        ));
-        levelEmbed.put("thumbnail", new JSONObject().put("url", "https://minotar.net/avatar/[stats.name]"));
-        level.put("embed", levelEmbed);
-        defaultmessages.put("level", level.toString(1));
-        JSONObject suggestion = new JSONObject();
-        JSONObject suggestionEmbed = new JSONObject();
-        suggestionEmbed.put("color", "orange");
-        JSONArray suggestionFields = new JSONArray();
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "orange");
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-denied", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-denied", suggestion.toString(1));
+        String[] messages = new String[]{"afk",
+                "ban",
+                "level",
+                "mute",
+                "no-longer-afk",
+                "panel",
+                "suggestion",
+                "suggestion-approved",
+                "suggestion-denied",
+                "suggestion-noted",
+                "suggestion-noted-approved",
+                "suggestion-noted-denied",
+                "ticket-close",
+                "ticket-open",
+                "ticket-reopen",
+                "unban",
+                "unmute",
+                "welcome"};
+        for (String msg : messages) {
+            try {
+                defaultmessages.put(msg, new String(getResource("messages/" + msg + ".json").readAllBytes()));
+            } catch (IOException e) {
+                logger.severe("Could not load " + msg + ".json");
+            }
+        }
     }
 
 
-
     public void onDisable() {
-        instance = null;
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
-        if (sql != null)sql.close();
+        if (sql != null) sql.close();
     }
 
     private void whenStarted() {
         if (messagesDirectory.toFile().mkdir()) {
             defaultmessages.forEach((key, val) -> {
                 try {
-                    File file =  new File(messagesDirectory + fileseparator + key + ".json");
+                    File file = new File(messagesDirectory + fileseparator + key + ".json");
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);
@@ -547,7 +429,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             } else {
                 levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
             }
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             logger.severe("Error creating leveling-roles.json");
         } catch (IOException e) {
             logger.severe("Error creating leveling-roles.json");
@@ -585,16 +467,13 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
 
-
-
-
     public boolean isReady() {
         return DiscordSRV.isReady;
     }
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
-        config =configmanager.reloadConfigData();
+        config = configmanager.reloadConfigData();
         sqlconfigmanager.reloadConfig();
         sqlconfig = sqlconfigmanager.reloadConfigData();
         bansIntegrationconfigmanager.reloadConfig();
@@ -685,6 +564,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         });
 
     }
+
     private void fixTickets() {
         try (Connection conn = getDatabase()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
@@ -770,6 +650,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public JDA getJDA() {
         return DiscordSRV.getPlugin().getJda();
     }
+
     public MessageManager getEmbedManager() {
         return MessageManager.get();
     }
@@ -808,7 +689,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         return config.prefix();
     }
 
-    public Connection getDatabase() throws SQLException{
+    public Connection getDatabase() throws SQLException {
         return sql.getConnection();
     }
 
@@ -821,9 +702,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             return DiscordSRV.getPlugin().getMainTextChannel();
         } else return getJDA().getTextChannelById(id);
     }
+
     public TextChannel getChannel(long id) {
         return getChannel(id, null);
     }
+
     public Guild getGuild() {
         return DiscordSRV.getPlugin().getMainGuild();
     }
@@ -841,7 +724,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
-        if (success!=null)cf.thenAcceptAsync(success);
+        if (success != null) cf.thenAcceptAsync(success);
         cf.handle((e, x) -> {
             Exception ex = (Exception) x.getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
@@ -865,11 +748,13 @@ public class DiscordSRVUtils extends JavaPlugin {
             throw (RuntimeException) e;
         }
     }
+
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
         logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
+
     public void defaultHandle(Throwable ex) {
         if (!config.minimize_errors()) {
             logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
@@ -877,6 +762,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         } else {
             logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
+        finalError = Utils.exceptionToStackTrack(ex);
+    }
+
+    private boolean isAnyPunishmentsPluginInstalled() {
+        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) return true;
+        if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;
+        if (getServer().getPluginManager().isPluginEnabled("Libertybans")) return true;
+        return false;
     }
 
 

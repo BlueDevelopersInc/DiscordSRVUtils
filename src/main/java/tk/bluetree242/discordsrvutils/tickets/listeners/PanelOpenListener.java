@@ -25,20 +25,29 @@ package tk.bluetree242.discordsrvutils.tickets.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 
-public class PanelReactListener extends ListenerAdapter {
-    private DiscordSRVUtils core= DiscordSRVUtils.get();
+public class PanelOpenListener extends ListenerAdapter {
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.handleCF(TicketManager.get().getPanelByMessageId(e.getMessageIdLong()), panel -> {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
                 e.getReaction().removeReaction(e.getUser()).queue();
-                core.handleCF(panel.openTicket(e.getUser()), null, er -> {core.defaultHandle(er); });
+                if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
+                    return;
+                }
+                core.handleCF(panel.openTicket(e.getUser()), null, er -> {
+                    core.defaultHandle(er);
+                });
             }
         }, null);
     }
@@ -48,9 +57,22 @@ public class PanelReactListener extends ListenerAdapter {
         core.handleCF(TicketManager.get().getPanelByMessageId(e.getMessageIdLong()), panel -> {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
+                if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
+                    e.deferReply(true).setContent("You are Ticket Muted").queue();
+                    return;
+                }
                 core.handleCF(panel.openTicket(e.getUser()).thenAcceptAsync(t -> {
-                    e.deferReply(true).setContent("Ticket opened at " + core.getGuild().getTextChannelById(t.getChannelID()).getAsMention()).queue();
-                }), null, er -> {core.defaultHandle(er); });
+                    ReplyAction action = e.deferReply(true);
+                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(
+                            new PlaceholdObject(core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
+                            new PlaceholdObject(e.getUser(), "user"),
+                            new PlaceholdObject(t, "ticket"),
+                            new PlaceholdObject(panel, "panel")
+                            );
+                    MessageManager.get().messageToReplyAction(action, MessageManager.get().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
+                }), null, er -> {
+                    core.defaultHandle(er);
+                });
             }
         }, null);
     }

@@ -28,18 +28,17 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
-import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.security.SecureRandom;
 
 public class DiscordLevelingListener extends ListenerAdapter {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.executeAsync(() -> {
@@ -67,7 +66,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
                         if (leveledUp) {
                             try {
                                 DiscordSRV.api.callEvent(new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
-                            } catch (Exception x) {}
+                            } catch (Exception x) {
+                            }
                             e.getChannel().sendMessage(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),

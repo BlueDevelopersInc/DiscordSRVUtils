@@ -39,18 +39,11 @@ public class EditPanelWaiter extends Waiter {
     private TextChannel channel;
     private User user;
     private Message msg;
+
     public EditPanelWaiter(TextChannel channel, User user, Panel.Editor editor, Message msg) {
         this.channel = channel;
         this.user = user;
         this.editor = editor;
-        this.msg = msg;
-    }
-
-    public Message getMessage() {
-        return msg;
-    }
-
-    public void setMessage(Message msg) {
         this.msg = msg;
     }
 
@@ -91,21 +84,34 @@ public class EditPanelWaiter extends Waiter {
         return null;
     }
 
+    public Message getMessage() {
+        return msg;
+    }
+
+    public void setMessage(Message msg) {
+        this.msg = msg;
+    }
+
     public User getUser() {
         return user;
     }
+
     public TextChannel getChannel() {
         return channel;
     }
+
     public int getStep() {
         return step;
     }
+
+    public void setStep(int num) {
+        step = num;
+    }
+
     public Panel.Editor getEditor() {
         return editor;
     }
-    public void setStep(int num) {
-        step =num;
-    }
+
     @Override
     public long getExpirationTime() {
         return getStartTime() + 180000;

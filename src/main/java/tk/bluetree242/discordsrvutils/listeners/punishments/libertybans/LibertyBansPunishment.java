@@ -23,9 +23,10 @@
 package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import space.arim.libertybans.api.*;
-import space.arim.libertybans.api.punish.DraftPunishment;
+import space.arim.libertybans.api.Operator;
+import space.arim.libertybans.api.PlayerOperator;
+import space.arim.libertybans.api.PlayerVictim;
+import space.arim.libertybans.api.Victim;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -35,10 +36,11 @@ public class LibertyBansPunishment implements Punishment {
     public LibertyBansPunishment(space.arim.libertybans.api.punish.Punishment punishment) {
         this.punishment = punishment;
     }
+
     @Override
     public String getDuration() {
         if (punishment.isPermanent()) return "Permanent";
-        return Utils.getDuration((punishment.getEndDate().toEpochMilli() - punishment.getStartDate().getEpochSecond()));
+        return Utils.getDuration((punishment.getEndDate().toEpochMilli() - punishment.getStartDate().toEpochMilli()));
     }
 
     @Override

@@ -31,6 +31,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -83,7 +85,7 @@ public class Utils {
     }
 
     public static String parsePos(int num) {
-        if  (num == 1) return "1st";
+        if (num == 1) return "1st";
         if (num == 2) return "2nd";
         if (num == 3) return "3rd";
         return num + "th";
@@ -104,27 +106,27 @@ public class Utils {
         remaining = remaining - TimeUnit.MINUTES.toMillis(minutes);
         Long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
         if (days != 0) {
-            val = days + " Days";
+            val = days + " Day" + (days <= 1 ? "" : "s");
         }
         if (hours != 0) {
             if (val.equals("")) {
-                val = hours + " hours";
+                val = hours + " hour" + (hours <= 1 ? "" : "s");
             } else {
-                val = val + ", " + hours + " hours";
+                val = val + ", " + hours + " hour" + (hours <= 1 ? "" : "s");
             }
         }
         if (minutes != 0) {
             if (val.equals("")) {
-                val = minutes + " minutes";
+                val = minutes + " minute" + (minutes <= 1 ? "" : "s");
             } else {
-                val = val + ", " + minutes + " minutes";
+                val = val + ", " + minutes + " minute" + (minutes <= 1 ? "" : "s");
             }
         }
         if (seconds != 0) {
             if (val.equals("")) {
-                val = seconds + " seconds";
+                val = seconds + " second" + (seconds <= 1 ? "" : "s");
             } else {
-                val = val + ", " + seconds + " seconds";
+                val = val + ", " + seconds + " second" + (days <= 1 ? "" : "s");
             }
         }
         if (val.equals("")) {
@@ -208,11 +210,18 @@ public class Utils {
             emote = emotes.get(0);
         } else emote = null;
         if (emote == null) {
-                String unicode = EmojiParser.parseToUnicode(":" + val + ":");
+            String unicode = EmojiParser.parseToUnicode(":" + val + ":");
             if (unicode.equals(val)) {
                 return def;
             } else return new Emoji(unicode);
 
         } else return new Emoji(emote.getIdLong(), emote.getName(), emote.isAnimated());
+    }
+
+    public static String exceptionToStackTrack(Throwable e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
     }
 }

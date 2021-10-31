@@ -25,7 +25,6 @@ package tk.bluetree242.discordsrvutils.commandmanagement;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -39,10 +38,10 @@ public abstract class Command {
     private final String description;
     private final String usage;
     private final String[] aliases;
+    public DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
         this.cmd = cmd;

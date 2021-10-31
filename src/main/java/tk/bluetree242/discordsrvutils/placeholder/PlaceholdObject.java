@@ -22,8 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.placeholder;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.NamedValueFormatter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -34,15 +32,15 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 
-import java.io.Console;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlaceholdObject {
     private final Map<String, Method> map = new HashMap<>();
-    private Object ob;
     protected String display;
+    private Object ob;
+
     public PlaceholdObject(Object ob, String display) {
         this.ob = ob;
         this.display = display;
@@ -62,16 +60,15 @@ public class PlaceholdObject {
     }
 
 
-
     public Object getObject() {
         return ob;
     }
 
-    public String apply(@NotNull String s, Player placehold)  {
+    public String apply(@NotNull String s, Player placehold) {
         return apply(s, placehold, true);
     }
 
-    public String apply(@NotNull String s, Player placehold, boolean doAllowCode)  {
+    public String apply(@NotNull String s, Player placehold, boolean doAllowCode) {
         Map<String, Method> map = getholdersMap();
         final String[] val = {s};
         map.forEach((key, result) -> {
@@ -85,7 +82,8 @@ public class PlaceholdObject {
                     val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
 
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         });
 
         val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
@@ -103,7 +101,8 @@ public class PlaceholdObject {
         }
         return val[0];
     }
-    public String apply(@NotNull String s)  {
+
+    public String apply(@NotNull String s) {
         return apply(s, null);
     }
 

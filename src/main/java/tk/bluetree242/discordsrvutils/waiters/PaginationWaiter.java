@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.Message
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PaginationWaiter extends Waiter {
@@ -119,7 +118,6 @@ public class PaginationWaiter extends Waiter {
         if (message.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
             message.clearReactions().queue();
     }
-
 
 
 }

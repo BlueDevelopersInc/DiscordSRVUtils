@@ -39,16 +39,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class LevelingManager {
+    private static LevelingManager main;
     public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
     public final Map<UUID, Long> antispamMap = new HashMap<>();
     private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private static LevelingManager main;
-    public static LevelingManager get() {
-        return main;
-    }
-    public LevelingManager() {
-        main = this;
-    }
     private boolean adding = false;
     public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
@@ -60,19 +54,29 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
+
+    public LevelingManager() {
+        main = this;
+    }
+
+    public static LevelingManager get() {
+        return main;
+    }
+
     public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
         return core.completableFuture(() -> {
-           try (Connection conn = core.getDatabase()) {
-               return getPlayerStats(conn, uuid);
-           } catch (SQLException e) {
-               throw new UnCheckedSQLException(e);
-           }
+            try (Connection conn = core.getDatabase()) {
+                return getPlayerStats(conn, uuid);
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
         });
     }
 
     public PlayerStats getCachedStats(UUID uuid) {
         return cachedUUIDS.get(uuid);
     }
+
     public PlayerStats getCachedStats(long discordID) {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(discordID + "");
         if (uuid == null) return null;
@@ -87,9 +91,9 @@ public class LevelingManager {
 
     public CompletableFuture<PlayerStats> getPlayerStats(long discordID) {
         return core.completableFuture(() -> {
-           UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(discordID + "");
-           if (uuid == null) return null;
-           return core.handleCFOnAnother(getPlayerStats(uuid));
+            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(discordID + "");
+            if (uuid == null) return null;
+            return core.handleCFOnAnother(getPlayerStats(uuid));
         });
     }
 
@@ -104,7 +108,7 @@ public class LevelingManager {
     }
 
 
-    public PlayerStats getPlayerStats(Connection conn, UUID uuid) throws SQLException{
+    public PlayerStats getPlayerStats(Connection conn, UUID uuid) throws SQLException {
         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC");
         ResultSet r1 = p1.executeQuery();
         int num = 0;
@@ -117,7 +121,7 @@ public class LevelingManager {
         return null;
     }
 
-    public PlayerStats getPlayerStats(Connection conn, String name) throws SQLException{
+    public PlayerStats getPlayerStats(Connection conn, String name) throws SQLException {
         PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC ");
         ResultSet r1 = p1.executeQuery();
         int num = 0;
@@ -129,10 +133,11 @@ public class LevelingManager {
         }
         return null;
     }
+
     public PlayerStats getPlayerStats(ResultSet r, int rank) throws SQLException {
         PlayerStats stats = new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
         if (!adding)
-        cachedUUIDS.put(stats.getUuid(), stats);
+            cachedUUIDS.put(stats.getUuid(), stats);
         return stats;
     }
 

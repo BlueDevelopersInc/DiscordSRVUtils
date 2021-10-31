@@ -1,5 +1,5 @@
 name: DiscordSRVUtils
-depend: 
+depend:
   - DiscordSRV
 softdepend:
   - Essentials

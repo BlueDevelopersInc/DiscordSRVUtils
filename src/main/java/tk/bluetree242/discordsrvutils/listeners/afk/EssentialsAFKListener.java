@@ -36,6 +36,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 public class EssentialsAFKListener implements Listener {
 
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @EventHandler
     public void onAfk(AfkStatusChangeEvent e) {
         core.executeAsync(() -> {

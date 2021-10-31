@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
@@ -39,6 +39,7 @@ public class SuggestCommand extends Command {
 
     public final Long ANTISPAM_EXPIRATION = Duration.ofSeconds(120L).toNanos();
     public final Map<Long, Long> antispamMap = new HashMap<>();
+
     public SuggestCommand() {
         super("suggest", CommandType.GUILDS, "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS);
     }

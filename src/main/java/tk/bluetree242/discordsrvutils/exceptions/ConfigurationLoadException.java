@@ -24,11 +24,12 @@ package tk.bluetree242.discordsrvutils.exceptions;
 
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 
-public class ConfigurationLoadException extends RuntimeException{
+public class ConfigurationLoadException extends RuntimeException {
 
     private Throwable cause;
     private String confname;
-    public ConfigurationLoadException(Throwable ex, String confname){
+
+    public ConfigurationLoadException(Throwable ex, String confname) {
         this.cause = ex;
         this.confname = confname;
     }

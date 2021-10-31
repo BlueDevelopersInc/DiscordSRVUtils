@@ -22,12 +22,12 @@
 
 package tk.bluetree242.discordsrvutils.exceptions;
 
-public class PlaceholdException extends RuntimeException{
+public class PlaceholdException extends RuntimeException {
 
 
     private Throwable cause;
 
-    public PlaceholdException(Throwable ex){
+    public PlaceholdException(Throwable ex) {
         this.cause = ex;
     }
 
