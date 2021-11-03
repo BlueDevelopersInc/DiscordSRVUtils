@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
@@ -582,12 +583,16 @@ public class DiscordSRVUtils extends JavaPlugin {
             r1 = p1.executeQuery();
             while (r1.next()) {
                 Panel panel = TicketManager.get().getPanel(r1);
-                Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                if (msg.getButtons().isEmpty()) {
-                    msg.clearReactions().queue();
-                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button())).queue();
-                } else if (!msg.getButtons().get(0).getLabel().equals(getTicketsConfig().open_ticket_button())) {
-                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button()))).queue();
+                try {
+                    Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                    if (msg.getButtons().isEmpty()) {
+                        msg.clearReactions().queue();
+                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button())).queue();
+                    } else if (!msg.getButtons().get(0).getLabel().equals(getTicketsConfig().open_ticket_button())) {
+                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button()))).queue();
+                    }
+                } catch (ErrorResponseException ex) {
+                    panel.getEditor().apply();
                 }
             }
         } catch (SQLException e) {
@@ -603,8 +608,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             ResultSet r1 = p1.executeQuery();
             while (r1.next()) {
                 Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
-                Message msg = suggestion.getMessage();
-                if (msg != null) {
+                try {
+                    Message msg = suggestion.getMessage();
+
                     if (msg.getButtons().isEmpty()) {
                         if (voteMode == SuggestionVoteMode.REACTIONS) {
                         } else {
@@ -631,6 +637,8 @@ public class DiscordSRVUtils extends JavaPlugin {
                             msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                         }
                     }
+                } catch (ErrorResponseException ex) {
+
                 }
             }
             if (sent) {
