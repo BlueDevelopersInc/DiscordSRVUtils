@@ -520,7 +520,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     /**
      *
-     * @return if plugin is ready to function.
+     * @return `DiscordSRV.isReady`. This may change any time soon
      */
     public boolean isReady() {
         return DiscordSRV.isReady;
