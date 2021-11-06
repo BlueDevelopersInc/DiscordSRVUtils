@@ -23,8 +23,13 @@
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,7 +56,10 @@ public class JoinUpdateChecker implements Listener {
                     int versions_behind = res.getInt("versions_behind");
                     if (res.isNull("message")) {
                         if (versions_behind != 0) {
-                            e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
+                            Player p = e.getPlayer();
+                            TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &c" + ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Click to Download"));
+                            msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/dl?was=" + DiscordSRVUtils.get().getDescription().getVersion()));
+                            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
                         }
                     } else {
                         e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
