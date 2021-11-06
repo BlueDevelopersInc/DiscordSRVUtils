@@ -36,6 +36,10 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -822,11 +826,27 @@ public class DiscordSRVUtils extends JavaPlugin {
         ex.printStackTrace();
     }
 
+    private long lastErrorTime = 0;
     public void defaultHandle(Throwable ex) {
         //handle error on thread pool
         if (!config.minimize_errors()) {
-            logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            logger.warning("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+
             ex.printStackTrace();
+            logger.warning("Read the note above the error Please.");
+            //don't spam errors
+            if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.hasPermission("discordsrvutils.errornotifications")) {
+                    //tell admins that something was wrong
+                TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
+                msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
+                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
+                p.spigot().sendMessage(msg);
+                }
+            }
+            lastErrorTime = System.currentTimeMillis();
+
         } else {
             logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
