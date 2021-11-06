@@ -111,16 +111,29 @@ import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
 
+
+    //instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
+    //file separator string
     public final String fileseparator = System.getProperty("file.separator");
+    //messages folder path
     public final Path messagesDirectory = Paths.get(getDataFolder() + fileseparator + "messages");
+    //default messages to use
     public final Map<String, String> defaultmessages = new HashMap<>();
+    //leveling roles jsonobject, Initialized on startup
     public JSONObject levelingRolesRaw;
+    //was the DiscordSRV AccountLink Listener Removed?
     public boolean removedDiscordSRVAccountLinkListener = false;
+    //Mode for suggestions voting
     public SuggestionVoteMode voteMode;
+    //latest error that occurred on our thread pool
     public String finalError = null;
+    // faster getter for the logger
     public Logger logger = getLogger();
+    //Plugins we hooked into
     public List<Plugin> hookedPlugins = new ArrayList<>();
+
+    //Configurations
     private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
     private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(getDataFolder().toPath(), "sql.yml", SQLConfig.class);
@@ -133,9 +146,14 @@ public class DiscordSRVUtils extends JavaPlugin {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
+
+    //Thread Pool
     private ThreadPoolExecutor pool;
+    //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
+    //database connection pool
     private HikariDataSource sql;
+    //listeners that should be registered
     private List<ListenerAdapter> listeners = new ArrayList<>();
 
     public static DiscordSRVUtils get() {
@@ -143,6 +161,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public Thread newDSUThread(Runnable r) {
+        //start new thread with name and handler
         Thread thread = new Thread(r);
         thread.setName("DSU-THREAD");
         thread.setDaemon(true);
@@ -155,14 +174,18 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     private void init() {
+        //set the instance
         instance = this;
+        //initialize discordsrv listener
         dsrvlistener = new DiscordSRVListener();
+        //Initialize Managers
         new MessageManager();
         new CommandManager();
         new TicketManager();
         new WaiterManager();
         new LevelingManager();
         new SuggestionManager();
+        //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
         listeners.add(new CreatePanelListener());
@@ -174,12 +197,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new DiscordLevelingListener());
         listeners.add(new SuggestionVoteListener());
         listeners.add(new CustomDiscordAccountLinkListener());
+        //Init Default Messages
         initDefaultMessages();
 
     }
 
     public void onLoad() {
         init();
+        //require intents and cacheflags
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
@@ -188,6 +213,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void onEnable() {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            //do updatechecker
             try {
                 if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
@@ -211,6 +237,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         msg = (ChatColor.GREEN + "Plugin is up to date!");
                     }
                 } else {
+                    //the updatechecker wants its own message
                     msg = (res.getString("message"));
                 }
                 switch (logger) {
@@ -225,6 +252,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         break;
                 }
             } catch (Exception e) {
+                //We could not check for updates.
                 logger.severe("Could not check for updates: " + e.getMessage());
             }
 
@@ -238,13 +266,16 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
 
             try {
+                //Reload Configurations
                 reloadConfigs();
             } catch (ConfigurationLoadException ex) {
                 logger.severe(ex.getMessage());
                 setEnabled(false);
                 return;
             }
+            //set storage string to use later
             String storage = getSqlconfig().isEnabled() ? "MySQL" : "HsqlDB";
+            //print startup message
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "" +
                     "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
@@ -260,11 +291,12 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
             } catch (ClassNotFoundException e) {
+                //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
                 setEnabled(false);
                 return;
             }
-
+            //initialize pool
              pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
                 @Override
                 public Thread newThread(@NotNull Runnable r) {
@@ -274,20 +306,25 @@ public class DiscordSRVUtils extends JavaPlugin {
             });
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
+            //register our bukkit commands
             registerBukkitCommands();
             try {
                 setupDatabase();
             } catch (SQLException ex) {
+                //Oh no! could not connect or migrate. Plugin may not start
                 startupError(ex, "Error could not connect to database: " + ex.getMessage());
             }
             DiscordSRV.api.subscribe(dsrvlistener);
             if (isReady()) {
+                //Uhh, Maybe they are using a pluginmanager and this plugin was enabled after discordsrv is ready
                 whenReady();
             }
             whenStarted();
+            //bstats stuff
             Metrics metrics = new Metrics(this, 9456);
             metrics.addCustomChart(new AdvancedPie("features", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
+                //Removed Tickets Because it caused lag on a few servers
                 /*
                 if (!TicketManager.get().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
@@ -304,6 +341,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
             metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
+            //Plugin couldn't start, sadly
             startupError(ex, "Plugin could not start");
         }
     }
@@ -317,10 +355,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         setEnabled(false);
         logger.warning(msg);
         try {
+            //create a debug report, we know commands don't work after plugin is disabled
             logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //tell them where to report
         logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
     }
@@ -348,11 +388,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         sql = new HikariDataSource(settings);
         if (!getSqlconfig().isEnabled()) {
             try (Connection conn = sql.getConnection()) {
+                //This Prevents Errors when syntax of hsqldb and mysql dismatch
                 //language=hsqldb
                 String query = "SET DATABASE SQL SYNTAX MYS TRUE;";
                 conn.prepareStatement(query).execute();
             }
         }
+        //Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
                 .baselineOnMigrate(true)
@@ -360,12 +402,14 @@ public class DiscordSRVUtils extends JavaPlugin {
                 .validateMigrationNaming(true).group(true)
                 .table("discordsrvutils_schema")
                 .load();
+        //repair if there is an issue
         flyway.repair();
         flyway.migrate();
         logger.info("MySQL/HsqlDB Connected & Setup");
     }
 
     private void initDefaultMessages() {
+        //prepare a list of all messages
         String[] messages = new String[]{"afk",
                 "ban",
                 "level",
@@ -386,6 +430,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 "welcome"};
         for (String msg : messages) {
             try {
+                //add them to the map
                 defaultmessages.put(msg, new String(getResource("messages/" + msg + ".json").readAllBytes()));
             } catch (IOException e) {
                 logger.severe("Could not load " + msg + ".json");
@@ -469,6 +514,10 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
 
+    /**
+     *
+     * @return if plugin is ready to function.
+     */
     public boolean isReady() {
         return DiscordSRV.isReady;
     }
@@ -486,11 +535,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        //make the leveling roles file
         File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
         if (!levelingRoles.exists()) {
             levelingRoles.createNewFile();
             FileWriter writer = new FileWriter(levelingRoles);
-            writer.write("{}");
+            writer.write("{/n/n}");
             writer.close();
             levelingRolesRaw = new JSONObject();
         } else {
@@ -528,6 +578,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void whenReady() {
+        //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
             registerCommands();
             setSettings();
@@ -551,6 +602,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
             }
+            //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
                 for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
                     if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
@@ -559,8 +611,10 @@ public class DiscordSRVUtils extends JavaPlugin {
                     }
                 }
             }
+            //fix issues with any ticket or panel
             fixTickets();
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
+            //migrate suggestion buttons/reactions if needed
             doSuggestions();
             logger.info("Plugin is ready to function.");
         });
@@ -687,6 +741,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getLogger().severe(sv);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
+                //tell admins that something was wrong
                 p.sendMessage(Utils.colors("&7[&eDSU&7] &c" + sv));
         }
     }
@@ -761,12 +816,14 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void defaultHandle(Throwable ex, MessageChannel channel) {
+        //send message for errors
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
         logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
 
     public void defaultHandle(Throwable ex) {
+        //handle error on thread pool
         if (!config.minimize_errors()) {
             logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
             ex.printStackTrace();
