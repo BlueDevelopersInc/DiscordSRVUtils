@@ -16,4 +16,15 @@ commands:
   discordsrvutils:
     aliases: [ dsrvu, dsu, du, discordu, srvu ]
 
+permissions:
+  discordsrvutils.reload:
+    default: false
+    description: Allow player to reload the plugin
+  discordsrvutils.debug:
+    default: false
+    description: Allow player to create a debug report
+  discordsrvutils.errornotifications:
+    default: false
+    description: Allow plugin to send errors to this user
+
 
