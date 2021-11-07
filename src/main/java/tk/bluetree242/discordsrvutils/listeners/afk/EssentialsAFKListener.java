@@ -51,7 +51,7 @@ public class EssentialsAFKListener implements Listener {
                     return;
                 }
                 Message msg;
-                if (afk) {
+                if (e.getValue()) {
                     msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
                 } else {
                     msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
