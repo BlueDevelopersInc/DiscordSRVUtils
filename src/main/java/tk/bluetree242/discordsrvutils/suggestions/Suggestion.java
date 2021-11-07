@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -130,7 +131,7 @@ public class Suggestion {
                 p1.execute();
                 SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
                 notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
                 return suggestionNote;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
@@ -148,7 +149,7 @@ public class Suggestion {
                 p1.execute();
                 this.Approved = approved;
                 this.approver = staffID;
-                getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
 
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
