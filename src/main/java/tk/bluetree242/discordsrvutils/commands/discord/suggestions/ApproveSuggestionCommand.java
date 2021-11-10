@@ -20,9 +20,8 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
@@ -32,7 +31,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class ApproveSuggestionCommand extends Command {
     public ApproveSuggestionCommand() {
-        super("approvesuggestion", CommandType.GUILDS, "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,"approve");
+        super("approvesuggestion", CommandType.GUILDS, "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN, "approve");
         setAdminOnly(true);
     }
 

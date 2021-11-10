@@ -28,21 +28,16 @@ import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class CreatePanelWaiter extends Waiter {
     private Panel.Builder builder = new Panel.Builder();
     private int step = 1;
     private TextChannel channel;
     private User user;
+
     public CreatePanelWaiter(TextChannel channel, User user) {
         this.channel = channel;
         this.user = user;
     }
-
 
 
     public static CreatePanelWaiter getWaiter(TextChannel channel, User user) {
@@ -60,18 +55,23 @@ public class CreatePanelWaiter extends Waiter {
     public User getUser() {
         return user;
     }
+
     public TextChannel getChannel() {
         return channel;
     }
+
     public int getStep() {
         return step;
     }
+
+    public void setStep(int num) {
+        step = num;
+    }
+
     public Panel.Builder getBuilder() {
         return builder;
     }
-    public void setStep(int num) {
-        step =num;
-    }
+
     @Override
     public long getExpirationTime() {
         return getStartTime() + 180000;

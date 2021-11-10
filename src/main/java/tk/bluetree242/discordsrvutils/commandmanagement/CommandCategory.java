@@ -33,6 +33,16 @@ public class CommandCategory {
     public static final CommandCategory SUGGESTIONS = new CommandCategory("Suggestions", "\uD83D\uDCA1");
     public static final CommandCategory SUGGESTIONS_ADMIN = new CommandCategory("Suggestions Admin", "\uD83D\uDCA1");
     private static Set<CommandCategory> externals = new HashSet<>();
+    private List<Command> commands = new ArrayList<>();
+    private String name;
+    private String prefix;
+
+
+    private CommandCategory(String name, String prefix) {
+        this.name = name;
+        this.prefix = prefix;
+    }
+
     public static CommandCategory[] values() {
         ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS, SUGGESTIONS_ADMIN}));
         for (CommandCategory external : externals) {
@@ -55,20 +65,10 @@ public class CommandCategory {
         return null;
     }
 
-
-
-    private List<Command> commands = new ArrayList<>();
-
-    private String name;
-    private String prefix;
-    private CommandCategory(String name, String prefix) {
-         this.name = name;
-         this.prefix = prefix;
-    }
-
     public String getName() {
         return name;
     }
+
     public String getPrefix() {
         return prefix;
     }

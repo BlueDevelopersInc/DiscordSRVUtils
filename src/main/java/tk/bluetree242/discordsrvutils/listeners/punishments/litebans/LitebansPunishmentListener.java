@@ -24,7 +24,8 @@ package tk.bluetree242.discordsrvutils.listeners.punishments.litebans;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
-import litebans.api.*;
+import litebans.api.Entry;
+import litebans.api.Events;
 import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -34,10 +35,12 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 public class LitebansPunishmentListener extends Events.Listener {
 
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public LitebansPunishmentListener() {
         litebans.api.Events.get().register(this);
     }
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public void entryAdded(Entry e) {
         core.executeAsync(() -> {
             if (!core.isReady()) return;
@@ -48,35 +51,35 @@ public class LitebansPunishmentListener extends Events.Listener {
                 case "BAN":
                     msg = MessageManager.get().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (!e.isPermanent()) {
-                        msg =MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     if (e.isIpban()) {
-                        msg =MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     if (e.isPermanent() && e.isIpban()) {
-                        msg =MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
-                case "MUTE" :
-                    msg =MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                case "MUTE":
+                    msg = MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (!e.isPermanent()) {
-                        msg =MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
                 default:
                     break;
             }
             if (!e.isSilent())
-            if (msg != null) {
-                if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                    TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
-                    if (channel == null) {
-                        core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
-                        return;
-                    } else
-                        core.queueMsg(msg, channel).queue();
+                if (msg != null) {
+                    if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
+                        TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
+                        if (channel == null) {
+                            core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
+                            return;
+                        } else
+                            core.queueMsg(msg, channel).queue();
+                    }
                 }
-            }
             syncPunishment(e, false);
         });
     }
@@ -92,24 +95,24 @@ public class LitebansPunishmentListener extends Events.Listener {
                 case "BAN":
                     msg = MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (e.isIpban()) {
-                        msg =MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
-                case "MUTE" :
-                    msg =MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                case "MUTE":
+                    msg = MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     break;
             }
             if (!e.isSilent())
                 if (msg != null) {
-                if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                    TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
-                    if (channel == null) {
-                        core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
-                        return;
-                    } else
-                        core.queueMsg(msg, channel).queue();
+                    if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
+                        TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
+                        if (channel == null) {
+                            core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
+                            return;
+                        } else
+                            core.queueMsg(msg, channel).queue();
+                    }
                 }
-            }
             syncPunishment(e, false);
         });
     }
@@ -130,7 +133,8 @@ public class LitebansPunishmentListener extends Events.Listener {
                 case "MUTE":
                     Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
-                        if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not mute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
+                        if (core.getBansConfig().mutedRole() != 0)
+                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not mute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
                         return;
                     }
                     core.getGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
@@ -147,15 +151,16 @@ public class LitebansPunishmentListener extends Events.Listener {
                 case "MUTE":
                     Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
-                        if (core.getBansConfig().mutedRole() != 0) core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not unmute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
+                        if (core.getBansConfig().mutedRole() != 0)
+                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not unmute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
                         return;
                     }
                     core.getGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
-                default:break;
+                default:
+                    break;
             }
         }
     }
-
 
 
 }

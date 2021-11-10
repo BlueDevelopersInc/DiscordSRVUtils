@@ -22,14 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.waiter;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
-
 public abstract class Waiter {
     private final long startTime;
     private boolean expired = false;
-
 
 
     public Waiter() {

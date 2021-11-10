@@ -20,33 +20,35 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.admin;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import org.json.JSONException;
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 
-public class CloseCommand extends Command {
-    public CloseCommand() {
-        super("close", CommandType.GUILDS, "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+public class TestMessageCommand extends Command {
+    public TestMessageCommand() {
+        super("testmessage", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN, "tm");
+        setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
-            if (ticket == null) {
-                e.replyErr("You are not in a ticket").queue();
-                return;
+        String[] args = e.getArgs();
+        if (!(args.length >= 2)) {
+            e.reply(getHelpEmbed()).queue();
+        } else {
+            String name = args[1];
+            try {
+                e.replyMessage("message:" + name).queue();
+            } catch (EmbedNotFoundException ex) {
+                e.replyErr("Embed does not exist").queue();
+            } catch (JSONException ex) {
+                e.replyErr("Embed is invalid").queue();
             }
-            if (ticket.isClosed()) {
-                e.replyErr("Ticket is already closed").queue();
-            } else {
-                DiscordSRVUtils.get().handleCF(ticket.close(e.getAuthor()), null, err -> {DiscordSRVUtils.get().defaultHandle(err);});
-            }
-        }, err -> {DiscordSRVUtils.get().defaultHandle(err);});
+        }
     }
 }

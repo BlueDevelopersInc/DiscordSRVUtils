@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
 import tk.bluetree242.discordsrvutils.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
@@ -59,4 +59,5 @@ public class DenySuggestionCommand extends Command {
                 e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), false, "Successfully denied suggestion", "Could not deny suggestion");
             });
         }
-    }}
+    }
+}

@@ -36,6 +36,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 public class EssentialsAFKListener implements Listener {
 
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @EventHandler
     public void onAfk(AfkStatusChangeEvent e) {
         core.executeAsync(() -> {
@@ -50,7 +51,7 @@ public class EssentialsAFKListener implements Listener {
                     return;
                 }
                 Message msg;
-                if (afk) {
+                if (e.getValue()) {
                     msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
                 } else {
                     msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();

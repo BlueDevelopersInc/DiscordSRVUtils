@@ -49,6 +49,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Panel {
 
+    public static Map<Long, String> runningProcesses = new HashMap<>();
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
     private String name;
     private String id;
@@ -57,8 +58,6 @@ public class Panel {
     private Long openedCategory;
     private Long closedCategory;
     private Set<Long> allowedRoles;
-
-    public static Map<Long, String> runningProcesses = new HashMap<>();
 
     public Panel(String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
         this.name = name;
@@ -109,13 +108,17 @@ public class Panel {
                 p2.execute();
                 TextChannel channel = core.getGuild().getTextChannelById(channelId);
                 if (channel != null) {
-                    channel.retrieveMessageById(getMessageId()).queue(msg -> {msg.delete().queue();});
+                    channel.retrieveMessageById(getMessageId()).queue(msg -> {
+                        msg.delete().queue();
+                    });
                 }
-                core.handleCFOnAnother(getTickets()).forEach(t -> {t.delete();});
+                core.handleCFOnAnother(getTickets()).forEach(t -> {
+                    t.delete();
+                });
                 PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
                 p3.setString(1, id);
                 p3.execute();
-            }catch (SQLException ex) {
+            } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
             }
         });
@@ -171,7 +174,7 @@ public class Panel {
                         new PlaceholdObject(user, "user"),
                         new PlaceholdObject(this, "panel"),
                         new PlaceholdObject(core.getGuild(), "guild")
-                ),null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel("Close Ticket")).complete();
+                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
                 p1.setLong(2, channel.getIdLong());
@@ -201,12 +204,15 @@ public class Panel {
                 while (r1.next())
                     val.add(TicketManager.get().getTicket(r1, this));
                 return val;
-            }  catch (SQLException e) {
+            } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
         });
     }
 
+    public Panel.Editor getEditor() {
+        return new Panel.Editor(this);
+    }
 
     public static class Builder {
         private final DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -235,7 +241,7 @@ public class Panel {
         }
 
         public void setAllowedRoles(Set<Long> allowedRoles) {
-            this.allowedRoles= allowedRoles;
+            this.allowedRoles = allowedRoles;
         }
 
 
@@ -245,14 +251,16 @@ public class Panel {
                 Checks.notNull(channelId, "Channel");
                 Checks.notNull(openedCategory, "OpenedCategory");
                 Checks.notNull(closedCategory, "ClosedCategory");
-                if (core.getGuild().getCategoryById(openedCategory) == null) throw new IllegalArgumentException("Opened Category was not found");
-                if (core.getGuild().getCategoryById(closedCategory) == null) throw new IllegalArgumentException("Closed Category was not found");
+                if (core.getGuild().getCategoryById(openedCategory) == null)
+                    throw new IllegalArgumentException("Opened Category was not found");
+                if (core.getGuild().getCategoryById(closedCategory) == null)
+                    throw new IllegalArgumentException("Closed Category was not found");
                 TextChannel channel = core.getGuild().getTextChannelById(channelId);
                 if (channel == null) {
                     throw new IllegalArgumentException("Channel was not found");
                 }
                 Panel panel = new Panel(name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
-                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
+                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                 panel.messageId = msg.getIdLong();
                 try (Connection conn = core.getDatabase()) {
                     PreparedStatement p1 = conn.prepareStatement("INSERT INTO ticket_panels(Name, ID, Channel, MessageID, OpenedCategory, ClosedCategory) VALUES (?, ?, ?, ?, ?, ?)");
@@ -277,9 +285,6 @@ public class Panel {
         }
     }
 
-    public Panel.Editor getEditor() {
-        return new Panel.Editor(this);
-    }
     public static class Editor {
         private final DiscordSRVUtils core = DiscordSRVUtils.get();
         private String name;
@@ -336,11 +341,11 @@ public class Panel {
                     Message msg;
                     try {
                         if (!panel.name.equals(name)) {
-                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
+                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                         } else
                             msg = channel.retrieveMessageById(panel.messageId).complete();
                     } catch (ErrorResponseException ex) {
-                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).complete();
+                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                     }
                     PreparedStatement p1 = conn.prepareStatement("UPDATE ticket_panels SET Name=?, Channel=?, MessageID=?, OpenedCategory=?, ClosedCategory=? WHERE ID=?");
                     p1.setString(1, name);

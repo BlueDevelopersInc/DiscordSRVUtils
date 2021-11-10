@@ -22,9 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.suggestions;
 
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -43,7 +42,6 @@ import java.util.stream.Collectors;
 
 public class Suggestion {
 
-    protected DiscordSRVUtils core = DiscordSRVUtils.get();
     protected final String text;
     protected final int number;
     protected final Long submitter;
@@ -51,10 +49,12 @@ public class Suggestion {
     protected final Long creationTime;
     protected final Set<SuggestionNote> notes;
     protected final Long MessageID;
+    protected DiscordSRVUtils core = DiscordSRVUtils.get();
     protected Boolean Approved;
     protected Message msg;
     protected Long approver;
     Set<SuggestionVote> votes;
+
     public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
         this.text = text;
         this.number = number;
@@ -79,7 +79,7 @@ public class Suggestion {
 
     /**
      * @return null if not approved or declined yet, true if approved false if declined
-     * **/
+     **/
     public Boolean isApproved() {
         return Approved;
     }
@@ -100,9 +100,11 @@ public class Suggestion {
     public Long getCreationTime() {
         return creationTime;
     }
+
     public Set<SuggestionNote> getNotes() {
         return notes;
     }
+
     public int getNumber() {
         return number;
     }
@@ -129,7 +131,7 @@ public class Suggestion {
                 p1.execute();
                 SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
                 notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
                 return suggestionNote;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
@@ -139,19 +141,19 @@ public class Suggestion {
 
     public CompletableFuture<Void> setApproved(boolean approved, Long staffID) {
         return core.completableFutureRun(() -> {
-           try (Connection conn = core.getDatabase()) {
-               PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
-               p1.setString(1, Utils.getDBoolean(approved));
-               p1.setLong(2, staffID);
-               p1.setInt(3, number);
-               p1.execute();
-               this.Approved = approved;
-               this.approver = staffID;
-               getMessage().editMessage(getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
+                p1.setString(1, Utils.getDBoolean(approved));
+                p1.setLong(2, staffID);
+                p1.setInt(3, number);
+                p1.execute();
+                this.Approved = approved;
+                this.approver = staffID;
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
 
-           } catch (SQLException e) {
-               throw new UnCheckedSQLException(e);
-           }
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
         });
     }
 
@@ -163,13 +165,16 @@ public class Suggestion {
         if (core.voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
             return votes.size();
-        } else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+        } else
+            return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() - 1;
     }
 
     public int getNoCount() {
         if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-        List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
-        return votes.size();} else return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() -1;
+            List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
+            return votes.size();
+        } else
+            return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌")).getName())).collect(Collectors.toList()).get(0).getCount() - 1;
     }
 
     public Message getCurrentMsg() {
@@ -201,7 +206,7 @@ public class Suggestion {
             }
         }
     }
-    
+
     public SuggestionNote getLatestNote() {
         List<SuggestionNote> noteList = new ArrayList<>(notes);
         Collections.sort(noteList, new Comparator<SuggestionNote>() {

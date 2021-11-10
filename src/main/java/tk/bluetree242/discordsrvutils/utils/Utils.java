@@ -31,6 +31,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -83,7 +85,7 @@ public class Utils {
     }
 
     public static String parsePos(int num) {
-        if  (num == 1) return "1st";
+        if (num == 1) return "1st";
         if (num == 2) return "2nd";
         if (num == 3) return "3rd";
         return num + "th";
@@ -108,7 +110,7 @@ public class Utils {
         }
         if (hours != 0) {
             if (val.equals("")) {
-                val = hours + " hour"+ (hours <= 1 ? "" : "s");
+                val = hours + " hour" + (hours <= 1 ? "" : "s");
             } else {
                 val = val + ", " + hours + " hour" + (hours <= 1 ? "" : "s");
             }
@@ -208,11 +210,18 @@ public class Utils {
             emote = emotes.get(0);
         } else emote = null;
         if (emote == null) {
-                String unicode = EmojiParser.parseToUnicode(":" + val + ":");
+            String unicode = EmojiParser.parseToUnicode(":" + val + ":");
             if (unicode.equals(val)) {
                 return def;
             } else return new Emoji(unicode);
 
         } else return new Emoji(emote.getIdLong(), emote.getName(), emote.isAnimated());
+    }
+
+    public static String exceptionToStackTrack(Throwable e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
     }
 }

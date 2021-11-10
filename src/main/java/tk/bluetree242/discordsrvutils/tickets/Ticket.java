@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.tickets;
 
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
@@ -32,7 +31,6 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -85,29 +83,29 @@ public class Ticket {
         return core.completableFutureRun(() -> {
             if (closed) return;
             try (Connection conn = core.getDatabase()) {
-              PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
-              p1.setString(1, id);
-              p1.setLong(2, userID);
-              p1.execute();
-              User user = core.getJDA().retrieveUserById(userID).complete();
-              Member member = core.getGuild().getMember(user);
-              core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-                  PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
-                  if (override != null) {
-                      override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
-                  }
-              Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
-                      new PlaceholdObject(userWhoClosed, "user"),
-                      new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
-                      new PlaceholdObject(core.getGuild(), "guild"),
-                      new PlaceholdObject(panel, "panel")
-              ),null).build()).setActionRow(
-                      Button.success("reopen_ticket", Emoji.fromUnicode("\uD83D\uDD13")).withLabel("Reopen Ticket"),
-                      Button.danger("delete_ticket", Emoji.fromUnicode("\uD83D\uDDD1️")).withLabel("Delete Ticket")
-                      ).complete();
-              messageID = msg.getIdLong();
-              PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='true', OpenTime=? WHERE UserID=? AND ID=? ");
-              p2.setLong(1, messageID);
+                PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
+                p1.setString(1, id);
+                p1.setLong(2, userID);
+                p1.execute();
+                User user = core.getJDA().retrieveUserById(userID).complete();
+                Member member = core.getGuild().getMember(user);
+                core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
+                PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
+                if (override != null) {
+                    override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
+                }
+                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
+                        new PlaceholdObject(userWhoClosed, "user"),
+                        new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
+                        new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(panel, "panel")
+                ), null).build()).setActionRow(
+                        Button.success("reopen_ticket", Emoji.fromUnicode("\uD83D\uDD13")).withLabel(core.getTicketsConfig().ticket_reopen_button()),
+                        Button.danger("delete_ticket", Emoji.fromUnicode("\uD83D\uDDD1️")).withLabel(core.getTicketsConfig().delete_ticket_button())
+                ).complete();
+                messageID = msg.getIdLong();
+                PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='true', OpenTime=? WHERE UserID=? AND ID=? ");
+                p2.setLong(1, messageID);
                 p2.setLong(2, System.currentTimeMillis());
                 p2.setLong(3, userID);
                 p2.setString(4, id);
@@ -141,7 +139,7 @@ public class Ticket {
                         new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
-                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel("Close Ticket")).complete();
+                ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 messageID = msg.getIdLong();
                 PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='false' WHERE UserID=? AND ID=? ");
                 p2.setLong(1, messageID);

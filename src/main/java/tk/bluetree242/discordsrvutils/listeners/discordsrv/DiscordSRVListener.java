@@ -24,7 +24,10 @@ package tk.bluetree242.discordsrvutils.listeners.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
-import github.scarsz.discordsrv.api.events.*;
+import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import org.bukkit.Bukkit;
@@ -34,6 +37,7 @@ import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 
 public class DiscordSRVListener {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @Subscribe
     public void onReady(DiscordReadyEvent e) {
         try {
@@ -70,7 +74,7 @@ public class DiscordSRVListener {
     @Subscribe
     public void onUnlink(AccountUnlinkedEvent e) {
         if (!core.isReady()) return;
-        
+
         LevelingManager manager = LevelingManager.get();
         core.executeAsync(() -> {
             Member member = core.getGuild().retrieveMemberById(e.getDiscordId()).complete();
@@ -86,6 +90,6 @@ public class DiscordSRVListener {
     @Subscribe
     public void onDiscordMsg(DiscordGuildMessagePreProcessEvent e) {
         if (e.getMessage().getContentRaw().toLowerCase().startsWith(core.getCommandPrefix().toLowerCase()))
-        e.setCancelled(true);
+            e.setCancelled(true);
     }
 }

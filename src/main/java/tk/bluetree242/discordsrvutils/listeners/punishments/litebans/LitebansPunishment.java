@@ -32,9 +32,15 @@ import java.util.UUID;
 
 public class LitebansPunishment implements Punishment {
     private final Entry punishment;
+
     public LitebansPunishment(Entry entry) {
         punishment = entry;
     }
+
+    protected static OfflinePlayer toOfflinePlayer(String uuid) {
+        return Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+    }
+
     @Override
     public String getDuration() {
         if (punishment.isPermanent())
@@ -57,9 +63,5 @@ public class LitebansPunishment implements Punishment {
     @Override
     public String getReason() {
         return punishment.getReason();
-    }
-
-    protected static OfflinePlayer toOfflinePlayer(String uuid) {
-        return Bukkit.getOfflinePlayer(UUID.fromString(uuid));
     }
 }

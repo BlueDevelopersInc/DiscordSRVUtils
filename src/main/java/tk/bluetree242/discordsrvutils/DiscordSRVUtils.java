@@ -28,14 +28,18 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
-
-
+import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
@@ -46,7 +50,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
@@ -54,10 +57,17 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
 import tk.bluetree242.discordsrvutils.commands.discord.*;
+import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
@@ -76,9 +86,10 @@ import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
-import tk.bluetree242.discordsrvutils.tickets.listeners.PanelReactListener;
+import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -104,16 +115,31 @@ import java.util.logging.Logger;
 
 public class DiscordSRVUtils extends JavaPlugin {
 
+
+    //instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
-    public static DiscordSRVUtils get() {
-        return instance;
-    }
+    //file separator string
+    public final String fileseparator = System.getProperty("file.separator");
+    //messages folder path
+    public final Path messagesDirectory = Paths.get(getDataFolder() + fileseparator + "messages");
+    //default messages to use
+    public final Map<String, String> defaultmessages = new HashMap<>();
+    //leveling roles jsonobject, Initialized on startup
     public JSONObject levelingRolesRaw;
+    //was the DiscordSRV AccountLink Listener Removed?
     public boolean removedDiscordSRVAccountLinkListener = false;
+    //Mode for suggestions voting
+    public SuggestionVoteMode voteMode;
+    //latest error that occurred on our thread pool
+    public String finalError = null;
+    // faster getter for the logger
+    public Logger logger = getLogger();
+    //Plugins we hooked into
+    public List<Plugin> hookedPlugins = new ArrayList<>();
+
+    //Configurations
     private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
-    public final String fileseparator = System.getProperty("file.separator");
-    public final Path messagesDirectory = Paths.get(getDataFolder() + fileseparator + "messages");
     private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(getDataFolder().toPath(), "sql.yml", SQLConfig.class);
     private SQLConfig sqlconfig;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
@@ -124,49 +150,65 @@ public class DiscordSRVUtils extends JavaPlugin {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
-    public final Map<String, String> defaultmessages = new HashMap<>();
-    public SuggestionVoteMode voteMode;
-    private ExecutorService pool = Executors.newFixedThreadPool(3, new ThreadFactory() {
-        @Override
-        public Thread newThread(@NotNull Runnable r) {
-            Thread thread = new Thread(r);
-            thread.setName("DSU-THREAD");
-            thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
-            return thread;
-        }
-    });
+
+    //Thread Pool
+    private ThreadPoolExecutor pool;
+    //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
-    public Logger logger = getLogger();
+    //database connection pool
     private HikariDataSource sql;
+    //listeners that should be registered
     private List<ListenerAdapter> listeners = new ArrayList<>();
-    public List<Plugin> hookedPlugins = new ArrayList<>();
+
+    public static DiscordSRVUtils get() {
+        return instance;
+    }
+
+    public Thread newDSUThread(Runnable r) {
+        //start new thread with name and handler
+        Thread thread = new Thread(r);
+        thread.setName("DSU-THREAD");
+        thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler((t, e) -> defaultHandle(e));
+        return thread;
+    }
+
+    public ThreadPoolExecutor getPool() {
+        return pool;
+    }
+
     private void init() {
+        //set the instance
         instance = this;
+        //initialize discordsrv listener
         dsrvlistener = new DiscordSRVListener();
+        //Initialize Managers
         new MessageManager();
         new CommandManager();
         new TicketManager();
         new WaiterManager();
         new LevelingManager();
         new SuggestionManager();
+        //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
         listeners.add(new CreatePanelListener());
         listeners.add(new PaginationListener());
         listeners.add(new TicketDeleteListener());
-        listeners.add(new PanelReactListener());
+        listeners.add(new PanelOpenListener());
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
         listeners.add(new SuggestionVoteListener());
         listeners.add(new CustomDiscordAccountLinkListener());
+        //Init Default Messages
         initDefaultMessages();
 
     }
 
     public void onLoad() {
         init();
+        //require intents and cacheflags
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
@@ -174,7 +216,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void onEnable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, ()-> {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            //do updatechecker
             try {
                 if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
@@ -186,18 +229,19 @@ public class DiscordSRVUtils extends JavaPlugin {
                 JSONObject res = new JSONObject(response.body().string());
                 response.close();
                 int versions_behind = res.getInt("versions_behind");
-                String logger = res.getString("type") != null ? res.getString("type") :"INFO";
+                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
                 String msg = null;
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
                         if (logger.equalsIgnoreCase("INFO")) {
 
                         }
-                        msg = (ChatColor.GREEN + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
+                        msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
                     } else {
-                        msg = (ChatColor.GREEN + "Plugin is up to date!");
+                        msg = (ChatColor.RED + "Plugin is up to date!");
                     }
                 } else {
+                    //the updatechecker wants its own message
                     msg = (res.getString("message"));
                 }
                 switch (logger) {
@@ -212,6 +256,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         break;
                 }
             } catch (Exception e) {
+                //We could not check for updates.
                 logger.severe("Could not check for updates: " + e.getMessage());
             }
 
@@ -223,14 +268,18 @@ public class DiscordSRVUtils extends JavaPlugin {
                 setEnabled(false);
                 return;
             }
+
             try {
+                //Reload Configurations
                 reloadConfigs();
             } catch (ConfigurationLoadException ex) {
                 logger.severe(ex.getMessage());
                 setEnabled(false);
                 return;
             }
+            //set storage string to use later
             String storage = getSqlconfig().isEnabled() ? "MySQL" : "HsqlDB";
+            //print startup message
             Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "" +
                     "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
@@ -246,47 +295,78 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
             } catch (ClassNotFoundException e) {
+                //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
                 setEnabled(false);
                 return;
             }
+            //initialize pool
+             pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
+                @Override
+                public Thread newThread(@NotNull Runnable r) {
+
+                    return newDSUThread(r);
+                }
+            });
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
+            //register our bukkit commands
             registerBukkitCommands();
             try {
                 setupDatabase();
             } catch (SQLException ex) {
-                logger.severe("Error could not connect to database: " + ex.getMessage());
-                setEnabled(false);
-                return;
+                //Oh no! could not connect or migrate. Plugin may not start
+                startupError(ex, "Error could not connect to database: " + ex.getMessage());
             }
             DiscordSRV.api.subscribe(dsrvlistener);
             if (isReady()) {
+                //Uhh, Maybe they are using a pluginmanager and this plugin was enabled after discordsrv is ready
                 whenReady();
             }
             whenStarted();
+            //bstats stuff
             Metrics metrics = new Metrics(this, 9456);
             metrics.addCustomChart(new AdvancedPie("features", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
+                //Removed Tickets Because it caused lag on a few servers
+                /*
                 if (!TicketManager.get().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
+                 */
                 if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
                 if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
                 if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
-                if (getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled()) valueMap.put("Punishment Messages", 1);
-                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled()) valueMap.put("AFK Messages", 1);
+                if (getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled())
+                    valueMap.put("Punishment Messages", 1);
+                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled())
+                    valueMap.put("AFK Messages", 1);
                 return valueMap;
             }));
             metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
             metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
-            throw new StartupException(ex);
+            //Plugin couldn't start, sadly
+            startupError(ex, "Plugin could not start");
         }
     }
 
     public void registerBukkitCommands() {
         getCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand());
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
+    }
+
+    private void startupError(Throwable ex,@NotNull String msg) {
+        setEnabled(false);
+        logger.warning(msg);
+        try {
+            //create a debug report, we know commands don't work after plugin is disabled
+            logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //tell them where to report
+        logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+        ex.printStackTrace();
     }
 
     private void setupDatabase() throws SQLException {
@@ -312,11 +392,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         sql = new HikariDataSource(settings);
         if (!getSqlconfig().isEnabled()) {
             try (Connection conn = sql.getConnection()) {
+                //This Prevents Errors when syntax of hsqldb and mysql dismatch
                 //language=hsqldb
                 String query = "SET DATABASE SQL SYNTAX MYS TRUE;";
-              conn.prepareStatement(query).execute();
+                conn.prepareStatement(query).execute();
             }
         }
+        //Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
                 .baselineOnMigrate(true)
@@ -324,208 +406,58 @@ public class DiscordSRVUtils extends JavaPlugin {
                 .validateMigrationNaming(true).group(true)
                 .table("discordsrvutils_schema")
                 .load();
+        //repair if there is an issue
         flyway.repair();
         flyway.migrate();
         logger.info("MySQL/HsqlDB Connected & Setup");
     }
 
     private void initDefaultMessages() {
-        //welcome message
-        JSONObject welcome = new JSONObject();
-        JSONObject welcomeembed = new JSONObject();
-        welcomeembed.put("color", "cyan");
-        welcomeembed.put("description", "\uD83D\uDD38 **Welcome [user.name] To The server!**\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Server ip** | play.example.com\n" +
-                "\n" +
-                "\n" +
-                "\uD83D\uDD38 **Store** | store.example.com");
-        welcomeembed.put("thumbnail", new JSONObject().put("url", "[user.effectiveAvatarUrl]"));
-        welcome.put("embed", welcomeembed);
-        defaultmessages.put("welcome", welcome.toString(1));
-        //afk message
-        JSONObject afk = new JSONObject();
-        JSONObject afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is now afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("afk", afk.toString(1));
-        afk = new JSONObject();
-        afkembed = new JSONObject();
-        afkembed.put("color", "green");
-        afkembed.put("author", new JSONObject().put("name", "[player.name] is no longer afk").put("icon_url", "https://minotar.net/avatar/[player.name]"));
-        afk.put("embed", afkembed);
-        defaultmessages.put("no-longer-afk", afk.toString(1));
-        JSONObject punishmentMessage = new JSONObject();
-        JSONObject punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was banned by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("ban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unbanned by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unban", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was muted by [punishment.operator] For [punishment.reason]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentEmbed.put("footer", new JSONObject().put("text", "[punishment.duration]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("mute", punishmentMessage.toString(1));
-        punishmentMessage = new JSONObject();
-        punishmentEmbed = new JSONObject();
-        punishmentEmbed.put("color", "red");
-        punishmentEmbed.put("author", new JSONObject().put("name", "[punishment.name] was unmuted by [punishment.operator]").put("icon_url", "https://minotar.net/avatar/[punishment.name]"));
-        punishmentMessage.put("embed", punishmentEmbed);
-        defaultmessages.put("unmute", punishmentMessage.toString(1));
-        JSONObject panel = new JSONObject();
-        JSONObject panelEmbed = new JSONObject();
-        panelEmbed.put("color", "cyan");
-        panelEmbed.put("title", "[panel.name]");
-        panelEmbed.put("description", "Click on The Button to open a ticket");
-        panel.put("embed", panelEmbed);
-        defaultmessages.put("panel", panel.toString(1));
-        JSONObject ticketOpened = new JSONObject();
-        JSONObject ticketOpenedEmbed = new JSONObject();
-        ticketOpened.put("content", "[user.asMention] Here is your ticket");
-        ticketOpenedEmbed.put("description", String.join("\n", new String[]{
-                "Staff will be here shortly",
-                "Click `Close Ticket` to close this ticket",
-                "**Panel Name: **[panel.name]"
-        }));
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-open", ticketOpened.toString(1));
-        JSONObject ticketClosed = new JSONObject();
-        JSONObject ticketClosedEmbed = new JSONObject();
-        ticketClosedEmbed.put("description", "Ticket Closed by [user.asMention]");
-        ticketClosedEmbed.put("color", "red");
-        ticketClosed.put("embed", ticketClosedEmbed);
-        defaultmessages.put("ticket-close", ticketClosed.toString(1));
-        ticketOpened = new JSONObject();
-        ticketOpenedEmbed = new JSONObject();
-        ticketOpenedEmbed.put("description", "Ticket reopened by [user.asMention]");
-        ticketOpenedEmbed.put("color", "green");
-        ticketOpened.put("embed", ticketOpenedEmbed);
-        defaultmessages.put("ticket-reopen", ticketOpened.toString(1));
-        JSONObject level = new JSONObject();
-        JSONObject levelEmbed = new JSONObject();
-        levelEmbed.put("color", "cyan");
-        levelEmbed.put("title", "Level for [stats.name]");
-        levelEmbed.put("description", String.join("\n", new String[]{
-                        "**Level:** [stats.level]",
-                        "**XP:** [stats.xp]",
-                         "**Rank:**: #[stats.rank]"
-                }
-        ));
-        levelEmbed.put("thumbnail", new JSONObject().put("url", "https://minotar.net/avatar/[stats.name]"));
-        level.put("embed", levelEmbed);
-        defaultmessages.put("level", level.toString(1));
-        JSONObject suggestion = new JSONObject();
-        JSONObject suggestionEmbed = new JSONObject();
-        suggestionEmbed.put("color", "orange");
-        JSONArray suggestionFields = new JSONArray();
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "orange");
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "green");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Approved By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-approved", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-denied", suggestion.toString(1));
-        suggestionEmbed = new JSONObject();
-        suggestion = new JSONObject();
-        suggestionFields = new JSONArray();
-        suggestionEmbed.put("color", "red");
-        suggestionFields.put(new JSONObject().put("name", "Vote Results").put("value", ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"));
-        suggestionFields.put(new JSONObject().put("name", "Submitter").put("value", "[submitter.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Suggestion").put("value", "[suggestion.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Note").put("value", "[note.text]"));
-        suggestionFields.put(new JSONObject().put("name", "Staff Member").put("value", "[staff.asMention]"));
-        suggestionFields.put(new JSONObject().put("name", "Denied By").put("value", "[approver.asMention]"));
-        suggestionEmbed.put("fields", suggestionFields);
-        suggestionEmbed.put("thumbnail", new JSONObject().put("url", "[submitter.effectiveAvatarUrl]"));
-        suggestionEmbed.put("title", "Suggestion Number: [suggestion.number]");
-        suggestion.put("embed", suggestionEmbed);
-        defaultmessages.put("suggestion-noted-denied", suggestion.toString(1));
+        //prepare a list of all messages
+        String[] messages = new String[]{"afk",
+                "ban",
+                "level",
+                "mute",
+                "no-longer-afk",
+                "panel",
+                "suggestion",
+                "suggestion-approved",
+                "suggestion-denied",
+                "suggestion-noted",
+                "suggestion-noted-approved",
+                "suggestion-noted-denied",
+                "ticket-close",
+                "ticket-open",
+                "ticket-reopen",
+                "unban",
+                "unmute",
+                "welcome"};
+        for (String msg : messages) {
+            try {
+                //add them to the map
+                defaultmessages.put(msg, new String(getResource("messages/" + msg + ".json").readAllBytes()));
+            } catch (IOException e) {
+                logger.severe("Could not load " + msg + ".json");
+            }
+        }
     }
 
 
-
     public void onDisable() {
-        instance = null;
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
-        if (sql != null)sql.close();
+        if (sql != null) sql.close();
     }
 
     private void whenStarted() {
         if (messagesDirectory.toFile().mkdir()) {
             defaultmessages.forEach((key, val) -> {
                 try {
-                    File file =  new File(messagesDirectory + fileseparator + key + ".json");
+                    File file = new File(messagesDirectory + fileseparator + key + ".json");
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);
@@ -548,7 +480,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             } else {
                 levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
             }
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             logger.severe("Error creating leveling-roles.json");
         } catch (IOException e) {
             logger.severe("Error creating leveling-roles.json");
@@ -586,16 +518,17 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
 
-
-
-
+    /**
+     *
+     * @return `DiscordSRV.isReady`. This may change any time soon
+     */
     public boolean isReady() {
         return DiscordSRV.isReady;
     }
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
-        config =configmanager.reloadConfigData();
+        config = configmanager.reloadConfigData();
         sqlconfigmanager.reloadConfig();
         sqlconfig = sqlconfigmanager.reloadConfigData();
         bansIntegrationconfigmanager.reloadConfig();
@@ -606,11 +539,12 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        //make the leveling roles file
         File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
         if (!levelingRoles.exists()) {
             levelingRoles.createNewFile();
             FileWriter writer = new FileWriter(levelingRoles);
-            writer.write("{}");
+            writer.write("{/n/n}");
             writer.close();
             levelingRolesRaw = new JSONObject();
         } else {
@@ -648,6 +582,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void whenReady() {
+        //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
             registerCommands();
             setSettings();
@@ -671,6 +606,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("PlaceholderAPI"));
             }
+            //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
                 for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
                     if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
@@ -679,13 +615,16 @@ public class DiscordSRVUtils extends JavaPlugin {
                     }
                 }
             }
+            //fix issues with any ticket or panel
             fixTickets();
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
+            //migrate suggestion buttons/reactions if needed
             doSuggestions();
             logger.info("Plugin is ready to function.");
         });
 
     }
+
     private void fixTickets() {
         try (Connection conn = getDatabase()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
@@ -702,10 +641,16 @@ public class DiscordSRVUtils extends JavaPlugin {
             r1 = p1.executeQuery();
             while (r1.next()) {
                 Panel panel = TicketManager.get().getPanel(r1);
-                Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                if (msg.getButtons().isEmpty()) {
-                    msg.clearReactions().queue();
-                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel("Open Ticket")).queue();
+                try {
+                    Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                    if (msg.getButtons().isEmpty()) {
+                        msg.clearReactions().queue();
+                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button())).queue();
+                    } else if (!msg.getButtons().get(0).getLabel().equals(getTicketsConfig().open_ticket_button())) {
+                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button()))).queue();
+                    }
+                } catch (ErrorResponseException ex) {
+                    panel.getEditor().apply();
                 }
             }
         } catch (SQLException e) {
@@ -721,8 +666,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             ResultSet r1 = p1.executeQuery();
             while (r1.next()) {
                 Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
-                Message msg = suggestion.getMessage();
-                if (msg != null) {
+                try {
+                    Message msg = suggestion.getMessage();
+
                     if (msg.getButtons().isEmpty()) {
                         if (voteMode == SuggestionVoteMode.REACTIONS) {
                         } else {
@@ -749,6 +695,8 @@ public class DiscordSRVUtils extends JavaPlugin {
                             msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                         }
                     }
+                } catch (ErrorResponseException ex) {
+
                 }
             }
             if (sent) {
@@ -771,6 +719,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public JDA getJDA() {
         return DiscordSRV.getPlugin().getJda();
     }
+
     public MessageManager getEmbedManager() {
         return MessageManager.get();
     }
@@ -796,6 +745,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getLogger().severe(sv);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
+                //tell admins that something was wrong
                 p.sendMessage(Utils.colors("&7[&eDSU&7] &c" + sv));
         }
     }
@@ -809,7 +759,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         return config.prefix();
     }
 
-    public Connection getDatabase() throws SQLException{
+    public Connection getDatabase() throws SQLException {
         return sql.getConnection();
     }
 
@@ -822,9 +772,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             return DiscordSRV.getPlugin().getMainTextChannel();
         } else return getJDA().getTextChannelById(id);
     }
+
     public TextChannel getChannel(long id) {
         return getChannel(id, null);
     }
+
     public Guild getGuild() {
         return DiscordSRV.getPlugin().getMainGuild();
     }
@@ -842,7 +794,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
-        if (success!=null)cf.thenAcceptAsync(success);
+        if (success != null) cf.thenAcceptAsync(success);
         cf.handle((e, x) -> {
             Exception ex = (Exception) x.getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
@@ -866,18 +818,39 @@ public class DiscordSRVUtils extends JavaPlugin {
             throw (RuntimeException) e;
         }
     }
+
     public void defaultHandle(Throwable ex, MessageChannel channel) {
+        //send message for errors
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
         logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
+
+    private long lastErrorTime = 0;
     public void defaultHandle(Throwable ex) {
+        //handle error on thread pool
         if (!config.minimize_errors()) {
-            logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            logger.warning("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+
             ex.printStackTrace();
+            logger.warning("Read the note above the error Please.");
+            //don't spam errors
+            if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.hasPermission("discordsrvutils.errornotifications")) {
+                    //tell admins that something was wrong
+                TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
+                msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
+                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
+                p.spigot().sendMessage(msg);
+                }
+            }
+            lastErrorTime = System.currentTimeMillis();
+
         } else {
             logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
+        finalError = Utils.exceptionToStackTrack(ex);
     }
 
     private boolean isAnyPunishmentsPluginInstalled() {

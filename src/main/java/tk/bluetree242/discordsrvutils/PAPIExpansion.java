@@ -26,10 +26,9 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 
-import java.util.regex.Pattern;
-
 public class PAPIExpansion extends PlaceholderExpansion {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @Override
     public String getIdentifier() {
         return "DiscordSRVUtils";
@@ -42,7 +41,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return String.join( ", ", core.getDescription().getAuthors());
+        return String.join(", ", core.getDescription().getAuthors());
     }
 
     @Override

@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.embeds;
 
 
-
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 

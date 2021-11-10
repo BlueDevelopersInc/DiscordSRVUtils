@@ -27,8 +27,6 @@ import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-import java.util.List;
-
 public interface PunishmentsIntegrationConfig {
     @ConfKey("sync_minecraft_punishments_to_discord")
     @ConfDefault.DefaultBoolean(true)

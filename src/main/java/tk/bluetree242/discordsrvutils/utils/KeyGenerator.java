@@ -33,6 +33,7 @@ public class KeyGenerator {
         this.includeUniqueCharacters = b;
         return this;
     }
+
     public KeyGenerator includeUpperCasedCharacters(boolean b) {
         includeUpperCasedCharacters = b;
         return this;
@@ -54,8 +55,7 @@ public class KeyGenerator {
         if (includeUniqueCharacters) use = use + unique;
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             int randomIndex = random.nextInt(use.length());
             sb.append(use.charAt(randomIndex));
         }

@@ -29,7 +29,6 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 public interface SuggestionsConfig {
 
 
-
     @AnnotationBasedSorter.Order(9)
     @ConfComments("#Is Suggestions enabled?")
     @ConfDefault.DefaultBoolean(false)
@@ -61,7 +60,6 @@ public interface SuggestionsConfig {
     @ConfComments("# Should the Submitter of suggestion be able to vote their own suggestion?")
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_submitter_vote();
-
 
 
     @AnnotationBasedSorter.Order(60)

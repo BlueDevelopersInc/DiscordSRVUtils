@@ -24,12 +24,8 @@ package tk.bluetree242.discordsrvutils.listeners.jda;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -65,6 +61,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
             }
         });
     }
+
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
         core.executeAsync(() -> {
             if (!e.getUser().isBot()) {

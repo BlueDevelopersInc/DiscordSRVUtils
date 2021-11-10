@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.commands.discord;
+package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
@@ -32,7 +32,6 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 
 import java.awt.*;
@@ -48,6 +47,11 @@ public class PanelListCommand extends Command {
         setAdminOnly(true);
     }
 
+    private static int getPageCount(Set templates) {
+        return (int) Math.ceil(Double.parseDouble((Float.parseFloat(templates.size() + ".0") / 5) + ""));
+
+    }
+
     @Override
     public void run(CommandEvent e) throws Exception {
         DiscordSRVUtils.get().handleCF(TicketManager.get().getPanels(), panels -> {
@@ -58,11 +62,6 @@ public class PanelListCommand extends Command {
         }, failure -> {
             DiscordSRVUtils.get().defaultHandle(failure, (TextChannel) e.getChannel());
         });
-    }
-
-    private static int getPageCount(Set templates) {
-        return (int) Math.ceil(Double.parseDouble((Float.parseFloat(templates.size() + ".0") / 5) + ""));
-
     }
 
     public List<MessageEmbed> getEmbeds(Set<Panel> panels) {
