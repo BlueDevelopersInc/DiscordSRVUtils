@@ -58,7 +58,7 @@ public class PanelOpenListener extends ListenerAdapter {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
-                    e.deferReply(true).setContent("You are Ticket Muted").queue();
+                    e.deferReply(true).setContent("You are Ticket Banned").queue();
                     return;
                 }
                 core.handleCF(panel.openTicket(e.getUser()).thenAcceptAsync(t -> {
