@@ -474,7 +474,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (!levelingRoles.exists()) {
                 levelingRoles.createNewFile();
                 FileWriter writer = new FileWriter(levelingRoles);
-                writer.write("{}");
+                writer.write("{\n\n}");
                 writer.close();
                 levelingRolesRaw = new JSONObject();
             } else {
@@ -544,7 +544,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (!levelingRoles.exists()) {
             levelingRoles.createNewFile();
             FileWriter writer = new FileWriter(levelingRoles);
-            writer.write("{/n/n}");
+            writer.write("{\n\n}");
             writer.close();
             levelingRolesRaw = new JSONObject();
         } else {
