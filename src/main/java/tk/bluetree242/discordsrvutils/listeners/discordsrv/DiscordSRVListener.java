@@ -59,12 +59,12 @@ public class DiscordSRVListener {
             if (id == null) return;
             Member member = core.getGuild().retrieveMemberById(id).complete();
             if (member == null) return;
-            for (Role role : manager.getRolesToRemove()) {
+            for (Role role : manager.getRolesToRemove(stats.getLevel())) {
                 if (member.getRoles().contains(role))
                     core.getGuild().removeRoleFromMember(member, role).queue();
             }
             Role toAdd = manager.getRoleForLevel(level);
-            if (toAdd != null) {
+            if (toAdd != null && !member.getRoles().contains(toAdd)) {
                 core.getGuild().addRoleToMember(member, toAdd).queue();
             }
         });
@@ -79,7 +79,7 @@ public class DiscordSRVListener {
         core.executeAsync(() -> {
             Member member = core.getGuild().retrieveMemberById(e.getDiscordId()).complete();
             if (member != null) {
-                for (Role role : manager.getRolesToRemove()) {
+                for (Role role : manager.getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
                         core.getGuild().removeRoleFromMember(member, role).queue();
                 }

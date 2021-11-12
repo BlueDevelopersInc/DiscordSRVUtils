@@ -103,7 +103,7 @@ public class PlayerStats {
                     LevelingManager manager = LevelingManager.get();
                     Member member = core.getGuild().retrieveMemberById(id).complete();
                     if (member == null) return true;
-                    for (Role role : manager.getRolesToRemove()) {
+                    for (Role role : manager.getRolesToRemove(level)) {
                         if (member.getRoles().contains(role))
                             core.getGuild().removeRoleFromMember(member, role).queue();
                     }
