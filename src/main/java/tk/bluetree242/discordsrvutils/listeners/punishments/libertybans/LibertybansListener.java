@@ -26,6 +26,7 @@ package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import space.arim.libertybans.api.LibertyBans;
+import space.arim.libertybans.api.Operator;
 import space.arim.libertybans.api.PlayerVictim;
 import space.arim.libertybans.api.Victim;
 import space.arim.libertybans.api.event.PostPardonEvent;
@@ -103,7 +104,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPunishEvent e) {
             core.executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment());
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator());
 
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
@@ -151,7 +152,8 @@ public class LibertybansListener {
         @Override
         public void accept(PostPardonEvent e) {
             core.executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment());
+
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getOperator());
 
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
