@@ -448,6 +448,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
+        if (pool != null)
         pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
