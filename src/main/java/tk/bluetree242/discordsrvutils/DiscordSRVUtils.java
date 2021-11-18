@@ -151,6 +151,9 @@ public class DiscordSRVUtils extends JavaPlugin {
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
 
+    //The PAPI Expansion instance, will be used onDisable for removal
+    private PAPIExpansion expansion;
+
     //Thread Pool
     private ThreadPoolExecutor pool;
     //Our DiscordSRV Listener
@@ -443,6 +446,8 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
 
+
+
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
@@ -487,8 +492,9 @@ public class DiscordSRVUtils extends JavaPlugin {
             logger.severe("Error creating leveling-roles.json");
         }
 
+        //Register Expansion
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PAPIExpansion().register();
+            (expansion = new PAPIExpansion()).register();
         }
 
 

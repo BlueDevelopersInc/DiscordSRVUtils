@@ -24,7 +24,10 @@ package tk.bluetree242.discordsrvutils;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+
+import java.util.List;
 
 public class PAPIExpansion extends PlaceholderExpansion {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -47,6 +50,16 @@ public class PAPIExpansion extends PlaceholderExpansion {
     @Override
     public String getVersion() {
         return core.getDescription().getVersion();
+    }
+
+    @Override
+    public List<String> getPlaceholders() {
+        return List.of("level", "rank", "xp");
+    }
+
+    @Override
+    public String getRequiredPlugin() {
+        return "DiscordSRVUtils";
     }
 
     @Override
