@@ -1,8 +1,12 @@
-{"embed": {
- "color": "red",
- "footer": {"text": "[punishment.duration]"},
- "author": {
-  "icon_url": "https://minotar.net/avatar/[punishment.name]",
-  "name": "[punishment.name] was banned by [punishment.operator] For [punishment.reason]"
- }
-}}
+{
+  "embed": {
+    "color": "red",
+    "footer": {
+      "text": "[punishment.duration]"
+    },
+    "author": {
+      "icon_url": "https://minotar.net/avatar/[punishment.name]",
+      "name": "[punishment.name] was banned by [punishment.operator] For [punishment.reason]"
+    }
+  }
+}

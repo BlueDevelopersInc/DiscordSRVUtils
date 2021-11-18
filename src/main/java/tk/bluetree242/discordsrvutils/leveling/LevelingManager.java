@@ -187,7 +187,7 @@ public class LevelingManager {
             roles.add(core.getGuild().getRoleById(id));
         }
         if (level != null)
-        roles.remove(getRoleForLevel(level));
+            roles.remove(getRoleForLevel(level));
         return roles;
     }
 }

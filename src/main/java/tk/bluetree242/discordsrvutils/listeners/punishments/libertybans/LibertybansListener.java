@@ -26,7 +26,6 @@ package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import space.arim.libertybans.api.LibertyBans;
-import space.arim.libertybans.api.Operator;
 import space.arim.libertybans.api.PlayerVictim;
 import space.arim.libertybans.api.Victim;
 import space.arim.libertybans.api.event.PostPardonEvent;

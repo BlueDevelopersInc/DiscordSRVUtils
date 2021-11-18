@@ -56,7 +56,7 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
-import tk.bluetree242.discordsrvutils.commands.discord.*;
+import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
@@ -151,8 +151,6 @@ public class DiscordSRVUtils extends JavaPlugin {
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
 
-    //The PAPI Expansion instance, will be used onDisable for removal
-    private PAPIExpansion expansion;
 
     //Thread Pool
     private ThreadPoolExecutor pool;
@@ -162,6 +160,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     private HikariDataSource sql;
     //listeners that should be registered
     private List<ListenerAdapter> listeners = new ArrayList<>();
+    private long lastErrorTime = 0;
 
     public static DiscordSRVUtils get() {
         return instance;
@@ -304,7 +303,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return;
             }
             //initialize pool
-             pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
+            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
                 @Override
                 public Thread newThread(@NotNull Runnable r) {
 
@@ -358,7 +357,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
     }
 
-    private void startupError(Throwable ex,@NotNull String msg) {
+    private void startupError(Throwable ex, @NotNull String msg) {
         setEnabled(false);
         logger.warning(msg);
         try {
@@ -368,7 +367,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             e.printStackTrace();
         }
         //tell them where to report
-        logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+        logger.severe("Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
     }
 
@@ -445,16 +444,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
     }
 
-
-
-
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         if (pool != null)
-        pool.shutdown();
+            pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
     }
@@ -494,12 +490,11 @@ public class DiscordSRVUtils extends JavaPlugin {
 
         //Register Expansion
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            (expansion = new PAPIExpansion()).register();
+            new PAPIExpansion().register();
         }
 
 
     }
-
 
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
@@ -524,9 +519,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new DenySuggestionCommand());
     }
 
-
     /**
-     *
      * @return `DiscordSRV.isReady`. This may change any time soon
      */
     public boolean isReady() {
@@ -715,7 +708,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
     }
 
-
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
@@ -812,7 +804,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         });
     }
 
-
     /**
      * For doing a cf inside another one
      */
@@ -833,7 +824,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         ex.printStackTrace();
     }
 
-    private long lastErrorTime = 0;
     public void defaultHandle(Throwable ex) {
         //handle error on thread pool
         if (!config.minimize_errors()) {
@@ -843,15 +833,15 @@ public class DiscordSRVUtils extends JavaPlugin {
             logger.warning("Read the note above the error Please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("discordsrvutils.errornotifications")) {
-                    //tell admins that something was wrong
-                TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
-                msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
-                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
-                p.spigot().sendMessage(msg);
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.hasPermission("discordsrvutils.errornotifications")) {
+                        //tell admins that something was wrong
+                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
+                        p.spigot().sendMessage(msg);
+                    }
                 }
-            }
             lastErrorTime = System.currentTimeMillis();
 
         } else {

@@ -1,4 +1,6 @@
-{"embed": {
- "color": "red",
- "description": "Ticket Closed by [user.asMention]"
-}}
+{
+  "embed": {
+    "color": "red",
+    "description": "Ticket Closed by [user.asMention]"
+  }
+}
