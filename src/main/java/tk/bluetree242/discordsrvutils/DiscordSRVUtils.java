@@ -213,6 +213,11 @@ public class DiscordSRVUtils extends JavaPlugin {
         init();
         //require intents and cacheflags
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
+            if (DiscordSRV.isReady) {
+                //Oh no, they are using a plugin manager to reload the plugin, give them a warn
+                logger.warning("It seems like you are using a Plugin Manager to reload the plugin. This is not a good practice. If you see problems. Please restart");
+                return;
+            }
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
         }
