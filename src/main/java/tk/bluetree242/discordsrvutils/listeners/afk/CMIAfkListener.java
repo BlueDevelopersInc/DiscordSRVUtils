@@ -35,7 +35,8 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 public class CMIAfkListener implements Listener {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @EventHandler
     public void onAfk(CMIAfkEnterEvent e) {
         core.executeAsync(() -> {
@@ -48,8 +49,7 @@ public class CMIAfkListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg;
-                    msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
+                Message msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
@@ -67,8 +67,7 @@ public class CMIAfkListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg;
-                msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
+                Message msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
