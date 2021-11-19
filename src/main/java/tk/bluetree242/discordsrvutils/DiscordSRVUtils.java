@@ -72,6 +72,7 @@ import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
+import tk.bluetree242.discordsrvutils.listeners.afk.CMIAfkListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
@@ -590,6 +591,10 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
                 getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("CMI")) {
+                getServer().getPluginManager().registerEvents(new CMIAfkListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("CMI"));
             }
             if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
                 getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
