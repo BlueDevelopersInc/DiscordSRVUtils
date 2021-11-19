@@ -44,7 +44,7 @@ https://github.com/DiscordSRV/DiscordSRV/wiki#developers
 
 # Contributing
   
-To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop` branch. Pull requests on Master will be denied and closed.
+To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop` branch. Pull requests on `master` will be denied and closed.
   
 
 
