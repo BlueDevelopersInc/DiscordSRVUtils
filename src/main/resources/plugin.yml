@@ -9,6 +9,7 @@ softdepend:
   - PlaceholderAPI
   - Litebans
   - Libertybans
+  - CMI
 version: @version@
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
 author: BlueTree242
