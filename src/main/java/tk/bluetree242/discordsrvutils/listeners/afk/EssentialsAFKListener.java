@@ -40,6 +40,7 @@ public class EssentialsAFKListener implements Listener {
     @EventHandler
     public void onAfk(AfkStatusChangeEvent e) {
         core.executeAsync(() -> {
+            if (e.getAffected().isHidden()) return;
             boolean afk = e.getAffected().isAfk();
             Player player = e.getAffected().getBase();
             if (core.getMainConfig().afk_message_enabled()) {
