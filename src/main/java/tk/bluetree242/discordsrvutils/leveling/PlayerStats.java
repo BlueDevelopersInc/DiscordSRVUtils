@@ -25,12 +25,15 @@ package tk.bluetree242.discordsrvutils.leveling;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -103,14 +106,16 @@ public class PlayerStats {
                     LevelingManager manager = LevelingManager.get();
                     Member member = core.getGuild().retrieveMemberById(id).complete();
                     if (member == null) return true;
-                    for (Role role : manager.getRolesToRemove()) {
+                    Collection actions = new ArrayList<>();
+                    for (Role role : manager.getRolesToRemove(level)) {
                         if (member.getRoles().contains(role))
-                            core.getGuild().removeRoleFromMember(member, role).queue();
+                            actions.add(core.getGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
                     }
                     Role toAdd = manager.getRoleForLevel(level);
                     if (toAdd != null) {
-                        core.getGuild().addRoleToMember(member, toAdd).queue();
+                        actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
                     }
+                    RestAction.allOf(actions).queue();
                     return true;
                 }
                 PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=? WHERE UUID=?");

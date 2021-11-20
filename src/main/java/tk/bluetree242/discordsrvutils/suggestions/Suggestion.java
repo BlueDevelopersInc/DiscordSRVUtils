@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;

@@ -1,21 +1,27 @@
 name: DiscordSRVUtils
+#Giving a more friendly error when DiscordSRV is not installed
 depend:
   - DiscordSRV
+#We hook into those
 softdepend:
   - Essentials
   - Advancedban
   - PlaceholderAPI
   - Litebans
   - Libertybans
+  - CMI
 version: @version@
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
 author: BlueTree242
+#We use api version 1.13 but all versions are supported
 api-version: 1.13
 
+#Our main and only command
 commands:
   discordsrvutils:
     aliases: [ dsrvu, dsu, du, discordu, srvu ]
 
+#Add the perms to the permission plugins without us having to check them
 permissions:
   discordsrvutils.reload:
     default: false
@@ -25,6 +31,6 @@ permissions:
     description: Allow player to create a debug report
   discordsrvutils.errornotifications:
     default: false
-    description: Allow plugin to send errors to this user
+    description: Allow plugin to send errors to player
 
 

@@ -35,14 +35,14 @@ public abstract class BukkitCommand implements CommandExecutor {
 
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
-                try {
-                    onRunAsync(sender, command, label, args);
-                } catch (Throwable ex) {
-                    ex.printStackTrace();
-                    sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
-                }
-            });
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
+            try {
+                onRunAsync(sender, command, label, args);
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+                sender.sendMessage(Utils.colors("&cAn internal error occurred while executing this command"));
+            }
+        });
         return true;
     }
 

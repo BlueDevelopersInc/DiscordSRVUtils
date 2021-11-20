@@ -56,7 +56,7 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
-import tk.bluetree242.discordsrvutils.commands.discord.*;
+import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
@@ -72,6 +72,7 @@ import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
+import tk.bluetree242.discordsrvutils.listeners.afk.CMIAfkListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
@@ -151,6 +152,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
 
+
     //Thread Pool
     private ThreadPoolExecutor pool;
     //Our DiscordSRV Listener
@@ -159,6 +161,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     private HikariDataSource sql;
     //listeners that should be registered
     private List<ListenerAdapter> listeners = new ArrayList<>();
+    private long lastErrorTime = 0;
 
     public static DiscordSRVUtils get() {
         return instance;
@@ -210,6 +213,11 @@ public class DiscordSRVUtils extends JavaPlugin {
         init();
         //require intents and cacheflags
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
+            if (DiscordSRV.isReady) {
+                //Oh no, they are using a plugin manager to reload the plugin, give them a warn
+                logger.warning("It seems like you are using a Plugin Manager to reload the plugin. This is not a good practice. If you see problems. Please restart");
+                return;
+            }
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
         }
@@ -301,7 +309,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                 return;
             }
             //initialize pool
-             pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
+            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.pool_size(), new ThreadFactory() {
                 @Override
                 public Thread newThread(@NotNull Runnable r) {
 
@@ -355,7 +363,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
     }
 
-    private void startupError(Throwable ex,@NotNull String msg) {
+    private void startupError(Throwable ex, @NotNull String msg) {
         setEnabled(false);
         logger.warning(msg);
         try {
@@ -365,7 +373,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             e.printStackTrace();
         }
         //tell them where to report
-        logger.severe( "Send this to support at https://discordsrvutils.xyz/support");
+        logger.severe("Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
     }
 
@@ -442,13 +450,13 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
     }
 
-
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (isReady()) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
-        pool.shutdown();
+        if (pool != null)
+            pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
     }
@@ -474,7 +482,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (!levelingRoles.exists()) {
                 levelingRoles.createNewFile();
                 FileWriter writer = new FileWriter(levelingRoles);
-                writer.write("{}");
+                writer.write("{\n\n}");
                 writer.close();
                 levelingRolesRaw = new JSONObject();
             } else {
@@ -486,13 +494,13 @@ public class DiscordSRVUtils extends JavaPlugin {
             logger.severe("Error creating leveling-roles.json");
         }
 
+        //Register Expansion
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PAPIExpansion().register();
         }
 
 
     }
-
 
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
@@ -517,9 +525,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         CommandManager.get().registerCommand(new DenySuggestionCommand());
     }
 
-
     /**
-     *
      * @return `DiscordSRV.isReady`. This may change any time soon
      */
     public boolean isReady() {
@@ -544,7 +550,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (!levelingRoles.exists()) {
             levelingRoles.createNewFile();
             FileWriter writer = new FileWriter(levelingRoles);
-            writer.write("{/n/n}");
+            writer.write("{\n\n}");
             writer.close();
             levelingRolesRaw = new JSONObject();
         } else {
@@ -590,6 +596,10 @@ public class DiscordSRVUtils extends JavaPlugin {
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
                 getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("CMI")) {
+                getServer().getPluginManager().registerEvents(new CMIAfkListener(), this);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("CMI"));
             }
             if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
                 getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
@@ -708,7 +718,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
     }
 
-
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
@@ -805,7 +814,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         });
     }
 
-
     /**
      * For doing a cf inside another one
      */
@@ -826,7 +834,6 @@ public class DiscordSRVUtils extends JavaPlugin {
         ex.printStackTrace();
     }
 
-    private long lastErrorTime = 0;
     public void defaultHandle(Throwable ex) {
         //handle error on thread pool
         if (!config.minimize_errors()) {
@@ -836,15 +843,15 @@ public class DiscordSRVUtils extends JavaPlugin {
             logger.warning("Read the note above the error Please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("discordsrvutils.errornotifications")) {
-                    //tell admins that something was wrong
-                TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
-                msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
-                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
-                p.spigot().sendMessage(msg);
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.hasPermission("discordsrvutils.errornotifications")) {
+                        //tell admins that something was wrong
+                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] Plugin had an error. Check console for details."));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discordsrvutils.xyz/support"));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Join Support Discord").create()));
+                        p.spigot().sendMessage(msg);
+                    }
                 }
-            }
             lastErrorTime = System.currentTimeMillis();
 
         } else {

@@ -32,9 +32,11 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class LibertyBansPunishment implements Punishment {
     private space.arim.libertybans.api.punish.Punishment punishment;
+    private Operator operator;
 
-    public LibertyBansPunishment(space.arim.libertybans.api.punish.Punishment punishment) {
+    public LibertyBansPunishment(space.arim.libertybans.api.punish.Punishment punishment, Operator operator) {
         this.punishment = punishment;
+        this.operator = operator;
     }
 
     @Override
@@ -45,11 +47,11 @@ public class LibertyBansPunishment implements Punishment {
 
     @Override
     public String getOperator() {
-        if (punishment.getOperator().getType() == Operator.OperatorType.CONSOLE) {
+        if (operator.getType() == Operator.OperatorType.CONSOLE) {
             return "CONSOLE";
         } else {
-            PlayerOperator operator = (PlayerOperator) punishment.getOperator();
-            String name = Bukkit.getOfflinePlayer(operator.getUUID()).getName();
+            PlayerOperator operatorplayer = (PlayerOperator) operator;
+            String name = Bukkit.getOfflinePlayer(operatorplayer.getUUID()).getName();
             return name == null ? "Unknown" : name;
         }
     }

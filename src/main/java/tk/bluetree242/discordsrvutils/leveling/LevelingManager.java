@@ -178,7 +178,7 @@ public class LevelingManager {
         return null;
     }
 
-    public List<Role> getRolesToRemove() {
+    public List<Role> getRolesToRemove(Integer level) {
         List<Role> roles = new ArrayList<>();
         Map<String, Object> map = core.levelingRolesRaw.toMap();
         List<Object> values = new ArrayList<>(map.values());
@@ -186,6 +186,8 @@ public class LevelingManager {
             Long id = (Long) value;
             roles.add(core.getGuild().getRoleById(id));
         }
+        if (level != null)
+            roles.remove(getRoleForLevel(level));
         return roles;
     }
 }

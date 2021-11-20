@@ -68,7 +68,7 @@ public class PanelOpenListener extends ListenerAdapter {
                             new PlaceholdObject(e.getUser(), "user"),
                             new PlaceholdObject(t, "ticket"),
                             new PlaceholdObject(panel, "panel")
-                            );
+                    );
                     MessageManager.get().messageToReplyAction(action, MessageManager.get().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
                 }), null, er -> {
                     core.defaultHandle(er);

@@ -39,7 +39,7 @@ shadowJar {
     relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
     relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
     relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
-    relocate 'com.github.ben-manes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
+    relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
 }
 build.finalizedBy shadowJar
 repositories {
@@ -92,7 +92,18 @@ repositories {
     maven { url "https://mvn-repo.arim.space/gpl3" }
     maven { url "https://mvn-repo.arim.space/lesser-gpl3" }
 }
-
+def urlFile = { url, name ->
+    File file = new File("$buildDir/download/${name}.jar")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
 dependencies {
     implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
@@ -111,10 +122,11 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
     compileOnly 'space.arim.libertybans:bans-api:0.8.0'
+    compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.4'
+version = '1.2.5'
 
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
@@ -133,3 +145,5 @@ processResources {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+
+

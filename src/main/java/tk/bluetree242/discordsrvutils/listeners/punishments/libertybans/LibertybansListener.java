@@ -103,7 +103,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPunishEvent e) {
             core.executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment());
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator());
 
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
@@ -151,7 +151,8 @@ public class LibertybansListener {
         @Override
         public void accept(PostPardonEvent e) {
             core.executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment());
+
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getOperator());
 
                 Message msg = null;
                 switch (e.getPunishment().getType()) {

@@ -22,9 +22,10 @@
 
 package tk.bluetree242.discordsrvutils.listeners.afk;
 
+import com.Zrips.CMI.events.CMIAfkEnterEvent;
+import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,16 +34,13 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-public class EssentialsAFKListener implements Listener {
-
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+public class CMIAfkListener implements Listener {
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     @EventHandler
-    public void onAfk(AfkStatusChangeEvent e) {
+    public void onAfk(CMIAfkEnterEvent e) {
         core.executeAsync(() -> {
-            if (e.getAffected().isHidden()) return;
-            boolean afk = e.getAffected().isAfk();
-            Player player = e.getAffected().getBase();
+            Player player = e.getPlayer();
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));
@@ -51,12 +49,25 @@ public class EssentialsAFKListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg;
-                if (e.getValue()) {
-                    msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
-                } else {
-                    msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
+                Message msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, player).build();
+                core.queueMsg(msg, channel).queue();
+            }
+        });
+    }
+
+    @EventHandler
+    public void onNoLongerAfk(CMIAfkLeaveEvent e) {
+        core.executeAsync(() -> {
+            Player player = e.getPlayer();
+            if (core.getMainConfig().afk_message_enabled()) {
+                PlaceholdObjectList holders = new PlaceholdObjectList();
+                holders.add(new PlaceholdObject(player, "player"));
+                TextChannel channel = core.getChannel(core.getMainConfig().afk_channel());
+                if (channel == null) {
+                    core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
+                    return;
                 }
+                Message msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, player).build();
                 core.queueMsg(msg, channel).queue();
             }
         });

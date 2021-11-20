@@ -1,5 +1,9 @@
-{"embed": {
- "thumbnail": {"url": "[user.effectiveAvatarUrl]"},
- "color": "cyan",
- "description": "🔸 **Welcome [user.name] To The server!**\n\n\n🔸 **Server ip** | play.example.com\n\n\n🔸 **Store** | store.example.com"
-}}
+{
+  "embed": {
+    "thumbnail": {
+      "url": "[user.effectiveAvatarUrl]"
+    },
+    "color": "cyan",
+    "description": "🔸 **Welcome [user.name] To The server!**\n\n\n🔸 **Server ip** | play.example.com\n\n\n🔸 **Store** | store.example.com"
+  }
+}
