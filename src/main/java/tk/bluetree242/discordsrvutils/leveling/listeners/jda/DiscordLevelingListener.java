@@ -71,12 +71,12 @@ public class DiscordLevelingListener extends ListenerAdapter {
                                 DiscordSRV.api.callEvent(new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
                             } catch (Exception x) {
                             }
-                            e.getChannel().sendMessage(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
+                            core.queueMsg(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),
                                     new PlaceholdObject(e.getMember(), "member"),
                                     new PlaceholdObject(e.getGuild(), "guild")
-                            ), null).build()).queue();
+                            ), null).build(), e.getChannel()).queue();
                         }
                     }, null);
                 }
