@@ -30,10 +30,15 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DiscordSRVListener {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -59,14 +64,16 @@ public class DiscordSRVListener {
             if (id == null) return;
             Member member = core.getGuild().retrieveMemberById(id).complete();
             if (member == null) return;
+            Collection actions = new ArrayList<>();
             for (Role role : manager.getRolesToRemove(stats.getLevel())) {
                 if (member.getRoles().contains(role))
-                    core.getGuild().removeRoleFromMember(member, role).queue();
+                    actions.add(core.getGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
             }
             Role toAdd = manager.getRoleForLevel(level);
             if (toAdd != null && !member.getRoles().contains(toAdd)) {
-                core.getGuild().addRoleToMember(member, toAdd).queue();
+                actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
             }
+            RestAction.allOf(actions).queue();
         });
 
     }
@@ -81,7 +88,7 @@ public class DiscordSRVListener {
             if (member != null) {
                 for (Role role : manager.getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
-                        core.getGuild().removeRoleFromMember(member, role).queue();
+                        core.getGuild().removeRoleFromMember(member, role).reason("Account Unlinked").queue();
                 }
             }
         });
