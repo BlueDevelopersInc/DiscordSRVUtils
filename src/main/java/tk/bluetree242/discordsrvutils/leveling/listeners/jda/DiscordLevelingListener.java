@@ -24,12 +24,15 @@ package tk.bluetree242.discordsrvutils.leveling.listeners.jda;
 
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.MessageType;
+import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
@@ -76,6 +79,21 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             ), null).build()).queue();
                         }
                     }, null);
+                }
+            }
+        });
+    }
+
+
+    //give leveling roles when they rejoin the discord server
+    public void onGuildMemberJoin(GuildMemberJoinEvent e) {
+        core.executeAsync(() -> {
+            if (DiscordSRV.getPlugin().getAccountLinkManager().getUuid(e.getUser().getId()) != null) {
+                PlayerStats stats = core.handleCFOnAnother(LevelingManager.get().getPlayerStats(e.getUser().getIdLong()));
+                if (stats == null) return;
+                Role role = LevelingManager.get().getRoleForLevel(stats.getLevel());
+                if (role != null) {
+                    e.getGuild().addRoleToMember(e.getMember(), role).queue();
                 }
             }
         });
