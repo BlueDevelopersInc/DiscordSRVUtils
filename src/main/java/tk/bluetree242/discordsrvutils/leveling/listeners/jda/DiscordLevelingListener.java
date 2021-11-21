@@ -93,7 +93,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                 if (stats == null) return;
                 Role role = LevelingManager.get().getRoleForLevel(stats.getLevel());
                 if (role != null) {
-                    e.getGuild().addRoleToMember(e.getMember(), role).queue();
+                    e.getGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
                 }
             }
         });
