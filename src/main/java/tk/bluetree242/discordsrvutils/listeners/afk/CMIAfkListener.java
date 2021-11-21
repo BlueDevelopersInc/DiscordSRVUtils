@@ -22,6 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.listeners.afk;
 
+import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Containers.CMIUser;
 import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -41,6 +43,8 @@ public class CMIAfkListener implements Listener {
     public void onAfk(CMIAfkEnterEvent e) {
         core.executeAsync(() -> {
             Player player = e.getPlayer();
+            CMIUser user = CMI.getInstance().getPlayerManager().getUser(player);
+            if (user.isVanished())
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));
