@@ -630,9 +630,13 @@ public class DiscordSRVUtils extends JavaPlugin {
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
             doSuggestions();
-            logger.info("Plugin is ready to function.");
+                logger.info("Plugin is ready to function.");
         });
 
+    }
+
+    private JSONObject getVersionConfig() throws IOException{
+        return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
 
     private void fixTickets() {
