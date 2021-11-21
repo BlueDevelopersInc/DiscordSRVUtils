@@ -41,12 +41,8 @@ shadowJar {
     relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
     relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
 }
-def buildNumber;
-try {
-    buildNumber  = project.properties['buildNumber']
-} catch (MissingPropertyException e) {
-    buildNumber = null;
-}
+def buildNumber  = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
+
 
 build.finalizedBy shadowJar
 repositories {
@@ -150,7 +146,7 @@ publishing {
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version,
-        build: buildNumber == null ? "NONE" : buildNumber
+        build: buildNumber
         ]
     }
 
