@@ -42,7 +42,7 @@ shadowJar {
     relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
 }
 def buildNumber  = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
-
+System.out.println("Build Number is " + buildNumber)
 
 build.finalizedBy shadowJar
 repositories {
