@@ -1,3 +1,4 @@
 {
-  "version": "@version@"
+  "version": "@version@",
+  "buildNumber": "@build@"
 }
