@@ -43,7 +43,7 @@ shadowJar {
 }
 def buildNumber;
 try {
-    buildNumber  = System..getProperty('BUILD_NUMBER')
+    buildNumber  = project.properties['buildNumber']
 } catch (MissingPropertyException e) {
     buildNumber = null;
 }
