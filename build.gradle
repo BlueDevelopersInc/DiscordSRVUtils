@@ -150,7 +150,7 @@ processResources {
         filter ReplaceTokens, tokens: [version: version,
         build: buildNumber,
                 commit:commit,
-                buildDate: System.currentTimeMillis()
+                buildDate: System.currentTimeMillis() + ""
         ]
     }
 
