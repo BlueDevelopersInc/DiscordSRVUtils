@@ -234,6 +234,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                         .addFormDataPart("version", getDescription().getVersion())
                         .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
                         .addFormDataPart("commit", versionConfig.getString("commit"))
+                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
                         .build();
 
                 Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
