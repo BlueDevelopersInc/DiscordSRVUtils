@@ -153,7 +153,7 @@ public interface Config {
     @AnnotationBasedSorter.Order(180)
     @ConfKey("dev-updatechecker")
     @ConfComments("# Should we tell you about updates if the updates that remain are dev builds?")
-    @ConfDefault.DefaultBoolean(false)
+    @ConfDefault.DefaultBoolean(true)
     boolean dev_updatechecker();
 
 }
