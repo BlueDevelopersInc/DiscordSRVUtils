@@ -97,6 +97,12 @@ public class DebugUtil {
         information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
+        Map<String, String> versionConfig = new HashMap<>();
+        JSONObject config = DiscordSRVUtils.get().getVersionConfig();
+        versionConfig.put("Version", config.getString("version"));
+        versionConfig.put("Build Number", config.getString("buildNumber"));
+        versionConfig.put("Commit Hash", config.getString("commit"));
+        data.put(new JSONObject().put("type", "key_value").put("name", "Version Config").put("data", MapToKeyValue(versionConfig)));
         JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                 new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
         );

@@ -229,7 +229,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             try {
                 if (!isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
+                JSONObject versionConfig = getVersionConfig();
+                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                        .addFormDataPart("version", getDescription().getVersion())
+                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                        .addFormDataPart("commit", versionConfig.getString("commit"))
                         .build();
 
                 Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
@@ -635,7 +639,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     }
 
-    private JSONObject getVersionConfig() throws IOException{
+    public JSONObject getVersionConfig() throws IOException{
         return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
 

@@ -45,7 +45,11 @@ public class JoinUpdateChecker implements Listener {
             Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
+                    JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
+                    MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                            .addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
+                            .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                            .addFormDataPart("commit", versionConfig.getString("commit"))
                             .build();
 
                     Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
