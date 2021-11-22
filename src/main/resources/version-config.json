@@ -1,4 +1,5 @@
 {
   "version": "@version@",
-  "buildNumber": "@build@"
+  "buildNumber": "@build@",
+  "commit": "commit"
 }
