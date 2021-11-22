@@ -66,8 +66,11 @@ public class JoinUpdateChecker implements Listener {
                             p.spigot().sendMessage(msg);
                         }
                     } else {
-                        e.getPlayer().sendMessage(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
-                    }
+                        Player p = e.getPlayer();
+                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
+                        p.spigot().sendMessage(msg);                    }
                 } catch (Exception ex) {
                     DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
                 }

@@ -254,7 +254,12 @@ public class DiscordSRVUtils extends JavaPlugin {
                     }
                 } else {
                     //the updatechecker wants its own message
-                    msg = (res.getString("message"));
+                    String message = res.getString("message");
+                    if (message.contains(res.getString("downloadUrl"))) {
+                        msg = message;
+                    } else {
+                        msg = message + " Download from " + res.getString("downloadUrl");
+                    }
                 }
                 switch (logger) {
                     case "INFO":
