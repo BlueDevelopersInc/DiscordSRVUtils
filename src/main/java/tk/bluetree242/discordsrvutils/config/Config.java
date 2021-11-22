@@ -150,4 +150,10 @@ public interface Config {
     @ConfDefault.DefaultInteger(5)
     int pool_size();
 
+    @AnnotationBasedSorter.Order(180)
+    @ConfKey("dev-updatechecker")
+    @ConfComments("# Should we tell you about updates if the updates that remain are dev builds?")
+    @ConfDefault.DefaultBoolean(false)
+    boolean dev_updatechecker();
+
 }

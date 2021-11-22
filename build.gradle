@@ -149,7 +149,8 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version,
         build: buildNumber,
-                commit:commit
+                commit:commit,
+                buildDate: System.currentTimeMillis()
         ]
     }
 

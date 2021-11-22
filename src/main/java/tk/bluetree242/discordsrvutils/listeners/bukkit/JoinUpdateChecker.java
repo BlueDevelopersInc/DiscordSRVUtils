@@ -51,6 +51,7 @@ public class JoinUpdateChecker implements Listener {
                             .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
                             .addFormDataPart("commit", versionConfig.getString("commit"))
                             .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
+                            .addFormDataPart("devUpdatechecker", DiscordSRVUtils.get().getMainConfig().dev_updatechecker() + "")
                             .build();
 
                     Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();

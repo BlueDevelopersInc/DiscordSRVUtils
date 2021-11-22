@@ -264,13 +264,13 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
                 switch (logger) {
                     case "INFO":
-                        getLogger().info(msg);
+                        getLogger().info(Utils.colors(msg));
                         break;
                     case "WARNING":
-                        getLogger().warning(msg);
+                        getLogger().warning(Utils.colors(msg));
                         break;
                     case "ERROR":
-                        getLogger().warning(msg);
+                        getLogger().warning(Utils.colors(msg));
                         break;
                 }
             } catch (Exception e) {
