@@ -43,8 +43,7 @@ public class CMIAfkListener implements Listener {
     public void onAfk(CMIAfkEnterEvent e) {
         core.executeAsync(() -> {
             Player player = e.getPlayer();
-            CMIUser user = CMI.getInstance().getPlayerManager().getUser(player);
-            if (user.isVanished())
+            if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));
@@ -63,6 +62,7 @@ public class CMIAfkListener implements Listener {
     public void onNoLongerAfk(CMIAfkLeaveEvent e) {
         core.executeAsync(() -> {
             Player player = e.getPlayer();
+            if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));

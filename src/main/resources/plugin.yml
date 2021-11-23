@@ -10,6 +10,8 @@ softdepend:
   - Litebans
   - Libertybans
   - CMI
+  - SuperVanish
+  - PremiumVanish
 version: @version@
 main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
 author: BlueTree242

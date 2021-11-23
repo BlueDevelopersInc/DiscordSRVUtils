@@ -128,6 +128,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
     compileOnly 'space.arim.libertybans:bans-api:0.8.0'
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
+    compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
 }
 
 group = 'me.bluetree.discordsrvutils'
