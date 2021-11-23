@@ -304,6 +304,7 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "|   &cName: &rDiscordSRVUtils\n&r" +
                     "|   &cDevelopers: &rBlueTree242\n&r" +
                     "|   &cVersion: &r" + getDescription().getVersion() + "\n&r" +
+                    (getVersionConfig().getString("buildNumber").equalsIgnoreCase("NONE") ? "" : "|   &cBuild: &r#" + getVersionConfig().getString("buildNumber") + "\n&r") +
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
