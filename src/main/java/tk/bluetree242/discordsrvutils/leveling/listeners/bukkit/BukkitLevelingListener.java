@@ -93,13 +93,9 @@ public class BukkitLevelingListener implements Listener {
                 }
             }
             int toAdd = new SecureRandom().nextInt(50);
-            boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd));
+            boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
             core.handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
             if (leveledUp) {
-                try {
-                    DiscordSRV.api.callEvent(new MinecraftLevelupEvent(stats, e.getPlayer()));
-                } catch (Exception x) {
-                }
                 e.getPlayer().sendMessage(Utils.colors(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer())));
 
 

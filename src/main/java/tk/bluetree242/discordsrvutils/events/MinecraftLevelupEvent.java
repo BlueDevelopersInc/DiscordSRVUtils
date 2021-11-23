@@ -26,11 +26,12 @@ import github.scarsz.discordsrv.api.events.Event;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
-public class MinecraftLevelupEvent extends Event {
+public class MinecraftLevelupEvent extends LevelupEvent {
     private PlayerStats stats;
     private Player player;
 
     public MinecraftLevelupEvent(PlayerStats stats, Player player) {
+        super(stats, player);
         this.stats = stats;
         this.player = player;
     }
@@ -39,7 +40,4 @@ public class MinecraftLevelupEvent extends Event {
         return stats;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
 }

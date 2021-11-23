@@ -64,13 +64,9 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             }
                         }
                         int toAdd = new SecureRandom().nextInt(50);
-                        boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd));
+                        boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
                         core.handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
                         if (leveledUp) {
-                            try {
-                                DiscordSRV.api.callEvent(new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
-                            } catch (Exception x) {
-                            }
                             core.queueMsg(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),
