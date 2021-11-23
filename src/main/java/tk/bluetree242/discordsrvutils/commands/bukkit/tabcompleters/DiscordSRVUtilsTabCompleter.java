@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,9 +39,9 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> values = new ArrayList<>();
         if (args.length == 1) {
-            if (sender.hasPermission("discordsrvutils.reload"))
+            if (sender.hasPermission("discordsrvutils.reload") || sender instanceof ConsoleCommandSender)
                 values.add("reload");
-            if (sender.hasPermission("discordsrvutils.debug"))
+            if (sender.hasPermission("discordsrvutils.debug") || sender instanceof ConsoleCommandSender)
                 values.add("debug");
         }
 

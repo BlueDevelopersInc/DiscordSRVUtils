@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.commands.bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.commandmanagement.BukkitCommand;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
@@ -39,7 +40,7 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
         }
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (sender.hasPermission("discordsrvutils.reload")) {
+                if (sender.hasPermission("discordsrvutils.reload") || sender instanceof ConsoleCommandSender) {
                     sender.sendMessage(colors("&eReloading Configuration"));
                     try {
                         core.reloadConfigs();
@@ -51,7 +52,7 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                     return;
                 }
             } else if (args[0].equalsIgnoreCase("debug")) {
-                if (sender.hasPermission("discordsrvutils.debug")) {
+                if (sender.hasPermission("discordsrvutils.debug") || sender instanceof ConsoleCommandSender) {
                     sender.sendMessage(ChatColor.GREEN + "Preparing Debug Report... Please wait");
                     try {
                         sender.sendMessage(colors("&aYour Debug report is available at: &e" + DebugUtil.run()));
