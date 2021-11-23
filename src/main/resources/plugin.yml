@@ -21,7 +21,7 @@ api-version: 1.13
 #Our main and only command
 commands:
   discordsrvutils:
-    aliases: [ dsrvu, dsu, du, discordu, srvu, dut]
+    aliases: [ dsrvu, dsu, du, discordu, srvu, dut ]
 
 #Add the perms to the permission plugins without us having to check them
 permissions:

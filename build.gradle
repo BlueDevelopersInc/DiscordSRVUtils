@@ -41,9 +41,9 @@ shadowJar {
     relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
     relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
 }
-def buildNumber  = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
+def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
-def commit  = project.properties['commit'] == null ? "NONE" : project.properties['commit']
+def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
 System.out.println("Commit Hash is " + commit)
 
 build.finalizedBy shadowJar
@@ -148,10 +148,10 @@ publishing {
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version,
-        build: buildNumber,
-                commit:commit,
-                buildDate: System.currentTimeMillis() + ""
+        filter ReplaceTokens, tokens: [version  : version,
+                                       build    : buildNumber,
+                                       commit   : commit,
+                                       buildDate: System.currentTimeMillis() + ""
         ]
     }
 

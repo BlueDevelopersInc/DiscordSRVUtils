@@ -25,11 +25,9 @@ package tk.bluetree242.discordsrvutils.leveling;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
 import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 

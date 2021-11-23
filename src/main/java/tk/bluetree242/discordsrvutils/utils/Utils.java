@@ -75,7 +75,6 @@ public class Utils {
     }
 
 
-
     public static boolean getDBoolean(String s) {
         if (s.equalsIgnoreCase("true")) return true;
         return false;

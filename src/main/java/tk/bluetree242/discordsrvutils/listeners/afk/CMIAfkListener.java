@@ -22,8 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.listeners.afk;
 
-import com.Zrips.CMI.CMI;
-import com.Zrips.CMI.Containers.CMIUser;
 import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;

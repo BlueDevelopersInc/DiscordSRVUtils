@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.leveling.listeners.bukkit;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

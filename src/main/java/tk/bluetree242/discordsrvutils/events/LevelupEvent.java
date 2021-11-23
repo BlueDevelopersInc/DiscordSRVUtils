@@ -24,7 +24,6 @@ package tk.bluetree242.discordsrvutils.events;
 
 import github.scarsz.discordsrv.api.events.Event;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
 public class LevelupEvent extends Event {
