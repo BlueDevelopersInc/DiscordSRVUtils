@@ -72,7 +72,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                                     new PlaceholdObject(e.getAuthor(), "user"),
                                     new PlaceholdObject(e.getMember(), "member"),
                                     new PlaceholdObject(e.getGuild(), "guild")
-                            ), null).build(), e.getChannel()).queue();
+                            ), null).build(), core.getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
                     }, null);
                 }
