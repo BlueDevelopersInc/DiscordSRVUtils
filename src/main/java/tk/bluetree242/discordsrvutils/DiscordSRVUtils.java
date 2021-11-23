@@ -537,9 +537,10 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     /**
-     * @return `DiscordSRV.isReady`. This may change any time soon
+     * @return true if plugin enabled and discordsrv ready, else false
      */
     public boolean isReady() {
+        if (!isEnabled()) return false;
         return DiscordSRV.isReady;
     }
 
