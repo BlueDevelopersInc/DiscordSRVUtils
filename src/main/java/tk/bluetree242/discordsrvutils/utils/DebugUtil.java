@@ -102,7 +102,7 @@ public class DebugUtil {
         versionConfig.put("Version", config.getString("version"));
         versionConfig.put("Build Number", config.getString("buildNumber"));
         versionConfig.put("Commit Hash", config.getString("commit"));
-        versionConfig.put("Build Date", new Date(Long.parseLong(config.getString("buildDate"))).toString());
+        versionConfig.put("Build Date", new Date(Long.parseLong(config.getString("buildDate"))) + " (" + (Utils.getDuration(System.currentTimeMillis() - Long.parseLong(config.getString("buildDate"))) + " ago)"));
         data.put(new JSONObject().put("type", "key_value").put("name", "Version Config").put("data", MapToKeyValue(versionConfig)));
         JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                 new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
