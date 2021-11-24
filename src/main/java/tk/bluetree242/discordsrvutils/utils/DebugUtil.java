@@ -282,6 +282,7 @@ public class DebugUtil {
     }
 
     private static String getRegisteredListeners() {
+        if (DiscordSRVUtils.get().getJDA() == null) return "JDA is null";
         StringJoiner joiner = new StringJoiner(", ");
         for (Object listener : DiscordSRVUtils.get().getJDA().getEventManager().getRegisteredListeners()) {
             joiner.add(listener.getClass().getSimpleName());

@@ -41,43 +41,8 @@ public class JoinUpdateChecker implements Listener {
 
     @EventHandler
     public void playerJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission("discordsrvutils.updatechecker"))
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
-                try {
-                    OkHttpClient client = new OkHttpClient();
-                    JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
-                    MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                            .addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
-                            .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
-                            .addFormDataPart("commit", versionConfig.getString("commit"))
-                            .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
-                            .addFormDataPart("devUpdatechecker", DiscordSRVUtils.get().getMainConfig().dev_updatechecker() + "")
-                            .build();
-
-                    Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
-                    Response response = client.newCall(req).execute();
-                    JSONObject res = new JSONObject(response.body().string());
-                    response.close();
-                    int versions_behind = res.getInt("versions_behind");
-                    if (res.isNull("message")) {
-                        if (versions_behind != 0) {
-                            Player p = e.getPlayer();
-                            TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &cPlugin is " + versions_behind + " versions behind. Please Update. Click to Download"));
-                            msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
-                            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
-                            p.spigot().sendMessage(msg);
-                        }
-                    } else {
-                        Player p = e.getPlayer();
-                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
-                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
-                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
-                        p.spigot().sendMessage(msg);
-                    }
-                } catch (Exception ex) {
-                    DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
-                }
-
-            });
+        if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
+            DiscordSRVUtils.get().updateCheck(e.getPlayer());
+        }
     }
 }

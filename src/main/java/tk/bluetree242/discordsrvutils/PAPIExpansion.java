@@ -63,6 +63,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
+        if (!DiscordSRVUtils.get().isReady()) return "...";
         identifier = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("level")) {
             if (p == null) return "Unknown";

@@ -36,6 +36,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -224,61 +226,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void onEnable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            //do updatechecker
-            try {
-                if (!isEnabled()) return;
-                OkHttpClient client = new OkHttpClient();
-                JSONObject versionConfig = getVersionConfig();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                        .addFormDataPart("version", getDescription().getVersion())
-                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
-                        .addFormDataPart("commit", versionConfig.getString("commit"))
-                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
-                        .build();
-
-                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
-                Response response = client.newCall(req).execute();
-                JSONObject res = new JSONObject(response.body().string());
-                response.close();
-                int versions_behind = res.getInt("versions_behind");
-                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
-                String msg = null;
-                if (res.isNull("message")) {
-                    if (versions_behind != 0) {
-                        if (logger.equalsIgnoreCase("INFO")) {
-
-                        }
-                        msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
-                    } else {
-                        msg = (ChatColor.RED + "Plugin is up to date!");
-                    }
-                } else {
-                    //the updatechecker wants its own message
-                    String message = res.getString("message");
-                    if (message.contains(res.getString("downloadUrl"))) {
-                        msg = message;
-                    } else {
-                        msg = message + " Download from " + res.getString("downloadUrl");
-                    }
-                }
-                switch (logger) {
-                    case "INFO":
-                        getLogger().info(Utils.colors(msg));
-                        break;
-                    case "WARNING":
-                        getLogger().warning(Utils.colors(msg));
-                        break;
-                    case "ERROR":
-                        getLogger().warning(Utils.colors(msg));
-                        break;
-                }
-            } catch (Exception e) {
-                //We could not check for updates.
-                logger.severe("Could not check for updates: " + e.getMessage());
-            }
-
-        });
+        updateCheck();
         try {
             if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -470,6 +418,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
+        //Unregister the expansion
+        PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByName("DiscordSRVUtils").get().unregister();
     }
 
     private void whenStarted() {
@@ -569,6 +519,101 @@ public class DiscordSRVUtils extends JavaPlugin {
             levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
         }
         setSettings();
+    }
+    public void updateCheck(Player p) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
+            try {
+                OkHttpClient client = new OkHttpClient();
+                JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
+                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                        .addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
+                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                        .addFormDataPart("commit", versionConfig.getString("commit"))
+                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
+                        .addFormDataPart("devUpdatechecker", DiscordSRVUtils.get().getMainConfig().dev_updatechecker() + "")
+                        .build();
+
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
+                Response response = client.newCall(req).execute();
+                JSONObject res = new JSONObject(response.body().string());
+                response.close();
+                int versions_behind = res.getInt("versions_behind");
+                if (res.isNull("message")) {
+                    if (versions_behind != 0) {
+                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &cPlugin is " + versions_behind + " versions behind. Please Update. Click to Download"));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
+                        p.spigot().sendMessage(msg);
+                    }
+                } else {
+                    TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
+                    msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
+                    msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
+                    p.spigot().sendMessage(msg);
+                }
+            } catch (Exception ex) {
+                DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
+            }
+
+        });
+    }
+
+    public void updateCheck() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            //do updatechecker
+            try {
+                if (!isEnabled()) return;
+                OkHttpClient client = new OkHttpClient();
+                JSONObject versionConfig = getVersionConfig();
+                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                        .addFormDataPart("version", getDescription().getVersion())
+                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                        .addFormDataPart("commit", versionConfig.getString("commit"))
+                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
+                        .build();
+
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
+                Response response = client.newCall(req).execute();
+                JSONObject res = new JSONObject(response.body().string());
+                response.close();
+                int versions_behind = res.getInt("versions_behind");
+                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
+                String msg = null;
+                if (res.isNull("message")) {
+                    if (versions_behind != 0) {
+                        if (logger.equalsIgnoreCase("INFO")) {
+
+                        }
+                        msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
+                    } else {
+                        msg = (ChatColor.RED + "Plugin is up to date!");
+                    }
+                } else {
+                    //the updatechecker wants its own message
+                    String message = res.getString("message");
+                    if (message.contains(res.getString("downloadUrl"))) {
+                        msg = message;
+                    } else {
+                        msg = message + " Download from " + res.getString("downloadUrl");
+                    }
+                }
+                switch (logger) {
+                    case "INFO":
+                        getLogger().info(Utils.colors(msg));
+                        break;
+                    case "WARNING":
+                        getLogger().warning(Utils.colors(msg));
+                        break;
+                    case "ERROR":
+                        getLogger().warning(Utils.colors(msg));
+                        break;
+                }
+            } catch (Exception e) {
+                //We could not check for updates.
+                logger.severe("Could not check for updates: " + e.getMessage());
+            }
+
+        });
     }
 
     public Config getMainConfig() {

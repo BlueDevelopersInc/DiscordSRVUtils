@@ -34,5 +34,11 @@ permissions:
   discordsrvutils.errornotifications:
     default: false
     description: Allow plugin to send errors to player
+  discordsrvutils.updatecheck:
+    default: false
+    description: Allow usage of /dsu updatecheck
+  discordsrvutils.updatechecker:
+    default: false
+    description: Allow sending update messages when player joins
 
 
