@@ -33,7 +33,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "DiscordSRVUtils";
+        return "discordsrvutils";
     }
 
     @Override
@@ -59,6 +59,11 @@ public class PAPIExpansion extends PlaceholderExpansion {
     @Override
     public String getRequiredPlugin() {
         return "DiscordSRVUtils";
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
     }
 
     @Override

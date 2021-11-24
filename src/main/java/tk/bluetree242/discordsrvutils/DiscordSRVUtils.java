@@ -38,6 +38,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -227,6 +228,9 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void onEnable() {
         updateCheck();
+        //Remove the expansion, less amount of errors when reloading via a plugin manager
+        Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+        if (expansion.isPresent()) expansion.get().unregister();
         try {
             if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -411,7 +415,7 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
-        if (isReady()) {
+        if (getJDA() != null) {
             getJDA().removeEventListener(listeners.toArray(new Object[0]));
         }
         if (pool != null)
@@ -419,7 +423,8 @@ public class DiscordSRVUtils extends JavaPlugin {
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
         //Unregister the expansion
-        PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByName("DiscordSRVUtils").get().unregister();
+        Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+        if (expansion.isPresent()) expansion.get().unregister();
     }
 
     private void whenStarted() {
