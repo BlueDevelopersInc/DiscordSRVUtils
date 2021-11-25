@@ -27,6 +27,8 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
+import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,5 +77,10 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;
         if (getServer().getPluginManager().isPluginEnabled("Libertybans")) return true;
         return false;
+    }
+
+    public void registerCommands() {
+        getServer().getPluginCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand());
+        getServer().getPluginCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
     }
 }
