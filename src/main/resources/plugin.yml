@@ -13,7 +13,7 @@ softdepend:
   - SuperVanish
   - PremiumVanish
 version: @version@
-main: tk.bluetree242.discordsrvutils.DiscordSRVUtils
+main: tk.bluetree242.discordsrvutils.DiscordSRVUtilsMain
 author: BlueTree242
 #We use api version 1.13 but all versions are supported
 api-version: 1.13

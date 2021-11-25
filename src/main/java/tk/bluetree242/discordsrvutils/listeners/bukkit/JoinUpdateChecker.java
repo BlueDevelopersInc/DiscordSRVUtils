@@ -22,19 +22,10 @@
 
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
-import github.scarsz.discordsrv.dependencies.okhttp3.*;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class JoinUpdateChecker implements Listener {
 

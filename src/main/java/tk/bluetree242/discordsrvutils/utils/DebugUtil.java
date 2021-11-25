@@ -117,7 +117,7 @@ public class DebugUtil {
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRVUtils Conf Files").put("data", FilesToArray(getDSUFiles())));
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRV Conf Files").put("data", FilesToArray(getDiscordSRVFiles())));
         List<Map<String, String>> files = new ArrayList<>();
-        for (File file : Paths.get(core.getDataFolder() + core.fileseparator + "messages").toFile().listFiles()) {
+        for (File file : Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "messages").toFile().listFiles()) {
             if (file.getName().endsWith(".json")) {
                 files.add(fileMap(file.getName(), Utils.readFile(file.getPath())));
             }
@@ -150,11 +150,11 @@ public class DebugUtil {
     private static List<Map<String, String>> getDSUFiles() throws Exception {
         List<Map<String, String>> files = new ArrayList<>();
         DiscordSRVUtils core = DiscordSRVUtils.get();
-        files.add(fileMap("config.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "config.yml")));
-        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
-        files.add(fileMap("tickets.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "tickets.yml")));
-        files.add(fileMap("leveling.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "leveling.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("config.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "config.yml")));
+        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
+        files.add(fileMap("tickets.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "tickets.yml")));
+        files.add(fileMap("leveling.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling.yml")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "suggestions.yml")));
         return files;
     }
 

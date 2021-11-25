@@ -48,7 +48,7 @@ public class DiscordSRVListener {
             core.whenReady();
         } catch (Throwable ex) {
             new StartupException(ex).printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(core);
+            Bukkit.getPluginManager().disablePlugin(core.getBukkitMain());
         }
     }
 

@@ -22,15 +22,12 @@
 
 package tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +44,8 @@ public class DiscordSRVUtilsTabCompleter implements TabCompleter {
             if (sender.hasPermission("discordsrvutils.debug") || sender instanceof ConsoleCommandSender)
                 values.add("debug");
 
-            if (sender.hasPermission("discordsrvutils.updatecheck") || sender instanceof ConsoleCommandSender) values.add("updatecheck");
+            if (sender.hasPermission("discordsrvutils.updatecheck") || sender instanceof ConsoleCommandSender)
+                values.add("updatecheck");
         }
 
         List<String> result = new ArrayList<>();
