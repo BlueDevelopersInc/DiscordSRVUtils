@@ -70,6 +70,7 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                     } else {
                         DiscordSRVUtils.get().updateCheck((Player) sender);
                     }
+                    return;
                 }
             }
         }

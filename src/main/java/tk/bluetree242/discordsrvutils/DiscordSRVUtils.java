@@ -401,7 +401,9 @@ public class DiscordSRVUtils {
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (getJDA() != null) {
-            getJDA().removeEventListener(listeners.toArray(new Object[0]));
+            for (ListenerAdapter listener : listeners) {
+                getJDA().removeEventListener(listener);
+            }
         }
         if (pool != null)
             pool.shutdown();
