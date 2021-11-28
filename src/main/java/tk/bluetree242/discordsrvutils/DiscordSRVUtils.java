@@ -749,31 +749,32 @@ public class DiscordSRVUtils {
                 Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
                 try {
                     Message msg = suggestion.getMessage();
-
-                    if (msg.getButtons().isEmpty()) {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                    if (msg != null) {
+                        if (msg.getButtons().isEmpty()) {
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            } else {
+                                if (!sent) {
+                                    logger.info(warnmsg);
+                                    sent = true;
+                                    SuggestionManager.get().loading = true;
+                                }
+                                msg.clearReactions().queue();
+                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                        Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
+                            }
                         } else {
-                            if (!sent) {
-                                logger.info(warnmsg);
-                                sent = true;
-                                SuggestionManager.get().loading = true;
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
+                                if (!sent) {
+                                    SuggestionManager.get().loading = true;
+                                    logger.info(warnmsg);
+                                    sent = true;
+                                }
+                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                             }
-                            msg.clearReactions().queue();
-                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                    Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
-                        }
-                    } else {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            if (!sent) {
-                                SuggestionManager.get().loading = true;
-                                logger.info(warnmsg);
-                                sent = true;
-                            }
-                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                         }
                     }
                 } catch (ErrorResponseException ex) {

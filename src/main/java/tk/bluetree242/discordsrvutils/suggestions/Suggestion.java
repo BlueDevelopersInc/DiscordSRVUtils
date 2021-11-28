@@ -157,6 +157,7 @@ public class Suggestion {
     }
 
     public Message getMessage() {
+        if (core.getJDA().getTextChannelById(ChannelID) == null) return null;
         return msg == null ? msg = core.getJDA().getTextChannelById(ChannelID).retrieveMessageById(MessageID).complete() : msg;
     }
 
