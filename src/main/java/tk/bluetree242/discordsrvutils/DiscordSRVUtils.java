@@ -219,7 +219,6 @@ public class DiscordSRVUtils {
     public void onLoad() {
         init();
         //require intents and cacheflags
-        main.registerCommands();
         if (main.getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             if (DiscordSRV.isReady) {
                 //Oh no, they are using a plugin manager to reload the plugin, give them a warn
@@ -286,7 +285,8 @@ public class DiscordSRVUtils {
             });
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
-            //register our bukkit commands
+            //Register our in game commands
+            main.registerCommands();
             try {
                 setupDatabase();
             } catch (SQLException ex) {
