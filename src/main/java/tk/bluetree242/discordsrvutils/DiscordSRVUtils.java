@@ -233,8 +233,10 @@ public class DiscordSRVUtils {
     public void onEnable() {
         updateCheck();
         //Remove the expansion, less amount of errors when reloading via a plugin manager
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
         Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
         if (expansion.isPresent()) expansion.get().unregister();
+        }
         try {
             if (!main.getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -410,8 +412,10 @@ public class DiscordSRVUtils {
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
         //Unregister the expansion
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
         Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
         if (expansion.isPresent()) expansion.get().unregister();
+        }
     }
 
 

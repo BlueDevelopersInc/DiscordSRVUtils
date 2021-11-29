@@ -1,9 +1,7 @@
 name: DiscordSRVUtils
-#Giving a more friendly error when DiscordSRV is not installed
-depend:
-  - DiscordSRV
 #We hook into those
 softdepend:
+  - DiscordSRV
   - Essentials
   - Advancedban
   - PlaceholderAPI
