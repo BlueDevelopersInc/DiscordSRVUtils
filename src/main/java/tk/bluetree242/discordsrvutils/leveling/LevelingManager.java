@@ -164,6 +164,7 @@ public class LevelingManager {
     public Role getRoleForLevel(int level) {
         Map<String, Object> map = core.levelingRolesRaw.toMap();
         List<String> keys = new ArrayList<>(map.keySet());
+        if (keys.isEmpty()) return null;
         keys = keys.stream().filter(num -> Integer.parseInt(num) <= level).collect(Collectors.toList());
         keys.sort(new Comparator<String>() {
             @Override
