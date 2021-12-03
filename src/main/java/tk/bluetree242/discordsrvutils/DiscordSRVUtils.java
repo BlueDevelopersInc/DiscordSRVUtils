@@ -50,6 +50,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
@@ -448,8 +449,11 @@ public class DiscordSRVUtils {
             }
         } catch (FileNotFoundException e) {
             logger.severe("Error creating leveling-roles.json");
+            levelingRolesRaw = new JSONObject();
         } catch (IOException e) {
-            logger.severe("Error creating leveling-roles.json");
+            logger.severe("Error creating leveling-roles.json: " + e.getMessage());
+        } catch (JSONException e) {
+            logger.severe("Error loading leveling-roles.json: " + e.getMessage());
         }
 
         //Register Expansion
