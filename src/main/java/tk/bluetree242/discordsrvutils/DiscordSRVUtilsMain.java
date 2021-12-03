@@ -37,6 +37,7 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
+
         if (core == null) {
             getLogger().severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
             getLogger().severe("Disabling...");
@@ -72,7 +73,7 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
 
     public void onLoad() {
         if (getServer().getPluginManager().isPluginEnabled("DiscordSRV"))
-        core = new DiscordSRVUtils(this);
+            core = new DiscordSRVUtils(this);
     }
 
     public void disable() {

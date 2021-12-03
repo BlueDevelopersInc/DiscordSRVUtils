@@ -55,8 +55,6 @@ import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
-import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
-import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
@@ -73,6 +71,7 @@ import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
+import tk.bluetree242.discordsrvutils.listeners.afk.AFKPlusListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.CMIAfkListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
@@ -235,8 +234,8 @@ public class DiscordSRVUtils {
         updateCheck();
         //Remove the expansion, less amount of errors when reloading via a plugin manager
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
-        if (expansion.isPresent()) expansion.get().unregister();
+            Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+            if (expansion.isPresent()) expansion.get().unregister();
         }
         try {
             if (!main.getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
@@ -307,7 +306,6 @@ public class DiscordSRVUtils {
             startupError(ex, "Plugin could not start");
         }
     }
-
 
 
     private Server getServer() {
@@ -414,8 +412,8 @@ public class DiscordSRVUtils {
         if (sql != null) sql.close();
         //Unregister the expansion
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
-        if (expansion.isPresent()) expansion.get().unregister();
+            Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+            if (expansion.isPresent()) expansion.get().unregister();
         }
     }
 
@@ -667,6 +665,10 @@ public class DiscordSRVUtils {
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
                 getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
+            }
+            if (getServer().getPluginManager().isPluginEnabled("AFKPlus")) {
+                getServer().getPluginManager().registerEvents(new AFKPlusListener(), main);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("AFKPlus"));
             }
             if (getServer().getPluginManager().isPluginEnabled("CMI")) {
                 getServer().getPluginManager().registerEvents(new CMIAfkListener(), main);

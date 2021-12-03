@@ -51,6 +51,9 @@ repositories {
     mavenLocal()
     jcenter()
     maven {
+        url = uri('https://repo.citizensnpcs.co')
+    }
+    maven {
         url = uri('https://nexus.vankka.dev/repository/maven-public/')
     }
     maven {
@@ -129,6 +132,7 @@ dependencies {
     compileOnly 'space.arim.libertybans:bans-api:0.8.0'
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
     compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
+    compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
 }
 
 group = 'me.bluetree.discordsrvutils'
