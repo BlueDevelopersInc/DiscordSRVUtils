@@ -72,7 +72,7 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
     }
 
     public void onLoad() {
-        if (getServer().getPluginManager().isPluginEnabled("DiscordSRV"))
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null)
             core = new DiscordSRVUtils(this);
     }
 
