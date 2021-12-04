@@ -34,7 +34,7 @@ public interface Config {
 
 
     @AnnotationBasedSorter.Order(10)
-    @ConfComments("#Admins who can use the bot without limits, Only IDs")
+    @ConfComments("#Admins who can use the bot without limits. This can be either user or role IDs.")
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 

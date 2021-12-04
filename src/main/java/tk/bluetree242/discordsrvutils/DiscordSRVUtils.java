@@ -832,6 +832,14 @@ public class DiscordSRVUtils {
         return admins;
     }
 
+    public List<Role> getAdminsRoles() {
+        List<Role> roles = new ArrayList<>();
+        for (Long lng : getAdminIds()) {
+            roles.add(getGuild().getRoleById(lng));
+        }
+        return roles;
+    }
+
     public void severe(String sv) {
         getLogger().severe(sv);
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -843,6 +851,12 @@ public class DiscordSRVUtils {
 
     public boolean isAdmin(long id) {
         if (getAdminIds().contains(id)) return true;
+        Member member = getGuild().retrieveMemberById(id).complete();
+        if (member != null) {
+            for (Role role : member.getRoles()) {
+                if (getAdminIds().contains(role.getIdLong())) return true;
+            }
+        }
         return false;
     }
 
