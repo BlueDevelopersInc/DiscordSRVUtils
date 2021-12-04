@@ -37,6 +37,10 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
     public void onRunAsync(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws Throwable {
         if (args.length == 0) {
             sender.sendMessage(colors("&eRunning DiscordSRVUtils v" + core.getDescription().getVersion()));
+            String build = core.getVersionConfig().getString("buildNumber");
+            if (build != "NONE") {
+                sender.sendMessage(colors("&eBuild #" + build));
+            }
             sender.sendMessage(colors("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running")));
             return;
         }
