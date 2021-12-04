@@ -468,22 +468,6 @@ public class DiscordSRVUtils {
         Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), main);
     }
 
-    public void registerCommands() {
-        CommandManager.get().registerCommand(new TestMessageCommand());
-        CommandManager.get().registerCommand(new HelpCommand());
-        CommandManager.get().registerCommand(new CreatePanelCommand());
-        CommandManager.get().registerCommand(new PanelListCommand());
-        CommandManager.get().registerCommand(new DeletePanelCommand());
-        CommandManager.get().registerCommand(new EditPanelCommand());
-        CommandManager.get().registerCommand(new CloseCommand());
-        CommandManager.get().registerCommand(new ReopenCommand());
-        CommandManager.get().registerCommand(new LevelCommand());
-        CommandManager.get().registerCommand(new LeaderboardCommand());
-        CommandManager.get().registerCommand(new SuggestCommand());
-        CommandManager.get().registerCommand(new SuggestionNoteCommand());
-        CommandManager.get().registerCommand(new ApproveSuggestionCommand());
-        CommandManager.get().registerCommand(new DenySuggestionCommand());
-    }
 
     /**
      * @return true if plugin enabled and discordsrv ready, else false
@@ -659,7 +643,6 @@ public class DiscordSRVUtils {
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
-            registerCommands();
             setSettings();
             registerListeners();
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {

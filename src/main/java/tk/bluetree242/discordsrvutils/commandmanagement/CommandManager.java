@@ -24,6 +24,15 @@ package tk.bluetree242.discordsrvutils.commandmanagement;
 
 
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +47,28 @@ public class CommandManager {
 
     public CommandManager() {
         main = this;
+        registerCommands();
     }
 
     public static CommandManager get() {
         return main;
+    }
+
+    public void registerCommands() {
+        CommandManager.get().registerCommand(new TestMessageCommand());
+        CommandManager.get().registerCommand(new HelpCommand());
+        CommandManager.get().registerCommand(new CreatePanelCommand());
+        CommandManager.get().registerCommand(new PanelListCommand());
+        CommandManager.get().registerCommand(new DeletePanelCommand());
+        CommandManager.get().registerCommand(new EditPanelCommand());
+        CommandManager.get().registerCommand(new CloseCommand());
+        CommandManager.get().registerCommand(new ReopenCommand());
+        CommandManager.get().registerCommand(new LevelCommand());
+        CommandManager.get().registerCommand(new LeaderboardCommand());
+        CommandManager.get().registerCommand(new SuggestCommand());
+        CommandManager.get().registerCommand(new SuggestionNoteCommand());
+        CommandManager.get().registerCommand(new ApproveSuggestionCommand());
+        CommandManager.get().registerCommand(new DenySuggestionCommand());
     }
 
     public String getCommandPrefix() {
