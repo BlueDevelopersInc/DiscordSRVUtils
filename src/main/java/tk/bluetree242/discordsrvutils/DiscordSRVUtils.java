@@ -598,7 +598,7 @@ public class DiscordSRVUtils {
                         }
                         msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
                     } else {
-                        msg = (ChatColor.RED + "Plugin is up to date!");
+                        msg = (ChatColor.GREEN + "Plugin is up to date!");
                     }
                 } else {
                     //the updatechecker wants its own message
