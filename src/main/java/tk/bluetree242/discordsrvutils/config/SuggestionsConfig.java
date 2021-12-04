@@ -87,6 +87,11 @@ public interface SuggestionsConfig {
     @ConfDefault.DefaultString("message:suggestion-denied")
     String suggestion_denied();
 
+    @AnnotationBasedSorter.Order(95)
+    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n#Note: Muted role and anti suggestion spam will not be applied here")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean set_suggestion_from_channel();
+
     /*
     @AnnotationBasedSorter.Order(100)
     @ConfComments("# Should DM the submitter of a suggestion when a note is added to it?")

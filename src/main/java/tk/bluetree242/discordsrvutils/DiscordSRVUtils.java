@@ -84,7 +84,7 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPun
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
+import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
 import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
@@ -209,7 +209,7 @@ public class DiscordSRVUtils {
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
-        listeners.add(new SuggestionVoteListener());
+        listeners.add(new SuggestionListener());
         listeners.add(new CustomDiscordAccountLinkListener());
         //Init Default Messages
         initDefaultMessages();
