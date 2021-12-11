@@ -21,6 +21,7 @@
  */
 
 package tk.bluetree242.discordsrvutils.other;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -28,9 +29,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+
 //fix the big messages that look like spam
-public class MessageFilter implements Filter{
+public class MessageFilter implements Filter {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @Override
     public Result getOnMismatch() {
         return Result.NEUTRAL;
@@ -50,7 +53,7 @@ public class MessageFilter implements Filter{
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.flywaydb")) {
             if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) {
                 if (!message.contains("No failed migration detected."))
-                log(level, message, "Flyway");
+                    log(level, message, "Flyway");
             }
             return Result.DENY;
         }
@@ -70,6 +73,7 @@ public class MessageFilter implements Filter{
                         .getFormattedMessage(),
                 logEvent.getThrown());
     }
+
     //Redirect to 1 method so i don't recode
     @Override
     public Result filter(Logger logger, Level level, Marker marker, String message, Object... parameters) {
@@ -79,6 +83,7 @@ public class MessageFilter implements Filter{
                 message,
                 null);
     }
+
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Object message, Throwable throwable) {
         return handle(
@@ -87,6 +92,7 @@ public class MessageFilter implements Filter{
                 message.toString(),
                 throwable);
     }
+
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
         return handle(
