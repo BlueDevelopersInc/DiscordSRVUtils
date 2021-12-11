@@ -36,12 +36,15 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -82,6 +85,7 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.other.MessageFilter;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
@@ -244,7 +248,7 @@ public class DiscordSRVUtils {
                 main.disable();
                 return;
             }
-
+            addMessageFilter();
             try {
                 //Reload Configurations
                 reloadConfigs();
@@ -638,6 +642,16 @@ public class DiscordSRVUtils {
 
     public void executeAsync(Runnable r) {
         pool.execute(r);
+    }
+
+    private void addMessageFilter() {
+        try {
+            Class messageFilter = Class.forName("tk.bluetree242.discordsrvutils.other.MessageFilter");
+            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter((Filter) messageFilter.newInstance());
+        } catch (Exception e) {
+            severe("Failed to add Message Filter");
+            e.printStackTrace();
+        }
     }
 
     public void whenReady() {

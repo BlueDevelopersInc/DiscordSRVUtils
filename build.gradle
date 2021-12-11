@@ -133,6 +133,7 @@ dependencies {
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
     compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
     compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
 }
 
 group = 'me.bluetree.discordsrvutils'
