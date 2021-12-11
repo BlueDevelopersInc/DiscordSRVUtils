@@ -47,12 +47,14 @@ public class MessageFilter implements Filter {
     public Result handle(String loggerName, Level level, String message, Throwable throwable) {
         if (!core.isEnabled()) return Result.NEUTRAL;
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
+            //Ignorable message
+            if (!message.contains("Driver does not support get/set network timeout for connections."))
             log(level, message, "HikariCP");
             return Result.DENY;
         }
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.flywaydb")) {
-            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) {
-                if (!message.contains("No failed migration detected."))
+            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) { //Only log when success or an error, other migration, or it look like spam or error
+                if (!message.contains("No failed migration detected.")) //This message mean everything fine, why log it
                     log(level, message, "Flyway");
             }
             return Result.DENY;
