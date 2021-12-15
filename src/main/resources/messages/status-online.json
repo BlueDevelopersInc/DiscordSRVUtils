@@ -1,11 +1,11 @@
 {
   "embed": {
-    "title": "play.example.com",
-    "description": "Server is online, Join Now!",
+    "title": ":green_circle: Online",
+    "description": "Change this message in /plugins/DiscordSRVUtils/status-online.json",
     "color": "green",
     "timestamp": "now",
     "footer": {
-      "text": "Server is online since"
+      "text": "Server is online"
     },
     "thumbnail": {
       "url": "https://cdn.freebiesupply.com/logos/large/2x/minecraft-1-logo-png-transparent.png"
@@ -15,6 +15,14 @@
       {
         "name": "Players",
         "value": "${#server.getOnlinePlayers().size()}/[server.maxPlayers]"
+      },
+      {
+        "name": "Version",
+        "value": "Unknown"
+      },
+      {
+        "name": "Server IP",
+        "value": "play.example.com"
       }
     ]
 
