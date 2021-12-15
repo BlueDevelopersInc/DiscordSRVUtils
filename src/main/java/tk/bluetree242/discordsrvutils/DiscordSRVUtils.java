@@ -387,7 +387,8 @@ public class DiscordSRVUtils {
                 "unban",
                 "unmute",
                 "welcome",
-                "status-online"};
+                "status-online",
+                "status-offline"};
         for (String msg : messages) {
             try {
                 //add them to the map
@@ -398,12 +399,13 @@ public class DiscordSRVUtils {
         }
     }
 
-    public void onDisable() {
+    public void onDisable() throws ExecutionException, InterruptedException {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (getJDA() != null) {
             for (ListenerAdapter listener : listeners) {
                 getJDA().removeEventListener(listener);
             }
+            StatusManager.get().editMessage(false).get();
         }
         if (pool != null)
             pool.shutdown();
@@ -701,6 +703,7 @@ public class DiscordSRVUtils {
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
             doSuggestions();
+            StatusManager.get().editMessage(true);
             logger.info("Plugin is ready to function.");
         });
 

@@ -87,6 +87,7 @@ public class MessageManager {
                 embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), field.isNull("inline") ? false : field.getBoolean("inline"));
             }
         }
+
         embed.setDescription(getStringFromJson(json, "description", holders, placehold));
         return embed;
     }

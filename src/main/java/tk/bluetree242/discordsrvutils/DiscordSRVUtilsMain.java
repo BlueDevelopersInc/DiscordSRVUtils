@@ -32,6 +32,7 @@ import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUt
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class DiscordSRVUtilsMain extends JavaPlugin {
     private DiscordSRVUtils core = null;
@@ -68,7 +69,11 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
     }
 
     public void onDisable() {
-
+        try {
+            core.onDisable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onLoad() {

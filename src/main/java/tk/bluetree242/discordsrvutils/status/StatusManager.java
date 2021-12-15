@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.status;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.bukkit.Bukkit;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -55,9 +56,7 @@ public class StatusManager {
     public Message getStatusMessage(boolean online) {
         PlaceholdObjectList holders = new PlaceholdObjectList();
         holders.add(new PlaceholdObject(Bukkit.getServer(), "server"));
-
         return MessageManager.get().parseMessageFromJson(MessageManager.get().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
-        //TODO: add status-offline message
     }
 
     public CompletableFuture<Message> newMessage(TextChannel channel) {
@@ -66,7 +65,7 @@ public class StatusManager {
             File file = tempPath.toFile();
             JSONObject json = new JSONObject();
             json.put("channel", channel.getIdLong());
-            //Its already async, complete should be fine
+            //Its already async, complete() should be fine
             Message msg = channel.sendMessage(getStatusMessage(true)).complete();
             json.put("message", msg.getIdLong());
             try {
@@ -95,5 +94,27 @@ public class StatusManager {
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("channel");
+    }
+
+    public CompletableFuture<Void> editMessage(boolean online) {
+        return core.completableFutureRun(() -> {
+            StatusManager manager = StatusManager.get();
+            Message toSend = manager.getStatusMessage(online);
+            try {
+                Long messageId = manager.getMessageId();
+                Long channelId = manager.getChannelId();
+                if (messageId == null || channelId == null) return;
+                Message msg = core.getGuild().getTextChannelById(channelId).retrieveMessageById(messageId).complete();
+                if (msg == null) return;
+                //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
+                msg.editMessage(toSend).complete();
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+                //Ignore the error for now
+            } catch (ErrorResponseException ex) {
+                //message does not exist, ok that is fine
+            }
+
+        });
     }
 }
