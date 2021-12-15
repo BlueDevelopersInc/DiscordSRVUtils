@@ -75,6 +75,8 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+
+import tk.bluetree242.discordsrvutils.status.StatusManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
@@ -146,6 +148,8 @@ public class DiscordSRVUtils {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
+    private ConfManager<StatusConfig> statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
+    private StatusConfig statusConfig;
 
 
     //Thread Pool
@@ -192,6 +196,7 @@ public class DiscordSRVUtils {
         new WaiterManager();
         new LevelingManager();
         new SuggestionManager();
+        new StatusManager();
         //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
@@ -381,7 +386,8 @@ public class DiscordSRVUtils {
                 "ticket-reopen",
                 "unban",
                 "unmute",
-                "welcome"};
+                "welcome",
+                "status-online"};
         for (String msg : messages) {
             try {
                 //add them to the map
@@ -474,6 +480,8 @@ public class DiscordSRVUtils {
         return main.isEnabled();
     }
 
+
+
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
         config = configmanager.reloadConfigData();
@@ -487,6 +495,8 @@ public class DiscordSRVUtils {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        statusConfigConfManager.reloadConfig();
+        statusConfig = statusConfigConfManager.reloadConfigData();
         //make the leveling roles file
         File levelingRoles = new File(main.getDataFolder() + fileseparator + "leveling-roles.json");
         if (!levelingRoles.exists()) {
@@ -629,6 +639,8 @@ public class DiscordSRVUtils {
         return levelingConfig;
     }
 
+    public StatusConfig getStatusConfig() {return statusConfig;}
+
     public void executeAsync(Runnable r) {
         pool.execute(r);
     }
@@ -646,8 +658,8 @@ public class DiscordSRVUtils {
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
-            setSettings();
             registerListeners();
+            setSettings();
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
                 getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
@@ -791,6 +803,7 @@ public class DiscordSRVUtils {
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
+
     }
 
     public JDA getJDA() {

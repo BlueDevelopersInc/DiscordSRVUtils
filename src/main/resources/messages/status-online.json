@@ -1,0 +1,22 @@
+{
+  "embed": {
+    "title": "play.example.com",
+    "description": "Server is online, Join Now!",
+    "color": "green",
+    "timestamp": "now",
+    "footer": {
+      "text": "Server is online since"
+    },
+    "thumbnail": {
+      "url": "https://cdn.freebiesupply.com/logos/large/2x/minecraft-1-logo-png-transparent.png"
+    },
+
+    "fields": [
+      {
+        "name": "Players",
+        "value": "${#server.getOnlinePlayers().size()}/[server.maxPlayers]"
+      }
+    ]
+
+  }
+}

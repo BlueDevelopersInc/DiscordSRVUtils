@@ -110,6 +110,16 @@ public class MessageManager {
         return parseEmbedFromJSON(json, null, null);
     }
 
+    public MessageBuilder parseMessageFromJson(JSONObject json, PlaceholdObjectList holders, Player placehold) {
+        MessageBuilder msg = new MessageBuilder();
+        if (!json.isNull("embed"))
+        msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+        if (!json.isNull("content")) {
+            msg.setContent(getStringFromJson(json, "content", holders, placehold));
+        }
+        return msg;
+    }
+
 
     private String getStringFromJson(JSONObject ob, String val, PlaceholdObjectList holders, Player placehold) {
         if (!ob.isNull(val)) {

@@ -32,7 +32,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 //fix the big messages that look like spam
 public class MessageFilter implements Filter {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     @Override
     public Result getOnMismatch() {
@@ -64,6 +64,7 @@ public class MessageFilter implements Filter {
         return Result.NEUTRAL;
     }
 
+    //Redirect to 1 method so i don't recode
     @Override
     public Result filter(LogEvent logEvent) {
         return handle(
@@ -74,7 +75,6 @@ public class MessageFilter implements Filter {
                 logEvent.getThrown());
     }
 
-    //Redirect to 1 method so i don't recode
     @Override
     public Result filter(Logger logger, Level level, Marker marker, String message, Object... parameters) {
         return handle(
@@ -118,4 +118,5 @@ public class MessageFilter implements Filter {
                 core.getLogger().info("[" + prefix + "] " + msg);
         }
     }
+
 }
