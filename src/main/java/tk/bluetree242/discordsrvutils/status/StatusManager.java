@@ -39,11 +39,13 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 
 public class StatusManager {
     private static StatusManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private StatusTimer timer = new StatusTimer();
     private Path tempPath = Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "tmp" + core.fileseparator + "status-message.json");
     public StatusManager() {
         this.main = this;
@@ -116,5 +118,21 @@ public class StatusManager {
             }
 
         });
+    }
+
+    public void registerTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        new Timer().schedule(timer = new StatusTimer(), 1000, core.getStatusConfig().update_delay() * 1000);
+    }
+    public void unregisterTimer() {
+        if (timer != null)
+        timer.cancel();
+        timer = null;
+    }
+    public void reloadTimer() {
+        unregisterTimer();
+        registerTimer();
     }
 }

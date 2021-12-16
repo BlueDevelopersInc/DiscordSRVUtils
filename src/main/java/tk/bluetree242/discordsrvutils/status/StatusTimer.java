@@ -20,25 +20,14 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.config;
+package tk.bluetree242.discordsrvutils.status;
 
-import space.arim.dazzleconf.annote.ConfComments;
-import space.arim.dazzleconf.annote.ConfDefault;
-import space.arim.dazzleconf.annote.ConfKey;
-import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import java.util.List;
-
-public interface StatusConfig {
-
-    @AnnotationBasedSorter.Order(10)
-    @ConfComments("# Events to update the status message on.")
-    @ConfDefault.DefaultStrings({"org.bukkit.event.player.PlayerJoinEvent", "org.bukkit.event.player.PlayerQuitEvent"})
-    List<String> update_events();
-
-    @AnnotationBasedSorter.Order(20)
-    @ConfComments("# Delay to update the status message in seconds. Keep in mind discord has rate limits")
-    @ConfDefault.DefaultLong(60)
-    Long update_delay();
-
+public class StatusTimer extends TimerTask {
+    @Override
+    public void run() {
+        StatusManager.get().editMessage(true);
+    }
 }

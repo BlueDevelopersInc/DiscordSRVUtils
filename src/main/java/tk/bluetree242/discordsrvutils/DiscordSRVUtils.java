@@ -732,6 +732,7 @@ public class DiscordSRVUtils {
             StatusListener.get().unregister();
         }
         StatusListener.get().register();
+        StatusManager.get().reloadTimer();
     }
 
     public JDA getJDA() {
