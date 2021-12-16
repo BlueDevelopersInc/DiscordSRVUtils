@@ -72,6 +72,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
                 }
             });
         }
+
         val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
         val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
         return val[0];

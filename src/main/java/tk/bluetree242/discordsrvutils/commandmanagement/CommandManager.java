@@ -28,6 +28,7 @@ import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.status.StatusCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
@@ -55,20 +56,21 @@ public class CommandManager {
     }
 
     public void registerCommands() {
-        CommandManager.get().registerCommand(new TestMessageCommand());
-        CommandManager.get().registerCommand(new HelpCommand());
-        CommandManager.get().registerCommand(new CreatePanelCommand());
-        CommandManager.get().registerCommand(new PanelListCommand());
-        CommandManager.get().registerCommand(new DeletePanelCommand());
-        CommandManager.get().registerCommand(new EditPanelCommand());
-        CommandManager.get().registerCommand(new CloseCommand());
-        CommandManager.get().registerCommand(new ReopenCommand());
-        CommandManager.get().registerCommand(new LevelCommand());
-        CommandManager.get().registerCommand(new LeaderboardCommand());
-        CommandManager.get().registerCommand(new SuggestCommand());
-        CommandManager.get().registerCommand(new SuggestionNoteCommand());
-        CommandManager.get().registerCommand(new ApproveSuggestionCommand());
-        CommandManager.get().registerCommand(new DenySuggestionCommand());
+        registerCommand(new TestMessageCommand());
+        registerCommand(new HelpCommand());
+        registerCommand(new CreatePanelCommand());
+        registerCommand(new PanelListCommand());
+        registerCommand(new DeletePanelCommand());
+        registerCommand(new EditPanelCommand());
+        registerCommand(new CloseCommand());
+        registerCommand(new ReopenCommand());
+        registerCommand(new LevelCommand());
+        registerCommand(new LeaderboardCommand());
+        registerCommand(new SuggestCommand());
+        registerCommand(new SuggestionNoteCommand());
+        registerCommand(new ApproveSuggestionCommand());
+        registerCommand(new DenySuggestionCommand());
+        registerCommand(new StatusCommand());
     }
 
     public String getCommandPrefix() {

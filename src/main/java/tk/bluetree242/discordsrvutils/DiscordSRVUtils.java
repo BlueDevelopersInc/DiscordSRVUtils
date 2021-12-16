@@ -75,6 +75,9 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+
+import tk.bluetree242.discordsrvutils.status.StatusListener;
+import tk.bluetree242.discordsrvutils.status.StatusManager;
 import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
@@ -146,6 +149,8 @@ public class DiscordSRVUtils {
     private LevelingConfig levelingConfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
+    private ConfManager<StatusConfig> statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
+    private StatusConfig statusConfig;
 
 
     //Thread Pool
@@ -192,6 +197,7 @@ public class DiscordSRVUtils {
         new WaiterManager();
         new LevelingManager();
         new SuggestionManager();
+        new StatusManager();
         //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
@@ -381,7 +387,9 @@ public class DiscordSRVUtils {
                 "ticket-reopen",
                 "unban",
                 "unmute",
-                "welcome"};
+                "welcome",
+                "status-online",
+                "status-offline"};
         for (String msg : messages) {
             try {
                 //add them to the map
@@ -392,12 +400,14 @@ public class DiscordSRVUtils {
         }
     }
 
-    public void onDisable() {
+    public void onDisable() throws ExecutionException, InterruptedException {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         if (getJDA() != null) {
             for (ListenerAdapter listener : listeners) {
                 getJDA().removeEventListener(listener);
             }
+            StatusManager.get().unregisterTimer();
+            StatusManager.get().editMessage(false).get();
         }
         if (pool != null)
             pool.shutdown();
@@ -459,6 +469,7 @@ public class DiscordSRVUtils {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
         Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), main);
         Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), main);
+        new StatusListener();
     }
 
 
@@ -474,6 +485,8 @@ public class DiscordSRVUtils {
         return main.isEnabled();
     }
 
+
+
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
         config = configmanager.reloadConfigData();
@@ -487,6 +500,8 @@ public class DiscordSRVUtils {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        statusConfigConfManager.reloadConfig();
+        statusConfig = statusConfigConfManager.reloadConfigData();
         //make the leveling roles file
         File levelingRoles = new File(main.getDataFolder() + fileseparator + "leveling-roles.json");
         if (!levelingRoles.exists()) {
@@ -629,6 +644,8 @@ public class DiscordSRVUtils {
         return levelingConfig;
     }
 
+    public StatusConfig getStatusConfig() {return statusConfig;}
+
     public void executeAsync(Runnable r) {
         pool.execute(r);
     }
@@ -646,8 +663,8 @@ public class DiscordSRVUtils {
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
-            setSettings();
             registerListeners();
+            setSettings();
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
                 getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
@@ -685,10 +702,11 @@ public class DiscordSRVUtils {
                 }
             }
             //fix issues with any ticket or panel
-            fixTickets();
+            TicketManager.get().fixTickets();
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
-            doSuggestions();
+            SuggestionManager.get().migrateSuggestions();
+            StatusManager.get().editMessage(true);
             logger.info("Plugin is ready to function.");
         });
 
@@ -702,95 +720,20 @@ public class DiscordSRVUtils {
         return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
 
-    private void fixTickets() {
-        try (Connection conn = getDatabase()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
-            ResultSet r1 = p1.executeQuery();
-            while (r1.next()) {
-                TextChannel channel = getGuild().getTextChannelById(r1.getLong("Channel"));
-                if (channel == null) {
-                    PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
-                    p.setLong(1, r1.getLong("Channel"));
-                    p.execute();
-                }
-            }
-            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
-            r1 = p1.executeQuery();
-            while (r1.next()) {
-                Panel panel = TicketManager.get().getPanel(r1);
-                try {
-                    Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                    if (msg.getButtons().isEmpty()) {
-                        msg.clearReactions().queue();
-                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button())).queue();
-                    } else if (!msg.getButtons().get(0).getLabel().equals(getTicketsConfig().open_ticket_button())) {
-                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button()))).queue();
-                    }
-                } catch (ErrorResponseException ex) {
-                    panel.getEditor().apply();
-                }
-            }
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
-    }
 
-    private void doSuggestions() {
-        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
-        boolean sent = false;
-        try (Connection conn = getDatabase()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
-            ResultSet r1 = p1.executeQuery();
-            while (r1.next()) {
-                Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
-                try {
-                    Message msg = suggestion.getMessage();
-                    if (msg != null) {
-                        if (msg.getButtons().isEmpty()) {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            } else {
-                                if (!sent) {
-                                    logger.info(warnmsg);
-                                    sent = true;
-                                    SuggestionManager.get().loading = true;
-                                }
-                                msg.clearReactions().queue();
-                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                        Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
-                            }
-                        } else {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                                if (!sent) {
-                                    SuggestionManager.get().loading = true;
-                                    logger.info(warnmsg);
-                                    sent = true;
-                                }
-                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
-                            }
-                        }
-                    }
-                } catch (ErrorResponseException ex) {
 
-                }
-            }
-            if (sent) {
-                logger.info("Suggestions Migration has finished.");
-            }
-            SuggestionManager.get().loading = false;
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
-    }
+
 
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
+        if (StatusListener.get().registered) {
+            StatusListener.get().unregister();
+        }
+        StatusListener.get().register();
+        StatusManager.get().reloadTimer();
     }
 
     public JDA getJDA() {

@@ -51,6 +51,7 @@ public class PlaceholdObject {
     }
 
     public static String applyPlaceholders(String s, Player player) {
+        if (!DiscordSRVUtils.get().isEnabled()) return s;
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             String to = s.replace("&", "** ** *");
             String fina = PlaceholderAPI.setPlaceholders(player, to);
@@ -58,6 +59,8 @@ public class PlaceholdObject {
         }
         return s;
     }
+
+
 
 
     public Object getObject() {
