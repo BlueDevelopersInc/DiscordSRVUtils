@@ -1,7 +1,7 @@
 {
   "embed": {
     "title": ":green_circle: Online",
-    "description": "Change this message in /plugins/DiscordSRVUtils/status-online.json",
+    "description": "Change this message in /plugins/DiscordSRVUtils/messages/status-online.json",
     "color": "green",
     "timestamp": "now",
     "footer": {

@@ -1,7 +1,7 @@
 {
   "embed": {
     "title": ":red_circle: Offline",
-    "description": "Change this message in /plugins/DiscordSRVUtils/status-offline.json",
+    "description": "Change this message in /plugins/DiscordSRVUtils/messages/status-offline.json",
     "color": "red",
     "timestamp": "now",
     "footer": {
