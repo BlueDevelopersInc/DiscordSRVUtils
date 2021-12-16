@@ -406,6 +406,7 @@ public class DiscordSRVUtils {
             for (ListenerAdapter listener : listeners) {
                 getJDA().removeEventListener(listener);
             }
+            StatusManager.get().unregisterTimer();
             StatusManager.get().editMessage(false).get();
         }
         if (pool != null)
