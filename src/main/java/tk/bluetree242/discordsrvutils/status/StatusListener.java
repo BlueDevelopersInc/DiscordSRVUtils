@@ -73,7 +73,9 @@ public class StatusListener implements Listener, EventExecutor {
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        StatusManager.get().editMessage(true);
+        Bukkit.getServer().getScheduler().runTaskLater(core.getBukkitMain(), () -> {
+            StatusManager.get().editMessage(true);
+        }, 1);
     }
 
     public void unregister() {
