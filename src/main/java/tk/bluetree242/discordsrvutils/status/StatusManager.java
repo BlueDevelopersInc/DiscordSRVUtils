@@ -46,10 +46,10 @@ public class StatusManager {
     private static StatusManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private StatusTimer timer = new StatusTimer();
-    private Path tempPath = Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "tmp" + core.fileseparator + "status-message.json");
+    private Path dataPath = Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
     public StatusManager() {
         this.main = this;
-        tempPath.getParent().toFile().mkdir();
+        dataPath.getParent().toFile().mkdir();
     }
     public static StatusManager get() {
         return main;
@@ -64,7 +64,7 @@ public class StatusManager {
     public CompletableFuture<Message> newMessage(TextChannel channel) {
         return core.completableFuture(() -> {
             //path for some temp storage which should not be stored in database
-            File file = tempPath.toFile();
+            File file = dataPath.toFile();
             JSONObject json = new JSONObject();
             json.put("channel", channel.getIdLong());
             //Its already async, complete() should be fine
@@ -86,13 +86,13 @@ public class StatusManager {
     }
 
     public Long getMessageId() throws IOException{
-        File file = tempPath.toFile();
+        File file = dataPath.toFile();
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("message");
     }
     public Long getChannelId() throws IOException {
-        File file = tempPath.toFile();
+        File file = dataPath.toFile();
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("channel");
