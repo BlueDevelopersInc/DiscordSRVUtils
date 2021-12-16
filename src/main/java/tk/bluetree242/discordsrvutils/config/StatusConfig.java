@@ -33,7 +33,7 @@ public interface StatusConfig {
 
     @AnnotationBasedSorter.Order(10)
     @ConfComments("# Events to update the status message on.")
-    @ConfDefault.DefaultStrings({"PlayerJoinEvent", "PlayerQuitEvent"})
+    @ConfDefault.DefaultStrings({"org.bukkit.event.player.PlayerJoinEvent", "org.bukkit.event.player.PlayerQuitEvent"})
     List<String> update_events();
 
 }
