@@ -84,6 +84,10 @@ repositories {
         url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
     }
 
+    maven {
+        name = "sonatype-oss-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
