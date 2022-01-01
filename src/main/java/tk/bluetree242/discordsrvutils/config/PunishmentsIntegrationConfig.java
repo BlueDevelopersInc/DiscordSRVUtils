@@ -53,6 +53,12 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(22)
     long mutedRole();
 
+    @ConfKey("banned_role")
+    @ConfDefault.DefaultLong(0)
+    @ConfComments("\n#The role to give when player is muted. Will ban if this role id wasn't found")
+    @AnnotationBasedSorter.Order(23)
+    long bannedRole();
+
     @ConfKey("banned_message")
     @ConfDefault.DefaultString("message:ban")
     @ConfComments("\n\n#Message to send when a person is banned.")
