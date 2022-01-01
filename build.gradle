@@ -49,6 +49,7 @@ System.out.println("Commit Hash is " + commit)
 build.finalizedBy shadowJar
 repositories {
     mavenLocal()
+    mavenCentral()
     jcenter()
     maven {
         url = uri('https://repo.citizensnpcs.co')
