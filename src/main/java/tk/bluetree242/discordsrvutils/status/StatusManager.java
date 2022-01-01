@@ -47,10 +47,12 @@ public class StatusManager {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private StatusTimer timer = new StatusTimer();
     private Path dataPath = Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+
     public StatusManager() {
         this.main = this;
         dataPath.getParent().toFile().mkdir();
     }
+
     public static StatusManager get() {
         return main;
     }
@@ -85,12 +87,13 @@ public class StatusManager {
         });
     }
 
-    public Long getMessageId() throws IOException{
+    public Long getMessageId() throws IOException {
         File file = dataPath.toFile();
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("message");
     }
+
     public Long getChannelId() throws IOException {
         File file = dataPath.toFile();
         if (!file.exists()) return null;
@@ -126,11 +129,13 @@ public class StatusManager {
         }
         new Timer().schedule(timer = new StatusTimer(), 1000, core.getStatusConfig().update_delay() * 1000);
     }
+
     public void unregisterTimer() {
         if (timer != null)
-        timer.cancel();
+            timer.cancel();
         timer = null;
     }
+
     public void reloadTimer() {
         unregisterTimer();
         registerTimer();

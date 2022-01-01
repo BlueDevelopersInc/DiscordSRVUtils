@@ -10,13 +10,11 @@
     "thumbnail": {
       "url": "https://cdn.freebiesupply.com/logos/large/2x/minecraft-1-logo-png-transparent.png"
     },
-
     "fields": [
       {
         "name": "Server IP",
         "value": "play.example.com"
       }
     ]
-
   }
 }

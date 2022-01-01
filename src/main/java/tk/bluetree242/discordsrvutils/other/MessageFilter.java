@@ -49,7 +49,7 @@ public class MessageFilter implements Filter {
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
             //Ignorable message
             if (!message.contains("Driver does not support get/set network timeout for connections."))
-            log(level, message, "HikariCP");
+                log(level, message, "HikariCP");
             return Result.DENY;
         }
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.flywaydb")) {

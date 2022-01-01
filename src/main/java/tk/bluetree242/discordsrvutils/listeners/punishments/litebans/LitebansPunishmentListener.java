@@ -131,7 +131,8 @@ public class LitebansPunishmentListener extends Events.Listener {
                     Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)
                         core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
-                    else core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
+                    else
+                        core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
                     break;
                 case "MUTE":
                     Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());

@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.status;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class StatusTimer extends TimerTask {

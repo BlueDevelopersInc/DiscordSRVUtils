@@ -114,7 +114,7 @@ public class MessageManager {
     public MessageBuilder parseMessageFromJson(JSONObject json, PlaceholdObjectList holders, Player placehold) {
         MessageBuilder msg = new MessageBuilder();
         if (!json.isNull("embed"))
-        msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+            msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
         if (!json.isNull("content")) {
             msg.setContent(getStringFromJson(json, "content", holders, placehold));
         }

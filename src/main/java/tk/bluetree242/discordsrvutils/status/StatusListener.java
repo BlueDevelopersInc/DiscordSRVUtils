@@ -22,36 +22,22 @@
 
 package tk.bluetree242.discordsrvutils.status;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import github.scarsz.discordsrv.Debug;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.RegisteredListener;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 public class StatusListener implements Listener, EventExecutor {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    public boolean registered = false;
     private static StatusListener main;
+    public boolean registered = false;
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+
     public StatusListener() {
 
         main = this;
     }
+
     public static StatusListener get() {
         return main;
     }

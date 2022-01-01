@@ -28,10 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
@@ -60,7 +57,6 @@ import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
@@ -75,13 +71,10 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
-
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 import tk.bluetree242.discordsrvutils.status.StatusManager;
-import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
-import tk.bluetree242.discordsrvutils.tickets.Panel;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
@@ -102,8 +95,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -486,7 +477,6 @@ public class DiscordSRVUtils {
     }
 
 
-
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
         config = configmanager.reloadConfigData();
@@ -644,7 +634,9 @@ public class DiscordSRVUtils {
         return levelingConfig;
     }
 
-    public StatusConfig getStatusConfig() {return statusConfig;}
+    public StatusConfig getStatusConfig() {
+        return statusConfig;
+    }
 
     public void executeAsync(Runnable r) {
         pool.execute(r);
@@ -719,9 +711,6 @@ public class DiscordSRVUtils {
     public JSONObject getVersionConfig() throws IOException {
         return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
-
-
-
 
 
     public void setSettings() {
