@@ -115,7 +115,7 @@ def urlFile = { url, name ->
 dependencies {
     implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
-    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
+    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.bstats:bstats-bukkit:2.2.1'

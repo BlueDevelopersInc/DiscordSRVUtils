@@ -26,6 +26,7 @@ import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 import space.arim.dazzleconf.error.InvalidConfigException;
+import space.arim.dazzleconf.ext.snakeyaml.CommentMode;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlConfigurationFactory;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
@@ -47,7 +48,7 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
         // SnakeYaml example
         SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder()
                 .useCommentingWriter(true)
-                .commentFormat("%s")
+                .commentMode(CommentMode.alternativeWriter("%s"))
                 // Enables writing YAML comments
                 .build();
         ConfManager val = new ConfManager<>(configFolder, fileName,
