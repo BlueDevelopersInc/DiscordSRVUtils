@@ -60,6 +60,12 @@ public interface Config {
     @ConfDefault.DefaultLong(0)
     long linkaccount_channel();
 
+    @AnnotationBasedSorter.Order(33)
+    @ConfKey("disabled-commands")
+    @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
+    @ConfDefault.DefaultLong(0)
+    List<String> disabled_commands();
+
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
     @ConfComments("#Should we do Welcomer?")
