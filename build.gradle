@@ -40,6 +40,8 @@ shadowJar {
     relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
     relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
     relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
+    relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
+    relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
 }
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
