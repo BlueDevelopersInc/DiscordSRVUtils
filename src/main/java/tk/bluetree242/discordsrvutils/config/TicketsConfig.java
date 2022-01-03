@@ -28,7 +28,7 @@ import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-@ConfHeader("#Tickets system config.\n")
+@ConfHeader("# https://wiki.discordsrvutils.xyz/tickets/\n")
 public interface TicketsConfig {
     @ConfKey("panel-message")
     @AnnotationBasedSorter.Order(10)

@@ -24,8 +24,10 @@ package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
+@ConfHeader("# https://wiki.discordsrvutils.xyz/suggestions/\n")
 public interface SuggestionsConfig {
 
 

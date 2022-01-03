@@ -25,11 +25,13 @@ package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 
+@ConfHeader("# General config for the plugin\n# You should read this topic https://wiki.discordsrvutils.xyz/messages/\n")
 public interface Config {
 
 
