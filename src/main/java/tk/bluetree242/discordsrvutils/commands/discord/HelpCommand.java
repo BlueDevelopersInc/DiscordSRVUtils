@@ -46,7 +46,7 @@ public class HelpCommand extends Command {
             embed.setFooter("Executed by " + e.getAuthor().getAsTag(), e.getAuthor().getEffectiveAvatarUrl());
             embed.setTimestamp(Instant.now());
             for (CommandCategory category : CommandCategory.values()) {
-                if (!category.getCommands().isEmpty()) {
+                if (!category.getEnabledCommands().isEmpty()) {
                     StringJoiner joiner = new StringJoiner("`, `", "`", "`");
                     category.getCommands().forEach(cmd -> {
                         if (cmd.isEnabled())
