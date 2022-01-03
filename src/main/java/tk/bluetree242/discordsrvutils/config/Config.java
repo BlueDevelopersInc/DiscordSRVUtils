@@ -65,7 +65,7 @@ public interface Config {
     @AnnotationBasedSorter.Order(33)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
-    @ConfDefault.DefaultLong(0)
+    @ConfDefault.DefaultStrings({})
     List<String> disabled_commands();
 
     @AnnotationBasedSorter.Order(40)
