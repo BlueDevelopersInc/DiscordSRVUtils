@@ -31,7 +31,7 @@ import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 
-@ConfHeader("# General config for the plugin\n# You should read this topic https://wiki.discordsrvutils.xyz/messages/\n")
+@ConfHeader("# General config for the plugin, wiki for some stuff here https://wiki.discordsrvutils.xyz/\n# You should read this topic https://wiki.discordsrvutils.xyz/messages/\n")
 public interface Config {
 
 
