@@ -148,7 +148,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(160)
     @ConfKey("minimize-errors")
-    @ConfComments("# Replace errors with small error note. Please note that this is a bad practise. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
+    @ConfComments("# Replace errors with small error note. Please note that this is a bad practice. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
     @ConfDefault.DefaultBoolean(false)
     Boolean minimize_errors();
 

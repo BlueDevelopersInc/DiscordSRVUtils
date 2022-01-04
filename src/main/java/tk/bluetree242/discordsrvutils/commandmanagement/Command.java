@@ -91,7 +91,7 @@ public abstract class Command {
     public MessageEmbed getHelpEmbed() {
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setTitle(getCommandPrefix() + cmd + " Help")
+        embed.setTitle(getCommandPrefix() + cmd + " Command")
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
                 .addField("Usage", getUsage(), false)
