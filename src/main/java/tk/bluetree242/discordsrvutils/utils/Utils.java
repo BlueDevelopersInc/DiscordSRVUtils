@@ -74,6 +74,7 @@ public class Utils {
         }
     }
 
+
     public static boolean getDBoolean(String s) {
         if (s.equalsIgnoreCase("true")) return true;
         return false;
@@ -126,7 +127,7 @@ public class Utils {
             if (val.equals("")) {
                 val = seconds + " second" + (seconds <= 1 ? "" : "s");
             } else {
-                val = val + ", " + seconds + " second" + (days <= 1 ? "" : "s");
+                val = val + ", " + seconds + " second" + (seconds <= 1 ? "" : "s");
             }
         }
         if (val.equals("")) {

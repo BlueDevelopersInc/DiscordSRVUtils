@@ -20,23 +20,24 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.events;
+package tk.bluetree242.discordsrvutils.config;
 
-import org.bukkit.entity.Player;
-import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-public class MinecraftLevelupEvent extends LevelupEvent {
-    private PlayerStats stats;
-    private Player player;
+import java.util.List;
 
-    public MinecraftLevelupEvent(PlayerStats stats, Player player) {
-        super(stats, player);
-        this.stats = stats;
-        this.player = player;
-    }
+public interface StatusConfig {
 
-    public PlayerStats getStats() {
-        return stats;
-    }
+    @AnnotationBasedSorter.Order(10)
+    @ConfComments("# Events to update the status message on.")
+    @ConfDefault.DefaultStrings({"org.bukkit.event.player.PlayerJoinEvent", "org.bukkit.event.player.PlayerQuitEvent"})
+    List<String> update_events();
+
+    @AnnotationBasedSorter.Order(20)
+    @ConfComments("# Delay to update the status message in seconds. Keep in mind discord has rate limits")
+    @ConfDefault.DefaultLong(60)
+    Long update_delay();
 
 }

@@ -22,10 +22,11 @@
 
 package tk.bluetree242.discordsrvutils.listeners.afk;
 
-import com.Zrips.CMI.events.CMIAfkEnterEvent;
-import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import net.lapismc.afkplus.api.AFKStartEvent;
+import net.lapismc.afkplus.api.AFKStopEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,13 +35,13 @@ import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
-public class CMIAfkListener implements Listener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+public class AFKPlusListener implements Listener {
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
 
     @EventHandler
-    public void onAfk(CMIAfkEnterEvent e) {
+    public void onAfk(AFKStartEvent e) {
         core.executeAsync(() -> {
-            Player player = e.getPlayer();
+            Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
@@ -57,9 +58,9 @@ public class CMIAfkListener implements Listener {
     }
 
     @EventHandler
-    public void onNoLongerAfk(CMIAfkLeaveEvent e) {
+    public void onNoLongerAfk(AFKStopEvent e) {
         core.executeAsync(() -> {
-            Player player = e.getPlayer();
+            Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();

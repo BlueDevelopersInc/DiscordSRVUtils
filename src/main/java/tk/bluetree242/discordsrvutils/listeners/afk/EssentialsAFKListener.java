@@ -22,9 +22,14 @@
 
 package tk.bluetree242.discordsrvutils.listeners.afk;
 
+import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Containers.CMIUser;
+import com.earth2me.essentials.Essentials;
+import de.myzelyam.api.vanish.VanishAPI;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import net.ess3.api.events.AfkStatusChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,12 +42,27 @@ public class EssentialsAFKListener implements Listener {
 
     private DiscordSRVUtils core = DiscordSRVUtils.get();
 
+    public static boolean shouldSend(Player p) {
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
+            Essentials plugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+            if (plugin.getUser(p.getUniqueId()).isHidden()) return false;
+        }
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("CMI")) {
+            CMIUser user = CMI.getInstance().getPlayerManager().getUser(p);
+            if (user.isVanished()) return false;
+        }
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getServer().getPluginManager().isPluginEnabled("PremiumVanish")) {
+            if (VanishAPI.isInvisible(p)) return false;
+        }
+        return true;
+    }
+
     @EventHandler
     public void onAfk(AfkStatusChangeEvent e) {
         core.executeAsync(() -> {
-            if (e.getAffected().isHidden()) return;
             boolean afk = e.getAffected().isAfk();
             Player player = e.getAffected().getBase();
+            if (!shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));

@@ -22,21 +22,21 @@
 
 package tk.bluetree242.discordsrvutils.events;
 
-import org.bukkit.entity.Player;
+import github.scarsz.discordsrv.api.events.Event;
+import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
-public class MinecraftLevelupEvent extends LevelupEvent {
-    private PlayerStats stats;
-    private Player player;
+public class LevelupEvent extends Event {
 
-    public MinecraftLevelupEvent(PlayerStats stats, Player player) {
-        super(stats, player);
+    private PlayerStats stats;
+    private OfflinePlayer player;
+
+    public LevelupEvent(PlayerStats stats, OfflinePlayer player) {
         this.stats = stats;
         this.player = player;
     }
 
-    public PlayerStats getStats() {
-        return stats;
+    public OfflinePlayer getPlayer() {
+        return player;
     }
-
 }

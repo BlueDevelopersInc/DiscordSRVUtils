@@ -128,10 +128,14 @@ public class LitebansPunishmentListener extends Events.Listener {
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case "BAN":
-                    core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
+                    if (bannedRole == null)
+                        core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    else
+                        core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
                     break;
                 case "MUTE":
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not mute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));
@@ -149,7 +153,7 @@ public class LitebansPunishmentListener extends Events.Listener {
                     core.getGuild().unban(discordUser).reason("Minecraft Synced unban").queue();
                     break;
                 case "MUTE":
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not unmute " + Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getName()));

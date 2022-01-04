@@ -35,7 +35,7 @@ public abstract class BukkitCommand implements CommandExecutor {
 
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRVUtils.get().getBukkitMain(), () -> {
             try {
                 onRunAsync(sender, command, label, args);
             } catch (Throwable ex) {

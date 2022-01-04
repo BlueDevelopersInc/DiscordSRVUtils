@@ -64,19 +64,15 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             }
                         }
                         int toAdd = new SecureRandom().nextInt(50);
-                        boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd));
+                        boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
                         core.handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
                         if (leveledUp) {
-                            try {
-                                DiscordSRV.api.callEvent(new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
-                            } catch (Exception x) {
-                            }
-                            e.getChannel().sendMessage(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
+                            core.queueMsg(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),
                                     new PlaceholdObject(e.getMember(), "member"),
                                     new PlaceholdObject(e.getGuild(), "guild")
-                            ), null).build()).queue();
+                            ), null).build(), core.getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
                     }, null);
                 }
@@ -93,7 +89,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                 if (stats == null) return;
                 Role role = LevelingManager.get().getRoleForLevel(stats.getLevel());
                 if (role != null) {
-                    e.getGuild().addRoleToMember(e.getMember(), role).queue();
+                    e.getGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
                 }
             }
         });

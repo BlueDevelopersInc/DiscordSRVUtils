@@ -97,6 +97,13 @@ public class DebugUtil {
         information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
+        Map<String, String> versionConfig = new HashMap<>();
+        JSONObject config = DiscordSRVUtils.get().getVersionConfig();
+        versionConfig.put("Version", config.getString("version"));
+        versionConfig.put("Build Number", config.getString("buildNumber"));
+        versionConfig.put("Commit Hash", config.getString("commit"));
+        versionConfig.put("Build Date", new Date(Long.parseLong(config.getString("buildDate"))) + " (" + (Utils.getDuration(System.currentTimeMillis() - Long.parseLong(config.getString("buildDate"))) + " ago)"));
+        data.put(new JSONObject().put("type", "key_value").put("name", "Version Config").put("data", MapToKeyValue(versionConfig)));
         JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                 new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
         );
@@ -110,7 +117,7 @@ public class DebugUtil {
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRVUtils Conf Files").put("data", FilesToArray(getDSUFiles())));
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRV Conf Files").put("data", FilesToArray(getDiscordSRVFiles())));
         List<Map<String, String>> files = new ArrayList<>();
-        for (File file : Paths.get(core.getDataFolder() + core.fileseparator + "messages").toFile().listFiles()) {
+        for (File file : Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "messages").toFile().listFiles()) {
             if (file.getName().endsWith(".json")) {
                 files.add(fileMap(file.getName(), Utils.readFile(file.getPath())));
             }
@@ -143,11 +150,12 @@ public class DebugUtil {
     private static List<Map<String, String>> getDSUFiles() throws Exception {
         List<Map<String, String>> files = new ArrayList<>();
         DiscordSRVUtils core = DiscordSRVUtils.get();
-        files.add(fileMap("config.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "config.yml")));
-        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
-        files.add(fileMap("tickets.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "tickets.yml")));
-        files.add(fileMap("leveling.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "leveling.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("config.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "config.yml")));
+        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
+        files.add(fileMap("tickets.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "tickets.yml")));
+        files.add(fileMap("leveling.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling.yml")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         return files;
     }
 
@@ -275,7 +283,7 @@ public class DebugUtil {
     }
 
     private static String getRegisteredListeners() {
-        if (!DiscordSRVUtils.get().isReady()) return "DSU not ready";
+        if (DiscordSRVUtils.get().getJDA() == null) return "JDA is null";
         StringJoiner joiner = new StringJoiner(", ");
         for (Object listener : DiscordSRVUtils.get().getJDA().getEventManager().getRegisteredListeners()) {
             joiner.add(listener.getClass().getSimpleName());

@@ -38,7 +38,6 @@ import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class DiscordSRVListener {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -49,7 +48,7 @@ public class DiscordSRVListener {
             core.whenReady();
         } catch (Throwable ex) {
             new StartupException(ex).printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(core);
+            Bukkit.getPluginManager().disablePlugin(core.getBukkitMain());
         }
     }
 

@@ -81,6 +81,14 @@ public class CommandCategory {
         return commands;
     }
 
+    public List<Command> getEnabledCommands() {
+        List<Command> result = new ArrayList<>();
+        for (Command command : commands) {
+            if (command.isEnabled()) result.add(command);
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         return prefix + " " + name;

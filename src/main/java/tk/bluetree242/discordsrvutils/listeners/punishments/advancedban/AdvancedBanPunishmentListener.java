@@ -131,11 +131,15 @@ public class AdvancedBanPunishmentListener implements Listener {
                 case TEMP_BAN:
                 case IP_BAN:
                 case TEMP_IP_BAN:
-                    core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
+                    if (bannedRole == null)
+                        core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    else
+                        core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
                     break;
                 case MUTE:
                 case TEMP_MUTE:
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not mute " + punishment.getName());
@@ -153,11 +157,15 @@ public class AdvancedBanPunishmentListener implements Listener {
                 case TEMP_BAN:
                 case IP_BAN:
                 case TEMP_IP_BAN:
-                    core.getGuild().unban(discordUser).reason("Minecraft Synced unban").queue();
+                    Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
+                    if (bannedRole == null)
+                        core.getGuild().unban(discordUser).reason("Minecraft Synced UnBan").queue();
+                    else
+                        core.getGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
                     break;
                 case MUTE:
                 case TEMP_MUTE:
-                    Role role = core.getJDA().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole() + ". Could not unmute " + punishment.getName());

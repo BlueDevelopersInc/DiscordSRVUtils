@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.leveling.listeners.bukkit;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -93,13 +92,9 @@ public class BukkitLevelingListener implements Listener {
                 }
             }
             int toAdd = new SecureRandom().nextInt(50);
-            boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd));
+            boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
             core.handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
             if (leveledUp) {
-                try {
-                    DiscordSRV.api.callEvent(new MinecraftLevelupEvent(stats, e.getPlayer()));
-                } catch (Exception x) {
-                }
                 e.getPlayer().sendMessage(Utils.colors(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer())));
 
 

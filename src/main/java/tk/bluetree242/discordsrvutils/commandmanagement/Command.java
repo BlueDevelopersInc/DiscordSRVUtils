@@ -42,7 +42,6 @@ public abstract class Command {
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
-
     public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
         this.cmd = cmd;
         this.type = type;
@@ -92,7 +91,7 @@ public abstract class Command {
     public MessageEmbed getHelpEmbed() {
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setTitle(getCommandPrefix() + cmd + " Help")
+        embed.setTitle(getCommandPrefix() + cmd + " Command")
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
                 .addField("Usage", getUsage(), false)
@@ -133,6 +132,10 @@ public abstract class Command {
 
     public void setAdminOnly(boolean b) {
         adminOnly = b;
+    }
+
+    public boolean isEnabled() {
+        return !CommandManager.get().getDisabledCommands(true).contains(this);
     }
 
 }

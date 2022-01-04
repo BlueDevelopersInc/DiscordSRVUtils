@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -41,6 +42,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -217,6 +219,61 @@ public class SuggestionManager {
                 throw new UnCheckedSQLException(e);
             }
         });
+    }
+
+    public CompletableFuture<Void> migrateSuggestions() {
+        return core.completableFutureRun(() -> {
+            String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
+            boolean sent = false;
+            loading = true;
+            try (Connection conn = core.getDatabase()) {
+                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
+                ResultSet r1 = p1.executeQuery();
+                while (r1.next()) {
+                    Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
+                    try {
+                        Message msg = suggestion.getMessage();
+                        if (msg != null) {
+                            if (msg.getButtons().isEmpty()) {
+                                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                                } else {
+                                    if (!sent) {
+                                        core.logger.info(warnmsg);
+                                        sent = true;
+                                        SuggestionManager.get().loading = true;
+                                    }
+                                    msg.clearReactions().queue();
+                                    msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                            Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                            Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                            Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
+                                }
+                            } else {
+                                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                                    if (!sent) {
+                                        SuggestionManager.get().loading = true;
+                                        core.logger.info(warnmsg);
+                                        sent = true;
+                                    }
+                                    msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                                    msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                                    msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                                }
+                            }
+                        }
+                    } catch (ErrorResponseException ex) {
+
+                    }
+                }
+                if (sent) {
+                    core.logger.info("Suggestions Migration has finished.");
+                }
+                SuggestionManager.get().loading = false;
+            } catch (SQLException e) {
+                throw new UnCheckedSQLException(e);
+            }
+        });
+
     }
 
 

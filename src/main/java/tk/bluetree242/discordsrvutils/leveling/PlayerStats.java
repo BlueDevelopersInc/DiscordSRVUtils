@@ -26,7 +26,9 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.sql.Connection;
@@ -87,11 +89,19 @@ public class PlayerStats {
         });
     }
 
+    public CompletableFuture<Boolean> setXP(int xp) {
+        return setXP(xp, null);
+    }
+
     /**
      * @param xp XP to add
      * @return true if player leveled up, false if not
      */
-    public CompletableFuture<Boolean> setXP(int xp) {
+    public CompletableFuture<Boolean> setXP(int xp, LevelupEvent event) {
+        if (event == null) {
+            event = new LevelupEvent(this, Bukkit.getOfflinePlayer(uuid));
+        }
+        LevelupEvent finalEvent = event;
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 if (xp >= 300) {
@@ -116,6 +126,7 @@ public class PlayerStats {
                         actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
                     }
                     RestAction.allOf(actions).queue();
+                    DiscordSRV.api.callEvent(finalEvent);
                     return true;
                 }
                 PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=? WHERE UUID=?");

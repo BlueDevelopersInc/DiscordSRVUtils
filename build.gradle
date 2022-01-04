@@ -40,20 +40,27 @@ shadowJar {
     relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
     relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
     relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
+    relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
+    relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
 }
+def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
+System.out.println("Build Number is " + buildNumber)
+def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
+System.out.println("Commit Hash is " + commit)
+
 build.finalizedBy shadowJar
 repositories {
     mavenLocal()
+    mavenCentral()
     jcenter()
+    maven {
+        url = uri('https://repo.citizensnpcs.co')
+    }
     maven {
         url = uri('https://nexus.vankka.dev/repository/maven-public/')
     }
     maven {
         url = uri('http://repo.extendedclip.com/content/repositories/placeholderapi/')
-    }
-
-    maven {
-        url = uri('https://oss.sonatype.org/content/repositories/snapshots/')
     }
 
     maven {
@@ -80,6 +87,14 @@ repositories {
         url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
     }
 
+    maven {
+        url = uri("https://papermc.io/repo/repository/maven-public/")
+    }
+
+    maven {
+        name = "sonatype-oss-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
@@ -107,7 +122,7 @@ def urlFile = { url, name ->
 dependencies {
     implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'org.yaml:snakeyaml:1.27'
-    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-SNAPSHOT'
+    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
@@ -115,7 +130,9 @@ dependencies {
     compileOnly 'net.ess3:EssentialsX:2.17.2'
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
-    compileOnly 'com.discordsrv:discordsrv:1.24.0'
+    compileOnly ('com.discordsrv:discordsrv:1.24.0') {
+        exclude group: 'net.kyori'
+    }
     compileOnly 'me.clip:placeholderapi:2.9.2'
     compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
     implementation "org.flywaydb:flyway-core:7.5.3"
@@ -123,10 +140,13 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
     compileOnly 'space.arim.libertybans:bans-api:0.8.0'
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
+    compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
+    compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
 }
 
 group = 'me.bluetree.discordsrvutils'
-version = '1.2.5'
+version = '1.2.6'
 
 description = 'DiscordSRVUtils'
 compileJava.options.encoding 'UTF-8'
@@ -142,8 +162,13 @@ publishing {
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
+        filter ReplaceTokens, tokens: [version  : version,
+                                       build    : buildNumber,
+                                       commit   : commit,
+                                       buildDate: System.currentTimeMillis() + ""
+        ]
     }
+
 }
 
 

@@ -20,23 +20,13 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.events;
+package tk.bluetree242.discordsrvutils.status;
 
-import org.bukkit.entity.Player;
-import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import java.util.TimerTask;
 
-public class MinecraftLevelupEvent extends LevelupEvent {
-    private PlayerStats stats;
-    private Player player;
-
-    public MinecraftLevelupEvent(PlayerStats stats, Player player) {
-        super(stats, player);
-        this.stats = stats;
-        this.player = player;
+public class StatusTimer extends TimerTask {
+    @Override
+    public void run() {
+        StatusManager.get().editMessage(true);
     }
-
-    public PlayerStats getStats() {
-        return stats;
-    }
-
 }

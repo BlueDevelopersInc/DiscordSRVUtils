@@ -28,7 +28,4 @@ hs_err_pid*
 # Custom files
 build/
 .idea/
-gradle/
 .gradle/
-gradlew
-gradlew.bat

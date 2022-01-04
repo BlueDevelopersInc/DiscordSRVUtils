@@ -25,16 +25,18 @@ package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 
+@ConfHeader("# General config for the plugin, wiki for some stuff here https://wiki.discordsrvutils.xyz/\n# You should read this topic https://wiki.discordsrvutils.xyz/messages/\n")
 public interface Config {
 
 
     @AnnotationBasedSorter.Order(10)
-    @ConfComments("#Admins who can use the bot without limits, Only IDs")
+    @ConfComments("#Admins who can use the bot without limits. This can be either user or role IDs.")
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 
@@ -59,6 +61,12 @@ public interface Config {
     @ConfComments("#Custom LinkAccount Channel. ")
     @ConfDefault.DefaultLong(0)
     long linkaccount_channel();
+
+    @AnnotationBasedSorter.Order(33)
+    @ConfKey("disabled-commands")
+    @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
+    @ConfDefault.DefaultStrings({})
+    List<String> disabled_commands();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
@@ -140,7 +148,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(160)
     @ConfKey("minimize-errors")
-    @ConfComments("# Replace errors with small error note. Please note that this is a bad practise. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
+    @ConfComments("# Replace errors with small error note. Please note that this is a bad practice. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
     @ConfDefault.DefaultBoolean(false)
     Boolean minimize_errors();
 
@@ -149,5 +157,11 @@ public interface Config {
     @ConfComments("# Thread Pool Size. The more it increase the more it gets better. But will use more CPU.")
     @ConfDefault.DefaultInteger(5)
     int pool_size();
+
+    @AnnotationBasedSorter.Order(180)
+    @ConfKey("dev-updatechecker")
+    @ConfComments("# Should we tell you about updates if the updates that remain are dev builds?")
+    @ConfDefault.DefaultBoolean(true)
+    boolean dev_updatechecker();
 
 }

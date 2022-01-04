@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.suggestions.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
@@ -37,7 +38,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SuggestionVoteListener extends ListenerAdapter {
+public class SuggestionListener extends ListenerAdapter {
 
 
     private DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -160,6 +161,20 @@ public class SuggestionVoteListener extends ListenerAdapter {
             msg.editMessage(suggestion.getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
         }, error -> {
             error.printStackTrace();
+        });
+    }
+
+    public void onMessageReceived(MessageReceivedEvent e) {
+        core.executeAsync(() -> {
+            if (e.getAuthor().isBot()) return;
+            if (e.getMessage().isWebhookMessage()) return;
+            if (!core.getSuggestionsConfig().enabled()) return;
+            if (e.getChannel().getIdLong() == core.getSuggestionsConfig().suggestions_channel()) {
+                if (core.getSuggestionsConfig().set_suggestion_from_channel()) {
+                    e.getMessage().delete().queue();
+                    SuggestionManager.get().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong());
+                }
+            }
         });
     }
 

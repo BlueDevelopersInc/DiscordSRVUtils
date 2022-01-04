@@ -24,8 +24,10 @@ package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
+@ConfHeader("# https://wiki.discordsrvutils.xyz/suggestions/\n")
 public interface SuggestionsConfig {
 
 
@@ -86,6 +88,11 @@ public interface SuggestionsConfig {
     @ConfComments("# Message when the suggestion is denied")
     @ConfDefault.DefaultString("message:suggestion-denied")
     String suggestion_denied();
+
+    @AnnotationBasedSorter.Order(95)
+    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n#Note: Muted role and anti suggestion spam will not be applied here")
+    @ConfDefault.DefaultBoolean(false)
+    Boolean set_suggestion_from_channel();
 
     /*
     @AnnotationBasedSorter.Order(100)

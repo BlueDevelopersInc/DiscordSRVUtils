@@ -22,17 +22,19 @@
 
 package tk.bluetree242.discordsrvutils.events;
 
-import github.scarsz.discordsrv.api.events.Event;
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
-public class DiscordLevelupEvent extends Event {
+public class DiscordLevelupEvent extends LevelupEvent {
     private PlayerStats stats;
     private TextChannel channel;
     private User user;
 
     public DiscordLevelupEvent(PlayerStats stats, TextChannel channel, User user) {
+        super(stats, Bukkit.getOfflinePlayer(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId())));
         this.stats = stats;
         this.channel = channel;
         this.user = user;

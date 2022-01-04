@@ -50,7 +50,7 @@ public class CommandListener extends ListenerAdapter {
             if (cmd.startsWith(core.getCommandPrefix())) {
                 cmd = cmd.replaceFirst(Pattern.quote(core.getCommandPrefix()), "");
                 Command executor = CommandManager.get().getCommandHashMap().get(cmd);
-                if (executor == null) return;
+                if (executor == null || !executor.isEnabled()) return;
                 try {
                     if (executor.getCommandType() != CommandType.EVERYWHERE) {
                         if (executor.getCommandType() == CommandType.GUILDS) {

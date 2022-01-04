@@ -22,6 +22,12 @@
 
 package tk.bluetree242.discordsrvutils.tickets;
 
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -159,6 +165,39 @@ public class TicketManager {
 
     protected Ticket getTicket(ResultSet r) throws SQLException {
         return getTicket(r, null);
+    }
+
+    public void fixTickets() {
+        try (Connection conn = core.getDatabase()) {
+            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
+            ResultSet r1 = p1.executeQuery();
+            while (r1.next()) {
+                TextChannel channel = core.getGuild().getTextChannelById(r1.getLong("Channel"));
+                if (channel == null) {
+                    PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
+                    p.setLong(1, r1.getLong("Channel"));
+                    p.execute();
+                }
+            }
+            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
+            r1 = p1.executeQuery();
+            while (r1.next()) {
+                Panel panel = TicketManager.get().getPanel(r1);
+                try {
+                    Message msg = core.getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                    if (msg.getButtons().isEmpty()) {
+                        msg.clearReactions().queue();
+                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
+                    } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
+                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
+                    }
+                } catch (ErrorResponseException ex) {
+                    panel.getEditor().apply();
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnCheckedSQLException(e);
+        }
     }
 
 }

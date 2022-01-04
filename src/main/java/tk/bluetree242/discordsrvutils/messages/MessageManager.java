@@ -87,6 +87,7 @@ public class MessageManager {
                 embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), field.isNull("inline") ? false : field.getBoolean("inline"));
             }
         }
+
         embed.setDescription(getStringFromJson(json, "description", holders, placehold));
         return embed;
     }
@@ -108,6 +109,16 @@ public class MessageManager {
 
     public EmbedBuilder parseEmbedFromJSON(JSONObject json) {
         return parseEmbedFromJSON(json, null, null);
+    }
+
+    public MessageBuilder parseMessageFromJson(JSONObject json, PlaceholdObjectList holders, Player placehold) {
+        MessageBuilder msg = new MessageBuilder();
+        if (!json.isNull("embed"))
+            msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+        if (!json.isNull("content")) {
+            msg.setContent(getStringFromJson(json, "content", holders, placehold));
+        }
+        return msg;
     }
 
 

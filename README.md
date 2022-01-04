@@ -41,10 +41,10 @@ For gradle
 You also need to add DiscordSRV's dependecy and repository, which you can find here:  
 https://github.com/DiscordSRV/DiscordSRV/wiki#developers
 
-
 # Contributing
-  
-To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop` branch. Pull requests on `master` will be denied and closed.
+
+To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop`
+branch. Pull requests on `master` will be denied and closed.
   
 
 

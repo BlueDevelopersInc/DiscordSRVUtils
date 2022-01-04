@@ -28,50 +28,39 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.SimplePie;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
-import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
-import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
-import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
-import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 import tk.bluetree242.discordsrvutils.config.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
+import tk.bluetree242.discordsrvutils.listeners.afk.AFKPlusListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.CMIAfkListener;
 import tk.bluetree242.discordsrvutils.listeners.afk.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
@@ -82,10 +71,10 @@ import tk.bluetree242.discordsrvutils.listeners.punishments.advancedban.Advanced
 import tk.bluetree242.discordsrvutils.listeners.punishments.libertybans.LibertybansListener;
 import tk.bluetree242.discordsrvutils.listeners.punishments.litebans.LitebansPunishmentListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
-import tk.bluetree242.discordsrvutils.suggestions.Suggestion;
+import tk.bluetree242.discordsrvutils.status.StatusListener;
+import tk.bluetree242.discordsrvutils.status.StatusManager;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionVoteListener;
-import tk.bluetree242.discordsrvutils.tickets.Panel;
+import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
@@ -102,11 +91,10 @@ import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -114,15 +102,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class DiscordSRVUtils extends JavaPlugin {
+public class DiscordSRVUtils {
 
 
     //instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
     //file separator string
     public final String fileseparator = System.getProperty("file.separator");
-    //messages folder path
-    public final Path messagesDirectory = Paths.get(getDataFolder() + fileseparator + "messages");
     //default messages to use
     public final Map<String, String> defaultmessages = new HashMap<>();
     //leveling roles jsonobject, Initialized on startup
@@ -133,24 +119,29 @@ public class DiscordSRVUtils extends JavaPlugin {
     public SuggestionVoteMode voteMode;
     //latest error that occurred on our thread pool
     public String finalError = null;
-    // faster getter for the logger
-    public Logger logger = getLogger();
     //Plugins we hooked into
     public List<Plugin> hookedPlugins = new ArrayList<>();
-
+    //Bukkit main instance (will be changed when i start to abstract)
+    private DiscordSRVUtilsMain main = (DiscordSRVUtilsMain) Bukkit.getPluginManager().getPlugin("DiscordSRVUtils");
+    //messages folder path
+    public final Path messagesDirectory = Paths.get(main.getDataFolder() + fileseparator + "messages");
+    // faster getter for the logger
+    public Logger logger = main.getLogger();
     //Configurations
-    private ConfManager<Config> configmanager = ConfManager.create(getDataFolder().toPath(), "config.yml", Config.class);
+    private ConfManager<Config> configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
-    private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(getDataFolder().toPath(), "sql.yml", SQLConfig.class);
+    private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
     private SQLConfig sqlconfig;
-    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
+    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
     private PunishmentsIntegrationConfig bansIntegrationConfig;
-    private ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
+    private ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
     private TicketsConfig ticketsConfig;
-    private ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
+    private ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
     private LevelingConfig levelingConfig;
-    private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
+    private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
+    private ConfManager<StatusConfig> statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
+    private StatusConfig statusConfig;
 
 
     //Thread Pool
@@ -162,6 +153,11 @@ public class DiscordSRVUtils extends JavaPlugin {
     //listeners that should be registered
     private List<ListenerAdapter> listeners = new ArrayList<>();
     private long lastErrorTime = 0;
+
+    protected DiscordSRVUtils(DiscordSRVUtilsMain main) {
+        this.main = main;
+        onLoad();
+    }
 
     public static DiscordSRVUtils get() {
         return instance;
@@ -192,6 +188,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         new WaiterManager();
         new LevelingManager();
         new SuggestionManager();
+        new StatusManager();
         //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
@@ -202,7 +199,7 @@ public class DiscordSRVUtils extends JavaPlugin {
         listeners.add(new TicketCloseListener());
         listeners.add(new EditPanelListener());
         listeners.add(new DiscordLevelingListener());
-        listeners.add(new SuggestionVoteListener());
+        listeners.add(new SuggestionListener());
         listeners.add(new CustomDiscordAccountLinkListener());
         //Init Default Messages
         initDefaultMessages();
@@ -212,7 +209,7 @@ public class DiscordSRVUtils extends JavaPlugin {
     public void onLoad() {
         init();
         //require intents and cacheflags
-        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
+        if (main.getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             if (DiscordSRV.isReady) {
                 //Oh no, they are using a plugin manager to reload the plugin, give them a warn
                 logger.warning("It seems like you are using a Plugin Manager to reload the plugin. This is not a good practice. If you see problems. Please restart");
@@ -224,65 +221,26 @@ public class DiscordSRVUtils extends JavaPlugin {
     }
 
     public void onEnable() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            //do updatechecker
-            try {
-                if (!isEnabled()) return;
-                OkHttpClient client = new OkHttpClient();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data")).addFormDataPart("version", getDescription().getVersion())
-                        .build();
-
-                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
-                Response response = client.newCall(req).execute();
-                JSONObject res = new JSONObject(response.body().string());
-                response.close();
-                int versions_behind = res.getInt("versions_behind");
-                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
-                String msg = null;
-                if (res.isNull("message")) {
-                    if (versions_behind != 0) {
-                        if (logger.equalsIgnoreCase("INFO")) {
-
-                        }
-                        msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
-                    } else {
-                        msg = (ChatColor.RED + "Plugin is up to date!");
-                    }
-                } else {
-                    //the updatechecker wants its own message
-                    msg = (res.getString("message"));
-                }
-                switch (logger) {
-                    case "INFO":
-                        getLogger().info(msg);
-                        break;
-                    case "WARNING":
-                        getLogger().warning(msg);
-                        break;
-                    case "ERROR":
-                        getLogger().warning(msg);
-                        break;
-                }
-            } catch (Exception e) {
-                //We could not check for updates.
-                logger.severe("Could not check for updates: " + e.getMessage());
-            }
-
-        });
+        updateCheck();
+        //Remove the expansion, less amount of errors when reloading via a plugin manager
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+            if (expansion.isPresent()) expansion.get().unregister();
+        }
         try {
-            if (!getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
+            if (!main.getServer().getPluginManager().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
                 logger.severe("Disabling...");
-                setEnabled(false);
+                main.disable();
                 return;
             }
-
+            addMessageFilter();
             try {
                 //Reload Configurations
                 reloadConfigs();
             } catch (ConfigurationLoadException ex) {
                 logger.severe(ex.getMessage());
-                setEnabled(false);
+                main.disable();
                 return;
             }
             //set storage string to use later
@@ -293,10 +251,11 @@ public class DiscordSRVUtils extends JavaPlugin {
                     "| &cInformation:\n&r" +
                     "|   &cName: &rDiscordSRVUtils\n&r" +
                     "|   &cDevelopers: &rBlueTree242\n&r" +
-                    "|   &cVersion: &r" + getDescription().getVersion() + "\n&r" +
+                    "|   &cVersion: &r" + main.getDescription().getVersion() + "\n&r" +
+                    (getVersionConfig().getString("buildNumber").equalsIgnoreCase("NONE") ? "" : "|   &cBuild: &r#" + getVersionConfig().getString("buildNumber") + "\n&r") +
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
-                    "|   &cGithub: &rhttps://github.com/BlueTree242/DiscordSRVUtils/issues\n" +
+                    "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]"));
             System.setProperty("hsqldb.reconfig_logging", "false");
@@ -305,7 +264,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             } catch (ClassNotFoundException e) {
                 //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
-                setEnabled(false);
+                main.disable();
                 return;
             }
             //initialize pool
@@ -318,8 +277,8 @@ public class DiscordSRVUtils extends JavaPlugin {
             });
 
             Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
-            //register our bukkit commands
-            registerBukkitCommands();
+            //Register our in game commands
+            main.registerCommands();
             try {
                 setupDatabase();
             } catch (SQLException ex) {
@@ -332,39 +291,19 @@ public class DiscordSRVUtils extends JavaPlugin {
                 whenReady();
             }
             whenStarted();
-            //bstats stuff
-            Metrics metrics = new Metrics(this, 9456);
-            metrics.addCustomChart(new AdvancedPie("features", () -> {
-                Map<String, Integer> valueMap = new HashMap<>();
-                //Removed Tickets Because it caused lag on a few servers
-                /*
-                if (!TicketManager.get().getPanels().get().isEmpty())
-                valueMap.put("Tickets", 1);
-                 */
-                if (getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
-                if (getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
-                if (getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
-                if (getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled())
-                    valueMap.put("Punishment Messages", 1);
-                if (getServer().getPluginManager().isPluginEnabled("Essentials") && getMainConfig().afk_message_enabled())
-                    valueMap.put("AFK Messages", 1);
-                return valueMap;
-            }));
-            metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
-            metrics.addCustomChart(new SimplePie("admins", () -> getAdminIds().size() + ""));
         } catch (Throwable ex) {
             //Plugin couldn't start, sadly
             startupError(ex, "Plugin could not start");
         }
     }
 
-    public void registerBukkitCommands() {
-        getCommand("discordsrvutils").setExecutor(new DiscordSRVUtilsCommand());
-        getCommand("discordsrvutils").setTabCompleter(new DiscordSRVUtilsTabCompleter());
+
+    private Server getServer() {
+        return Bukkit.getServer();
     }
 
     private void startupError(Throwable ex, @NotNull String msg) {
-        setEnabled(false);
+        main.disable();
         logger.warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
@@ -390,7 +329,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             pass = sqlconfig.Password();
         } else {
             logger.info("MySQL is disabled, using hsqldb");
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
+            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(main.getDataFolder() + fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
             user = "SA";
             pass = "";
         }
@@ -439,7 +378,9 @@ public class DiscordSRVUtils extends JavaPlugin {
                 "ticket-reopen",
                 "unban",
                 "unmute",
-                "welcome"};
+                "welcome",
+                "status-online",
+                "status-offline"};
         for (String msg : messages) {
             try {
                 //add them to the map
@@ -450,16 +391,26 @@ public class DiscordSRVUtils extends JavaPlugin {
         }
     }
 
-    public void onDisable() {
+    public void onDisable() throws ExecutionException, InterruptedException {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
-        if (isReady()) {
-            getJDA().removeEventListener(listeners.toArray(new Object[0]));
+        if (getJDA() != null) {
+            for (ListenerAdapter listener : listeners) {
+                getJDA().removeEventListener(listener);
+            }
+            StatusManager.get().unregisterTimer();
+            StatusManager.get().editMessage(false).get();
         }
         if (pool != null)
             pool.shutdown();
         if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
         if (sql != null) sql.close();
+        //Unregister the expansion
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            Optional<PlaceholderExpansion> expansion = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("DiscordSRVUtils");
+            if (expansion.isPresent()) expansion.get().unregister();
+        }
     }
+
 
     private void whenStarted() {
         if (messagesDirectory.toFile().mkdir()) {
@@ -478,7 +429,7 @@ public class DiscordSRVUtils extends JavaPlugin {
             });
         }
         try {
-            File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+            File levelingRoles = new File(main.getDataFolder() + fileseparator + "leveling-roles.json");
             if (!levelingRoles.exists()) {
                 levelingRoles.createNewFile();
                 FileWriter writer = new FileWriter(levelingRoles);
@@ -490,8 +441,11 @@ public class DiscordSRVUtils extends JavaPlugin {
             }
         } catch (FileNotFoundException e) {
             logger.severe("Error creating leveling-roles.json");
+            levelingRolesRaw = new JSONObject();
         } catch (IOException e) {
-            logger.severe("Error creating leveling-roles.json");
+            logger.severe("Error creating leveling-roles.json: " + e.getMessage());
+        } catch (JSONException e) {
+            logger.severe("Error loading leveling-roles.json: " + e.getMessage());
         }
 
         //Register Expansion
@@ -504,33 +458,24 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
-        Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), main);
+        Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), main);
+        new StatusListener();
     }
 
-    public void registerCommands() {
-        CommandManager.get().registerCommand(new TestMessageCommand());
-        CommandManager.get().registerCommand(new HelpCommand());
-        CommandManager.get().registerCommand(new CreatePanelCommand());
-        CommandManager.get().registerCommand(new PanelListCommand());
-        CommandManager.get().registerCommand(new DeletePanelCommand());
-        CommandManager.get().registerCommand(new EditPanelCommand());
-        CommandManager.get().registerCommand(new CloseCommand());
-        CommandManager.get().registerCommand(new ReopenCommand());
-        CommandManager.get().registerCommand(new LevelCommand());
-        CommandManager.get().registerCommand(new LeaderboardCommand());
-        CommandManager.get().registerCommand(new SuggestCommand());
-        CommandManager.get().registerCommand(new SuggestionNoteCommand());
-        CommandManager.get().registerCommand(new ApproveSuggestionCommand());
-        CommandManager.get().registerCommand(new DenySuggestionCommand());
-    }
 
     /**
-     * @return `DiscordSRV.isReady`. This may change any time soon
+     * @return true if plugin enabled and discordsrv ready, else false
      */
     public boolean isReady() {
+        if (!isEnabled()) return false;
         return DiscordSRV.isReady;
     }
+
+    public boolean isEnabled() {
+        return main.isEnabled();
+    }
+
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
@@ -545,8 +490,10 @@ public class DiscordSRVUtils extends JavaPlugin {
         levelingConfig = levelingconfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
+        statusConfigConfManager.reloadConfig();
+        statusConfig = statusConfigConfManager.reloadConfigData();
         //make the leveling roles file
-        File levelingRoles = new File(getDataFolder() + fileseparator + "leveling-roles.json");
+        File levelingRoles = new File(main.getDataFolder() + fileseparator + "leveling-roles.json");
         if (!levelingRoles.exists()) {
             levelingRoles.createNewFile();
             FileWriter writer = new FileWriter(levelingRoles);
@@ -557,6 +504,110 @@ public class DiscordSRVUtils extends JavaPlugin {
             levelingRolesRaw = new JSONObject(Utils.readFile(levelingRoles));
         }
         setSettings();
+    }
+
+    public void updateCheck(Player p) {
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+            try {
+                OkHttpClient client = new OkHttpClient();
+                JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
+                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                        .addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
+                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                        .addFormDataPart("commit", versionConfig.getString("commit"))
+                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
+                        .addFormDataPart("devUpdatechecker", DiscordSRVUtils.get().getMainConfig().dev_updatechecker() + "")
+                        .build();
+
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
+                Response response = client.newCall(req).execute();
+                JSONObject res = new JSONObject(response.body().string());
+                response.close();
+                int versions_behind = res.getInt("versions_behind");
+                if (res.isNull("message")) {
+                    if (versions_behind != 0) {
+                        TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &cPlugin is " + versions_behind + " versions behind. Please Update. Click to Download"));
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
+                        p.spigot().sendMessage(msg);
+                    }
+                } else {
+                    TextComponent msg = new TextComponent(Utils.colors("&7[&eDSU&7] &c" + res.getString("message")));
+                    msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, res.getString("downloadUrl")));
+                    msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(net.md_5.bungee.api.ChatColor.GREEN + "" + net.md_5.bungee.api.ChatColor.BOLD + "Click to download Update").create()));
+                    p.spigot().sendMessage(msg);
+                }
+            } catch (Exception ex) {
+                DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
+            }
+
+        });
+    }
+
+    public Logger getLogger() {
+        return main.getLogger();
+    }
+
+    public PluginDescriptionFile getDescription() {
+        return main.getDescription();
+    }
+
+    public void updateCheck() {
+        Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+            //do updatechecker
+            try {
+                if (!isEnabled()) return;
+                OkHttpClient client = new OkHttpClient();
+                JSONObject versionConfig = getVersionConfig();
+                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                        .addFormDataPart("version", getDescription().getVersion())
+                        .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
+                        .addFormDataPart("commit", versionConfig.getString("commit"))
+                        .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
+                        .build();
+
+                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
+                Response response = client.newCall(req).execute();
+                JSONObject res = new JSONObject(response.body().string());
+                response.close();
+                int versions_behind = res.getInt("versions_behind");
+                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
+                String msg = null;
+                if (res.isNull("message")) {
+                    if (versions_behind != 0) {
+                        if (logger.equalsIgnoreCase("INFO")) {
+
+                        }
+                        msg = (ChatColor.RED + "Plugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl"));
+                    } else {
+                        msg = (ChatColor.GREEN + "Plugin is up to date!");
+                    }
+                } else {
+                    //the updatechecker wants its own message
+                    String message = res.getString("message");
+                    if (message.contains(res.getString("downloadUrl"))) {
+                        msg = message;
+                    } else {
+                        msg = message + " Download from " + res.getString("downloadUrl");
+                    }
+                }
+                switch (logger) {
+                    case "INFO":
+                        getLogger().info(Utils.colors(msg));
+                        break;
+                    case "WARNING":
+                        getLogger().warning(Utils.colors(msg));
+                        break;
+                    case "ERROR":
+                        getLogger().warning(Utils.colors(msg));
+                        break;
+                }
+            } catch (Exception e) {
+                //We could not check for updates.
+                logger.severe("Could not check for updates: " + e.getMessage());
+            }
+
+        });
     }
 
     public Config getMainConfig() {
@@ -583,26 +634,43 @@ public class DiscordSRVUtils extends JavaPlugin {
         return levelingConfig;
     }
 
+    public StatusConfig getStatusConfig() {
+        return statusConfig;
+    }
+
     public void executeAsync(Runnable r) {
         pool.execute(r);
+    }
+
+    private void addMessageFilter() {
+        try {
+            Class messageFilter = Class.forName("tk.bluetree242.discordsrvutils.other.MessageFilter");
+            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter((Filter) messageFilter.newInstance());
+        } catch (Exception e) {
+            severe("Failed to add Message Filter");
+            e.printStackTrace();
+        }
     }
 
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         executeAsync(() -> {
-            registerCommands();
-            setSettings();
             registerListeners();
+            setSettings();
             if (getServer().getPluginManager().isPluginEnabled("Essentials")) {
-                getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), this);
+                getServer().getPluginManager().registerEvents(new EssentialsAFKListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("Essentials"));
             }
+            if (getServer().getPluginManager().isPluginEnabled("AFKPlus")) {
+                getServer().getPluginManager().registerEvents(new AFKPlusListener(), main);
+                hookedPlugins.add(getServer().getPluginManager().getPlugin("AFKPlus"));
+            }
             if (getServer().getPluginManager().isPluginEnabled("CMI")) {
-                getServer().getPluginManager().registerEvents(new CMIAfkListener(), this);
+                getServer().getPluginManager().registerEvents(new CMIAfkListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("CMI"));
             }
             if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) {
-                getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), this);
+                getServer().getPluginManager().registerEvents(new AdvancedBanPunishmentListener(), main);
                 hookedPlugins.add(getServer().getPluginManager().getPlugin("AdvancedBan"));
             }
             if (getServer().getPluginManager().isPluginEnabled("Litebans")) {
@@ -626,103 +694,35 @@ public class DiscordSRVUtils extends JavaPlugin {
                 }
             }
             //fix issues with any ticket or panel
-            fixTickets();
+            TicketManager.get().fixTickets();
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase()) == null ? SuggestionVoteMode.REACTIONS : SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
-            doSuggestions();
+            SuggestionManager.get().migrateSuggestions();
+            StatusManager.get().editMessage(true);
             logger.info("Plugin is ready to function.");
         });
 
     }
 
-    private void fixTickets() {
-        try (Connection conn = getDatabase()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
-            ResultSet r1 = p1.executeQuery();
-            while (r1.next()) {
-                TextChannel channel = getGuild().getTextChannelById(r1.getLong("Channel"));
-                if (channel == null) {
-                    PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
-                    p.setLong(1, r1.getLong("Channel"));
-                    p.execute();
-                }
-            }
-            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
-            r1 = p1.executeQuery();
-            while (r1.next()) {
-                Panel panel = TicketManager.get().getPanel(r1);
-                try {
-                    Message msg = getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                    if (msg.getButtons().isEmpty()) {
-                        msg.clearReactions().queue();
-                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button())).queue();
-                    } else if (!msg.getButtons().get(0).getLabel().equals(getTicketsConfig().open_ticket_button())) {
-                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(getTicketsConfig().open_ticket_button()))).queue();
-                    }
-                } catch (ErrorResponseException ex) {
-                    panel.getEditor().apply();
-                }
-            }
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
+    public DiscordSRVUtilsMain getBukkitMain() {
+        return main;
     }
 
-    private void doSuggestions() {
-        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
-        boolean sent = false;
-        try (Connection conn = getDatabase()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
-            ResultSet r1 = p1.executeQuery();
-            while (r1.next()) {
-                Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
-                try {
-                    Message msg = suggestion.getMessage();
-
-                    if (msg.getButtons().isEmpty()) {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
-                        } else {
-                            if (!sent) {
-                                logger.info(warnmsg);
-                                sent = true;
-                                SuggestionManager.get().loading = true;
-                            }
-                            msg.clearReactions().queue();
-                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                    Button.secondary("reset", Emoji.fromUnicode("⬜"))).queue();
-                        }
-                    } else {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            if (!sent) {
-                                SuggestionManager.get().loading = true;
-                                logger.info(warnmsg);
-                                sent = true;
-                            }
-                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
-                        }
-                    }
-                } catch (ErrorResponseException ex) {
-
-                }
-            }
-            if (sent) {
-                logger.info("Suggestions Migration has finished.");
-            }
-            SuggestionManager.get().loading = false;
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
+    public JSONObject getVersionConfig() throws IOException {
+        return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
+
 
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
+        if (StatusListener.get().registered) {
+            StatusListener.get().unregister();
+        }
+        StatusListener.get().register();
+        StatusManager.get().reloadTimer();
     }
 
     public JDA getJDA() {
@@ -750,6 +750,14 @@ public class DiscordSRVUtils extends JavaPlugin {
         return admins;
     }
 
+    public List<Role> getAdminsRoles() {
+        List<Role> roles = new ArrayList<>();
+        for (Long lng : getAdminIds()) {
+            roles.add(getGuild().getRoleById(lng));
+        }
+        return roles;
+    }
+
     public void severe(String sv) {
         getLogger().severe(sv);
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -761,6 +769,12 @@ public class DiscordSRVUtils extends JavaPlugin {
 
     public boolean isAdmin(long id) {
         if (getAdminIds().contains(id)) return true;
+        Member member = getGuild().retrieveMemberById(id).complete();
+        if (member != null) {
+            for (Role role : member.getRoles()) {
+                if (getAdminIds().contains(role.getIdLong())) return true;
+            }
+        }
         return false;
     }
 
@@ -860,17 +874,17 @@ public class DiscordSRVUtils extends JavaPlugin {
         finalError = Utils.exceptionToStackTrack(ex);
     }
 
-    private boolean isAnyPunishmentsPluginInstalled() {
-        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) return true;
-        if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;
-        if (getServer().getPluginManager().isPluginEnabled("Libertybans")) return true;
-        return false;
-    }
-
 
     // Allow the user to set variables inside SpEL Strings and expression turns just nothing
     public String execute(Object o) {
         return "";
+    }
+
+
+    //fast getters
+
+    private InputStream getResource(String s) {
+        return main.getResource(s);
     }
 
 }
