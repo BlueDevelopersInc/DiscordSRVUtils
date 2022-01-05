@@ -128,19 +128,19 @@ public class DiscordSRVUtils {
     // faster getter for the logger
     public Logger logger = main.getLogger();
     //Configurations
-    private ConfManager<Config> configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
+    private final ConfManager<Config> configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
     private Config config;
-    private ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
+    private final ConfManager<SQLConfig> sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
     private SQLConfig sqlconfig;
-    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
+    private final ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
     private PunishmentsIntegrationConfig bansIntegrationConfig;
-    private ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
+    private final ConfManager<TicketsConfig> ticketsconfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
     private TicketsConfig ticketsConfig;
-    private ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
+    private final ConfManager<LevelingConfig> levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
     private LevelingConfig levelingConfig;
-    private ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
+    private final ConfManager<SuggestionsConfig> suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
     private SuggestionsConfig suggestionsConfig;
-    private ConfManager<StatusConfig> statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
+    private final ConfManager<StatusConfig> statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
     private StatusConfig statusConfig;
 
 
@@ -151,7 +151,7 @@ public class DiscordSRVUtils {
     //database connection pool
     private HikariDataSource sql;
     //listeners that should be registered
-    private List<ListenerAdapter> listeners = new ArrayList<>();
+    private final List<ListenerAdapter> listeners = new ArrayList<>();
     private long lastErrorTime = 0;
 
     protected DiscordSRVUtils(DiscordSRVUtilsMain main) {
@@ -720,8 +720,8 @@ public class DiscordSRVUtils {
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
         if (StatusListener.get() != null) {
             if (StatusListener.get().registered) {
-            StatusListener.get().unregister();
-        }
+                StatusListener.get().unregister();
+            }
             StatusListener.get().register();
             StatusManager.get().reloadTimer();
         }
@@ -790,8 +790,7 @@ public class DiscordSRVUtils {
 
     public TextChannel getChannel(long id, TextChannel channel) {
         if (id == -1) {
-            if (channel != null) return channel;
-            return null;
+            return channel;
         }
         if (id == 0) {
             return DiscordSRV.getPlugin().getMainTextChannel();
