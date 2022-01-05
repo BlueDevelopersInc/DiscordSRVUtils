@@ -718,11 +718,13 @@ public class DiscordSRVUtils {
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
-        if (StatusListener.get().registered) {
+        if (StatusListener.get() != null) {
+            if (StatusListener.get().registered) {
             StatusListener.get().unregister();
         }
-        StatusListener.get().register();
-        StatusManager.get().reloadTimer();
+            StatusListener.get().register();
+            StatusManager.get().reloadTimer();
+        }
     }
 
     public JDA getJDA() {
