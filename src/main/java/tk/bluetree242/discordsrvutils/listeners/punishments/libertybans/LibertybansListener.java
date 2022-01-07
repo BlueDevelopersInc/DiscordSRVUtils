@@ -68,7 +68,11 @@ public class LibertybansListener {
                     if (bannedRole == null)
                         core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
                     else
+                        if (core.getGuild().getSelfMember().canInteract(bannedRole))
                         core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
+                        else {
+                            core.severe("Could not add Banned role to " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
+                        }
                     break;
                 case MUTE:
                     Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
@@ -90,7 +94,11 @@ public class LibertybansListener {
                     if (bannedRole == null)
                         core.getGuild().unban(discordUser).reason("Minecraft Synced UnBan").queue();
                     else
+                        if (core.getGuild().getSelfMember().canInteract(bannedRole))
                         core.getGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
+                        else {
+                            core.severe("Could not remove Banned role from " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
+                        }
                     break;
                 case MUTE:
                     Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
