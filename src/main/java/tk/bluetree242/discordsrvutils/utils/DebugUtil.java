@@ -73,7 +73,7 @@ public class DebugUtil {
         JSONArray data = new JSONArray();
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getDescription().getVersion());
-        information.put("Plugins Hooked", String.join(", " + core.hookedPlugins));
+        information.put("Plugins Hooked", core.hookedPlugins.stream().map(Object::toString).collect(Collectors.joining(", ")));
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
         information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
         information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
@@ -154,7 +154,8 @@ public class DebugUtil {
         files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
         files.add(fileMap("tickets.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "tickets.yml")));
         files.add(fileMap("leveling.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("status.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "status.yml")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "suggestions.yml")));        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         files.add(fileMap("leveling-roles.json", Utils.readFile(core.getBukkitMain().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         return files;
     }
