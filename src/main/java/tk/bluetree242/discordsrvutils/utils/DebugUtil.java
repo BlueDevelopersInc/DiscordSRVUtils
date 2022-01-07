@@ -73,7 +73,7 @@ public class DebugUtil {
         JSONArray data = new JSONArray();
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getDescription().getVersion());
-        information.put("Plugins Hooked", String.join(", " + core.hookedPlugins));
+        information.put("Plugins Hooked", core.hookedPlugins.stream().map(Object::toString).collect(Collectors.joining(", ")));
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
         information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
         information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
