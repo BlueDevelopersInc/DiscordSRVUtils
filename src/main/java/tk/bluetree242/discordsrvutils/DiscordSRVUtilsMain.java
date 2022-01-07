@@ -68,6 +68,7 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
     }
 
     public void onDisable() {
+        if (core == null) return;
         try {
             core.onDisable();
         } catch (Exception e) {
