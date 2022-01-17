@@ -20,10 +20,12 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils;
+package tk.bluetree242.discordsrvutils.bukkit;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return String.join(", ", core.getDescription().getAuthors());
+        return "BlueTree242";
     }
 
     @Override
@@ -81,5 +83,26 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return LevelingManager.get().getCachedStats(p.getUniqueId()).getRank() + "";
         }
         return null;
+    }
+
+    public static class Hook extends PluginHook {
+        private PAPIExpansion expansion;
+        @Override
+        public String getRequiredPlugin() {
+            return "PlaceholderAPI";
+        }
+
+        @Override
+        public void hook() {
+            removeHook();
+            (expansion = new PAPIExpansion()).register();
+        }
+
+        @Override
+        public void removeHook() {
+            if (expansion == null) return;
+            expansion.unregister();
+            expansion = null;
+        }
     }
 }

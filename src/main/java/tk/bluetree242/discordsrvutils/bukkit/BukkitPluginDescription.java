@@ -20,27 +20,24 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.status;
+package tk.bluetree242.discordsrvutils.bukkit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.*;
-import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import org.bukkit.plugin.Plugin;
+import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 
-public abstract class StatusListener implements Listener, EventExecutor {
-    private static StatusListener main;
-    public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
+public class BukkitPluginDescription extends PlatformPluginDescription {
+    private final Plugin main;
 
-    public StatusListener() {
-        main = this;
+    public BukkitPluginDescription(Plugin main) {
+        this.main = main;
+    }
+    @Override
+    public String getName() {
+        return main.getName();
     }
 
-    public static StatusListener get() {
-        return main;
+    @Override
+    public String getVersion() {
+        return main.getDescription().getVersion();
     }
-
-    public abstract void register();
-    public abstract void unregister();
 }

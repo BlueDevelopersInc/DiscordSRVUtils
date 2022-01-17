@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.listeners.afk;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
 
 import com.Zrips.CMI.CMI;
 import com.Zrips.CMI.Containers.CMIUser;

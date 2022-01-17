@@ -29,6 +29,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 import tk.bluetree242.discordsrvutils.commandmanagement.BukkitCommand;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.utils.DebugUtil;
@@ -72,7 +73,7 @@ public class DiscordSRVUtilsCommand extends BukkitCommand {
                     if (sender instanceof ConsoleCommandSender) {
                         DiscordSRVUtils.get().updateCheck();
                     } else {
-                        DiscordSRVUtils.get().updateCheck((Player) sender);
+                        DiscordSRVUtils.get().updateCheck(new BukkitPlayer(((Player) sender)));
                     }
                     return;
                 }

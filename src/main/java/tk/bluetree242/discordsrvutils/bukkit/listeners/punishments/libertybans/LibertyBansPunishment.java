@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
 import org.bukkit.Bukkit;
 import space.arim.libertybans.api.Operator;

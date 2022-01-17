@@ -20,20 +20,21 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils;
+package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.bukkit.DiscordSRVUtilsCommand;
 import tk.bluetree242.discordsrvutils.commands.bukkit.tabcompleters.DiscordSRVUtilsTabCompleter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DiscordSRVUtilsMain extends JavaPlugin {
+public class DiscordSRVUtilsBukkit extends JavaPlugin {
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
@@ -74,15 +75,17 @@ public class DiscordSRVUtilsMain extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        core = null;
     }
 
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null)
-            core = new DiscordSRVUtils(this);
+            core = new DiscordSRVUtils(new BukkitPlugin(this));
     }
 
     public void disable() {
         setEnabled(false);
+        onDisable();
     }
 
     private boolean isAnyPunishmentsPluginInstalled() {

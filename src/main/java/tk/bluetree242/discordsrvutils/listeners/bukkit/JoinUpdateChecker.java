@@ -26,6 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 
 public class JoinUpdateChecker implements Listener {
 
@@ -33,7 +34,7 @@ public class JoinUpdateChecker implements Listener {
     @EventHandler
     public void playerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
-            DiscordSRVUtils.get().updateCheck(e.getPlayer());
+            DiscordSRVUtils.get().updateCheck(new BukkitPlayer(e.getPlayer()));
         }
     }
 }

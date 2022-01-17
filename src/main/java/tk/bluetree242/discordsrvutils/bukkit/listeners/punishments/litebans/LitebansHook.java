@@ -20,27 +20,26 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.status;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.*;
-import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
-public abstract class StatusListener implements Listener, EventExecutor {
-    private static StatusListener main;
-    public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    public StatusListener() {
-        main = this;
+public class LitebansHook extends PluginHook {
+    LitebansPunishmentListener listener = new LitebansPunishmentListener();
+    @Override
+    public String getRequiredPlugin() {
+        return "Litebans";
     }
 
-    public static StatusListener get() {
-        return main;
+    @Override
+    public void hook() {
+        removeHook();
+        listener = new LitebansPunishmentListener();
     }
 
-    public abstract void register();
-    public abstract void unregister();
+    @Override
+    public void removeHook() {
+        listener.unregister();
+        listener = null;
+    }
 }

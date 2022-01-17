@@ -20,27 +20,30 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.status;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.*;
-import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.AdvancedBanPunishmentListener;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
-public abstract class StatusListener implements Listener, EventExecutor {
-    private static StatusListener main;
-    public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    public StatusListener() {
-        main = this;
+public class LibertybansHook extends PluginHook {
+    private LibertybansListener listener;
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    @Override
+    public String getRequiredPlugin() {
+        return "LibertyBans";
     }
 
-    public static StatusListener get() {
-        return main;
+    @Override
+    public void hook() {
+        removeHook();
+        listener = new LibertybansListener();
     }
 
-    public abstract void register();
-    public abstract void unregister();
+    @Override
+    public void removeHook() {
+        if (listener == null) return;
+        listener.unregister();
+        listener = null;
+    }
 }

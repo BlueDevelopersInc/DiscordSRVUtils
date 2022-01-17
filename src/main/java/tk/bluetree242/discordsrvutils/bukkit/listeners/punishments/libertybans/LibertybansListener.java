@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.listeners.punishments.libertybans;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -35,6 +35,7 @@ import space.arim.omnibus.Omnibus;
 import space.arim.omnibus.OmnibusProvider;
 import space.arim.omnibus.events.EventConsumer;
 import space.arim.omnibus.events.ListenerPriorities;
+import space.arim.omnibus.events.RegisteredListener;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -43,12 +44,20 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 public class LibertybansListener {
     private final LibertyBans plugin;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
-
+    private RegisteredListener pListener;
+    private RegisteredListener pardonListener;
     public LibertybansListener() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();
         plugin = omnibus.getRegistry().getProvider(LibertyBans.class).orElseThrow();
-        omnibus.getEventBus().registerListener(PostPunishEvent.class, ListenerPriorities.NORMAL, new PunishmentListener());
-        omnibus.getEventBus().registerListener(PostPardonEvent.class, ListenerPriorities.NORMAL, new PardonListener());
+        unregister();
+        pListener =omnibus.getEventBus().registerListener(PostPunishEvent.class, ListenerPriorities.NORMAL,new PunishmentListener());
+        pardonListener = omnibus.getEventBus().registerListener(PostPardonEvent.class, ListenerPriorities.NORMAL,new PardonListener());
+    }
+
+    public void unregister() {
+        Omnibus omnibus = OmnibusProvider.getOmnibus();
+        omnibus.getEventBus().unregisterListener(pListener);
+        omnibus.getEventBus().unregisterListener(pardonListener);
     }
 
     private void syncPunishment(Punishment punishment, boolean un) {

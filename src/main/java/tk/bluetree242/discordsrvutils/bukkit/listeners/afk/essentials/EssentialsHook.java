@@ -20,27 +20,32 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.status;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
 
+
+import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.event.*;
-import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
-public abstract class StatusListener implements Listener, EventExecutor {
-    private static StatusListener main;
-    public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    public StatusListener() {
-        main = this;
+public class EssentialsHook extends PluginHook {
+    private EssentialsAFKListener listener;
+    @Override
+    public String getRequiredPlugin() {
+        return "CMI";
     }
 
-    public static StatusListener get() {
-        return main;
+    @Override
+    public void hook() {
+        removeHook();
+        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
     }
 
-    public abstract void register();
-    public abstract void unregister();
+    @Override
+    public void removeHook() {
+        if (listener == null) return;
+        AfkStatusChangeEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        listener = null;
+    }
 }

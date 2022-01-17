@@ -116,9 +116,6 @@ public class Suggestion {
         return ChannelID;
     }
 
-
-    //TODO:Approve and Decline
-
     public CompletableFuture<SuggestionNote> addNote(Long staff, String note) {
         return core.completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {

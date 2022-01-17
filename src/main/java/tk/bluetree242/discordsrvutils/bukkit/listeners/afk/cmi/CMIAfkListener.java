@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.listeners.afk;
+package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi;
 
 import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;

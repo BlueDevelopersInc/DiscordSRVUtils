@@ -20,27 +20,11 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.status;
+package tk.bluetree242.discordsrvutils.platform;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.*;
-import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+public abstract class PlatformPlayer {
 
-public abstract class StatusListener implements Listener, EventExecutor {
-    private static StatusListener main;
-    public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    public StatusListener() {
-        main = this;
-    }
-
-    public static StatusListener get() {
-        return main;
-    }
-
-    public abstract void register();
-    public abstract void unregister();
+    public abstract String getName();
+    public abstract void sendMessage(String msg);
+    public abstract boolean hasPermission(String node);
 }

@@ -46,7 +46,7 @@ public class StatusManager {
     private static StatusManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private StatusTimer timer = new StatusTimer();
-    private Path dataPath = Paths.get(core.getBukkitMain().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+    private Path dataPath = Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
 
     public StatusManager() {
         this.main = this;
@@ -74,6 +74,7 @@ public class StatusManager {
             json.put("message", msg.getIdLong());
             try {
                 if (!file.exists()) {
+                    dataPath.getParent().toFile().mkdir();
                     file.createNewFile();
                 }
                 FileWriter writer = new FileWriter(file);
