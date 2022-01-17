@@ -35,13 +35,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
-import org.bukkit.Bukkit;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -251,7 +246,7 @@ public class DiscordSRVUtils {
             //set storage string to use later
             String storage = getSqlconfig().isEnabled() ? "MySQL" : "HsqlDB";
             //print startup message
-            Bukkit.getConsoleSender().sendMessage(Utils.colors("" +
+            getServer().getConsoleSender().sendMessage("" +
                     "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
                     "|   &cName: &rDiscordSRVUtils\n&r" +
@@ -262,7 +257,7 @@ public class DiscordSRVUtils {
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
-                    "[]================================[]"));
+                    "[]================================[]");
             System.setProperty("hsqldb.reconfig_logging", "false");
             try {
                 Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");

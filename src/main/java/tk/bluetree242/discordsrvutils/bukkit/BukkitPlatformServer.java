@@ -25,9 +25,11 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import tk.bluetree242.discordsrvutils.bukkit.cmd.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
+import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,11 @@ public class BukkitPlatformServer extends PlatformServer {
             result.add(new BukkitPlayer(onlinePlayer));
         }
         return result;
+    }
+
+    @Override
+    public CommandUser getConsoleSender() {
+        return new ConsoleCommandUser();
     }
 
 

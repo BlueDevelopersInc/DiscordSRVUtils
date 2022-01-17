@@ -22,6 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.platform;
 
+import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+
 import java.util.List;
 
 public abstract class PlatformServer {
@@ -30,4 +32,5 @@ public abstract class PlatformServer {
     public abstract boolean isPluginInstalled(String name);
     public abstract PlatformPluginDescription getPluginDescription(String name);
     public abstract List<PlatformPlayer> getOnlinePlayers();
+    public abstract CommandUser getConsoleSender();
 }

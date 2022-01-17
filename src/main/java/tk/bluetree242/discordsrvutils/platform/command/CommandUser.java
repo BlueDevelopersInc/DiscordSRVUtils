@@ -20,13 +20,11 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.platform;
+package tk.bluetree242.discordsrvutils.platform.command;
 
-import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
-
-public abstract class PlatformPlayer extends CommandUser {
+public abstract class CommandUser{
 
     public abstract String getName();
-    public abstract void sendMessage(String msg);
     public abstract boolean hasPermission(String node);
+    public abstract void sendMessage(String msg);
 }

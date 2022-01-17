@@ -20,13 +20,28 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.platform;
+package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
-public abstract class PlatformPlayer extends CommandUser {
+public class ConsoleCommandUser extends CommandUser {
+    private CommandSender sender = Bukkit.getConsoleSender();
+    @Override
+    public String getName() {
+        return sender.getName();
+    }
 
-    public abstract String getName();
-    public abstract void sendMessage(String msg);
-    public abstract boolean hasPermission(String node);
+    @Override
+    public boolean hasPermission(String node) {
+        return sender.hasPermission(node);
+    }
+
+    @Override
+    public void sendMessage(String msg) {
+        sender.sendMessage(Utils.colors(msg));
+    }
 }
