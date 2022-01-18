@@ -1,0 +1,35 @@
+{
+  "embed": {
+    "thumbnail": {
+      "url": "[submitter.effectiveAvatarUrl]"
+    },
+    "color": "green",
+    "fields": [
+      {
+        "name": "Vote Results",
+        "value": ":white_check_mark: [suggestion.yesCount]\n:x: [suggestion.noCount]"
+      },
+      {
+        "name": "Submitter",
+        "value": "[submitter.asMention]"
+      },
+      {
+        "name": "Suggestion",
+        "value": "[suggestion.text]"
+      },
+      {
+        "name": "Staff Note",
+        "value": "[note.text]"
+      },
+      {
+        "name": "Staff Member",
+        "value": "[staff.asMention]"
+      },
+      {
+        "name": "Approved By",
+        "value": "[approver.asMention]"
+      }
+    ],
+    "title": "Suggestion Number: [suggestion.number]"
+  }
+}

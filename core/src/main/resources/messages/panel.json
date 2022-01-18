@@ -1,0 +1,7 @@
+{
+  "embed": {
+    "color": "cyan",
+    "description": "Click on The Button to open a ticket",
+    "title": "[panel.name]"
+  }
+}

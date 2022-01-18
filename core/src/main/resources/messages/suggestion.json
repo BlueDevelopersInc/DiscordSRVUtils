@@ -1,0 +1,19 @@
+{
+  "embed": {
+    "thumbnail": {
+      "url": "[submitter.effectiveAvatarUrl]"
+    },
+    "color": "orange",
+    "fields": [
+      {
+        "name": "Submitter",
+        "value": "[submitter.asMention]"
+      },
+      {
+        "name": "Suggestion",
+        "value": "[suggestion.text]"
+      }
+    ],
+    "title": "Suggestion Number: [suggestion.number]"
+  }
+}
