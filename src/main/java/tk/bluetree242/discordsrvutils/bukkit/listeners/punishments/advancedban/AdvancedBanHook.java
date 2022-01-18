@@ -30,6 +30,7 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 public class AdvancedBanHook extends PluginHook {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private AdvancedBanPunishmentListener listener;
+
     @Override
     public String getRequiredPlugin() {
         return "AdvancedBan";

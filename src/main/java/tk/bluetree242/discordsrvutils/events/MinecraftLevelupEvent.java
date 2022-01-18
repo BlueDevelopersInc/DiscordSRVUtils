@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.events;
 
-import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 

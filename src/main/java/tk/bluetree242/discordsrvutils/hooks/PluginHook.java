@@ -27,8 +27,11 @@ import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 
 public abstract class PluginHook {
     public abstract String getRequiredPlugin();
+
     public abstract void hook();
+
     public abstract void removeHook();
+
     public final String toString() {
         if (DiscordSRVUtils.get().getPlatform().getServer().isPluginInstalled(getRequiredPlugin())) {
             PlatformPluginDescription info = DiscordSRVUtils.get().getPlatform().getServer().getPluginDescription(getRequiredPlugin());

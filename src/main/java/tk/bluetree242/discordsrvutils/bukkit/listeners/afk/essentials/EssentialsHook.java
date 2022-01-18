@@ -31,6 +31,7 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class EssentialsHook extends PluginHook {
     private EssentialsAFKListener listener;
+
     @Override
     public String getRequiredPlugin() {
         return "CMI";

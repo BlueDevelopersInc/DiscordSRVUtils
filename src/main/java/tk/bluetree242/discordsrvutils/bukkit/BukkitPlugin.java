@@ -33,8 +33,8 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.Lite
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
+import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
@@ -42,9 +42,7 @@ import tk.bluetree242.discordsrvutils.status.StatusListener;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public class BukkitPlugin<JavaPlugin> extends PluginPlatform {

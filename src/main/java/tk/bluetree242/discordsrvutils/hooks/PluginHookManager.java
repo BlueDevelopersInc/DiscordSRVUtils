@@ -32,12 +32,13 @@ public class PluginHookManager {
     private static PluginHookManager main;
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     private List<PluginHook> hooks = new ArrayList<>();
-    public static PluginHookManager get() {
-        return main;
-    }
 
     public PluginHookManager() {
         main = this;
+    }
+
+    public static PluginHookManager get() {
+        return main;
     }
 
     public List<PluginHook> getHooks() {
@@ -54,7 +55,7 @@ public class PluginHookManager {
 
     public void removehookAll() {
         for (PluginHook hook : hooks) {
-                hook.removeHook();
+            hook.removeHook();
         }
     }
- }
+}

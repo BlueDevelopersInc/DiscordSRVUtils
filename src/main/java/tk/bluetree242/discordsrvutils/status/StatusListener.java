@@ -22,10 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.status;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.*;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 public abstract class StatusListener implements Listener, EventExecutor {
@@ -42,5 +40,6 @@ public abstract class StatusListener implements Listener, EventExecutor {
     }
 
     public abstract void register();
+
     public abstract void unregister();
 }

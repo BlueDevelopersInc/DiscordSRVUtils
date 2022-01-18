@@ -22,9 +22,11 @@
 
 package tk.bluetree242.discordsrvutils.platform.command;
 
-public abstract class CommandUser{
+public abstract class CommandUser {
 
     public abstract String getName();
+
     public abstract boolean hasPermission(String node);
+
     public abstract void sendMessage(String msg);
 }

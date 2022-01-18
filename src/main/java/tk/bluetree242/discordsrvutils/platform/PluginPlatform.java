@@ -23,31 +23,43 @@
 package tk.bluetree242.discordsrvutils.platform;
 
 
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public abstract class PluginPlatform<K> {
     //abstract to allow some constant stuff that depend on some methods
     public abstract Logger getLogger();
+
     public abstract File getDataFolder();
+
     public abstract PlatformServer getServer();
+
     public abstract void disable();
+
     public abstract PlatformPluginDescription getDescription();
+
     public abstract void registerListeners();
+
     public abstract InputStream getResource(String name);
+
     public abstract boolean isEnabled();
+
     public abstract void registerCommands();
+
     public abstract K getOriginal();
+
     public abstract StatusListener getStatusListener();
+
     public abstract void addHooks();
+
     public abstract List<PlatformListener> getListeners();
+
     public abstract void addListener(PlatformListener listener);
+
     public abstract String placehold(PlatformPlayer player, String s);
 }

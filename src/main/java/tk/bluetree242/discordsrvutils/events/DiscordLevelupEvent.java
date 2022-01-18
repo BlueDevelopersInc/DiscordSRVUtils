@@ -25,7 +25,6 @@ package tk.bluetree242.discordsrvutils.events;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
 public class DiscordLevelupEvent extends LevelupEvent {

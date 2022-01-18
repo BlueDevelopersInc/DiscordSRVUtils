@@ -24,5 +24,6 @@ package tk.bluetree242.discordsrvutils.platform;
 
 public abstract class PlatformPluginDescription {
     public abstract String getName();
+
     public abstract String getVersion();
 }

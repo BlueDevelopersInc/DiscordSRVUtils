@@ -32,7 +32,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.security.SecureRandom;
 import java.sql.Connection;

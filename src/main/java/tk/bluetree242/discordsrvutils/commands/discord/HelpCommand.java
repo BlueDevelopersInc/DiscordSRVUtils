@@ -50,7 +50,7 @@ public class HelpCommand extends Command {
                     StringJoiner joiner = new StringJoiner("`, `", "`", "`");
                     category.getCommands().forEach(cmd -> {
                         if (cmd.isEnabled())
-                        joiner.add(cmd.getCmd());
+                            joiner.add(cmd.getCmd());
                     });
                     embed.addField(category.toString(), joiner.toString(), false);
                 }

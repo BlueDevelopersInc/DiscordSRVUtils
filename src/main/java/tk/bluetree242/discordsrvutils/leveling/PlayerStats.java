@@ -26,7 +26,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -126,7 +125,7 @@ public class PlayerStats {
                         actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
                     }
                     if (!actions.isEmpty())
-                    RestAction.allOf(actions).queue();
+                        RestAction.allOf(actions).queue();
                     DiscordSRV.api.callEvent(finalEvent);
                     return true;
                 }

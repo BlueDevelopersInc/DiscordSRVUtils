@@ -98,9 +98,9 @@ public class CommandManager {
     public List<Command> getDisabledCommands(boolean onlyConfig) {
         List<Command> result = new ArrayList<>();
         if (onlyConfig)
-        for (String command : core.getMainConfig().disabled_commands()) {
-            result.add(getCommandByName(command));
-        }
+            for (String command : core.getMainConfig().disabled_commands()) {
+                result.add(getCommandByName(command));
+            }
         else for (Command cmd : commandswithoutaliases) {
             if (!cmd.isEnabled()) result.add(cmd);
         }

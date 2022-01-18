@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.events;
 
 import github.scarsz.discordsrv.api.events.Event;
-import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
 import java.util.UUID;

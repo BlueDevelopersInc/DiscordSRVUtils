@@ -63,6 +63,7 @@ import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 import tk.bluetree242.discordsrvutils.status.StatusManager;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
+import tk.bluetree242.discordsrvutils.suggestions.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.suggestions.listeners.SuggestionListener;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.tickets.listeners.PanelOpenListener;
@@ -70,7 +71,6 @@ import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
-import tk.bluetree242.discordsrvutils.suggestions.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
@@ -100,6 +100,8 @@ public class DiscordSRVUtils {
     public final String fileseparator = System.getProperty("file.separator");
     //default messages to use
     public final Map<String, String> defaultmessages = new HashMap<>();
+    //listeners that should be registered
+    private final List<ListenerAdapter> listeners = new ArrayList<>();
     //leveling roles jsonobject, Initialized on startup
     public JSONObject levelingRolesRaw;
     //was the DiscordSRV AccountLink Listener Removed?
@@ -111,6 +113,8 @@ public class DiscordSRVUtils {
     //Plugins we hooked into
     //messages folder path
     public Path messagesDirectory;
+    // faster getter for the logger
+    public Logger logger;
     //Configurations
     private ConfManager<Config> configmanager;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager;
@@ -122,14 +126,18 @@ public class DiscordSRVUtils {
     private PunishmentsIntegrationConfig bansIntegrationConfig;
     private ConfManager<StatusConfig> statusConfigConfManager;
     private TicketsConfig ticketsConfig;
-    // faster getter for the logger
-    public Logger logger;
     private LevelingConfig levelingConfig;
     private PluginPlatform main;
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlconfigmanager;
     private StatusConfig statusConfig;
-
+    //Thread Pool
+    private ThreadPoolExecutor pool;
+    //Our DiscordSRV Listener
+    private DiscordSRVListener dsrvlistener;
+    //database connection pool
+    private HikariDataSource sql;
+    private long lastErrorTime = 0;
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
         initConfigs();
@@ -138,16 +146,9 @@ public class DiscordSRVUtils {
         onLoad();
     }
 
-
-    //Thread Pool
-    private ThreadPoolExecutor pool;
-    //Our DiscordSRV Listener
-    private DiscordSRVListener dsrvlistener;
-    //database connection pool
-    private HikariDataSource sql;
-    //listeners that should be registered
-    private final List<ListenerAdapter> listeners = new ArrayList<>();
-    private long lastErrorTime = 0;
+    public static DiscordSRVUtils get() {
+        return instance;
+    }
 
     private final void initConfigs() {
         configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
@@ -157,10 +158,6 @@ public class DiscordSRVUtils {
         levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
         suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
         statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
-    }
-
-    public static DiscordSRVUtils get() {
-        return instance;
     }
 
     public Thread newDSUThread(Runnable r) {

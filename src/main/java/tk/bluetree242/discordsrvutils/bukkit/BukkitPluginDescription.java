@@ -31,6 +31,7 @@ public class BukkitPluginDescription extends PlatformPluginDescription {
     public BukkitPluginDescription(Plugin main) {
         this.main = main;
     }
+
     @Override
     public String getName() {
         return main.getName();

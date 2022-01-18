@@ -87,6 +87,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     public static class Hook extends PluginHook {
         private PAPIExpansion expansion;
+
         @Override
         public String getRequiredPlugin() {
             return "PlaceholderAPI";

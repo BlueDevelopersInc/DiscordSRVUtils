@@ -29,8 +29,12 @@ import java.util.List;
 public abstract class PlatformServer {
 
     public abstract boolean isPluginEnabled(String name);
+
     public abstract boolean isPluginInstalled(String name);
+
     public abstract PlatformPluginDescription getPluginDescription(String name);
+
     public abstract List<PlatformPlayer> getOnlinePlayers();
+
     public abstract CommandUser getConsoleSender();
 }

@@ -29,6 +29,7 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class AfkPlusHook extends PluginHook {
     private AFKPlusListener listener;
+
     @Override
     public String getRequiredPlugin() {
         return "AfkPlus";

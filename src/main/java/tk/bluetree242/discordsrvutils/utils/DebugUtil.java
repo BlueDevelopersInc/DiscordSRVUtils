@@ -156,7 +156,8 @@ public class DebugUtil {
         files.add(fileMap("tickets.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "tickets.yml")));
         files.add(fileMap("leveling.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling.yml")));
         files.add(fileMap("status.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "status.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         return files;
     }

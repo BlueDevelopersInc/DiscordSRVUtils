@@ -31,6 +31,7 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class CMIHook extends PluginHook {
     private CMIAfkListener listener;
+
     @Override
     public String getRequiredPlugin() {
         return "CMI";

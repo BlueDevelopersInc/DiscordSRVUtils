@@ -26,6 +26,7 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class LitebansHook extends PluginHook {
     LitebansPunishmentListener listener = new LitebansPunishmentListener();
+
     @Override
     public String getRequiredPlugin() {
         return "Litebans";
