@@ -1,9 +1,0 @@
-{
-  "embed": {
-    "color": "red",
-    "author": {
-      "icon_url": "https://minotar.net/avatar/[punishment.name]",
-      "name": "[punishment.name] was unbanned by [punishment.operator]"
-    }
-  }
-}

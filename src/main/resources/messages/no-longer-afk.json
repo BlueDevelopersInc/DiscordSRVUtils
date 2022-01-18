@@ -1,9 +1,0 @@
-{
-  "embed": {
-    "color": "green",
-    "author": {
-      "icon_url": "https://minotar.net/avatar/[player.name]",
-      "name": "[player.name] is no longer afk"
-    }
-  }
-}

@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+def urlFile = { url, name ->
+    File file = new File("$buildDir/download/${name}.jar")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
+dependencies {
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
+    compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
+    compileOnly 'space.arim.libertybans:bans-api:0.8.0'
+    compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
+    compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
+    compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
+    compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
+    implementation project(":core")
+    compileOnly ('com.discordsrv:discordsrv:1.24.0') {
+        exclude group: 'net.kyori'
+    }
+    compileOnly 'net.ess3:EssentialsX:2.17.2'
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_1_9
+java.targetCompatibility = JavaVersion.VERSION_1_9
