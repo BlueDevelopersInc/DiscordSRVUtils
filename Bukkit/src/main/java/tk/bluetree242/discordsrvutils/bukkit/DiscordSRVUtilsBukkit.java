@@ -38,12 +38,14 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
-        if (core == null) {
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") == null) {
             getLogger().severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
             getLogger().severe("Disabling...");
+            core = null;
             disable();
             return;
         }
+        if (core == null) core = new DiscordSRVUtils(new BukkitPlugin(this));
         core.onEnable();
         //bstats stuff
         Metrics metrics = new Metrics(this, 9456);

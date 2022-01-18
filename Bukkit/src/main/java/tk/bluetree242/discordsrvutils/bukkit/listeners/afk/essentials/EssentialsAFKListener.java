@@ -33,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
@@ -56,6 +57,10 @@ public class EssentialsAFKListener implements Listener {
             if (VanishAPI.isInvisible(p)) return false;
         }
         return true;
+    }
+
+    public void remove() {
+        AfkStatusChangeEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
     }
 
     @EventHandler

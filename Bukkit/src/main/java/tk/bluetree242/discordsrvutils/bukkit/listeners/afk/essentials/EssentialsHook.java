@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
 
 
-import net.ess3.api.events.AfkStatusChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -34,7 +33,7 @@ public class EssentialsHook extends PluginHook {
 
     @Override
     public String getRequiredPlugin() {
-        return "CMI";
+        return "Essentials";
     }
 
     @Override
@@ -46,7 +45,7 @@ public class EssentialsHook extends PluginHook {
     @Override
     public void removeHook() {
         if (listener == null) return;
-        AfkStatusChangeEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        listener.remove();
         listener = null;
     }
 }

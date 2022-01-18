@@ -25,7 +25,7 @@ package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class LitebansHook extends PluginHook {
-    LitebansPunishmentListener listener = new LitebansPunishmentListener();
+    LitebansPunishmentListener listener;
 
     @Override
     public String getRequiredPlugin() {

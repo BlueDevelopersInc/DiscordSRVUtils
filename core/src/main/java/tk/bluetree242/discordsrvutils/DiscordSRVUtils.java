@@ -632,6 +632,7 @@ public class DiscordSRVUtils {
         executeAsync(() -> {
             registerListeners();
             setSettings();
+            main.addHooks();
             PluginHookManager.get().hookAll();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
