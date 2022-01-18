@@ -24,19 +24,24 @@ package tk.bluetree242.discordsrvutils.events;
 
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 public class MinecraftLevelupEvent extends LevelupEvent {
     private PlayerStats stats;
-    private Player player;
+    private PlatformPlayer player;
 
-    public MinecraftLevelupEvent(PlayerStats stats, Player player) {
-        super(stats, player);
+    public MinecraftLevelupEvent(PlayerStats stats, PlatformPlayer player) {
+        super(stats, player.getUniqueId());
         this.stats = stats;
         this.player = player;
     }
 
     public PlayerStats getStats() {
         return stats;
+    }
+
+    public PlatformPlayer getPlayer() {
+        return player;
     }
 
 }

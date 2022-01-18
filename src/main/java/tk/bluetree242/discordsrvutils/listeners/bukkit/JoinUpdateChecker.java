@@ -22,19 +22,17 @@
 
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
+import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
+import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 
-public class JoinUpdateChecker implements Listener {
+public class JoinUpdateChecker extends PlatformListener {
 
 
-    @EventHandler
-    public void playerJoin(PlayerJoinEvent e) {
+    public void onJoin(PlatformJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
-            DiscordSRVUtils.get().updateCheck(new BukkitPlayer(e.getPlayer()));
+            DiscordSRVUtils.get().updateCheck(e.getPlayer());
         }
     }
 }

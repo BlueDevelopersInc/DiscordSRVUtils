@@ -20,7 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.utils;
+package tk.bluetree242.discordsrvutils.suggestions;
 
 public enum SuggestionVoteMode {
     REACTIONS, BUTTONS;

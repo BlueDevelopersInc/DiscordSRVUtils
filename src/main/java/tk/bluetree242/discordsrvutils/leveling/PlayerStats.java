@@ -99,7 +99,7 @@ public class PlayerStats {
      */
     public CompletableFuture<Boolean> setXP(int xp, LevelupEvent event) {
         if (event == null) {
-            event = new LevelupEvent(this, Bukkit.getOfflinePlayer(uuid));
+            event = new LevelupEvent(this, uuid);
         }
         LevelupEvent finalEvent = event;
         return core.completableFuture(() -> {
@@ -125,6 +125,7 @@ public class PlayerStats {
                     if (toAdd != null) {
                         actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
                     }
+                    if (!actions.isEmpty())
                     RestAction.allOf(actions).queue();
                     DiscordSRV.api.callEvent(finalEvent);
                     return true;

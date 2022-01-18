@@ -20,17 +20,12 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.platform;
+package tk.bluetree242.discordsrvutils.platform.events;
 
-import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
-import java.util.UUID;
+public abstract class PlatformChatEvent {
 
-public abstract class PlatformPlayer extends CommandUser {
-
-    public abstract String getName();
-    public abstract void sendMessage(String msg);
-    public abstract boolean hasPermission(String node);
-    public abstract UUID getUniqueId();
-    public abstract String placeholders(String s);
+    public abstract PlatformPlayer getPlayer();
+    public abstract boolean isCancelled();
 }

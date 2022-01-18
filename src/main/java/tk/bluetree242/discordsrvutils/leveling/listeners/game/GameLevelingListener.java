@@ -20,13 +20,8 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.leveling.listeners.bukkit;
+package tk.bluetree242.discordsrvutils.leveling.listeners.game;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -34,6 +29,9 @@ import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
+import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
+import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.security.SecureRandom;
@@ -42,11 +40,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class BukkitLevelingListener implements Listener {
+public class GameLevelingListener extends PlatformListener {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onJoin(PlatformJoinEvent e) {
         core.executeAsync(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling WHERE UUID=?");
@@ -73,8 +70,7 @@ public class BukkitLevelingListener implements Listener {
         });
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
+    public void onChat(PlatformChatEvent e) {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
         core.handleCF(LevelingManager.get().getPlayerStats(e.getPlayer().getUniqueId()), stats -> {
@@ -95,9 +91,7 @@ public class BukkitLevelingListener implements Listener {
             boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
             core.handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
             if (leveledUp) {
-                e.getPlayer().sendMessage(Utils.colors(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer())));
-
-
+                e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
             }
         }, null);
     }

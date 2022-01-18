@@ -23,11 +23,15 @@
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import org.bukkit.entity.Player;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+import java.util.UUID;
+
 public class BukkitPlayer extends PlatformPlayer {
-    private Player player;
+    public Player player;
 
     public BukkitPlayer(Player player) {
         this.player = player;
@@ -46,5 +50,15 @@ public class BukkitPlayer extends PlatformPlayer {
     @Override
     public boolean hasPermission(String node) {
         return player.hasPermission(node);
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return player.getUniqueId();
+    }
+
+    @Override
+    public String placeholders(String s) {
+        return DiscordSRVUtils.get().getPlatform().placehold(this, s);
     }
 }

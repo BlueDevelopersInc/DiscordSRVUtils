@@ -34,7 +34,7 @@ public class DiscordLevelupEvent extends LevelupEvent {
     private User user;
 
     public DiscordLevelupEvent(PlayerStats stats, TextChannel channel, User user) {
-        super(stats, Bukkit.getOfflinePlayer(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId())));
+        super(stats, DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId()));
         this.stats = stats;
         this.channel = channel;
         this.user = user;

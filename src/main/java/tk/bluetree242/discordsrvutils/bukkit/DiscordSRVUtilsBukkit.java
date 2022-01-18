@@ -85,7 +85,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
     public void disable() {
         setEnabled(false);
-        onDisable();
     }
 
     private boolean isAnyPunishmentsPluginInstalled() {

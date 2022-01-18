@@ -24,10 +24,10 @@ package tk.bluetree242.discordsrvutils.placeholder;
 
 import github.scarsz.discordsrv.util.NamedValueFormatter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 
 import java.lang.reflect.Method;
@@ -45,7 +45,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         return list;
     }
 
-    public String apply(String s, Player placehold) {
+    public String apply(String s, PlatformPlayer placehold) {
         final String[] val = {s};
         Map<String, Object> variables = new HashMap<>();
         variables.put("guild", DiscordSRVUtils.get().getGuild());
@@ -73,7 +73,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
             });
         }
 
-        val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
+        val[0] = DiscordSRVUtils.get().getPlatform().placehold(placehold, val[0]);
         val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
         return val[0];
     }

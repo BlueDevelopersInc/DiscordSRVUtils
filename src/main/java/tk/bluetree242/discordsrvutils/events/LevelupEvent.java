@@ -26,17 +26,19 @@ import github.scarsz.discordsrv.api.events.Event;
 import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
 
+import java.util.UUID;
+
 public class LevelupEvent extends Event {
 
     private PlayerStats stats;
-    private OfflinePlayer player;
+    private UUID uuid;
 
-    public LevelupEvent(PlayerStats stats, OfflinePlayer player) {
+    public LevelupEvent(PlayerStats stats, UUID uuid) {
         this.stats = stats;
-        this.player = player;
+        this.uuid = uuid;
     }
 
-    public OfflinePlayer getPlayer() {
-        return player;
+    public UUID getUUID() {
+        return uuid;
     }
 }

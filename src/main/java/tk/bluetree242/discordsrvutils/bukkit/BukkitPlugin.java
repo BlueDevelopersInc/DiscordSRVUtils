@@ -23,7 +23,7 @@
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.afkplus.AfkPlusHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi.CMIHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsHook;
@@ -31,18 +31,24 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.A
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.LibertybansHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
-import tk.bluetree242.discordsrvutils.leveling.listeners.bukkit.BukkitLevelingListener;
-import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
+import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
+    private final List<PlatformListener> listeners = new ArrayList<>();
     private final DiscordSRVUtilsBukkit main;
 
     public BukkitPlugin(DiscordSRVUtilsBukkit main) {
@@ -76,8 +82,7 @@ public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
 
     @Override
     public void registerListeners() {
-        Bukkit.getServer().getPluginManager().registerEvents(new BukkitLevelingListener(), main);
-        Bukkit.getServer().getPluginManager().registerEvents(new JoinUpdateChecker(), main);
+        Bukkit.getServer().getPluginManager().registerEvents(new BukkitListener(), main);
     }
 
     @Override
@@ -92,7 +97,7 @@ public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
 
     @Override
     public void registerCommands() {
-
+        //1 command, just using the simple onCommand in JavaPlugin is fine
     }
 
     @Override
@@ -117,5 +122,21 @@ public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
         new AfkPlusHook();
         //PAPI
         new PAPIExpansion.Hook();
+    }
+
+    @Override
+    public List<PlatformListener> getListeners() {
+        return listeners;
+    }
+
+    @Override
+    public void addListener(PlatformListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public String placehold(PlatformPlayer player, String s) {
+        Player p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).player : null : null;
+        return PlaceholdObject.applyPlaceholders(s, p);
     }
 }

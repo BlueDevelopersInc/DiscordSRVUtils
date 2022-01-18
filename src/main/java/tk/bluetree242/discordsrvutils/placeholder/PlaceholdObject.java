@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.tickets.TicketManager;
 
 import java.lang.reflect.Method;
@@ -65,11 +66,11 @@ public class PlaceholdObject {
         return ob;
     }
 
-    public String apply(@NotNull String s, Player placehold) {
+    public String apply(@NotNull String s, PlatformPlayer placehold) {
         return apply(s, placehold, true);
     }
 
-    public String apply(@NotNull String s, Player placehold, boolean doAllowCode) {
+    public String apply(@NotNull String s, PlatformPlayer placehold, boolean doAllowCode) {
         Map<String, Method> map = getholdersMap();
         final String[] val = {s};
         map.forEach((key, result) -> {
@@ -87,7 +88,7 @@ public class PlaceholdObject {
             }
         });
 
-        val[0] = PlaceholdObject.applyPlaceholders(val[0], placehold);
+        val[0] = DiscordSRVUtils.get().getPlatform().placehold(placehold, s);
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("guild", DiscordSRVUtils.get().getGuild());

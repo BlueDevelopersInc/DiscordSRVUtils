@@ -20,17 +20,18 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.platform;
+package tk.bluetree242.discordsrvutils.platform.listener;
 
-import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
+import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 
-import java.util.UUID;
+public class PlatformListener {
 
-public abstract class PlatformPlayer extends CommandUser {
+    public void onChat(PlatformChatEvent e) {
 
-    public abstract String getName();
-    public abstract void sendMessage(String msg);
-    public abstract boolean hasPermission(String node);
-    public abstract UUID getUniqueId();
-    public abstract String placeholders(String s);
+    }
+
+    public void onJoin(PlatformJoinEvent e) {
+
+    }
 }

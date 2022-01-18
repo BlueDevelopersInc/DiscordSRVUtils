@@ -49,7 +49,9 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.leveling.listeners.game.GameLevelingListener;
 import tk.bluetree242.discordsrvutils.leveling.listeners.jda.DiscordLevelingListener;
+import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.CustomDiscordAccountLinkListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
@@ -68,7 +70,7 @@ import tk.bluetree242.discordsrvutils.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.tickets.listeners.TicketDeleteListener;
 import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
-import tk.bluetree242.discordsrvutils.utils.SuggestionVoteMode;
+import tk.bluetree242.discordsrvutils.suggestions.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
@@ -123,7 +125,6 @@ public class DiscordSRVUtils {
     // faster getter for the logger
     public Logger logger;
     private LevelingConfig levelingConfig;
-    //Bukkit main instance (will be changed when i start to abstract)
     private PluginPlatform main;
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlconfigmanager;
@@ -449,6 +450,8 @@ public class DiscordSRVUtils {
     public void registerListeners() {
         getJDA().addEventListener(listeners.toArray(new Object[0]));
         main.registerListeners();
+        main.addListener(new GameLevelingListener());
+        main.addListener(new JoinUpdateChecker());
     }
 
 
