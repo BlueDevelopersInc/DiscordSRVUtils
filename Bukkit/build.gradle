@@ -35,7 +35,7 @@ dependencies {
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
     compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
     implementation project(":core")
-    compileOnly ('com.discordsrv:discordsrv:1.24.0') {
+    compileOnly('com.discordsrv:discordsrv:1.24.0') {
         exclude group: 'net.kyori'
     }
     compileOnly 'net.ess3:EssentialsX:2.17.2'

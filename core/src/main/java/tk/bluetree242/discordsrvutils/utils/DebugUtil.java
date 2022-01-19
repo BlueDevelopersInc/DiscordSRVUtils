@@ -22,29 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.utils;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.alexh.weak.Dynamic;
-import github.scarsz.discordsrv.dependencies.commons.io.FileUtils;
-import github.scarsz.discordsrv.dependencies.commons.lang3.ArrayUtils;
-import github.scarsz.discordsrv.dependencies.commons.lang3.RandomStringUtils;
-import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
-import github.scarsz.discordsrv.dependencies.commons.lang3.exception.ExceptionUtils;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.okhttp3.*;
-import github.scarsz.discordsrv.hooks.PluginHook;
-import github.scarsz.discordsrv.hooks.SkriptHook;
-import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
+import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
-import java.util.*;
-import java.util.stream.Collectors;
 
 // This idea is taken from discordsrv, and i do not own the bin
 // I Copied some of the original discordsrv code for some reason. This code isn't 100% mine

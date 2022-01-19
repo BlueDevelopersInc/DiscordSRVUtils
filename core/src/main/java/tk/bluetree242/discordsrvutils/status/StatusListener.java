@@ -25,7 +25,7 @@ package tk.bluetree242.discordsrvutils.status;
 
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
-public abstract class StatusListener{
+public abstract class StatusListener {
     private static StatusListener main;
     public boolean registered = false;
     public DiscordSRVUtils core = DiscordSRVUtils.get();

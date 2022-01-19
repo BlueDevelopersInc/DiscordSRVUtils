@@ -33,7 +33,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.flywaydb.core.Flyway;
@@ -80,7 +79,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -133,6 +135,7 @@ public class DiscordSRVUtils {
     //database connection pool
     private HikariDataSource sql;
     private long lastErrorTime = 0;
+
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
         initConfigs();
@@ -143,6 +146,18 @@ public class DiscordSRVUtils {
 
     public static DiscordSRVUtils get() {
         return instance;
+    }
+
+    public static PlatformServer getServer() {
+        return getPlatform().getServer();
+    }
+
+    public static PluginPlatform getPlatform() {
+        return get().main;
+    }
+
+    public static PlatformDiscordSRV getDiscordSRV() {
+        return getPlatform().getDiscordSRV();
     }
 
     private final void initConfigs() {
@@ -284,11 +299,6 @@ public class DiscordSRVUtils {
         }
     }
 
-
-    public static PlatformServer getServer() {
-        return getPlatform().getServer();
-    }
-
     private void startupError(Throwable ex, @NotNull String msg) {
         main.disable();
         logger.warning(msg);
@@ -395,8 +405,8 @@ public class DiscordSRVUtils {
         instance = null;
     }
 
-
     private void whenStarted() {
+        main.addHooks();
         if (messagesDirectory.toFile().mkdir()) {
             defaultmessages.forEach((key, val) -> {
                 try {
@@ -440,7 +450,6 @@ public class DiscordSRVUtils {
         main.addListener(new JoinUpdateChecker());
     }
 
-
     /**
      * @return true if plugin enabled and discordsrv ready, else false
      */
@@ -452,7 +461,6 @@ public class DiscordSRVUtils {
     public boolean isEnabled() {
         return main.isEnabled();
     }
-
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
         configmanager.reloadConfig();
@@ -629,7 +637,6 @@ public class DiscordSRVUtils {
         executeAsync(() -> {
             registerListeners();
             setSettings();
-            main.addHooks();
             PluginHookManager.get().hookAll();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
@@ -651,14 +658,9 @@ public class DiscordSRVUtils {
 
     }
 
-    public static PluginPlatform getPlatform() {
-        return get().main;
-    }
-
     public JSONObject getVersionConfig() throws IOException {
         return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
     }
-
 
     public void setSettings() {
         if (!isReady()) return;
@@ -676,10 +678,6 @@ public class DiscordSRVUtils {
 
     public JDA getJDA() {
         return getDiscordSRV().getJDA();
-    }
-
-    public static PlatformDiscordSRV getDiscordSRV() {
-        return getPlatform().getDiscordSRV();
     }
 
     public MessageManager getMessageManager() {

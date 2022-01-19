@@ -57,9 +57,9 @@ public class LibertybansListener {
     public void unregister() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();
         if (pListener != null)
-        omnibus.getEventBus().unregisterListener(pListener);
+            omnibus.getEventBus().unregisterListener(pListener);
         if (pardonListener != null)
-        omnibus.getEventBus().unregisterListener(pardonListener);
+            omnibus.getEventBus().unregisterListener(pardonListener);
     }
 
     private void syncPunishment(Punishment punishment, boolean un) {

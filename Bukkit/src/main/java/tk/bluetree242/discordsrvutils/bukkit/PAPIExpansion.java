@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
@@ -87,6 +88,10 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     public static class Hook extends PluginHook {
         private PAPIExpansion expansion;
+
+        public Hook() {
+            if (Bukkit.getPluginManager().isPluginEnabled(getRequiredPlugin())) hook();
+        }
 
         @Override
         public String getRequiredPlugin() {

@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.leveling.listeners.jda;
 
 
-import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;

@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;

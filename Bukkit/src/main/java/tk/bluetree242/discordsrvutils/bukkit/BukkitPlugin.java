@@ -33,7 +33,6 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.A
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.LibertybansHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.platform.*;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
@@ -45,12 +44,22 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
-    private PlatformDiscordSRV discordSRV = null;
     private final List<PlatformListener> listeners = new ArrayList<>();
     private final DiscordSRVUtilsBukkit main;
+    private PlatformDiscordSRV discordSRV = null;
 
     public BukkitPlugin(DiscordSRVUtilsBukkit main) {
         this.main = main;
+    }
+
+    public static String applyPlaceholders(String s, Player player) {
+        if (!DiscordSRVUtils.get().isEnabled()) return s;
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            String to = s.replace("&", "** ** *");
+            String fina = PlaceholderAPI.setPlaceholders(player, to);
+            return fina.replace("** ** *", "&");
+        }
+        return s;
     }
 
     @Override
@@ -131,15 +140,7 @@ public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
     public void addListener(PlatformListener listener) {
         listeners.add(listener);
     }
-    public static String applyPlaceholders(String s, Player player) {
-        if (!DiscordSRVUtils.get().isEnabled()) return s;
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            String to = s.replace("&", "** ** *");
-            String fina = PlaceholderAPI.setPlaceholders(player, to);
-            return fina.replace("** ** *", "&");
-        }
-        return s;
-    }
+
     @Override
     public String placehold(PlatformPlayer player, String s) {
         Player p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).player : null : null;

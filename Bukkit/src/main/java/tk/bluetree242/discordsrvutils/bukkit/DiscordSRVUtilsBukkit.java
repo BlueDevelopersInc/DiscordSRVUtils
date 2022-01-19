@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.jda.CustomDiscordAccountLinkListener;
 
-
 import java.util.HashMap;
 import java.util.Map;
 

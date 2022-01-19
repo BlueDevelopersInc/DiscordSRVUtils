@@ -29,6 +29,7 @@ public abstract class PluginHook {
     public PluginHook() {
         PluginHookManager.get().getHooks().add(this);
     }
+
     public abstract String getRequiredPlugin();
 
     public abstract void hook();

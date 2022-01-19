@@ -20,6 +20,7 @@
  *  END
  */
 import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
     id 'maven-publish'
@@ -99,11 +100,11 @@ subprojects {
     }
     project.processResources {
         from(sourceSets.main.resources.srcDirs) {
-            filter ReplaceTokens, tokens: [version  : version,
-                                           build    : buildNumber,
-                                           commit   : commit,
+            filter ReplaceTokens, tokens: [version    : version,
+                                           build      : buildNumber,
+                                           commit     : commit,
                                            description: description,
-                                           buildDate: System.currentTimeMillis() + ""
+                                           buildDate  : System.currentTimeMillis() + ""
             ]
         }
 

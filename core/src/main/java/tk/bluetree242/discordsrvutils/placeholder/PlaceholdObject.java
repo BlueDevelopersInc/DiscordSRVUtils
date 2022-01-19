@@ -49,8 +49,6 @@ public class PlaceholdObject {
     }
 
 
-
-
     public Object getObject() {
         return ob;
     }

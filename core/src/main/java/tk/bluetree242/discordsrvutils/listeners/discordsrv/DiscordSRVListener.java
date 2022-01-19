@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.listeners.discordsrv;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;

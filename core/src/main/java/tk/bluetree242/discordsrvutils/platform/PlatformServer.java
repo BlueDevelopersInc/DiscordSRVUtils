@@ -22,15 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.platform;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 
 import java.util.List;
-import java.util.UUID;
 
 public abstract class PlatformServer {
 
