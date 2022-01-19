@@ -20,28 +20,26 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans;
+package tk.bluetree242.discordsrvutils.platform;
 
-import tk.bluetree242.discordsrvutils.hooks.PluginHook;
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 
-public class LitebansHook extends PluginHook {
-    LitebansPunishmentListener listener;
+import java.util.UUID;
 
-    @Override
-    public String getRequiredPlugin() {
-        return "Litebans";
-    }
+public abstract class PlatformDiscordSRV {
 
-    @Override
-    public void hook() {
-        removeHook();
-        listener = new LitebansPunishmentListener();
-    }
+    public abstract DiscordSRV getDiscordSRV();
 
-    @Override
-    public void removeHook() {
-        if (listener == null) return;
-        listener.unregister();
-        listener = null;
-    }
+    public abstract String getDiscordId(UUID uuid);
+
+    public abstract UUID getUuid(String id);
+
+    public abstract JDA getJDA();
+
+    public abstract Guild getMainGuild();
+
+    public abstract TextChannel getMainChatChannel();
 }

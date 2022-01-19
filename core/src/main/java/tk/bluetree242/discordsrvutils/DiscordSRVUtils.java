@@ -54,10 +54,7 @@ import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
-import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
-import tk.bluetree242.discordsrvutils.platform.PlatformServer;
-import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
+import tk.bluetree242.discordsrvutils.platform.*;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 import tk.bluetree242.discordsrvutils.status.StatusManager;
 import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
@@ -288,7 +285,7 @@ public class DiscordSRVUtils {
     }
 
 
-    private PlatformServer getServer() {
+    public static PlatformServer getServer() {
         return getPlatform().getServer();
     }
 
@@ -654,8 +651,8 @@ public class DiscordSRVUtils {
 
     }
 
-    public PluginPlatform getPlatform() {
-        return main;
+    public static PluginPlatform getPlatform() {
+        return get().main;
     }
 
     public JSONObject getVersionConfig() throws IOException {
@@ -678,7 +675,11 @@ public class DiscordSRVUtils {
     }
 
     public JDA getJDA() {
-        return getPlatform().getServer().getJDA();
+        return getDiscordSRV().getJDA();
+    }
+
+    public static PlatformDiscordSRV getDiscordSRV() {
+        return getPlatform().getDiscordSRV();
     }
 
     public MessageManager getMessageManager() {
@@ -743,7 +744,7 @@ public class DiscordSRVUtils {
             return channel;
         }
         if (id == 0) {
-            return getServer().getMainChatChannel();
+            return getDiscordSRV().getMainChatChannel();
         } else return getJDA().getTextChannelById(id);
     }
 
@@ -752,7 +753,7 @@ public class DiscordSRVUtils {
     }
 
     public Guild getGuild() {
-        return getServer().getMainGuild();
+        return getDiscordSRV().getMainGuild();
     }
 
     public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {

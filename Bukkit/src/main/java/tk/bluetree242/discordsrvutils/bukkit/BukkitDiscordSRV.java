@@ -20,30 +20,45 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.platform;
+package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
-import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 
-import java.util.List;
 import java.util.UUID;
 
-public abstract class PlatformServer {
+public class BukkitDiscordSRV extends PlatformDiscordSRV {
 
-    public abstract boolean isPluginEnabled(String name);
+    @Override
+    public DiscordSRV getDiscordSRV() {
+        return DiscordSRV.getPlugin();
+    }
 
-    public abstract boolean isPluginInstalled(String name);
+    @Override
+    public String getDiscordId(UUID uuid) {
+        return getDiscordSRV().getAccountLinkManager().getDiscordId(uuid);
+    }
 
-    public abstract PlatformPluginDescription getPluginDescription(String name);
+    @Override
+    public UUID getUuid(String id) {
+        return getDiscordSRV().getAccountLinkManager().getUuid(id);
+    }
 
-    public abstract List<PlatformPlayer> getOnlinePlayers();
+    @Override
+    public JDA getJDA() {
+        return getDiscordSRV().getJda();
+    }
 
-    public abstract CommandUser getConsoleSender();
+    @Override
+    public Guild getMainGuild() {
+        return getDiscordSRV().getMainGuild();
+    }
 
-    public abstract String colors(String s);
-
+    @Override
+    public TextChannel getMainChatChannel() {
+        return getDiscordSRV().getMainTextChannel();
+    }
 }

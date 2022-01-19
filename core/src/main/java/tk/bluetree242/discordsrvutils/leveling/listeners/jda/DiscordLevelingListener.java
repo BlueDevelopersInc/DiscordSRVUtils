@@ -84,7 +84,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
     //give leveling roles when they rejoin the discord server
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         core.executeAsync(() -> {
-            if (core.getPlatform().getServer().getUuid(e.getUser().getId()) != null) {
+            if (DiscordSRVUtils.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
                 PlayerStats stats = core.handleCFOnAnother(LevelingManager.get().getPlayerStats(e.getUser().getIdLong()));
                 if (stats == null) return;
                 Role role = LevelingManager.get().getRoleForLevel(stats.getLevel());

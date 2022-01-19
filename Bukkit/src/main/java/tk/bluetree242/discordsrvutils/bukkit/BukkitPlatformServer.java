@@ -32,6 +32,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.bukkit.cmd.ConsoleCommandUser;
+import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
@@ -79,33 +80,6 @@ public class BukkitPlatformServer extends PlatformServer {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
-    public DiscordSRV getDiscordSRV() {
-        return DiscordSRV.getPlugin();
-    }
 
-    @Override
-    public String getDiscordId(UUID uuid) {
-        return getDiscordSRV().getAccountLinkManager().getDiscordId(uuid);
-    }
-
-    @Override
-    public UUID getUuid(String id) {
-        return getDiscordSRV().getAccountLinkManager().getUuid(id);
-    }
-
-    @Override
-    public JDA getJDA() {
-        return getDiscordSRV().getJda();
-    }
-
-    @Override
-    public Guild getMainGuild() {
-        return getDiscordSRV().getMainGuild();
-    }
-
-    @Override
-    public TextChannel getMainChatChannel() {
-        return getDiscordSRV().getMainTextChannel();
-    }
 
 }

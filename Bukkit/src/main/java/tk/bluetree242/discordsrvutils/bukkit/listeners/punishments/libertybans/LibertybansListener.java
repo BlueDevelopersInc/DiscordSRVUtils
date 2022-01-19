@@ -50,14 +50,15 @@ public class LibertybansListener {
     public LibertybansListener() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();
         plugin = omnibus.getRegistry().getProvider(LibertyBans.class).orElseThrow();
-        unregister();
         pListener = omnibus.getEventBus().registerListener(PostPunishEvent.class, ListenerPriorities.NORMAL, new PunishmentListener());
         pardonListener = omnibus.getEventBus().registerListener(PostPardonEvent.class, ListenerPriorities.NORMAL, new PardonListener());
     }
 
     public void unregister() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();
+        if (pListener != null)
         omnibus.getEventBus().unregisterListener(pListener);
+        if (pardonListener != null)
         omnibus.getEventBus().unregisterListener(pardonListener);
     }
 

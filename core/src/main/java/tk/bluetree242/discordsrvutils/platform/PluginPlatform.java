@@ -62,4 +62,6 @@ public abstract class PluginPlatform<K> {
     public abstract void addListener(PlatformListener listener);
 
     public abstract String placehold(PlatformPlayer player, String s);
+
+    public abstract PlatformDiscordSRV getDiscordSRV();
 }
