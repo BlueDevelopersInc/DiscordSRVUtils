@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseExc
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -57,6 +58,7 @@ public class StatusManager {
 
     public Message getStatusMessage(boolean online) {
         PlaceholdObjectList holders = new PlaceholdObjectList();
+        holders.add(new PlaceholdObject(DiscordSRVUtils.getPlatform().getServer().getOriginal(), "server"));
         return MessageManager.get().parseMessageFromJson(MessageManager.get().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
