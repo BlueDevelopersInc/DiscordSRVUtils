@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.afkplus.AfkPlusHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi.CMIHook;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class BukkitPlugin<JavaPlugin> extends PluginPlatform {
+public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     private final List<PlatformListener> listeners = new ArrayList<>();
     private final DiscordSRVUtilsBukkit main;
     private PlatformDiscordSRV discordSRV = null;
