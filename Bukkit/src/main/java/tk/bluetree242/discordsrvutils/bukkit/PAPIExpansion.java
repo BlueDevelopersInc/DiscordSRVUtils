@@ -87,7 +87,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         return null;
     }
 
-    public static class Hook extends PluginHook {
+    protected static class Hook extends PluginHook {
         private PAPIExpansion expansion;
 
         public Hook() {
@@ -103,18 +103,15 @@ public class PAPIExpansion extends PlaceholderExpansion {
         public void hook() {
             //on next tick because of those bukkit sync errors when PAPI fires the registration event
             Bukkit.getScheduler().runTask((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
-                removeHook();
                 (expansion = new PAPIExpansion()).register();
             });
         }
 
         @Override
         public void removeHook() {
-            Bukkit.getScheduler().runTask((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
             if (expansion == null) return;
             expansion.unregister();
             expansion = null;
-            });
         }
     }
 }
