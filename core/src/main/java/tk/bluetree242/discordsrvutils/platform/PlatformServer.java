@@ -40,4 +40,6 @@ public abstract class PlatformServer {
 
     public abstract String colors(String s);
 
+    public abstract Object getOriginal();
+
 }

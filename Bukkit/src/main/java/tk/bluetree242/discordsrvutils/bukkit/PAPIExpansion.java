@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
@@ -100,15 +101,20 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
         @Override
         public void hook() {
-            removeHook();
-            (expansion = new PAPIExpansion()).register();
+            //on next tick because of those bukkit sync errors when PAPI fires the registration event
+            Bukkit.getScheduler().runTask((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
+                removeHook();
+                (expansion = new PAPIExpansion()).register();
+            });
         }
 
         @Override
         public void removeHook() {
+            Bukkit.getScheduler().runTask((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
             if (expansion == null) return;
             expansion.unregister();
             expansion = null;
+            });
         }
     }
 }

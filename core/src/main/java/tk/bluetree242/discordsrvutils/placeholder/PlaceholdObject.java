@@ -82,6 +82,7 @@ public class PlaceholdObject {
             variables.put("jda", DiscordSRVUtils.get().getJDA());
             variables.put("DSU", DiscordSRVUtils.get());
             variables.put("TicketManager", TicketManager.get());
+            variables.put("server", DiscordSRVUtils.getPlatform().getServer().getOriginal());
             variables.put("LevelingManager", LevelingManager.get());
             variables.put("CommandManager", CommandManager.get());
             variables.put(display, ob);

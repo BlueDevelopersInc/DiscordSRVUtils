@@ -39,14 +39,14 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerStats {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private UUID uuid;
-    private String name;
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final UUID uuid;
+    private final String name;
     private int level;
     private int xp;
-    private int minecraftMessages;
-    private int discordMessages;
-    private int rank;
+    private final int minecraftMessages;
+    private final int discordMessages;
+    private final int rank;
 
     public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages, int rank) {
         this.uuid = uuid;

@@ -653,6 +653,7 @@ public class DiscordSRVUtils {
             //migrate suggestion buttons/reactions if needed
             SuggestionManager.get().migrateSuggestions();
             StatusManager.get().editMessage(true);
+            StatusManager.get().registerTimer();
             logger.info("Plugin is ready to function.");
         });
 

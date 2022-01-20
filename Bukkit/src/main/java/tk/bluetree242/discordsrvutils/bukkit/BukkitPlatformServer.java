@@ -73,5 +73,10 @@ public class BukkitPlatformServer extends PlatformServer {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
+    @Override
+    public Object getOriginal() {
+        return Bukkit.getServer();
+    }
+
 
 }

@@ -50,6 +50,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         variables.put("guild", DiscordSRVUtils.get().getGuild());
         variables.put("jda", DiscordSRVUtils.get().getJDA());
         variables.put("DSU", DiscordSRVUtils.get());
+        variables.put("server", DiscordSRVUtils.getPlatform().getServer().getOriginal());
         variables.put("TicketManager", TicketManager.get());
         variables.put("LevelingManager", LevelingManager.get());
         variables.put("CommandManager", CommandManager.get());
