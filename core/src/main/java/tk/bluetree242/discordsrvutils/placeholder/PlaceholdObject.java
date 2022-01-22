@@ -75,7 +75,7 @@ public class PlaceholdObject {
             }
         });
 
-        val[0] = DiscordSRVUtils.get().getPlatform().placehold(placehold, s);
+        val[0] = DiscordSRVUtils.getPlatform().placehold(placehold, s);
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("guild", DiscordSRVUtils.get().getGuild());

@@ -26,7 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import tk.bluetree242.discordsrvutils.bukkit.cmd.ConsoleCommandUser;
+import tk.bluetree242.discordsrvutils.bukkit.cmd.BukkitConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
@@ -64,7 +64,7 @@ public class BukkitPlatformServer extends PlatformServer {
 
     @Override
     public CommandUser getConsoleSender() {
-        return new ConsoleCommandUser();
+        return new BukkitConsoleCommandUser();
     }
 
 

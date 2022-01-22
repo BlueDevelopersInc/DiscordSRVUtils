@@ -77,20 +77,20 @@ public class LevelingManager {
     }
 
     public PlayerStats getCachedStats(long discordID) {
-        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        UUID uuid = DiscordSRVUtils.getDiscordSRV().getUuid(discordID + "");
         if (uuid == null) return null;
         return cachedUUIDS.get(uuid);
     }
 
     public boolean isLinked(UUID uuid) {
-        String discord = core.getDiscordSRV().getDiscordId(uuid);
+        String discord = DiscordSRVUtils.getDiscordSRV().getDiscordId(uuid);
         if (discord == null) return false;
         return true;
     }
 
     public CompletableFuture<PlayerStats> getPlayerStats(long discordID) {
         return core.completableFuture(() -> {
-            UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+            UUID uuid = DiscordSRVUtils.getDiscordSRV().getUuid(discordID + "");
             if (uuid == null) return null;
             return core.handleCFOnAnother(getPlayerStats(uuid));
         });

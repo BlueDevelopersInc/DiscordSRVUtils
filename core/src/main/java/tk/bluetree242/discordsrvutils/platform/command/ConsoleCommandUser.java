@@ -20,32 +20,7 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
+package tk.bluetree242.discordsrvutils.platform.command;
 
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.hooks.PluginHook;
-
-public class EssentialsHook extends PluginHook {
-    private EssentialsAFKListener listener;
-
-    @Override
-    public String getRequiredPlugin() {
-        return "Essentials";
-    }
-
-    @Override
-    public void hook() {
-        removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) DiscordSRVUtils.getPlatform().getOriginal());
-    }
-
-    @Override
-    public void removeHook() {
-        if (listener == null) return;
-        listener.remove();
-        listener = null;
-    }
+public abstract class ConsoleCommandUser extends CommandUser{
 }

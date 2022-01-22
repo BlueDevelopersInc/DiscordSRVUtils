@@ -20,32 +20,32 @@
  *  END
  */
 
-package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
+package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.hooks.PluginHook;
+public class BukkitCommandUser extends CommandUser {
+    private final CommandSender sender;
 
-public class EssentialsHook extends PluginHook {
-    private EssentialsAFKListener listener;
-
-    @Override
-    public String getRequiredPlugin() {
-        return "Essentials";
+    public BukkitCommandUser(CommandSender sender) {
+        this.sender = sender;
     }
 
     @Override
-    public void hook() {
-        removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) DiscordSRVUtils.getPlatform().getOriginal());
+    public String getName() {
+        return sender.getName();
     }
 
     @Override
-    public void removeHook() {
-        if (listener == null) return;
-        listener.remove();
-        listener = null;
+    public boolean hasPermission(String node) {
+        return sender.hasPermission(node);
+    }
+
+    @Override
+    public void sendMessage(String msg) {
+        sender.sendMessage(Utils.colors(msg));
     }
 }

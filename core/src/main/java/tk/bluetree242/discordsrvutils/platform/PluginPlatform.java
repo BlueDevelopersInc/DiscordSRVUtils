@@ -28,10 +28,12 @@ import tk.bluetree242.discordsrvutils.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class PluginPlatform<K> {
+    private final List<PlatformListener> listeners = new ArrayList<>();
     //abstract to allow some constant stuff that depend on some methods
     public abstract Logger getLogger();
 
@@ -57,11 +59,17 @@ public abstract class PluginPlatform<K> {
 
     public abstract void addHooks();
 
-    public abstract List<PlatformListener> getListeners();
-
-    public abstract void addListener(PlatformListener listener);
 
     public abstract String placehold(PlatformPlayer player, String s);
 
     public abstract PlatformDiscordSRV getDiscordSRV();
+    //platform-event stuff
+    public List<PlatformListener> getListeners() {
+        return listeners;
+    }
+
+    public void addListener(PlatformListener listener) {
+        listeners.add(listener);
+    }
+
 }

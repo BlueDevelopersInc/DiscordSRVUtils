@@ -24,10 +24,10 @@ package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
+import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-public class ConsoleCommandUser extends CommandUser {
+public class BukkitConsoleCommandUser extends ConsoleCommandUser {
     private CommandSender sender = Bukkit.getConsoleSender();
 
     @Override
@@ -37,7 +37,7 @@ public class ConsoleCommandUser extends CommandUser {
 
     @Override
     public boolean hasPermission(String node) {
-        return sender.hasPermission(node);
+        return true;
     }
 
     @Override

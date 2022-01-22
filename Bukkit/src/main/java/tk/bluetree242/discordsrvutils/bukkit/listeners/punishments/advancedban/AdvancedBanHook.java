@@ -39,7 +39,7 @@ public class AdvancedBanHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new AdvancedBanPunishmentListener(), (Plugin) core.getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new AdvancedBanPunishmentListener(), (Plugin) DiscordSRVUtils.getPlatform().getOriginal());
     }
 
     @Override

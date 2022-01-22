@@ -46,7 +46,7 @@ public class DiscordSRVListener {
             core.whenReady();
         } catch (Throwable ex) {
             new StartupException(ex).printStackTrace();
-            core.getPlatform().disable();
+            DiscordSRVUtils.getPlatform().disable();
         }
     }
 

@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.cmd.BukkitCommandListener;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.afkplus.AfkPlusHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi.CMIHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsHook;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
-    private final List<PlatformListener> listeners = new ArrayList<>();
     private final DiscordSRVUtilsBukkit main;
     private PlatformDiscordSRV discordSRV = null;
 
@@ -105,7 +105,9 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public void registerCommands() {
-        //1 command, just using the simple onCommand in JavaPlugin is fine
+        BukkitCommandListener listener = new BukkitCommandListener();
+        main.getCommand("discordsrvutils").setExecutor(listener);
+        main.getCommand("discordsrvutils").setTabCompleter(listener);
     }
 
     @Override
@@ -130,16 +132,6 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         new AfkPlusHook();
         //PAPI
         new PAPIExpansion.Hook();
-    }
-
-    @Override
-    public List<PlatformListener> getListeners() {
-        return listeners;
-    }
-
-    @Override
-    public void addListener(PlatformListener listener) {
-        listeners.add(listener);
     }
 
     @Override

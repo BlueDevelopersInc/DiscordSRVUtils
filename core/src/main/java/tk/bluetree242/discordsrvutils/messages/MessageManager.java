@@ -127,7 +127,7 @@ public class MessageManager {
             if (holders != null) {
                 raw = holders.apply(raw);
             }
-            raw = DiscordSRVUtils.get().getPlatform().placehold(placehold, raw);
+            raw = DiscordSRVUtils.getPlatform().placehold(placehold, raw);
             return raw;
         }
         return null;
@@ -175,7 +175,7 @@ public class MessageManager {
             if (holders != null) {
                 content = holders.apply(content);
             }
-            content = DiscordSRVUtils.get().getPlatform().placehold(placehold, content);
+            content = DiscordSRVUtils.getPlatform().placehold(placehold, content);
             content = Utils.colors(content);
             msg.setContent(content);
         }

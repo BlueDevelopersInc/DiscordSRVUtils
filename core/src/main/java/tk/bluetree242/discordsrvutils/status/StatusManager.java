@@ -38,17 +38,18 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 
 public class StatusManager {
     private static StatusManager main;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
     private StatusTimer timer = new StatusTimer();
-    private Path dataPath = Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+    private final Path dataPath = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
 
     public StatusManager() {
-        this.main = this;
+        main = this;
         dataPath.getParent().toFile().mkdir();
     }
 
@@ -109,7 +110,7 @@ public class StatusManager {
                 Long messageId = manager.getMessageId();
                 Long channelId = manager.getChannelId();
                 if (messageId == null || channelId == null) return;
-                Message msg = core.getGuild().getTextChannelById(channelId).retrieveMessageById(messageId).complete();
+                Message msg = Objects.requireNonNull(core.getGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
                 if (msg == null) return;
                 //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
                 msg.editMessage(toSend).complete();

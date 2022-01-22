@@ -27,6 +27,7 @@ import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 import tk.bluetree242.discordsrvutils.status.StatusManager;
 
@@ -36,7 +37,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         for (String event : core.getStatusConfig().update_events()) {
             try {
                 Class eventClass = Class.forName(event);
-                Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, this, (Plugin) core.getPlatform(), false);
+                Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, this, (Plugin) DiscordSRVUtils.getPlatform().getOriginal(), false);
             } catch (ClassNotFoundException e) {
                 core.severe("Event " + event + " Not Found");
             }
@@ -49,7 +50,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform(), () -> {
+        Bukkit.getServer().getScheduler().runTaskLater((Plugin) DiscordSRVUtils.getPlatform(), () -> {
             StatusManager.get().editMessage(true);
         }, 1);
     }

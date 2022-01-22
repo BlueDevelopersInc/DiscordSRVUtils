@@ -189,6 +189,7 @@ public class DiscordSRVUtils {
         //initialize discordsrv listener
         dsrvlistener = new DiscordSRVListener();
         //Initialize Managers
+        //These automatically set themselves so just a simple constructor call
         new MessageManager();
         new CommandManager();
         new TicketManager();
@@ -197,6 +198,8 @@ public class DiscordSRVUtils {
         new SuggestionManager();
         new StatusManager();
         new PluginHookManager();
+        //put status listener to make StatusListener.get() work
+        main.getStatusListener();
         //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
