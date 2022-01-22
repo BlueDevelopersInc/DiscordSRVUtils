@@ -50,7 +50,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLater((Plugin) DiscordSRVUtils.getPlatform(), () -> {
+        Bukkit.getServer().getScheduler().runTaskLater((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
             StatusManager.get().editMessage(true);
         }, 1);
     }
