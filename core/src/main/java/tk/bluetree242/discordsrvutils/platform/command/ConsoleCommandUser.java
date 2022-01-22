@@ -22,5 +22,5 @@
 
 package tk.bluetree242.discordsrvutils.platform.command;
 
-public abstract class ConsoleCommandUser extends CommandUser{
+public abstract class ConsoleCommandUser extends CommandUser {
 }

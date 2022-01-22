@@ -36,13 +36,10 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.L
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
 import tk.bluetree242.discordsrvutils.platform.*;
-import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class BukkitPlugin extends PluginPlatform<JavaPlugin> {

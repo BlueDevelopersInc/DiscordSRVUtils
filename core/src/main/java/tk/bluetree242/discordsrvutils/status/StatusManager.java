@@ -45,8 +45,8 @@ import java.util.concurrent.CompletableFuture;
 public class StatusManager {
     private static StatusManager main;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
-    private StatusTimer timer = new StatusTimer();
     private final Path dataPath = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+    private StatusTimer timer = new StatusTimer();
 
     public StatusManager() {
         main = this;

@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.utils.Utils;

@@ -42,11 +42,11 @@ public class PlayerStats {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
     private final UUID uuid;
     private final String name;
-    private int level;
-    private int xp;
     private final int minecraftMessages;
     private final int discordMessages;
     private final int rank;
+    private int level;
+    private int xp;
 
     public PlayerStats(UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages, int rank) {
         this.uuid = uuid;

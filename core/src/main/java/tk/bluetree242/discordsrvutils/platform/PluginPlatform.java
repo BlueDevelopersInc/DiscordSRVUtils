@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 public abstract class PluginPlatform<K> {
     private final List<PlatformListener> listeners = new ArrayList<>();
+
     //abstract to allow some constant stuff that depend on some methods
     public abstract Logger getLogger();
 
@@ -63,6 +64,7 @@ public abstract class PluginPlatform<K> {
     public abstract String placehold(PlatformPlayer player, String s);
 
     public abstract PlatformDiscordSRV getDiscordSRV();
+
     //platform-event stuff
     public List<PlatformListener> getListeners() {
         return listeners;

@@ -90,7 +90,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     }
 
 
-
     private boolean isAnyPunishmentsPluginInstalled() {
         if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) return true;
         if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;

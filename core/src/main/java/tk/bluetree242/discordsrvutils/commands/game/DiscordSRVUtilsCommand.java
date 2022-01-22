@@ -36,8 +36,9 @@ import java.util.List;
 
 public class DiscordSRVUtilsCommand implements PlatformCommand {
     public DiscordSRVUtils core = DiscordSRVUtils.get();
+
     @Override
-    public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable{
+    public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
             sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getDescription().getVersion());
             String build = core.getVersionConfig().getString("buildNumber");

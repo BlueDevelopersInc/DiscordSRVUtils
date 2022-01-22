@@ -24,7 +24,6 @@ package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -37,6 +36,7 @@ import java.util.List;
 
 public class BukkitCommandListener implements CommandExecutor, TabCompleter {
     public DiscordSRVUtilsCommand cmd = new DiscordSRVUtilsCommand();
+
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
@@ -59,11 +59,9 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
     private CommandUser wrapUser(CommandSender sender) {
         if (sender instanceof Player) {
             return new BukkitPlayer(((Player) sender));
-        }
-        else if (sender instanceof ConsoleCommandSender) {
+        } else if (sender instanceof ConsoleCommandSender) {
             return new BukkitConsoleCommandUser();
-        }
-        else {
+        } else {
             return new BukkitCommandUser(sender);
         }
     }
