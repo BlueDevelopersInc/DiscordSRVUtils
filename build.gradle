@@ -126,7 +126,7 @@ shadowJar {
     classifier ''
 }
 dependencies {
-    implementation project(":Bukkit")
+    implementation project(":bukkit")
 }
 publishing {
     publications {
