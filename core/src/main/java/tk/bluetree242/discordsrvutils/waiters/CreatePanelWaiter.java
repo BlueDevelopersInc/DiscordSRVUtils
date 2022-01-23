@@ -24,7 +24,7 @@ package tk.bluetree242.discordsrvutils.waiters;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import tk.bluetree242.discordsrvutils.tickets.Panel;
+import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 

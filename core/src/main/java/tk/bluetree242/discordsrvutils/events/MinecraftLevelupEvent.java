@@ -22,7 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.events;
 
-import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 public class MinecraftLevelupEvent extends LevelupEvent {

@@ -65,7 +65,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             return valueMap;
         }));
         metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
-        metrics.addCustomChart(new SimplePie("admins", () -> core.getAdminIds().size() + ""));
+        metrics.addCustomChart(new SimplePie("admins", () -> core.getJdaManager().getAdminIds().size() + ""));
     }
 
     public void onDisable() {
@@ -81,7 +81,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
-            core.listeners.add(new CustomDiscordAccountLinkListener());
+            core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener());
         }
     }
 

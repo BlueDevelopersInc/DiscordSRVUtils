@@ -23,12 +23,12 @@
 package tk.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.leveling.LevelingManager;
-import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
+import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 

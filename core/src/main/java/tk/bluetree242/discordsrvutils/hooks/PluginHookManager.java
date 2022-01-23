@@ -48,12 +48,16 @@ public class PluginHookManager {
     public void hookAll() {
         for (PluginHook hook : new ArrayList<>(hooks)) {
             if (DiscordSRVUtils.getPlatform().getServer().isPluginEnabled(hook.getRequiredPlugin())) {
-                hook.hook();
+                try {
+                    hook.hook();
+                } catch (Exception e) {
+                    core.getLogger().severe("Failed to hook into " + hook.getRequiredPlugin());
+                }
             }
         }
     }
 
-    public void removehookAll() {
+    public void removeHookAll() {
         for (PluginHook hook : new ArrayList<>(hooks)) {
             hook.removeHook();
         }

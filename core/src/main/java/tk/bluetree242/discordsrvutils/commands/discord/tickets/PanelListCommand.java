@@ -26,12 +26,12 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.tickets.Panel;
-import tk.bluetree242.discordsrvutils.tickets.TicketManager;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
+import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
+import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 
 import java.awt.*;

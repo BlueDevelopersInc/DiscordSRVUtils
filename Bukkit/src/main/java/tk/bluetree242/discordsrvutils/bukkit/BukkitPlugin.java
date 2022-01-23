@@ -37,7 +37,7 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.L
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
 import tk.bluetree242.discordsrvutils.platform.*;
-import tk.bluetree242.discordsrvutils.status.StatusListener;
+import tk.bluetree242.discordsrvutils.systems.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;

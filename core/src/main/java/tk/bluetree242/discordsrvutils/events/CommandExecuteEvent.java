@@ -26,7 +26,7 @@ import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageReceivedEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 
 public class CommandExecuteEvent extends Event {
 

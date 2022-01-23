@@ -23,10 +23,10 @@
 package tk.bluetree242.discordsrvutils.commands.discord.admin;
 
 import org.json.JSONException;
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 
 public class TestMessageCommand extends Command {

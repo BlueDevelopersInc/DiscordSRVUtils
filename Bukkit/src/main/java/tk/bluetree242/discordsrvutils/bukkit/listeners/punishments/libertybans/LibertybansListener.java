@@ -37,7 +37,7 @@ import space.arim.omnibus.events.EventConsumer;
 import space.arim.omnibus.events.ListenerPriorities;
 import space.arim.omnibus.events.RegisteredListener;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.messages.MessageManager;
+import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 

@@ -22,10 +22,10 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.status;
 
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.status.StatusManager;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
+import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class StatusCommand extends Command {
     public StatusCommand() {

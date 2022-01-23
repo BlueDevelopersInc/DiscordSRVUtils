@@ -22,11 +22,11 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
-import tk.bluetree242.discordsrvutils.commandmanagement.Command;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandCategory;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.commandmanagement.CommandType;
-import tk.bluetree242.discordsrvutils.suggestions.SuggestionManager;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
+import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class SuggestionNoteCommand extends Command {

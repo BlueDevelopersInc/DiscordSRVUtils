@@ -23,7 +23,7 @@
 package tk.bluetree242.discordsrvutils.events;
 
 import github.scarsz.discordsrv.api.events.Event;
-import tk.bluetree242.discordsrvutils.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.util.UUID;
 

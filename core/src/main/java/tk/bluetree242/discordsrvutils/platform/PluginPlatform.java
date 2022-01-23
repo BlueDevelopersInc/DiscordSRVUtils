@@ -24,7 +24,7 @@ package tk.bluetree242.discordsrvutils.platform;
 
 
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
-import tk.bluetree242.discordsrvutils.status.StatusListener;
+import tk.bluetree242.discordsrvutils.systems.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;

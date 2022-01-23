@@ -46,7 +46,7 @@ public class CustomDiscordAccountLinkListener extends ListenerAdapter {
 
 
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (!DiscordSRVUtils.get().removedDiscordSRVAccountLinkListener) return;
+        if (!DiscordSRVUtils.get().isRemovedDiscordSRVAccountLinkListener()) return;
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {

@@ -28,8 +28,8 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.status.StatusListener;
-import tk.bluetree242.discordsrvutils.status.StatusManager;
+import tk.bluetree242.discordsrvutils.systems.status.StatusListener;
+import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class BukkitStatusListener extends StatusListener implements Listener, EventExecutor {
 
