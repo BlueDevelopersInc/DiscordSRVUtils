@@ -33,6 +33,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.flywaydb.core.Flyway;
@@ -118,15 +119,21 @@ public class DiscordSRVUtils {
     private ConfManager<TicketsConfig> ticketsconfigManager;
     private Config config;
     private ConfManager<LevelingConfig> levelingconfigManager;
+    @Getter
     private SQLConfig sqlconfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager;
-    private PunishmentsIntegrationConfig bansIntegrationConfig;
+    @Getter
+    private PunishmentsIntegrationConfig bansConfig;
     private ConfManager<StatusConfig> statusConfigConfManager;
+    @Getter
     private TicketsConfig ticketsConfig;
+    @Getter
     private LevelingConfig levelingConfig;
     private PluginPlatform main;
+    @Getter
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlconfigmanager;
+    @Getter
     private StatusConfig statusConfig;
     //Thread Pool
     private ThreadPoolExecutor pool;
@@ -471,7 +478,7 @@ public class DiscordSRVUtils {
         sqlconfigmanager.reloadConfig();
         sqlconfig = sqlconfigmanager.reloadConfigData();
         bansIntegrationconfigmanager.reloadConfig();
-        bansIntegrationConfig = bansIntegrationconfigmanager.reloadConfigData();
+        bansConfig = bansIntegrationconfigmanager.reloadConfigData();
         ticketsconfigManager.reloadConfig();
         ticketsConfig = ticketsconfigManager.reloadConfigData();
         levelingconfigManager.reloadConfig();
@@ -525,6 +532,8 @@ public class DiscordSRVUtils {
 
         });
     }
+
+    public Config getMainConfig() {return config;}
 
     public Logger getLogger() {
         return main.getLogger();
@@ -590,34 +599,6 @@ public class DiscordSRVUtils {
             }
 
         });
-    }
-
-    public Config getMainConfig() {
-        return config;
-    }
-
-    public SQLConfig getSqlconfig() {
-        return sqlconfig;
-    }
-
-    public SuggestionsConfig getSuggestionsConfig() {
-        return suggestionsConfig;
-    }
-
-    public PunishmentsIntegrationConfig getBansConfig() {
-        return bansIntegrationConfig;
-    }
-
-    public TicketsConfig getTicketsConfig() {
-        return ticketsConfig;
-    }
-
-    public LevelingConfig getLevelingConfig() {
-        return levelingConfig;
-    }
-
-    public StatusConfig getStatusConfig() {
-        return statusConfig;
     }
 
     public void executeAsync(Runnable r) {

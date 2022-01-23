@@ -22,11 +22,13 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
+import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class BukkitCommandUser extends CommandUser {
+    @Getter
     private final CommandSender sender;
 
     public BukkitCommandUser(CommandSender sender) {

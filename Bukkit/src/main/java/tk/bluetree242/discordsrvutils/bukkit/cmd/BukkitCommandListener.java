@@ -35,7 +35,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.List;
 
 public class BukkitCommandListener implements CommandExecutor, TabCompleter {
-    public DiscordSRVUtilsCommand cmd = new DiscordSRVUtilsCommand();
+    private final DiscordSRVUtilsCommand cmd = new DiscordSRVUtilsCommand();
 
     @Nullable
     @Override

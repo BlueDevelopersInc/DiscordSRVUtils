@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,14 +41,16 @@ import tk.bluetree242.discordsrvutils.status.StatusListener;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     private final DiscordSRVUtilsBukkit main;
-    private PlatformDiscordSRV discordSRV = null;
-
+    @Getter
+    private final BukkitDiscordSRV discordSRV;
     public BukkitPlugin(DiscordSRVUtilsBukkit main) {
         this.main = main;
+        discordSRV = new BukkitDiscordSRV();
     }
 
     public static String applyPlaceholders(String s, Player player) {
@@ -103,8 +106,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     @Override
     public void registerCommands() {
         BukkitCommandListener listener = new BukkitCommandListener();
-        main.getCommand("discordsrvutils").setExecutor(listener);
-        main.getCommand("discordsrvutils").setTabCompleter(listener);
+        Objects.requireNonNull(main.getCommand("discordsrvutils")).setExecutor(listener);
+        Objects.requireNonNull(main.getCommand("discordsrvutils")).setTabCompleter(listener);
     }
 
     @Override
@@ -133,11 +136,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public String placehold(PlatformPlayer player, String s) {
-        Player p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).player : null : null;
+        Player p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).getPlayer() : null : null;
         return applyPlaceholders(s, p);
-    }
-
-    public PlatformDiscordSRV getDiscordSRV() {
-        return discordSRV == null ? discordSRV = new BukkitDiscordSRV() : discordSRV;
     }
 }

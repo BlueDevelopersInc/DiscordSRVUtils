@@ -87,6 +87,17 @@ allprojects {
         maven { url "https://mvn-repo.arim.space/lesser-gpl3" }
     }
 }
+
+allprojects {
+    apply plugin: 'java'
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.22'
+        annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.22'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    }
+}
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
 def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']

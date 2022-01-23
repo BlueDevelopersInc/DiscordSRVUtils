@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
@@ -30,7 +31,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.UUID;
 
 public class BukkitPlayer extends PlatformPlayer {
-    public Player player;
+    @Getter private final Player player;
 
     public BukkitPlayer(Player player) {
         this.player = player;

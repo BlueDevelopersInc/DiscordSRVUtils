@@ -22,13 +22,15 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.cmd;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class BukkitConsoleCommandUser extends ConsoleCommandUser {
-    private CommandSender sender = Bukkit.getConsoleSender();
+    @Getter
+    private final CommandSender sender = Bukkit.getConsoleSender();
 
     @Override
     public String getName() {
