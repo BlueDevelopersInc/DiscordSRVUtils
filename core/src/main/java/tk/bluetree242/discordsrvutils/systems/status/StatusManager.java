@@ -27,9 +27,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 

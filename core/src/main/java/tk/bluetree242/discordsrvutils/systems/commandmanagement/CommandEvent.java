@@ -32,10 +32,10 @@ import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
+import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.concurrent.CompletableFuture;

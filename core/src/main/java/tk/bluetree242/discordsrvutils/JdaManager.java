@@ -114,7 +114,6 @@ public class JdaManager {
     }
 
 
-
     public boolean isAdmin(long id) {
         if (getAdminIds().contains(id)) return true;
         Member member = core.getGuild().retrieveMemberById(id).complete();
@@ -125,7 +124,6 @@ public class JdaManager {
         }
         return false;
     }
-
 
 
 }

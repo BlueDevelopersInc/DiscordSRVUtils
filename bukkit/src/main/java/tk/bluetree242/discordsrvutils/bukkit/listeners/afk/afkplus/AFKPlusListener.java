@@ -33,9 +33,9 @@ import org.bukkit.event.Listener;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 public class AFKPlusListener implements Listener {
     private DiscordSRVUtils core = DiscordSRVUtils.get();

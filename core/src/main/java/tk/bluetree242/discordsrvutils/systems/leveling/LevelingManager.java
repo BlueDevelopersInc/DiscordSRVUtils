@@ -61,6 +61,9 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
+    //leveling roles jsonobject, Initialized on startup
+    @Getter
+    private JSONObject levelingRolesRaw;
 
     public LevelingManager() {
         main = this;
@@ -69,10 +72,6 @@ public class LevelingManager {
     public static LevelingManager get() {
         return main;
     }
-
-    //leveling roles jsonobject, Initialized on startup
-    @Getter
-    private JSONObject levelingRolesRaw;
 
     public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
         return core.completableFuture(() -> {

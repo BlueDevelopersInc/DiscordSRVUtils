@@ -117,6 +117,29 @@ public class DiscordSRVUtils {
     @Getter
     private DatabaseManager databaseManager;
 
+    public DiscordSRVUtils(PluginPlatform main) {
+        this.main = main;
+        initConfigs();
+        logger = main.getLogger();
+        onLoad();
+    }
+
+    public static DiscordSRVUtils get() {
+        return instance;
+    }
+
+    public static PlatformServer getServer() {
+        return getPlatform().getServer();
+    }
+
+    public static PluginPlatform getPlatform() {
+        return get().main;
+    }
+
+    public static PlatformDiscordSRV getDiscordSRV() {
+        return getPlatform().getDiscordSRV();
+    }
+
     private void init() {
         //set the instance
         instance = this;
@@ -141,29 +164,6 @@ public class DiscordSRVUtils {
         databaseManager = new DatabaseManager();
     }
 
-    public DiscordSRVUtils(PluginPlatform main) {
-        this.main = main;
-        initConfigs();
-        logger = main.getLogger();
-        onLoad();
-    }
-
-    public static DiscordSRVUtils get() {
-        return instance;
-    }
-
-    public static PlatformServer getServer() {
-        return getPlatform().getServer();
-    }
-
-    public static PluginPlatform getPlatform() {
-        return get().main;
-    }
-
-    public static PlatformDiscordSRV getDiscordSRV() {
-        return getPlatform().getDiscordSRV();
-    }
-
     private final void initConfigs() {
         configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
         sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
@@ -175,11 +175,9 @@ public class DiscordSRVUtils {
     }
 
 
-
     public ThreadPoolExecutor getPool() {
         return asyncManager.getPool();
     }
-
 
 
     public void onLoad() {
@@ -320,7 +318,9 @@ public class DiscordSRVUtils {
         updateChecker.updateCheck(p);
     }
 
-    public Config getMainConfig() {return config;}
+    public Config getMainConfig() {
+        return config;
+    }
 
     public Logger getLogger() {
         return main.getLogger();
@@ -460,7 +460,6 @@ public class DiscordSRVUtils {
     public String execute(Object o) {
         return "";
     }
-
 
 
     private InputStream getResource(String s) {

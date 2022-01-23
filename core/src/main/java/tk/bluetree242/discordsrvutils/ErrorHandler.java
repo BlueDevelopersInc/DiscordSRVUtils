@@ -39,6 +39,7 @@ public class ErrorHandler {
     private String finalError = null;
     @Getter
     private long lastErrorTime = 0;
+
     protected void startupError(Throwable ex, @NotNull String msg) {
         DiscordSRVUtils.getPlatform().disable();
         logger.warning(msg);

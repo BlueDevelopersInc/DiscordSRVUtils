@@ -23,8 +23,8 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.*;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.*;
 
 import java.awt.*;
 import java.time.Instant;

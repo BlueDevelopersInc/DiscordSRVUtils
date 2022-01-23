@@ -28,9 +28,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 public class WelcomerAndGoodByeListener extends ListenerAdapter {
     private DiscordSRVUtils core = DiscordSRVUtils.get();

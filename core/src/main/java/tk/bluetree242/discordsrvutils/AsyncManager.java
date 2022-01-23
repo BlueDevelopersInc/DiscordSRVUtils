@@ -29,10 +29,9 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class AsyncManager {
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
     @Getter
     private ThreadPoolExecutor pool;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
-
 
     private Thread newDSUThread(Runnable r) {
         //start new thread with name and handler
@@ -95,5 +94,4 @@ public class AsyncManager {
     }
 
 
-
-    }
+}

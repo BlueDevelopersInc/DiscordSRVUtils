@@ -29,12 +29,12 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 import java.security.SecureRandom;
 

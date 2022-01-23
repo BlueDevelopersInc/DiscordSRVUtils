@@ -25,13 +25,13 @@ package tk.bluetree242.discordsrvutils.systems.leveling.listeners.game;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
-import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
+import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 
 import java.security.SecureRandom;
 import java.sql.Connection;

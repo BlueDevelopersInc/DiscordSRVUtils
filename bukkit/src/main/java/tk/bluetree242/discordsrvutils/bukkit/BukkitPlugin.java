@@ -36,7 +36,10 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.A
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.LibertybansHook;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
 import tk.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
-import tk.bluetree242.discordsrvutils.platform.*;
+import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
+import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
+import tk.bluetree242.discordsrvutils.platform.PlatformServer;
+import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.systems.status.StatusListener;
 
 import java.io.File;
@@ -48,6 +51,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     private final DiscordSRVUtilsBukkit main;
     @Getter
     private final BukkitDiscordSRV discordSRV;
+
     public BukkitPlugin(DiscordSRVUtilsBukkit main) {
         this.main = main;
         discordSRV = new BukkitDiscordSRV();

@@ -31,7 +31,8 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.UUID;
 
 public class BukkitPlayer extends PlatformPlayer {
-    @Getter private final Player player;
+    @Getter
+    private final Player player;
 
     public BukkitPlayer(Player player) {
         this.player = player;

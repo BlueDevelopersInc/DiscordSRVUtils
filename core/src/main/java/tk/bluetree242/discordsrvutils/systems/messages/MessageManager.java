@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
@@ -52,22 +51,23 @@ import java.util.logging.Logger;
 
 public class MessageManager {
     private static MessageManager instance;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    //messages folder path
-    @Getter
-    private Path messagesDirectory = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
     private final Logger logger = DiscordSRVUtils.get().getLogger();
-
     //default messages to use
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
-
+    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    //messages folder path
+    @Getter
+    private Path messagesDirectory = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
 
 
     public MessageManager() {
         instance = this;
         initDefaultMessages();
+    }
+
+    public static MessageManager get() {
+        return instance;
     }
 
     public void init() {
@@ -87,8 +87,6 @@ public class MessageManager {
             });
         }
     }
-
-
 
     private void initDefaultMessages() {
         //prepare a list of all messages
@@ -120,10 +118,6 @@ public class MessageManager {
                 logger.severe("Could not load " + msg + ".json");
             }
         }
-    }
-
-    public static MessageManager get() {
-        return instance;
     }
 
     public EmbedBuilder parseEmbedFromJSON(JSONObject json, PlaceholdObjectList holders, PlatformPlayer placehold) {
