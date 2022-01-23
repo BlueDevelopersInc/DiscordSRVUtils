@@ -62,7 +62,7 @@ public class AsyncManager {
     }
 
     public boolean isReady() {
-        return pool != null && pool.isShutdown();
+        return pool != null && !pool.isShutdown();
     }
 
     public void executeAsync(Runnable r) {

@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class MessageManager {
 
     //messages folder path
     @Getter
-    private Path messagesDirectory;
+    private Path messagesDirectory = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
     private final Logger logger = DiscordSRVUtils.get().getLogger();
 
     //default messages to use
