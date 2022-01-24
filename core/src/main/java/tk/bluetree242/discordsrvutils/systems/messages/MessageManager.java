@@ -55,10 +55,10 @@ public class MessageManager {
     //default messages to use
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
     //messages folder path
     @Getter
-    private Path messagesDirectory = Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
+    private final Path messagesDirectory = Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
 
 
     public MessageManager() {
