@@ -24,7 +24,7 @@ package tk.bluetree242.discordsrvutils.exceptions;
 
 public class StartupException extends RuntimeException {
 
-    private Throwable cause;
+    private final Throwable cause;
 
     public StartupException(Throwable ex) {
         this.cause = ex;

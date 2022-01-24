@@ -41,7 +41,7 @@ import java.sql.SQLException;
 public class SuggestionListener extends ListenerAdapter {
 
 
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;

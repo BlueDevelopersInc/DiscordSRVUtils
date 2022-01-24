@@ -37,7 +37,7 @@ import java.util.Map;
 public class PlaceholdObject {
     private final Map<String, Method> map = new HashMap<>();
     protected String display;
-    private Object ob;
+    private final Object ob;
 
     public PlaceholdObject(Object ob, String display) {
         this.ob = ob;

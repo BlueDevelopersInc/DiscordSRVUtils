@@ -29,10 +29,10 @@ import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
 public class CreatePanelWaiter extends Waiter {
-    private Panel.Builder builder = new Panel.Builder();
+    private final Panel.Builder builder = new Panel.Builder();
     private int step = 1;
-    private TextChannel channel;
-    private User user;
+    private final TextChannel channel;
+    private final User user;
 
     public CreatePanelWaiter(TextChannel channel, User user) {
         this.channel = channel;

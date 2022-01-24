@@ -32,10 +32,10 @@ public class CommandCategory {
     public static final CommandCategory LEVELING = new CommandCategory("Leveling", "\uD83C\uDFC5");
     public static final CommandCategory SUGGESTIONS = new CommandCategory("Suggestions", "\uD83D\uDCA1");
     public static final CommandCategory SUGGESTIONS_ADMIN = new CommandCategory("Suggestions Admin", "\uD83D\uDCA1");
-    private static Set<CommandCategory> externals = new HashSet<>();
-    private List<Command> commands = new ArrayList<>();
-    private String name;
-    private String prefix;
+    private static final Set<CommandCategory> externals = new HashSet<>();
+    private final List<Command> commands = new ArrayList<>();
+    private final String name;
+    private final String prefix;
 
 
     private CommandCategory(String name, String prefix) {

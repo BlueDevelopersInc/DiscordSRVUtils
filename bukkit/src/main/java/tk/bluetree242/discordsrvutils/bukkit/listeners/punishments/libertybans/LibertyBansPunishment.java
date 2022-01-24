@@ -31,8 +31,8 @@ import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class LibertyBansPunishment implements Punishment {
-    private space.arim.libertybans.api.punish.Punishment punishment;
-    private Operator operator;
+    private final space.arim.libertybans.api.punish.Punishment punishment;
+    private final Operator operator;
 
     public LibertyBansPunishment(space.arim.libertybans.api.punish.Punishment punishment, Operator operator) {
         this.punishment = punishment;

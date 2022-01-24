@@ -30,7 +30,7 @@ import java.security.SecureRandom;
 // I Copied some of the original discordsrv code for some reason. This code isn't 100% mine
 public class DebugUtil {
     private static final SecureRandom RANDOM = new SecureRandom();
-    private static OkHttpClient client = new OkHttpClient.Builder().build();
+    private static final OkHttpClient client = new OkHttpClient.Builder().build();
 
     public static String run() throws Exception {
         return run(null);

@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 public class EditPanelListener extends ListenerAdapter {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         EmbedBuilder embed = new EmbedBuilder();

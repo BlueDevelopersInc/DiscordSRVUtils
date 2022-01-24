@@ -50,7 +50,7 @@ public class SuggestionManager {
 
     private static SuggestionManager main;
     public boolean loading = false;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public SuggestionManager() {
         main = this;

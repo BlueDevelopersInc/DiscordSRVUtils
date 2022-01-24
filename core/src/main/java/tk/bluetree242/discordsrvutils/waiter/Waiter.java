@@ -22,7 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.waiter;
 
-public abstract class Waiter {
+import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+
+public abstract class Waiter extends ListenerAdapter {
     private final long startTime;
     private boolean expired = false;
 

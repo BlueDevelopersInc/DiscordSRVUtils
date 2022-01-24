@@ -26,7 +26,7 @@ import java.sql.SQLException;
 
 public class UnCheckedSQLException extends RuntimeException {
 
-    private SQLException cause;
+    private final SQLException cause;
 
     public UnCheckedSQLException(SQLException e) {
         cause = e;

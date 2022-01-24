@@ -49,7 +49,7 @@ public class LevelingManager {
     private static LevelingManager main;
     public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
     public final Map<UUID, Long> antispamMap = new HashMap<>();
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adding = false;
     public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)

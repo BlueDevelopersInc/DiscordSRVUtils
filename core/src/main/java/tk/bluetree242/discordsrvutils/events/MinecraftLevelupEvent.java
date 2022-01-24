@@ -26,8 +26,8 @@ import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 public class MinecraftLevelupEvent extends LevelupEvent {
-    private PlayerStats stats;
-    private PlatformPlayer player;
+    private final PlayerStats stats;
+    private final PlatformPlayer player;
 
     public MinecraftLevelupEvent(PlayerStats stats, PlatformPlayer player) {
         super(stats, player.getUniqueId());

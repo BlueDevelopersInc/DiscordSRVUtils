@@ -43,9 +43,9 @@ import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 public class LibertybansListener {
     private final LibertyBans plugin;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private RegisteredListener pListener;
-    private RegisteredListener pardonListener;
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final RegisteredListener pListener;
+    private final RegisteredListener pardonListener;
 
     public LibertybansListener() {
         Omnibus omnibus = OmnibusProvider.getOmnibus();

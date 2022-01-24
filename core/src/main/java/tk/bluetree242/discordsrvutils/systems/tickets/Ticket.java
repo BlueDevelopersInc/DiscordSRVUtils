@@ -37,12 +37,12 @@ import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
 public class Ticket {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private String id;
-    private Long userID;
-    private Long channelID;
-    private boolean closed;
-    private Panel panel;
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final String id;
+    private final Long userID;
+    private final Long channelID;
+    private final boolean closed;
+    private final Panel panel;
     private Long messageID;
 
     public Ticket(String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {

@@ -26,8 +26,8 @@ import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 
 public class ConfigurationLoadException extends RuntimeException {
 
-    private Throwable cause;
-    private String confname;
+    private final Throwable cause;
+    private final String confname;
 
     public ConfigurationLoadException(Throwable ex, String confname) {
         this.cause = ex;

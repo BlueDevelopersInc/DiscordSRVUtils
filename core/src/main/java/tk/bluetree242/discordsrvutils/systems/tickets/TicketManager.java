@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class TicketManager {
     private static TicketManager main;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public TicketManager() {
         main = this;

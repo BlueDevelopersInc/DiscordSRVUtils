@@ -31,7 +31,7 @@ import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class TicketCloseListener extends ListenerAdapter {
 
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;

@@ -40,7 +40,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class GameLevelingListener extends PlatformListener {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onJoin(PlatformJoinEvent e) {
         core.executeAsync(() -> {

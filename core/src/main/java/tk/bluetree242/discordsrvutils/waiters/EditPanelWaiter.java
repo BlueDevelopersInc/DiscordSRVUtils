@@ -34,10 +34,10 @@ import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import java.awt.*;
 
 public class EditPanelWaiter extends Waiter {
-    private Panel.Editor editor;
+    private final Panel.Editor editor;
     private int step = 0;
-    private TextChannel channel;
-    private User user;
+    private final TextChannel channel;
+    private final User user;
     private Message msg;
 
     public EditPanelWaiter(TextChannel channel, User user, Panel.Editor editor, Message msg) {

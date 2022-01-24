@@ -24,9 +24,9 @@ package tk.bluetree242.discordsrvutils.systems.suggestions;
 
 public class SuggestionVote {
 
-    private Long id;
-    private int SuggestionNumber;
-    private boolean agree;
+    private final Long id;
+    private final int SuggestionNumber;
+    private final boolean agree;
 
     public SuggestionVote(Long id, int suggestionNumber, boolean agree) {
         this.id = id;

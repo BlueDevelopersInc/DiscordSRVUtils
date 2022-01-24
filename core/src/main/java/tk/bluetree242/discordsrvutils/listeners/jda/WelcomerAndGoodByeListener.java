@@ -33,7 +33,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 public class WelcomerAndGoodByeListener extends ListenerAdapter {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         core.executeAsync(() -> {

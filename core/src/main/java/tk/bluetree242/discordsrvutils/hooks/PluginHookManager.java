@@ -30,8 +30,8 @@ import java.util.List;
 public class PluginHookManager {
 
     private static PluginHookManager main;
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private List<PluginHook> hooks = new ArrayList<>();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final List<PluginHook> hooks = new ArrayList<>();
 
     public PluginHookManager() {
         main = this;

@@ -39,7 +39,7 @@ import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import java.security.SecureRandom;
 
 public class DiscordLevelingListener extends ListenerAdapter {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;

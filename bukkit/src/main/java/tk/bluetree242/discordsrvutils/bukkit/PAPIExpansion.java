@@ -33,7 +33,7 @@ import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import java.util.List;
 
 public class PAPIExpansion extends PlaceholderExpansion {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     @Override
     public String getIdentifier() {

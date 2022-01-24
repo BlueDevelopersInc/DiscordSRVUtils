@@ -27,9 +27,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 public class DiscordLevelupEvent extends LevelupEvent {
-    private PlayerStats stats;
-    private TextChannel channel;
-    private User user;
+    private final PlayerStats stats;
+    private final TextChannel channel;
+    private final User user;
 
     public DiscordLevelupEvent(PlayerStats stats, TextChannel channel, User user) {
         super(stats, stats.getUuid());

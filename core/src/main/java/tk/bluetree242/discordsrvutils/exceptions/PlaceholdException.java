@@ -25,7 +25,7 @@ package tk.bluetree242.discordsrvutils.exceptions;
 public class PlaceholdException extends RuntimeException {
 
 
-    private Throwable cause;
+    private final Throwable cause;
 
     public PlaceholdException(Throwable ex) {
         this.cause = ex;

@@ -35,7 +35,7 @@ import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 public class LitebansPunishmentListener extends Events.Listener {
 
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public LitebansPunishmentListener() {
         litebans.api.Events.get().register(this);
