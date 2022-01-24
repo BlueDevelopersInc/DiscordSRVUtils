@@ -58,7 +58,7 @@ public class MessageManager {
     private DiscordSRVUtils core = DiscordSRVUtils.get();
     //messages folder path
     @Getter
-    private Path messagesDirectory = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
+    private Path messagesDirectory = Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
 
 
     public MessageManager() {
@@ -113,7 +113,7 @@ public class MessageManager {
         for (String msg : messages) {
             try {
                 //add them to the map
-                defaultMessages.put(msg, new String(DiscordSRVUtils.getPlatform().getResource("messages/" + msg + ".json").readAllBytes()));
+                defaultMessages.put(msg, new String(core.getPlatform().getResource("messages/" + msg + ".json").readAllBytes()));
             } catch (IOException e) {
                 logger.severe("Could not load " + msg + ".json");
             }
@@ -193,7 +193,7 @@ public class MessageManager {
             if (holders != null) {
                 raw = holders.apply(raw);
             }
-            raw = DiscordSRVUtils.getPlatform().placehold(placehold, raw);
+            raw = core.getPlatform().placehold(placehold, raw);
             return raw;
         }
         return null;
@@ -241,7 +241,7 @@ public class MessageManager {
             if (holders != null) {
                 content = holders.apply(content);
             }
-            content = DiscordSRVUtils.getPlatform().placehold(placehold, content);
+            content = core.getPlatform().placehold(placehold, content);
             content = Utils.colors(content);
             msg.setContent(content);
         }

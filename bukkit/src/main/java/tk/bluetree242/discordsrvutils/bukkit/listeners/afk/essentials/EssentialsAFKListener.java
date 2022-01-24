@@ -60,7 +60,7 @@ public class EssentialsAFKListener implements Listener {
     }
 
     public void remove() {
-        AfkStatusChangeEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.getPlatform().getOriginal());
+        AfkStatusChangeEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
     }
 
     @EventHandler

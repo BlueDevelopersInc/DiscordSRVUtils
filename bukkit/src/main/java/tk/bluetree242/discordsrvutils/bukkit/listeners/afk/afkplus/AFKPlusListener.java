@@ -79,7 +79,7 @@ public class AFKPlusListener implements Listener {
     }
 
     public void remove() {
-        AFKStartEvent.getHandlerList().unregister((Listener) DiscordSRVUtils.getPlatform().getOriginal());
-        AFKStopEvent.getHandlerList().unregister((Listener) DiscordSRVUtils.getPlatform().getOriginal());
+        AFKStartEvent.getHandlerList().unregister((Listener) core.getPlatform().getOriginal());
+        AFKStopEvent.getHandlerList().unregister((Listener) core.getPlatform().getOriginal());
     }
 }

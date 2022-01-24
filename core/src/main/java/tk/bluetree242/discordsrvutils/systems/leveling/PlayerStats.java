@@ -110,7 +110,7 @@ public class PlayerStats {
                     p1.execute();
                     this.level = level + 1;
                     this.xp = 0;
-                    String id = DiscordSRVUtils.getDiscordSRV().getDiscordId(uuid);
+                    String id = core.getDiscordSRV().getDiscordId(uuid);
                     if (id == null) return true;
                     LevelingManager manager = LevelingManager.get();
                     Member member = core.getGuild().retrieveMemberById(id).complete();

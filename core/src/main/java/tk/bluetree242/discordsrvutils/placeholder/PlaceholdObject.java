@@ -75,14 +75,14 @@ public class PlaceholdObject {
             }
         });
 
-        val[0] = DiscordSRVUtils.getPlatform().placehold(placehold, s);
+        val[0] = core.getPlatform().placehold(placehold, s);
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("guild", DiscordSRVUtils.get().getGuild());
             variables.put("jda", DiscordSRVUtils.get().getJDA());
             variables.put("DSU", DiscordSRVUtils.get());
             variables.put("TicketManager", TicketManager.get());
-            variables.put("server", DiscordSRVUtils.getPlatform().getServer().getOriginal());
+            variables.put("server", core.getPlatform().getServer().getOriginal());
             variables.put("LevelingManager", LevelingManager.get());
             variables.put("CommandManager", CommandManager.get());
             variables.put(display, ob);

@@ -50,7 +50,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         variables.put("guild", DiscordSRVUtils.get().getGuild());
         variables.put("jda", DiscordSRVUtils.get().getJDA());
         variables.put("DSU", DiscordSRVUtils.get());
-        variables.put("server", DiscordSRVUtils.getPlatform().getServer().getOriginal());
+        variables.put("server", core.getPlatform().getServer().getOriginal());
         variables.put("TicketManager", TicketManager.get());
         variables.put("LevelingManager", LevelingManager.get());
         variables.put("CommandManager", CommandManager.get());
@@ -72,7 +72,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
             });
         }
 
-        val[0] = DiscordSRVUtils.getPlatform().placehold(placehold, val[0]);
+        val[0] = core.getPlatform().placehold(placehold, val[0]);
         val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
         return val[0];
     }

@@ -37,7 +37,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         for (String event : core.getStatusConfig().update_events()) {
             try {
                 Class eventClass = Class.forName(event);
-                Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, this, (Plugin) DiscordSRVUtils.getPlatform().getOriginal(), false);
+                Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, this, (Plugin) core.getPlatform().getOriginal(), false);
             } catch (ClassNotFoundException e) {
                 core.severe("Event " + event + " Not Found");
             }
@@ -50,7 +50,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLater((Plugin) DiscordSRVUtils.getPlatform().getOriginal(), () -> {
+        Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform().getOriginal(), () -> {
             StatusManager.get().editMessage(true);
         }, 1);
     }

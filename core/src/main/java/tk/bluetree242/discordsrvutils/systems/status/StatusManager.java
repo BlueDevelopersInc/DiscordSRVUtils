@@ -45,7 +45,7 @@ import java.util.concurrent.CompletableFuture;
 public class StatusManager {
     private static StatusManager main;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
-    private final Path dataPath = Paths.get(DiscordSRVUtils.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+    private final Path dataPath = Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
     private StatusTimer timer = new StatusTimer();
 
     public StatusManager() {
@@ -59,7 +59,7 @@ public class StatusManager {
 
     public Message getStatusMessage(boolean online) {
         PlaceholdObjectList holders = new PlaceholdObjectList();
-        holders.add(new PlaceholdObject(DiscordSRVUtils.getPlatform().getServer().getOriginal(), "server"));
+        holders.add(new PlaceholdObject(core.getPlatform().getServer().getOriginal(), "server"));
         return MessageManager.get().parseMessageFromJson(MessageManager.get().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 

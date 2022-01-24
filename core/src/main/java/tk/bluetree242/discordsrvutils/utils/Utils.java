@@ -222,6 +222,6 @@ public class Utils {
     }
 
     public static String colors(String s) {
-        return DiscordSRVUtils.getPlatform().getServer().colors(s);
+        return core.getPlatform().getServer().colors(s);
     }
 }

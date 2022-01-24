@@ -64,7 +64,7 @@ public class JdaManager {
     }
 
     public JDA getJDA() {
-        return DiscordSRVUtils.getPlatform().getDiscordSRV().getJDA();
+        return core.getPlatform().getDiscordSRV().getJDA();
     }
 
     public void registerListeners() {
@@ -84,7 +84,7 @@ public class JdaManager {
             return channel;
         }
         if (id == 0) {
-            return DiscordSRVUtils.getPlatform().getDiscordSRV().getMainChatChannel();
+            return core.getPlatform().getDiscordSRV().getMainChatChannel();
         } else return getJDA().getTextChannelById(id);
     }
 

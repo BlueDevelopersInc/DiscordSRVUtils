@@ -39,7 +39,7 @@ public class EssentialsHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) DiscordSRVUtils.getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) core.getPlatform().getOriginal());
     }
 
     @Override

@@ -55,7 +55,7 @@ public class DatabaseManager {
             pass = core.getSqlconfig().Password();
         } else {
             core.logger.info("MySQL is disabled, using hsqldb");
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(DiscordSRVUtils.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
+            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
             user = "SA";
             pass = "";
         }

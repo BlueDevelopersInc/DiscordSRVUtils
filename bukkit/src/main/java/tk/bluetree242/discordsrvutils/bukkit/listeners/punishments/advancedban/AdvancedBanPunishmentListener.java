@@ -186,7 +186,7 @@ public class AdvancedBanPunishmentListener implements Listener {
     }
 
     public void remove() {
-        PunishmentEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.getPlatform().getOriginal());
-        RevokePunishmentEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.getPlatform().getOriginal());
+        PunishmentEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
+        RevokePunishmentEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
     }
 }

@@ -33,15 +33,15 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.logging.Logger;
 
 public class ErrorHandler {
-    private DiscordSRVUtils core = DiscordSRVUtils.get();
-    private Logger logger = core.getLogger();
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final Logger logger = core.getLogger();
     @Getter
     private String finalError = null;
     @Getter
     private long lastErrorTime = 0;
 
     protected void startupError(Throwable ex, @NotNull String msg) {
-        DiscordSRVUtils.getPlatform().disable();
+        core.getPlatform().disable();
         logger.warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
@@ -63,7 +63,7 @@ public class ErrorHandler {
             logger.warning("Read the note above the error Please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
-                for (PlatformPlayer p : DiscordSRVUtils.getServer().getOnlinePlayers()) {
+                for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
                     if (p.hasPermission("discordsrvutils.errornotifications")) {
                         //tell admins that something was wrong
                         p.sendMessage("&7[&eDSU&7] Plugin had an error. Check console for details. Support at https://discordsrvutils.xyz/support");
@@ -86,7 +86,7 @@ public class ErrorHandler {
 
     public void severe(String sv) {
         core.getLogger().severe(sv);
-        for (PlatformPlayer p : DiscordSRVUtils.getPlatform().getServer().getOnlinePlayers()) {
+        for (PlatformPlayer p : core.getPlatform().getServer().getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
                 //tell admins that something was wrong
                 p.sendMessage("&7[&eDSU&7] &c" + sv);

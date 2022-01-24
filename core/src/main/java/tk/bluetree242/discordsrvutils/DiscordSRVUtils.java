@@ -81,7 +81,7 @@ public class DiscordSRVUtils {
     // faster getter for the logger
     public Logger logger;
     //Configurations
-    private ConfManager<Config> configmanager;
+    private ConfManager<Config> configManager;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager;
     private ConfManager<TicketsConfig> ticketsconfigManager;
     private Config config;
@@ -128,15 +128,15 @@ public class DiscordSRVUtils {
         return instance;
     }
 
-    public static PlatformServer getServer() {
+    public PlatformServer getServer() {
         return getPlatform().getServer();
     }
 
-    public static PluginPlatform getPlatform() {
-        return get().main;
+    public PluginPlatform getPlatform() {
+        return main;
     }
 
-    public static PlatformDiscordSRV getDiscordSRV() {
+    public PlatformDiscordSRV getDiscordSRV() {
         return getPlatform().getDiscordSRV();
     }
 
@@ -164,8 +164,8 @@ public class DiscordSRVUtils {
         databaseManager = new DatabaseManager();
     }
 
-    private final void initConfigs() {
-        configmanager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
+    private void initConfigs() {
+        configManager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
         sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
         bansIntegrationconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
         ticketsconfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
@@ -173,12 +173,6 @@ public class DiscordSRVUtils {
         suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
         statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
     }
-
-
-    public ThreadPoolExecutor getPool() {
-        return asyncManager.getPool();
-    }
-
 
     public void onLoad() {
         init();
@@ -283,21 +277,9 @@ public class DiscordSRVUtils {
         main.addListener(new JoinUpdateChecker());
     }
 
-    /**
-     * @return true if plugin enabled and discordsrv ready, else false
-     */
-    public boolean isReady() {
-        if (!isEnabled()) return false;
-        return DiscordSRV.isReady;
-    }
-
-    public boolean isEnabled() {
-        return main.isEnabled();
-    }
-
     public void reloadConfigs() throws IOException, InvalidConfigException {
-        configmanager.reloadConfig();
-        config = configmanager.reloadConfigData();
+        configManager.reloadConfig();
+        config = configManager.reloadConfigData();
         sqlconfigmanager.reloadConfig();
         sqlconfig = sqlconfigmanager.reloadConfigData();
         bansIntegrationconfigmanager.reloadConfig();
@@ -312,30 +294,6 @@ public class DiscordSRVUtils {
         statusConfig = statusConfigConfManager.reloadConfigData();
         LevelingManager.get().reloadLevelingRoles();
         setSettings();
-    }
-
-    public void updateCheck(PlatformPlayer p) {
-        updateChecker.updateCheck(p);
-    }
-
-    public Config getMainConfig() {
-        return config;
-    }
-
-    public Logger getLogger() {
-        return main.getLogger();
-    }
-
-    public PlatformPluginDescription getDescription() {
-        return main.getDescription();
-    }
-
-    public void updateCheck() {
-        updateChecker.updateCheck();
-    }
-
-    public void executeAsync(Runnable r) {
-        asyncManager.executeAsync(r);
     }
 
     private void addMessageFilter() {
@@ -375,10 +333,6 @@ public class DiscordSRVUtils {
 
     }
 
-    public JSONObject getVersionConfig() throws IOException {
-        return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
-    }
-
     public void setSettings() {
         if (!isReady()) return;
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
@@ -392,6 +346,9 @@ public class DiscordSRVUtils {
             StatusManager.get().reloadTimer();
         }
     }
+    public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
+        return channel.sendMessage(msg);
+    }
 
     public JDA getJDA() {
         return getDiscordSRV().getJDA();
@@ -401,6 +358,10 @@ public class DiscordSRVUtils {
         return MessageManager.get();
     }
 
+
+    public JSONObject getVersionConfig() throws IOException {
+        return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
+    }
 
     public void severe(String sv) {
         errorHandler.severe(sv);
@@ -434,9 +395,6 @@ public class DiscordSRVUtils {
         return CompletableFuture.runAsync(r, getPool());
     }
 
-    public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
-        return channel.sendMessage(msg);
-    }
 
     public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
         asyncManager.handleCF(cf, success, failure);
@@ -446,6 +404,41 @@ public class DiscordSRVUtils {
         return asyncManager.handleCFOnAnother(cf);
     }
 
+    /**
+     * @return true if plugin enabled and discordsrv ready, else false
+     */
+    public boolean isReady() {
+        if (!isEnabled()) return false;
+        return DiscordSRV.isReady;
+    }
+
+    public boolean isEnabled() {
+        return main.isEnabled();
+    }
+
+    public void updateCheck(PlatformPlayer p) {
+        updateChecker.updateCheck(p);
+    }
+
+    public Config getMainConfig() {
+        return config;
+    }
+
+    public Logger getLogger() {
+        return main.getLogger();
+    }
+
+    public PlatformPluginDescription getDescription() {
+        return main.getDescription();
+    }
+
+    public void updateCheck() {
+        updateChecker.updateCheck();
+    }
+
+    public void executeAsync(Runnable r) {
+        asyncManager.executeAsync(r);
+    }
 
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         errorHandler.defaultHandle(ex, channel);
@@ -464,6 +457,10 @@ public class DiscordSRVUtils {
 
     private InputStream getResource(String s) {
         return main.getResource(s);
+    }
+
+    public ThreadPoolExecutor getPool() {
+        return asyncManager.getPool();
     }
 
 }
