@@ -639,7 +639,13 @@ public class DiscordSRVUtils {
     }
 
     public void executeAsync(Runnable r) {
-        pool.execute(r);
+        pool.execute(() -> {
+        try {
+          r.run()
+        } catch (Exception ex) {
+            defaultHandle(ex);
+        }
+        });
     }
 
     private void addMessageFilter() {
