@@ -641,7 +641,7 @@ public class DiscordSRVUtils {
     public void executeAsync(Runnable r) {
         pool.execute(() -> {
         try {
-          r.run()
+          r.run();
         } catch (Exception ex) {
             defaultHandle(ex);
         }
