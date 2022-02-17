@@ -23,6 +23,8 @@
 package tk.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
@@ -34,7 +36,10 @@ import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 public class LevelCommand extends Command {
     public LevelCommand() {
-        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING, "rank");
+        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING,
+                new OptionData(OptionType.USER, "user_mention", "User to get level of, must be linked", false),
+                new OptionData(OptionType.STRING, "player_name", "Player Name to get level of", false));
+        addAliases("rank");
     }
 
     @Override

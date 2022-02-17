@@ -312,6 +312,7 @@ public class DiscordSRVUtils {
             registerListeners();
             setSettings();
             PluginHookManager.get().hookAll();
+            CommandManager.get().addSlashCommands();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
                 for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {

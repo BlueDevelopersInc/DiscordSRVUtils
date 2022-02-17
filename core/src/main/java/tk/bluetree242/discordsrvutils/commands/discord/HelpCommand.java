@@ -32,7 +32,8 @@ import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null, "h");
+        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null);
+        addAliases("h");
     }
 
     @Override

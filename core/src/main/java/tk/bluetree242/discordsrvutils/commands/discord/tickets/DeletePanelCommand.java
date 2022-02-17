@@ -22,6 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
@@ -33,7 +35,9 @@ import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 public class DeletePanelCommand extends Command {
 
     public DeletePanelCommand() {
-        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN, "dp");
+        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+                new OptionData(OptionType.STRING, "id", "Panel ID"));
+        addAliases("dp");
         setAdminOnly(true);
     }
 

@@ -25,10 +25,14 @@ package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
+import lombok.Getter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Command {
     private final String cmd;
@@ -37,27 +41,41 @@ public abstract class Command {
     private final Permission requestPermission;
     private final String description;
     private final String usage;
-    private final String[] aliases;
+    @Getter
+    private List<String> aliases = new ArrayList<>();
     public DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
-
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
+    @Getter
+    private final OptionData[] options;
+    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, OptionData... options) {
         this.cmd = cmd;
+        this.options = options;
         this.type = type;
         this.description = description;
         this.usage = usage;
-        this.aliases = aliases;
         this.requestPermission = requiredPermission;
     }
 
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
         this.cmd = cmd;
         this.type = type;
+        this.options = options;
         this.description = description;
         this.usage = usage;
-        this.aliases = aliases;
+        this.requestPermission = requiredPermission;
+        this.category = category;
+        category.addCommand(this);
+    }
+
+    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+        addAliases(aliases);
+        this.cmd = cmd;
+        this.type = type;
+        options = new OptionData[0];
+        this.description = description;
+        this.usage = usage;
         this.requestPermission = requiredPermission;
         this.category = category;
         category.addCommand(this);
@@ -73,9 +91,7 @@ public abstract class Command {
         return usage.replace("[P]", getCommandPrefix());
     }
 
-    public final String[] getAliases() {
-        return aliases;
-    }
+
 
     public final String getCmd() {
         return cmd;
@@ -98,9 +114,15 @@ public abstract class Command {
                 .addField("Usage", getUsage(), false)
                 .setThumbnail(main.getJDA().getSelfUser().getEffectiveAvatarUrl());
 
-        if (aliases.length >= 1) embed.addField("aliases", getAliasesString(), false);
+        if (aliases.size() >= 1) embed.addField("aliases", getAliasesString(), false);
         return embed.build();
 
+    }
+
+    public void addAliases(String... aliases) {
+        for (String alias : aliases) {
+            this.aliases.add(alias);
+        }
     }
 
     public final String getCommandPrefix() {

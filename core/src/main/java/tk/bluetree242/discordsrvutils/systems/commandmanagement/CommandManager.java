@@ -23,6 +23,8 @@
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
 
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.CommandListUpdateAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
@@ -116,6 +118,21 @@ public class CommandManager {
 
     public List<Command> getCommandsWithoutAliases() {
         return commandswithoutaliases;
+    }
+
+    public void addSlashCommands() {
+        CommandListUpdateAction commands = core.getJDA().updateCommands();
+        for (Command command : this.commands) {
+            addCmd(command.getCmd(), command, commands);
+            for (String alias : command.getAliases()) {
+                addCmd(alias, command, commands);
+            }
+        }
+        commands.queue();
+    }
+
+    private void addCmd(String alias, Command cmd, CommandListUpdateAction action) {
+        action.addCommands(new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()));
     }
 
 
