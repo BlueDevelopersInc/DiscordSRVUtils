@@ -121,4 +121,6 @@ public class MessageFilter implements Filter {
         }
     }
 
+    public void stop() {}
+
 }

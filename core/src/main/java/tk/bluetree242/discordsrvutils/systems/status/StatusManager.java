@@ -76,6 +76,7 @@ public class StatusManager {
                 if (!file.exists()) {
                     dataPath.getParent().toFile().mkdir();
                     file.createNewFile();
+                    dataPath.getParent().toFile().mkdir();
                 }
                 FileWriter writer = new FileWriter(file);
                 writer.write(json.toString());
