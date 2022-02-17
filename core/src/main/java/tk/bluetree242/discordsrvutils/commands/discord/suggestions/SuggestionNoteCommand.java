@@ -47,23 +47,15 @@ public class SuggestionNoteCommand extends Command {
             return;
         }
 
-        String[] args = e.getArgs();
-        if (!(args.length >= 3)) {
-            e.replyErr("Missing Arguments. Usage: suggestionnote <Suggestion Number> <Note>" + getCommandPrefix() + "").queue();
-        } else {
-            if (!Utils.isInt(args[1])) {
-                e.replyErr("Invalid Suggestion Number").queue();
-                return;
-            }
-            int number = Integer.parseInt(args[1]);
-            String noteText = Utils.parseArgs(args, 2);
-            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), false, "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+            int number = (int) e.getEvent().getOption("number").getAsLong();
+            String noteText = e.getEvent().getOption("note").getAsString();
+            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
                 if (suggestion == null) {
                     e.replyErr("Suggestion not found").queue();
                     return;
                 }
-                e.handleCF(suggestion.addNote(e.getAuthor().getIdLong(), noteText), false, "Successfully added note", "Could not add note");
+                e.handleCF(suggestion.addNote(e.getAuthor().getIdLong(), noteText), "Successfully added note", "Could not add note");
             });
-        }
+
     }
 }

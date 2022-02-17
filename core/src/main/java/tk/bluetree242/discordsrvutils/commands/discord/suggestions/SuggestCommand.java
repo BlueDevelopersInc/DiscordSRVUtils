@@ -78,18 +78,12 @@ public class SuggestCommand extends Command {
             }
         }
 
-        String[] args = e.getArgs();
-        if (!(args.length >= 2)) {
-            e.replyErr("What is your suggestion? Usage: " + getCommandPrefix() + "suggest <suggestion>").queue();
-            return;
-        } else {
-            String suggestionText = Utils.parseArgs(args, 1);
-            e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), false, "Error creating suggestion").thenAcceptAsync(suggestion -> {
+
+            String suggestionText = e.getEvent().getOption("suggestion").getAsString();
+            e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
                 antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
                 e.replySuccess("Successfully created suggestion").queue();
 
             });
-        }
-
     }
 }

@@ -23,6 +23,8 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.*;
 
@@ -32,14 +34,14 @@ import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null);
+        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null,
+                new OptionData(OptionType.STRING, "command", "Command to get help of", false));
         addAliases("h");
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
-        if (args.length <= 1) {
+        if (e.getEvent().getOption("command") == null) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.GREEN);
             embed.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -59,7 +61,7 @@ public class HelpCommand extends Command {
             embed.setDescription("Use " + getCommandPrefix() + "help <Command> to get Help for a command");
             e.reply(embed.build()).queue();
         } else {
-            String cmd = args[1].toLowerCase();
+            String cmd = e.getEvent().getOption("command").getAsString();
             Command executor = CommandManager.get().getCommandHashMap().get(cmd);
             if (executor == null) {
                 e.reply(Embed.error("Command not found")).queue();

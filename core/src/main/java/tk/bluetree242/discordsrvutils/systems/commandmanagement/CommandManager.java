@@ -121,7 +121,7 @@ public class CommandManager {
     }
 
     public void addSlashCommands() {
-        CommandListUpdateAction commands = core.getJDA().updateCommands();
+        CommandListUpdateAction commands = core.getGuild().updateCommands();
         for (Command command : this.commands) {
             addCmd(command.getCmd(), command, commands);
             for (String alias : command.getAliases()) {

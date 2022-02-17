@@ -41,11 +41,7 @@ public class TestMessageCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
-        if (!(args.length >= 2)) {
-            e.reply(getHelpEmbed()).queue();
-        } else {
-            String name = args[1];
+            String name = e.getEvent().getOption("name").getAsString();
             try {
                 e.replyMessage("message:" + name).queue();
             } catch (EmbedNotFoundException ex) {
@@ -53,6 +49,5 @@ public class TestMessageCommand extends Command {
             } catch (JSONException ex) {
                 e.replyErr("Embed is invalid").queue();
             }
-        }
     }
 }

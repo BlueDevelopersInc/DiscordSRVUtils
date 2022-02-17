@@ -44,29 +44,27 @@ public class LevelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
         PlayerStats target;
-        if (args.length <= 1) {
+
+        if (e.getEvent().getOption("user_mention") != null) {
+            User user = e.getEvent().getOption("user_mention").getAsUser();
+            target = LevelingManager.get().getPlayerStats(user.getIdLong()).get();
+            if (target == null) {
+                e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account");
+                return;
+            }
+        } else if (e.getEvent().getOption("player_name") != null) {
+            String name = e.getEvent().getOption("player_name").getAsString();
+            target = LevelingManager.get().getPlayerStats(name).get();
+            if (target == null) {
+                e.replyErr("Player never joined before").queue();
+                return;
+            }
+        } else {
             target = LevelingManager.get().getPlayerStats(e.getAuthor().getIdLong()).get();
             if (target == null) {
                 e.replyErr("Your account is not linked with any Minecraft Account. Use `/discordsrv link` in game to link your account").queue();
                 return;
-            }
-        } else {
-            if (e.getMessage().getMentionedMembers().isEmpty()) {
-                String name = args[1];
-                target = LevelingManager.get().getPlayerStats(name).get();
-                if (target == null) {
-                    e.replyErr("Player never joined before").queue();
-                    return;
-                }
-            } else {
-                User user = e.getMessage().getMentionedUsers().get(0);
-                target = LevelingManager.get().getPlayerStats(user.getIdLong()).get();
-                if (target == null) {
-                    e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account").queue();
-                    return;
-                }
             }
         }
 

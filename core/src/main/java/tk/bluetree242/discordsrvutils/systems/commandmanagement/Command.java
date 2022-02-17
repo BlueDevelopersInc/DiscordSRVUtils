@@ -42,7 +42,7 @@ public abstract class Command {
     private final String description;
     private final String usage;
     @Getter
-    private List<String> aliases = new ArrayList<>();
+    private final List<String> aliases = new ArrayList<>();
     public DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
