@@ -56,7 +56,7 @@ public class PanelListCommand extends Command {
     public void run(CommandEvent e) throws Exception {
         DiscordSRVUtils.get().handleCF(TicketManager.get().getPanels(), panels -> {
             if (panels.isEmpty()) {
-                e.getChannel().sendMessage("There are no panels to show").queue();
+                e.reply("There are no panels to show").queue();
                 return;
             }
             e.reply("Loading Pages").setEphemeral(true).queue();
