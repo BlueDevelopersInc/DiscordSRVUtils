@@ -48,7 +48,7 @@ public class CreatePanelCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.ORANGE);
         embed.setDescription("**Step 1: Please Send the name of the panel**");
-        e.getChannel().sendMessage(embed.build()).queue();
+        e.reply(embed.build()).queue();
         new CreatePanelWaiter((TextChannel) e.getChannel(), e.getMember().getUser());
     }
 }
