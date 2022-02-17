@@ -59,7 +59,7 @@ public class PanelListCommand extends Command {
                 e.replyErr("There are no panels to show").queue();
                 return;
             }
-            e.reply("Loading Pages").setEphemeral(true).queue();
+            e.reply("Loading Pages...").setEphemeral(true).queue();
             new PaginationWaiter(e.getChannel(), getEmbeds(panels), e.getAuthor());
         }, failure -> {
             DiscordSRVUtils.get().defaultHandle(failure, e.getChannel());
