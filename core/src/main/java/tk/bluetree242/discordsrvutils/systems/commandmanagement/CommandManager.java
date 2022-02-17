@@ -120,6 +120,7 @@ public class CommandManager {
     public void addSlashCommands() {
         CommandListUpdateAction commands = core.getGuild().updateCommands();
         for (Command command : this.commands) {
+            if (!command.isEnabled()) continue;
             addCmd(command.getCmd(), command, commands);
             for (String alias : command.getAliases()) {
                 addCmd(alias, command, commands);

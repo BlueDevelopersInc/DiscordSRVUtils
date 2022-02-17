@@ -62,7 +62,7 @@ public class PanelListCommand extends Command {
             e.reply("Loading Pages").setEphemeral(true).queue();
             new PaginationWaiter(e.getChannel(), getEmbeds(panels), e.getAuthor());
         }, failure -> {
-            DiscordSRVUtils.get().defaultHandle(failure, (TextChannel) e.getChannel());
+            DiscordSRVUtils.get().defaultHandle(failure, e.getChannel());
         });
     }
 
