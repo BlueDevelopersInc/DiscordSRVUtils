@@ -312,7 +312,6 @@ public class DiscordSRVUtils {
             registerListeners();
             setSettings();
             PluginHookManager.get().hookAll();
-            CommandManager.get().addSlashCommands();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
                 for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
@@ -336,6 +335,7 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
+        CommandManager.get().addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());

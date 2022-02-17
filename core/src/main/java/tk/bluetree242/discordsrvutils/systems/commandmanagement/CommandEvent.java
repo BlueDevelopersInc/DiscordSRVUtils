@@ -112,11 +112,6 @@ public class CommandEvent {
         return reply(Embed.success(msg));
     }
 
-    @Deprecated(forRemoval = true)
-    public String[] getArgs() {
-        return null;
-    }
-
     public JDA getJDA() {
         return jda;
     }
