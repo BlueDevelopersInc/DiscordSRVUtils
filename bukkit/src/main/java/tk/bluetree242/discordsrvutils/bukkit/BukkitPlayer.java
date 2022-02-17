@@ -60,6 +60,6 @@ public class BukkitPlayer extends PlatformPlayer {
 
     @Override
     public String placeholders(String s) {
-        return core.getPlatform().placehold(this, s);
+        return DiscordSRVUtils.get().getPlatform().placehold(this, s);
     }
 }

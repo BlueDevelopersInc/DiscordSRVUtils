@@ -38,7 +38,7 @@ public class AfkPlusHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new AFKPlusListener(), (Plugin) core.getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new AFKPlusListener(), (Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
     }
 
     @Override

@@ -40,14 +40,14 @@ public class CMIHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new CMIAfkListener(), (Plugin) core.getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new CMIAfkListener(), (Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
     }
 
     @Override
     public void removeHook() {
         if (listener == null) return;
-        CMIAfkEnterEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
-        CMIAfkLeaveEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
+        CMIAfkEnterEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        CMIAfkLeaveEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
         listener = null;
     }
 }

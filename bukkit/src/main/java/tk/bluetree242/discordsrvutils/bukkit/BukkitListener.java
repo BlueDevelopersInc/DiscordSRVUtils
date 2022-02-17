@@ -49,7 +49,7 @@ public class BukkitListener implements Listener {
             }
         };
 
-        for (Object o : core.getPlatform().getListeners()) {
+        for (Object o : DiscordSRVUtils.get().getPlatform().getListeners()) {
             PlatformListener listener = (PlatformListener) o;
             listener.onChat(event);
         }
@@ -64,7 +64,7 @@ public class BukkitListener implements Listener {
             }
         };
 
-        for (Object o : core.getPlatform().getListeners()) {
+        for (Object o : DiscordSRVUtils.get().getPlatform().getListeners()) {
             PlatformListener listener = (PlatformListener) o;
             listener.onJoin(event);
         }

@@ -37,8 +37,8 @@ public abstract class PluginHook {
     public abstract void removeHook();
 
     public final String toString() {
-        if (core.getPlatform().getServer().isPluginInstalled(getRequiredPlugin())) {
-            PlatformPluginDescription info = core.getPlatform().getServer().getPluginDescription(getRequiredPlugin());
+        if (DiscordSRVUtils.get().getPlatform().getServer().isPluginInstalled(getRequiredPlugin())) {
+            PlatformPluginDescription info = DiscordSRVUtils.get().getPlatform().getServer().getPluginDescription(getRequiredPlugin());
             return info.getName() + " v" + info.getVersion();
         }
         return getClass().getSimpleName();
