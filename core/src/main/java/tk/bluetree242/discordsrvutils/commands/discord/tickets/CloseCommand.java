@@ -44,6 +44,7 @@ public class CloseCommand extends Command {
             if (ticket.isClosed()) {
                 e.replyErr("Ticket is already closed").queue();
             } else {
+                e.reply("Closing Ticket...").setEphemeral(true).queue();
                 DiscordSRVUtils.get().handleCF(ticket.close(e.getAuthor()), null, err -> {
                     DiscordSRVUtils.get().defaultHandle(err);
                 });
