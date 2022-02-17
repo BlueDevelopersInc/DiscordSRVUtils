@@ -1,0 +1,43 @@
+name: DiscordSRVUtils
+#We hook into those
+softdepend:
+  - DiscordSRV
+  - Essentials
+  - Advancedban
+  - PlaceholderAPI
+  - Litebans
+  - LibertyBans
+  - CMI
+  - SuperVanish
+  - PremiumVanish
+  - AfkPlus
+version: @version@
+main: tk.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit
+author: BlueTree242
+#We use api version 1.13 but all versions are supported
+api-version: 1.13
+
+#Our main and only command
+commands:
+  discordsrvutils:
+    aliases: [ dsrvu, dsu, du, discordu, srvu, dut ]
+
+#Add the perms to the permission plugins without us having to check them
+permissions:
+  discordsrvutils.reload:
+    default: false
+    description: Allow player to reload the plugin
+  discordsrvutils.debug:
+    default: false
+    description: Allow player to create a debug report
+  discordsrvutils.errornotifications:
+    default: false
+    description: Allow plugin to send errors to player
+  discordsrvutils.updatecheck:
+    default: false
+    description: Allow usage of /dsu updatecheck
+  discordsrvutils.updatechecker:
+    default: false
+    description: Allow sending update messages when player joins
+
+

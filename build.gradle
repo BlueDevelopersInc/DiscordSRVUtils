@@ -19,139 +19,115 @@
  *  <http://www.gnu.org/licenses/gpl-3.0.html>.
  *  END
  */
-
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
-shadowJar {
-    classifier ''
-    relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependencies.emoji-java"
-    relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
-    relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependencies.dazzleconf"
-    relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependencies.hikariCP"
-    relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependencies.hsqldb"
-    relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependencies.mariadb"
-    relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependencies.yaml"
-    relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
-    relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
-    relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
-    relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
-    relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
-    relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
+compileJava.options.encoding 'UTF-8'
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url = uri('https://repo.citizensnpcs.co')
+        }
+        maven {
+            url = uri('https://nexus.vankka.dev/repository/maven-public/')
+        }
+        maven {
+            url = uri('http://repo.extendedclip.com/content/repositories/placeholderapi/')
+        }
+
+        maven {
+            url = uri('https://jitpack.io')
+        }
+
+        maven {
+            url = uri('https://repo.codemc.org/repository/maven-public')
+        }
+
+        maven {
+            url = uri('https://ci.ender.zone/plugin/repository/everything/')
+        }
+
+        maven {
+            url = uri('https://papermc.io/repo/repository/maven-public/')
+        }
+
+        maven {
+            url = uri('https://nexus.scarsz.me/content/groups/public/')
+        }
+
+        maven {
+            url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+        }
+
+        maven {
+            url = uri("https://papermc.io/repo/repository/maven-public/")
+        }
+
+        maven {
+            name = "sonatype-oss-snapshots"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+
+        maven {
+            url = uri('https://repo.maven.apache.org/maven2/')
+        }
+        maven {
+            name 'm2-dv8tion'
+            url 'https://m2.dv8tion.net/releases'
+        }
+        maven { url "https://mvn-repo.arim.space/affero-gpl3" }
+        maven { url "https://mvn-repo.arim.space/gpl3" }
+        maven { url "https://mvn-repo.arim.space/lesser-gpl3" }
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.22'
+        annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.22'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    }
 }
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
 def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
 System.out.println("Commit Hash is " + commit)
-
-build.finalizedBy shadowJar
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    maven {
-        url = uri('https://repo.citizensnpcs.co')
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    project.jar {
+        archivesBaseName = 'DiscordSRVUtils-' + project.name
     }
-    maven {
-        url = uri('https://nexus.vankka.dev/repository/maven-public/')
-    }
-    maven {
-        url = uri('http://repo.extendedclip.com/content/repositories/placeholderapi/')
-    }
-
-    maven {
-        url = uri('https://jitpack.io')
-    }
-
-    maven {
-        url = uri('https://repo.codemc.org/repository/maven-public')
-    }
-
-    maven {
-        url = uri('https://ci.ender.zone/plugin/repository/everything/')
-    }
-
-    maven {
-        url = uri('https://papermc.io/repo/repository/maven-public/')
-    }
-
-    maven {
-        url = uri('https://nexus.scarsz.me/content/groups/public/')
-    }
-
-    maven {
-        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
-    }
-
-    maven {
-        url = uri("https://papermc.io/repo/repository/maven-public/")
-    }
-
-    maven {
-        name = "sonatype-oss-snapshots"
-        url = "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
-    maven {
-        name 'm2-dv8tion'
-        url 'https://m2.dv8tion.net/releases'
-    }
-    maven { url "https://mvn-repo.arim.space/affero-gpl3" }
-    maven { url "https://mvn-repo.arim.space/gpl3" }
-    maven { url "https://mvn-repo.arim.space/lesser-gpl3" }
-}
-def urlFile = { url, name ->
-    File file = new File("$buildDir/download/${name}.jar")
-    file.parentFile.mkdirs()
-    if (!file.exists()) {
-        new URL(url).withInputStream { downloadStream ->
-            file.withOutputStream { fileOut ->
-                fileOut << downloadStream
-            }
+    project.processResources {
+        from(sourceSets.main.resources.srcDirs) {
+            filter ReplaceTokens, tokens: [version    : version,
+                                           build      : buildNumber,
+                                           commit     : commit,
+                                           description: description,
+                                           buildDate  : System.currentTimeMillis() + ""
+            ]
         }
+
     }
-    files(file.absolutePath)
+
+}
+shadowJar {
+    classifier ''
 }
 dependencies {
-    implementation 'com.vdurmont:emoji-java:5.1.1'
-    implementation 'org.yaml:snakeyaml:1.27'
-    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.hsqldb:hsqldb:2.4.1'
-    implementation 'org.bstats:bstats-bukkit:2.2.1'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
-    compileOnly 'net.ess3:EssentialsX:2.17.2'
-    compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
-    compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
-    compileOnly ('com.discordsrv:discordsrv:1.24.0') {
-        exclude group: 'net.kyori'
-    }
-    compileOnly 'me.clip:placeholderapi:2.9.2'
-    compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
-    implementation "org.flywaydb:flyway-core:7.5.3"
-    implementation group: 'org.json', name: 'json', version: '20210307'
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.0.4'
-    compileOnly 'space.arim.libertybans:bans-api:0.8.0'
-    compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
-    compileOnly 'com.github.LeonMangler:SuperVanish:6.2.6-2'
-    compileOnly urlFile("https://api.spiget.org/v2/resources/35065/download", "AFKPLUS-API")
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
+    implementation project(":bukkit")
 }
-
-group = 'me.bluetree.discordsrvutils'
-version = '1.2.8-DEV'
-
-description = 'DiscordSRVUtils'
-compileJava.options.encoding 'UTF-8'
-java.sourceCompatibility = JavaVersion.VERSION_11
-
 publishing {
     publications {
         maven(MavenPublication) {
@@ -160,15 +136,9 @@ publishing {
     }
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version  : version,
-                                       build    : buildNumber,
-                                       commit   : commit,
-                                       buildDate: System.currentTimeMillis() + ""
-        ]
-    }
 
-}
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
+
 
 
