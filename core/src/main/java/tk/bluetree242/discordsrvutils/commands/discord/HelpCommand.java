@@ -58,7 +58,7 @@ public class HelpCommand extends Command {
                     embed.addField(category.toString(), joiner.toString(), false);
                 }
             }
-            embed.setDescription("Use " + getCommandPrefix() + "help <Command> to get Help for a command");
+            embed.setDescription("Use " + "/" + "help <Command> to get Help for a command");
             e.reply(embed.build()).queue();
         } else {
             String cmd = e.getEvent().getOption("command").getAsString();

@@ -91,7 +91,7 @@ public class CommandListener extends ListenerAdapter {
                             return;
                         }
                     }
-                    core.getLogger().info(e.getUser().getAsTag() + " Used " + core.getCommandPrefix() + cmd + " Command");
+                    core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
                     executor.run(new CommandEvent(e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
                 } catch (InsufficientPermissionException ex) {
                     ex.printStackTrace();

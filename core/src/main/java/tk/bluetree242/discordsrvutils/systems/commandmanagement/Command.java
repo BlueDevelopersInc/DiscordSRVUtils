@@ -88,7 +88,7 @@ public abstract class Command {
     }
 
     public final String getUsage() {
-        return usage.replace("[P]", getCommandPrefix());
+        return usage.replace("[P]", "/");
     }
 
 
@@ -108,7 +108,7 @@ public abstract class Command {
     public MessageEmbed getHelpEmbed() {
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setTitle(getCommandPrefix() + cmd + " Command")
+        embed.setTitle("/" + cmd + " Command")
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
                 .addField("Usage", getUsage(), false)
@@ -125,17 +125,14 @@ public abstract class Command {
         }
     }
 
-    public final String getCommandPrefix() {
-        return CommandManager.get().getCommandPrefix();
-    }
 
     public final String getAliasesString() {
         String a = "";
         for (String s : aliases) {
             if (a.isEmpty()) {
-                a = getCommandPrefix() + s;
+                a = "/" + s;
             } else {
-                a = a + "\n" + getCommandPrefix() + s;
+                a = a + "\n" + "/" + s;
             }
         }
         return a;

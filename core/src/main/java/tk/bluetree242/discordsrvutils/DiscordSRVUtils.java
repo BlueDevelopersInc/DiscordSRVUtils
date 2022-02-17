@@ -368,9 +368,6 @@ public class DiscordSRVUtils {
         errorHandler.severe(sv);
     }
 
-    public String getCommandPrefix() {
-        return config.prefix();
-    }
 
     public Connection getDatabase() throws SQLException {
         return databaseManager.getConnection();

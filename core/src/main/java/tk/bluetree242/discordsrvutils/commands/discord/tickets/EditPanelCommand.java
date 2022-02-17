@@ -48,11 +48,11 @@ public class EditPanelCommand extends Command {
         e.reply("Loading Editor Menu...").setEphemeral(true).queue();
             DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
                 if (panel == null) {
-                    e.reply(Embed.error("Panel not found, use " + getCommandPrefix() + "panelist for list of panels")).queue();
+                    e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
                 } else {
                     DiscordSRVUtils.get().handleCF(TicketManager.getInstance().getPanelById(id), s -> {
                         if (panel == null) {
-                            e.reply(Embed.error("Panel not found, use " + getCommandPrefix() + "panelist for list of panels")).queue();
+                            e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
                         } else {
                             e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
                                 new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);

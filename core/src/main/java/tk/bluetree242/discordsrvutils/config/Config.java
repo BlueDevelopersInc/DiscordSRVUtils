@@ -40,10 +40,6 @@ public interface Config {
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 
-    @AnnotationBasedSorter.Order(20)
-    @ConfComments("#Prefix used for Commands")
-    @ConfDefault.DefaultString("!")
-    String prefix();
 
     @AnnotationBasedSorter.Order(30)
     @ConfComments("#OnlineStatus for the bot. can be ONLINE, DND, or IDLE")

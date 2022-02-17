@@ -90,10 +90,4 @@ public class DiscordSRVListener {
             }
         });
     }
-
-    @Subscribe
-    public void onDiscordMsg(DiscordGuildMessagePreProcessEvent e) {
-        if (e.getMessage().getContentRaw().toLowerCase().startsWith(core.getCommandPrefix().toLowerCase()))
-            e.setCancelled(true);
-    }
 }

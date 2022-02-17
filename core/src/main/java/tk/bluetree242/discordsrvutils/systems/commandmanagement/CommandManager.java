@@ -75,9 +75,6 @@ public class CommandManager {
         registerCommand(new StatusCommand());
     }
 
-    public String getCommandPrefix() {
-        return core.getCommandPrefix();
-    }
 
     public void registerCommand(Command cmd) {
         if (getCommandHashMap().get(cmd.getCmd()) != null) return;
