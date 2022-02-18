@@ -165,5 +165,11 @@ public class CommandManager {
         action.addCommands(new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()));
     }
 
+    public void removeSlashCommands() {
+        if (core.getMainConfig().bungee_mode()) return;
+        if (core.getGuild() == null) return;
+        core.getGuild().updateCommands().queue();
+    }
+
 
 }

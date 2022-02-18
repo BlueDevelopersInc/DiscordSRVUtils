@@ -255,6 +255,7 @@ public class DiscordSRVUtils {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         PluginHookManager.get().removeHookAll();
         jdaManager.removeListeners();
+        CommandManager.get().removeSlashCommands();
         if (getJDA() != null) {
             StatusManager.get().unregisterTimer();
             StatusManager.get().editMessage(false).get();
