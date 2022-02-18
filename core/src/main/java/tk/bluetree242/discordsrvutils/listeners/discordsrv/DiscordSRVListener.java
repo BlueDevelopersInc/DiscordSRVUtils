@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.listeners.discordsrv;
 
+import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
@@ -40,7 +41,7 @@ import java.util.Collection;
 public class DiscordSRVListener {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
-    @Subscribe
+    @Subscribe(priority = ListenerPriority.MONITOR)
     public void onReady(DiscordReadyEvent e) {
         try {
             core.whenReady();
