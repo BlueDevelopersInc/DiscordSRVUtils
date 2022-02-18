@@ -69,7 +69,7 @@ public class CommandListener extends ListenerAdapter {
                 e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
             } catch (Exception exception) {
                 exception.printStackTrace();
-                e.getHook().editOriginalEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
+                e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
             }
         });
 
