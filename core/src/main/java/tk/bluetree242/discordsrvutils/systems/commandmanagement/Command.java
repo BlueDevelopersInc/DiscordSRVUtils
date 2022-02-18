@@ -42,12 +42,13 @@ public abstract class Command {
     private final String usage;
     @Getter
     private final List<String> aliases = new ArrayList<>();
+    @Getter
+    private final OptionData[] options;
     public DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
-    @Getter
-    private final OptionData[] options;
+
     public Command(String cmd, String description, String usage, Permission requiredPermission, OptionData... options) {
         this.cmd = cmd;
         this.options = options;
@@ -86,7 +87,6 @@ public abstract class Command {
     public final String getUsage() {
         return usage.replace("[P]", "/");
     }
-
 
 
     public final String getCmd() {

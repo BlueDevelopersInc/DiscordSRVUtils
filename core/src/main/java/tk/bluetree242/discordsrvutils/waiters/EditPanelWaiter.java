@@ -35,9 +35,9 @@ import java.awt.*;
 
 public class EditPanelWaiter extends Waiter {
     private final Panel.Editor editor;
-    private int step = 0;
     private final TextChannel channel;
     private final User user;
+    private int step = 0;
     private Message msg;
 
     public EditPanelWaiter(TextChannel channel, User user, Panel.Editor editor, Message msg) {

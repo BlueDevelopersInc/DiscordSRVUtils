@@ -65,6 +65,6 @@ public class BukkitDiscordSRV extends PlatformDiscordSRV {
 
     @Override
     public String proccessMessage(String num, User author) {
-        return  getDiscordSRV().getAccountLinkManager().process(num, author.getId());
+        return getDiscordSRV().getAccountLinkManager().process(num, author.getId());
     }
 }

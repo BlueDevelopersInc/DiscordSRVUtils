@@ -41,7 +41,7 @@ import java.util.StringJoiner;
 
 public class PanelListCommand extends Command {
     public PanelListCommand() {
-        super("panelist",  "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
+        super("panelist", "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
         setAdminOnly(true);
     }
 

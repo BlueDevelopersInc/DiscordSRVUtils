@@ -140,8 +140,7 @@ public class CommandManager {
                 }
                 core.severe("Could not add slash commands to discord server.");
                 r.printStackTrace();
-            }
-            else {
+            } else {
                 ErrorResponseException err = (ErrorResponseException) r;
                 if (err.getErrorResponse() == ErrorResponse.MISSING_ACCESS) {
                     core.getJDA().setRequiredScopes("applications.commands");

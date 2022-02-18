@@ -40,13 +40,13 @@ public class TestMessageCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-            String name = e.getEvent().getOption("name").getAsString();
-            try {
-                e.replyMessage("message:" + name).queue();
-            } catch (EmbedNotFoundException ex) {
-                e.replyErr("Embed does not exist").queue();
-            } catch (JSONException ex) {
-                e.replyErr("Embed is invalid").queue();
-            }
+        String name = e.getEvent().getOption("name").getAsString();
+        try {
+            e.replyMessage("message:" + name).queue();
+        } catch (EmbedNotFoundException ex) {
+            e.replyErr("Embed does not exist").queue();
+        } catch (JSONException ex) {
+            e.replyErr("Embed is invalid").queue();
+        }
     }
 }

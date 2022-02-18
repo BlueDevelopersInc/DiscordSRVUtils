@@ -31,7 +31,7 @@ import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 
 public class SuggestionNoteCommand extends Command {
     public SuggestionNoteCommand() {
-        super("suggestionnote",  "Add a Note to a suggestion", "[P]suggestionnote <Suggestion Number> <Note>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super("suggestionnote", "Add a Note to a suggestion", "[P]suggestionnote <Suggestion Number> <Note>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true),
                 new OptionData(OptionType.STRING, "note", "The Note to add", true));
         addAliases("note");
@@ -45,15 +45,15 @@ public class SuggestionNoteCommand extends Command {
             return;
         }
 
-            int number = (int) e.getEvent().getOption("number").getAsLong();
-            String noteText = e.getEvent().getOption("note").getAsString();
-            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-                if (suggestion == null) {
-                    e.replyErr("Suggestion not found").queue();
-                    return;
-                }
-                e.handleCF(suggestion.addNote(e.getAuthor().getIdLong(), noteText), "Successfully added note", "Could not add note");
-            });
+        int number = (int) e.getEvent().getOption("number").getAsLong();
+        String noteText = e.getEvent().getOption("note").getAsString();
+        e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+            if (suggestion == null) {
+                e.replyErr("Suggestion not found").queue();
+                return;
+            }
+            e.handleCF(suggestion.addNote(e.getAuthor().getIdLong(), noteText), "Successfully added note", "Could not add note");
+        });
 
     }
 }

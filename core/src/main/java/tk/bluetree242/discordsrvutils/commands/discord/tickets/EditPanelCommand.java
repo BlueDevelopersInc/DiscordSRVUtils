@@ -44,29 +44,29 @@ public class EditPanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         String id = e.getEvent().getOption("id").getAsString();
-            DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
-                if (panel == null) {
-                    e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-                } else {
-                    DiscordSRVUtils.get().handleCF(TicketManager.getInstance().getPanelById(id), s -> {
-                        if (panel == null) {
-                            e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-                        } else {
-                            e.reply("Loading Editor Menu...").setEphemeral(true).queue();
-                            e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
-                                new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
-                                EditPanelWaiter.addReactions(msg);
+        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
+            if (panel == null) {
+                e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+            } else {
+                DiscordSRVUtils.get().handleCF(TicketManager.getInstance().getPanelById(id), s -> {
+                    if (panel == null) {
+                        e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+                    } else {
+                        e.reply("Loading Editor Menu...").setEphemeral(true).queue();
+                        e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
+                            new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
+                            EditPanelWaiter.addReactions(msg);
 
-                            }, error -> {
-                                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-                            });
-                        }
-                    }, error -> {
-                        DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-                    });
-                }
-            }, error -> {
-                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-            });
+                        }, error -> {
+                            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                        });
+                    }
+                }, error -> {
+                    DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                });
+            }
+        }, error -> {
+            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+        });
     }
 }

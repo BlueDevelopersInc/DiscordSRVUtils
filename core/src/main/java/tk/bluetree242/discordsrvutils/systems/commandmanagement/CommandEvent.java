@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.AccessLevel;
@@ -59,7 +58,6 @@ public class CommandEvent {
     public Member getMember() {
         return member;
     }
-
 
 
     public User getAuthor() {

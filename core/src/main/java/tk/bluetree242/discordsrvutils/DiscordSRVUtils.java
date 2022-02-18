@@ -347,6 +347,7 @@ public class DiscordSRVUtils {
             StatusManager.get().reloadTimer();
         }
     }
+
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
         return channel.sendMessage(msg);
     }

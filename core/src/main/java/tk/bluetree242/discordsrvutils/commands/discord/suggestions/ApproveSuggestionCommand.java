@@ -31,7 +31,7 @@ import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 
 public class ApproveSuggestionCommand extends Command {
     public ApproveSuggestionCommand() {
-        super("approvesuggestion",  "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super("approvesuggestion", "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
         addAliases("approve");
         setAdminOnly(true);
@@ -43,13 +43,14 @@ public class ApproveSuggestionCommand extends Command {
             e.replyErr("Suggestions are not enabled").queue();
             return;
         }
-            int number = (int) e.getEvent().getOption("number").getAsLong();
-            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-                if (suggestion == null) {
-                    e.replyErr("Suggestion not found").queue();
-                    return;
-                }
-                e.handleCF(suggestion.setApproved(true, e.getAuthor().getIdLong()), "Successfully approved suggestion", "Could not approve suggestion");
-            });
+
+        int number = (int) e.getEvent().getOption("number").getAsLong();
+        e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+            if (suggestion == null) {
+                e.replyErr("Suggestion not found").queue();
+                return;
+            }
+            e.handleCF(suggestion.setApproved(true, e.getAuthor().getIdLong()), "Successfully approved suggestion", "Could not approve suggestion");
+        });
     }
 }

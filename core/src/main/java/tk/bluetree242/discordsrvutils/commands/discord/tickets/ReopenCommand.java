@@ -30,7 +30,7 @@ import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class ReopenCommand extends Command {
     public ReopenCommand() {
-        super("reopen",  "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
+        super("reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
     }
 
     @Override

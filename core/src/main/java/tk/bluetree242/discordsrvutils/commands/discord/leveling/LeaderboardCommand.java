@@ -34,7 +34,7 @@ import java.util.StringJoiner;
 
 public class LeaderboardCommand extends Command {
     public LeaderboardCommand() {
-        super("leaderboard",  "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
+        super("leaderboard", "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
     }
 
     @Override

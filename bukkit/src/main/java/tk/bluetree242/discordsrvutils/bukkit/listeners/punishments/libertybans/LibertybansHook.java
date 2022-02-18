@@ -26,8 +26,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 public class LibertybansHook extends PluginHook {
-    private LibertybansListener listener;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private LibertybansListener listener;
 
     @Override
     public String getRequiredPlugin() {

@@ -34,7 +34,7 @@ import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 public class DeletePanelCommand extends Command {
 
     public DeletePanelCommand() {
-        super("deletepanel",  "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+        super("deletepanel", "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("dp");
         setAdminOnly(true);
@@ -42,18 +42,18 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-            DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getEvent().getOption("id").getAsString()), panel -> {
-                if (panel == null) {
-                    e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-                } else {
-                    DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
-                        e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
-                    }, error -> {
-                        DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-                    });
-                }
-            }, error -> {
-                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-            });
+        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getEvent().getOption("id").getAsString()), panel -> {
+            if (panel == null) {
+                e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+            } else {
+                DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
+                    e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
+                }, error -> {
+                    DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                });
+            }
+        }, error -> {
+            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+        });
     }
 }

@@ -31,7 +31,7 @@ import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 
 public class DenySuggestionCommand extends Command {
     public DenySuggestionCommand() {
-        super("denysuggestion",  "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super("denysuggestion", "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
         addAliases("deny");
         setAdminOnly(true);
@@ -44,14 +44,14 @@ public class DenySuggestionCommand extends Command {
             return;
         }
 
-            int number = (int) e.getEvent().getOption("number").getAsLong();
-            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-                if (suggestion == null) {
-                    e.replyErr("Suggestion not found").queue();
-                    return;
-                }
-                e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), "Successfully denied suggestion", "Could not deny suggestion");
-            });
+        int number = (int) e.getEvent().getOption("number").getAsLong();
+        e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+            if (suggestion == null) {
+                e.replyErr("Suggestion not found").queue();
+                return;
+            }
+            e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), "Successfully denied suggestion", "Could not deny suggestion");
+        });
 
     }
 }

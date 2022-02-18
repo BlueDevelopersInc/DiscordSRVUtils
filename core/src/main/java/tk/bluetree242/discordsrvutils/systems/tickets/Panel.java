@@ -51,8 +51,8 @@ public class Panel {
 
     public static Map<Long, String> runningProcesses = new HashMap<>();
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
-    private String name;
     private final String id;
+    private String name;
     private Long messageId;
     private Long channelId;
     private Long openedCategory;
@@ -287,8 +287,8 @@ public class Panel {
 
     public static class Editor {
         private final DiscordSRVUtils core = DiscordSRVUtils.get();
-        private String name;
         private final Panel panel;
+        private String name;
         private Long channelId;
         private Long openedCategory;
         private Long closedCategory;

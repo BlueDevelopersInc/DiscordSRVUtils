@@ -41,7 +41,7 @@ public class SuggestCommand extends Command {
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand() {
-        super("suggest",  "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
+        super("suggest", "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
                 new OptionData(OptionType.STRING, "suggestion", "Your Suggestion", true));
     }
 
@@ -77,11 +77,11 @@ public class SuggestCommand extends Command {
         }
 
 
-            String suggestionText = e.getEvent().getOption("suggestion").getAsString();
-            e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
-                antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
-                e.replySuccess("Successfully created suggestion").queue();
+        String suggestionText = e.getEvent().getOption("suggestion").getAsString();
+        e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
+            antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
+            e.replySuccess("Successfully created suggestion").queue();
 
-            });
+        });
     }
 }

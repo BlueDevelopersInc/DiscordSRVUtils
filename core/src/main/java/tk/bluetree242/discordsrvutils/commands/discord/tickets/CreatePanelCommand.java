@@ -34,7 +34,7 @@ import java.awt.*;
 
 public class CreatePanelCommand extends Command {
     public CreatePanelCommand() {
-        super("createpanel",  "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+        super("createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
         setAdminOnly(true);
     }
 

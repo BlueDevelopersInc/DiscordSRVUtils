@@ -32,8 +32,8 @@ import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class StatusCommand extends Command {
     public StatusCommand() {
-        super("status",  "Set the status message", "[P]status <ping channel>", null,
-        new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
+        super("status", "Set the status message", "[P]status <ping channel>", null,
+                new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
         setAdminOnly(true);
     }
 

@@ -22,16 +22,12 @@
 
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.PrivateChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-
-import java.util.regex.Pattern;
 
 public class CommandListener extends ListenerAdapter {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
@@ -41,40 +37,40 @@ public class CommandListener extends ListenerAdapter {
         if (core.getMainConfig().bungee_mode()) return;
         core.executeAsync(() -> {
             String cmd = e.getName();
-                Command executor = CommandManager.get().getCommandHashMap().get(cmd);
-                if (executor == null || !executor.isEnabled()) return;
-                try {
-                    if (executor.getRequiredPermission() != null) {
-                        if (e.getChannel() instanceof TextChannel) {
-                            if (!e.getMember().hasPermission(executor.getRequiredPermission())) {
-                                e.replyEmbeds(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission().toString())).queue();
-                                return;
-                            }
-                        }
-                    }
+            Command executor = CommandManager.get().getCommandHashMap().get(cmd);
+            if (executor == null || !executor.isEnabled()) return;
+            try {
+                if (executor.getRequiredPermission() != null) {
                     if (e.getChannel() instanceof TextChannel) {
-                        if (executor.isOwnerOnly()) {
-                            if (!e.getMember().isOwner()) {
-                                e.replyEmbeds(Embed.error("Only Guild Owner can use this command.")).queue();
-                                return;
-                            }
-                        }
-                        if (executor.isAdminOnly()) {
-                            if (!core.getJdaManager().isAdmin(e.getUser().getIdLong())) {
-                                e.replyEmbeds(Embed.error("Only Admins can use this command.", "Your id must be in admin list on the config.yml")).queue();
-                                return;
-                            }
+                        if (!e.getMember().hasPermission(executor.getRequiredPermission())) {
+                            e.replyEmbeds(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission().toString())).queue();
+                            return;
                         }
                     }
-                    core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
-                    executor.run(new CommandEvent(e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
-                } catch (InsufficientPermissionException ex) {
-                    ex.printStackTrace();
-                    e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                    e.getHook().editOriginalEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
                 }
+                if (e.getChannel() instanceof TextChannel) {
+                    if (executor.isOwnerOnly()) {
+                        if (!e.getMember().isOwner()) {
+                            e.replyEmbeds(Embed.error("Only Guild Owner can use this command.")).queue();
+                            return;
+                        }
+                    }
+                    if (executor.isAdminOnly()) {
+                        if (!core.getJdaManager().isAdmin(e.getUser().getIdLong())) {
+                            e.replyEmbeds(Embed.error("Only Admins can use this command.", "Your id must be in admin list on the config.yml")).queue();
+                            return;
+                        }
+                    }
+                }
+                core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
+                executor.run(new CommandEvent(e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
+            } catch (InsufficientPermissionException ex) {
+                ex.printStackTrace();
+                e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                e.getHook().editOriginalEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
+            }
         });
 
     }
