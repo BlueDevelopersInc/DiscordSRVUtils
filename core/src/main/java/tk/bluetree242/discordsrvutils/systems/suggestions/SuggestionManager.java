@@ -68,9 +68,9 @@ public class SuggestionManager {
         return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().no_reaction(), new Emoji("❌"));
     }
 
-    public static ActionRow getActionRow() {
-        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+    public static ActionRow getActionRow(int yes, int no) {
+        return ActionRow.of(Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()).withLabel(yes + ""),
+                Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()).withLabel(no + ""),
                 Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
     }
 
@@ -198,7 +198,7 @@ public class SuggestionManager {
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
                         , null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-                    builder.setActionRows(getActionRow());
+                    builder.setActionRows(getActionRow(0,0));
                 }
                 Message msg = core.queueMsg(builder.build(), channel).complete();
                 PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");

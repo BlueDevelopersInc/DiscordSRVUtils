@@ -126,7 +126,7 @@ public class Suggestion {
                 p1.execute();
                 SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
                 notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
                 return suggestionNote;
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
@@ -144,7 +144,7 @@ public class Suggestion {
                 p1.execute();
                 this.Approved = approved;
                 this.approver = staffID;
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow()) : Collections.emptyList()).queue();
+                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
 
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);

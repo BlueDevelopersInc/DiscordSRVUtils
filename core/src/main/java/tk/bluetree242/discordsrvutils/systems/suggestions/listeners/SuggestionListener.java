@@ -158,7 +158,7 @@ public class SuggestionListener extends ListenerAdapter {
                     return;
                 }
             }
-            msg.editMessage(suggestion.getCurrentMsg()).setActionRows(SuggestionManager.getActionRow()).queue();
+            msg.editMessage(suggestion.getCurrentMsg()).setActionRows(SuggestionManager.getActionRow(suggestion.getYesCount(), suggestion.getNoCount())).queue();
         }, error -> {
             error.printStackTrace();
         });
