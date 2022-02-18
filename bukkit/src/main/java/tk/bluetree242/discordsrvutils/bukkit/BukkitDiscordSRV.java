@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 
 import java.util.UUID;
@@ -60,5 +61,10 @@ public class BukkitDiscordSRV extends PlatformDiscordSRV {
     @Override
     public TextChannel getMainChatChannel() {
         return getDiscordSRV().getMainTextChannel();
+    }
+
+    @Override
+    public String proccessMessage(String num, User author) {
+        return  getDiscordSRV().getAccountLinkManager().process(num, author.getId());
     }
 }

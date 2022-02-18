@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 
 import java.util.UUID;
 
@@ -42,4 +43,6 @@ public abstract class PlatformDiscordSRV {
     public abstract Guild getMainGuild();
 
     public abstract TextChannel getMainChatChannel();
+
+    public abstract String proccessMessage(String num, User author);
 }
