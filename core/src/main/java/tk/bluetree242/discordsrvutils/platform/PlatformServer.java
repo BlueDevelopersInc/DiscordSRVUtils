@@ -42,4 +42,6 @@ public abstract class PlatformServer {
 
     public abstract Object getOriginal();
 
+    public abstract Debugger getDebugger();
+
 }

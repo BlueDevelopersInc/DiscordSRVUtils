@@ -22,11 +22,14 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.cmd.BukkitConsoleCommandUser;
+import tk.bluetree242.discordsrvutils.platform.Debugger;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitPlatformServer extends PlatformServer {
+    @Getter private final Debugger debugger = new BukkitDebugger(DiscordSRVUtils.get());
     @Override
     public boolean isPluginEnabled(String name) {
         return Bukkit.getPluginManager().isPluginEnabled(name);
