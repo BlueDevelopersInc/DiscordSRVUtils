@@ -63,7 +63,7 @@ public class CommandListener extends ListenerAdapter {
                     if (executor.getRequiredPermission() != null) {
                         if (e.getChannel() instanceof TextChannel) {
                             if (!e.getMember().hasPermission(executor.getRequiredPermission())) {
-                                e.getChannel().sendMessage(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission().toString())).queue();
+                                e.replyEmbeds(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission().toString())).queue();
                                 return;
                             }
                         }
@@ -87,7 +87,7 @@ public class CommandListener extends ListenerAdapter {
                             return;
                         }
                         if (!e.getGuild().getSelfMember().hasPermission(e.getTextChannel(), Permission.MESSAGE_EMBED_LINKS)) {
-                            e.getChannel().sendMessage("❌ The bot is missing the " + Permission.MESSAGE_EMBED_LINKS.getName() + " Permission (for embeds) in this channel. This command is not executed").queue();
+                            e.reply("❌ The bot is missing the " + Permission.MESSAGE_EMBED_LINKS.getName() + " Permission (for embeds) in this channel. This command is not executed").queue();
                             return;
                         }
                     }
@@ -98,7 +98,7 @@ public class CommandListener extends ListenerAdapter {
                     e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
                 } catch (Exception exception) {
                     exception.printStackTrace();
-                    e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
+                    e.getHook().editOriginalEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
                 }
         });
 
