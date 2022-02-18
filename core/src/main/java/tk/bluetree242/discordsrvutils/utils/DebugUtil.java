@@ -34,7 +34,7 @@ public class DebugUtil {
         return run(null);
     }
 
-    public static String run(String stacktrack) throws Exception {
-        return DiscordSRVUtils.get().getServer().getDebugger().run(stacktrack);
+    public static String run(String stacktrace) throws Exception {
+        return DiscordSRVUtils.get().getServer().getDebugger().run(stacktrace);
     }
 }

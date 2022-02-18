@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.platform.Debugger;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -52,8 +51,8 @@ public class BukkitDebugger implements Debugger {
         return run(null);
     }
 
-    public String run(String stacktrack) throws Exception {
-        if (stacktrack == null) stacktrack = core.getErrorHandler().getFinalError();
+    public String run(String stacktrace) throws Exception {
+        if (stacktrace == null) stacktrace = core.getErrorHandler().getFinalError();
         JSONArray data = new JSONArray();
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getDescription().getVersion());
@@ -90,8 +89,8 @@ public class BukkitDebugger implements Debugger {
         JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                 new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
         );
-        if (stacktrack != null) {
-            logs.getJSONArray("data").put(new JSONObject().put("type", "log").put("name", "Last Error").put("content", Utils.b64Encode(stacktrack)));
+        if (stacktrace != null) {
+            logs.getJSONArray("data").put(new JSONObject().put("type", "log").put("name", "Last Error").put("content", Utils.b64Encode(stacktrace)));
         }
         data.put(logs);
 
