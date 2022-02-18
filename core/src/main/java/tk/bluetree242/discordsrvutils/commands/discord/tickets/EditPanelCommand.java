@@ -45,7 +45,6 @@ public class EditPanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         String id = e.getEvent().getOption("id").getAsString();
-        e.reply("Loading Editor Menu...").setEphemeral(true).queue();
             DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
                 if (panel == null) {
                     e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
@@ -54,6 +53,7 @@ public class EditPanelCommand extends Command {
                         if (panel == null) {
                             e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
                         } else {
+                            e.reply("Loading Editor Menu...").setEphemeral(true).queue();
                             e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
                                 new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
                                 EditPanelWaiter.addReactions(msg);
