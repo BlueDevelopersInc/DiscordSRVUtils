@@ -40,7 +40,11 @@ public class StatusCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
+
         GuildChannel channel = e.getEvent().getOption("channel").getAsGuildChannel();
+        if (!(channel instanceof TextChannel)) {
+            e.replyErr("Sorry this can only be a text channel").queue();
+        }
         e.handleCF(StatusManager.get().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
     }
 }
