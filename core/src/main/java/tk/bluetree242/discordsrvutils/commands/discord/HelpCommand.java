@@ -34,7 +34,7 @@ import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null,
+        super("help", "Get Help about commands", "[P]help [Command]", null,
                 new OptionData(OptionType.STRING, "command", "Command to get help of", false));
     }
 

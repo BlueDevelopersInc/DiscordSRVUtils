@@ -35,7 +35,7 @@ import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 public class LevelCommand extends Command {
     public LevelCommand() {
-        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING,
+        super("level", "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING,
                 new OptionData(OptionType.USER, "user_mention", "User to get level of, must be linked", false),
                 new OptionData(OptionType.STRING, "player_name", "Player Name to get level of", false));
         addAliases("rank");

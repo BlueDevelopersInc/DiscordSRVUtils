@@ -32,7 +32,7 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class TestMessageCommand extends Command {
     public TestMessageCommand() {
-        super("testmessage", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN,
+        super("testmessage", "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN,
                 new OptionData(OptionType.STRING, "name", "Name of the Embed Message to test", true));
         addAliases("tm");
         setAdminOnly(true);
