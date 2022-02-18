@@ -23,7 +23,11 @@
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
 
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.CommandListUpdateAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
@@ -128,7 +132,27 @@ public class CommandManager {
                 addCmd(alias, command, commands);
             }
         }
-        commands.queue();
+        commands.queue(null, r -> {
+            if (!(r instanceof ErrorResponseException)) {
+                if (r instanceof RateLimitedException) {
+                    core.severe("Could not add slash commands due to rate limits.");
+                    return;
+                }
+                core.severe("Could not add slash commands to discord server.");
+                r.printStackTrace();
+            }
+            else {
+                ErrorResponseException err = (ErrorResponseException) r;
+                if (err.getErrorResponse() == ErrorResponse.MISSING_ACCESS) {
+                    core.getJDA().setRequiredScopes("applications.commands");
+                    String link = core.getJDA().getInviteUrl(Permission.ADMINISTRATOR);
+                    core.severe("Could Not Add Slash Command to Server Because your bot is missing some scopes! Kick the bot and invite it again using " + link + " this one contains all the required permissions");
+                } else {
+                    core.severe("Could not add slash commands to discord server.");
+                    r.printStackTrace();
+                }
+            }
+        });
     }
 
     private void addCmd(String alias, Command cmd, CommandListUpdateAction action) {
