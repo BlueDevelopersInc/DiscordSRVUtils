@@ -28,14 +28,13 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 
 import java.awt.*;
 
 public class CreatePanelCommand extends Command {
     public CreatePanelCommand() {
-        super("createpanel", CommandType.GUILDS, "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+        super("createpanel",  "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
         setAdminOnly(true);
     }
 

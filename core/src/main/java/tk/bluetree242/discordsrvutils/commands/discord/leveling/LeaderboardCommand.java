@@ -26,7 +26,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
@@ -35,7 +34,7 @@ import java.util.StringJoiner;
 
 public class LeaderboardCommand extends Command {
     public LeaderboardCommand() {
-        super("leaderboard", CommandType.GUILDS, "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
+        super("leaderboard",  "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
     }
 
     @Override

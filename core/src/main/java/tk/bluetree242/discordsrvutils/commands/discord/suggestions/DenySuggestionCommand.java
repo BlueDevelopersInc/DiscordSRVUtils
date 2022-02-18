@@ -27,13 +27,11 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class DenySuggestionCommand extends Command {
     public DenySuggestionCommand() {
-        super("denysuggestion", CommandType.GUILDS, "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super("denysuggestion",  "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
         addAliases("deny");
         setAdminOnly(true);

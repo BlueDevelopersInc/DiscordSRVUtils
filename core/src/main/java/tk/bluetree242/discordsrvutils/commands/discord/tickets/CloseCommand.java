@@ -26,12 +26,11 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class CloseCommand extends Command {
     public CloseCommand() {
-        super("close", CommandType.GUILDS, "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+        super("close",  "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
     }
 
     @Override

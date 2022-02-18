@@ -30,13 +30,12 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 public class EditPanelCommand extends Command {
     public EditPanelCommand() {
-        super("editpanel", CommandType.GUILDS, "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+        super("editpanel", "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("ep");
         setAdminOnly(true);

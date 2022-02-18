@@ -37,7 +37,6 @@ import java.util.List;
 public abstract class Command {
     private final String cmd;
     private final DiscordSRVUtils main = DiscordSRVUtils.get();
-    private final CommandType type;
     private final Permission requestPermission;
     private final String description;
     private final String usage;
@@ -49,18 +48,16 @@ public abstract class Command {
     private CommandCategory category = null;
     @Getter
     private final OptionData[] options;
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, OptionData... options) {
+    public Command(String cmd, String description, String usage, Permission requiredPermission, OptionData... options) {
         this.cmd = cmd;
         this.options = options;
-        this.type = type;
         this.description = description;
         this.usage = usage;
         this.requestPermission = requiredPermission;
     }
 
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
+    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
         this.cmd = cmd;
-        this.type = type;
         this.options = options;
         this.description = description;
         this.usage = usage;
@@ -69,10 +66,9 @@ public abstract class Command {
         category.addCommand(this);
     }
 
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
         addAliases(aliases);
         this.cmd = cmd;
-        this.type = type;
         options = new OptionData[0];
         this.description = description;
         this.usage = usage;
@@ -95,10 +91,6 @@ public abstract class Command {
 
     public final String getCmd() {
         return cmd;
-    }
-
-    public final CommandType getCommandType() {
-        return type;
     }
 
     public final Permission getRequiredPermission() {

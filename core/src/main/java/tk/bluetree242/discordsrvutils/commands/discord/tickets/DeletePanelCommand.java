@@ -29,13 +29,12 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class DeletePanelCommand extends Command {
 
     public DeletePanelCommand() {
-        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+        super("deletepanel",  "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("dp");
         setAdminOnly(true);

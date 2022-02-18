@@ -44,22 +44,6 @@ public class CommandListener extends ListenerAdapter {
                 Command executor = CommandManager.get().getCommandHashMap().get(cmd);
                 if (executor == null || !executor.isEnabled()) return;
                 try {
-                    if (executor.getCommandType() != CommandType.EVERYWHERE) {
-                        if (executor.getCommandType() == CommandType.GUILDS) {
-                            if (!(e.getChannel() instanceof TextChannel)) {
-                                e.replyEmbeds(Embed.error("This command can only be used in guilds.")).queue();
-                                return;
-                            }
-                        } else {
-                            if (!(e.getChannel() instanceof PrivateChannel)) {
-                                e.replyEmbeds(Embed.error("This command can only be used in DMS.")).queue();
-                                return;
-                            }
-                        }
-                    }
-                    if (e.getChannel() instanceof TextChannel) {
-                        if (e.getGuild().getIdLong() != DiscordSRVUtils.get().getGuild().getIdLong()) return;
-                    }
                     if (executor.getRequiredPermission() != null) {
                         if (e.getChannel() instanceof TextChannel) {
                             if (!e.getMember().hasPermission(executor.getRequiredPermission())) {
@@ -80,15 +64,6 @@ public class CommandListener extends ListenerAdapter {
                                 e.replyEmbeds(Embed.error("Only Admins can use this command.", "Your id must be in admin list on the config.yml")).queue();
                                 return;
                             }
-                        }
-                    }
-                    if (e.getChannel() instanceof TextChannel) {
-                        if (!e.getGuild().getSelfMember().hasPermission(e.getTextChannel(), Permission.MESSAGE_WRITE)) {
-                            return;
-                        }
-                        if (!e.getGuild().getSelfMember().hasPermission(e.getTextChannel(), Permission.MESSAGE_EMBED_LINKS)) {
-                            e.reply("❌ The bot is missing the " + Permission.MESSAGE_EMBED_LINKS.getName() + " Permission (for embeds) in this channel. This command is not executed").queue();
-                            return;
                         }
                     }
                     core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");

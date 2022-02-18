@@ -28,12 +28,11 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.Optio
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class StatusCommand extends Command {
     public StatusCommand() {
-        super("status", CommandType.GUILDS, "Set the status message", "[P]status <ping channel>", null,
+        super("status",  "Set the status message", "[P]status <ping channel>", null,
         new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
         setAdminOnly(true);
     }

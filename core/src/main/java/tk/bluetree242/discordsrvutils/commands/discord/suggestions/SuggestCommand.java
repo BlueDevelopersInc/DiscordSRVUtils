@@ -28,10 +28,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -43,7 +41,7 @@ public class SuggestCommand extends Command {
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand() {
-        super("suggest", CommandType.GUILDS, "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
+        super("suggest",  "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
                 new OptionData(OptionType.STRING, "suggestion", "Your Suggestion", true));
     }
 

@@ -24,12 +24,10 @@ package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
@@ -43,7 +41,7 @@ import java.util.StringJoiner;
 
 public class PanelListCommand extends Command {
     public PanelListCommand() {
-        super("panelist", CommandType.GUILDS, "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
+        super("panelist",  "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
         setAdminOnly(true);
     }
 
