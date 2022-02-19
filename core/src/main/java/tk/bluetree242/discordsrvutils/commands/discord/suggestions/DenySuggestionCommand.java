@@ -44,7 +44,7 @@ public class DenySuggestionCommand extends Command {
             return;
         }
 
-        int number = (int) e.getEvent().getOption("number").getAsLong();
+        int number = (int) e.getOption("number").getAsLong();
         e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
             if (suggestion == null) {
                 e.replyErr("Suggestion not found").queue();

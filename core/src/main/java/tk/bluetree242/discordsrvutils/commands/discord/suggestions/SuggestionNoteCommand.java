@@ -45,8 +45,8 @@ public class SuggestionNoteCommand extends Command {
             return;
         }
 
-        int number = (int) e.getEvent().getOption("number").getAsLong();
-        String noteText = e.getEvent().getOption("note").getAsString();
+        int number = (int) e.getOption("number").getAsLong();
+        String noteText = e.getOption("note").getAsString();
         e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
             if (suggestion == null) {
                 e.replyErr("Suggestion not found").queue();

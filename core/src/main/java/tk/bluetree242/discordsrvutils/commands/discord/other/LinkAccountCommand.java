@@ -14,7 +14,7 @@ public class LinkAccountCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        Integer code = (int) e.getEvent().getOption("code").getAsLong();
+        Integer code = (int) e.getOption("code").getAsLong();
         String response = DiscordSRVUtils.get().getPlatform().getDiscordSRV().proccessMessage(code + "", e.getAuthor());
         if (response != null) e.reply(response).setEphemeral(true).queue();
     }

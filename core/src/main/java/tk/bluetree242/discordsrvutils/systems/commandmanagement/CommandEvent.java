@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionMapping;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.AccessLevel;
@@ -116,6 +117,10 @@ public class CommandEvent {
 
     public Guild getGuild() {
         return ((TextChannel) getChannel()).getGuild();
+    }
+
+    public OptionMapping getOption(String name) {
+        return getEvent().getOption(name);
     }
 
     public CompletableFuture handleCF(CompletableFuture cf, String success, String failure) {

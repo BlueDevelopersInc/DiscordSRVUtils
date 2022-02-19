@@ -40,7 +40,7 @@ public class StatusCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
 
-        GuildChannel channel = e.getEvent().getOption("channel").getAsGuildChannel();
+        GuildChannel channel = e.getOption("channel").getAsGuildChannel();
         if (!(channel instanceof TextChannel)) {
             e.replyErr("Sorry this can only be a text channel").queue();
             return;

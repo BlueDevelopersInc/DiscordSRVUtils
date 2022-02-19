@@ -42,7 +42,7 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getEvent().getOption("id").getAsString()), panel -> {
+        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getOption("id").getAsString()), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
             } else {

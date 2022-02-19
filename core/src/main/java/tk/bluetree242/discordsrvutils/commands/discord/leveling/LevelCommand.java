@@ -45,15 +45,15 @@ public class LevelCommand extends Command {
     public void run(CommandEvent e) throws Exception {
         PlayerStats target;
 
-        if (e.getEvent().getOption("user_mention") != null) {
-            User user = e.getEvent().getOption("user_mention").getAsUser();
+        if (e.getOption("user_mention") != null) {
+            User user = e.getOption("user_mention").getAsUser();
             target = LevelingManager.get().getPlayerStats(user.getIdLong()).get();
             if (target == null) {
                 e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account");
                 return;
             }
-        } else if (e.getEvent().getOption("player_name") != null) {
-            String name = e.getEvent().getOption("player_name").getAsString();
+        } else if (e.getOption("player_name") != null) {
+            String name = e.getOption("player_name").getAsString();
             target = LevelingManager.get().getPlayerStats(name).get();
             if (target == null) {
                 e.replyErr("Player never joined before").queue();

@@ -77,7 +77,7 @@ public class SuggestCommand extends Command {
         }
 
 
-        String suggestionText = e.getEvent().getOption("suggestion").getAsString();
+        String suggestionText = e.getOption("suggestion").getAsString();
         e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
             antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
             e.replySuccess("Successfully created suggestion").queue();

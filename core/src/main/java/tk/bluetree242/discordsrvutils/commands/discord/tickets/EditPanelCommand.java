@@ -43,7 +43,7 @@ public class EditPanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String id = e.getEvent().getOption("id").getAsString();
+        String id = e.getOption("id").getAsString();
         DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();

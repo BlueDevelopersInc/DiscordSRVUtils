@@ -40,7 +40,7 @@ public class TestMessageCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String name = e.getEvent().getOption("name").getAsString();
+        String name = e.getOption("name").getAsString();
         try {
             e.replyMessage("message:" + name).queue();
         } catch (EmbedNotFoundException ex) {

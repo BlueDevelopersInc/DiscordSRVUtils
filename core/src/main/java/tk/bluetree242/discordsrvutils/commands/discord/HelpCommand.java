@@ -43,7 +43,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        if (e.getEvent().getOption("command") == null) {
+        if (e.getOption("command") == null) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.GREEN);
             embed.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -63,7 +63,7 @@ public class HelpCommand extends Command {
             embed.setDescription("Use " + "/" + "help <Command> to get Help for a command");
             e.reply(embed.build()).queue();
         } else {
-            String cmd = e.getEvent().getOption("command").getAsString();
+            String cmd = e.getOption("command").getAsString();
             Command executor = CommandManager.get().getCommandHashMap().get(cmd);
             if (executor == null) {
                 e.reply(Embed.error("Command not found")).queue();
