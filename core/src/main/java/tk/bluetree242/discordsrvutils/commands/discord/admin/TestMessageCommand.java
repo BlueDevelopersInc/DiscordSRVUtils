@@ -22,33 +22,31 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.admin;
 
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import org.json.JSONException;
 import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 
 public class TestMessageCommand extends Command {
     public TestMessageCommand() {
-        super("testmessage", CommandType.EVERYWHERE, "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN, "tm");
+        super("testmessage", "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN,
+                new OptionData(OptionType.STRING, "name", "Name of the Embed Message to test", true));
+        addAliases("tm");
         setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
-        if (!(args.length >= 2)) {
-            e.reply(getHelpEmbed()).queue();
-        } else {
-            String name = args[1];
-            try {
-                e.replyMessage("message:" + name).queue();
-            } catch (EmbedNotFoundException ex) {
-                e.replyErr("Embed does not exist").queue();
-            } catch (JSONException ex) {
-                e.replyErr("Embed is invalid").queue();
-            }
+        String name = e.getOption("name").getAsString();
+        try {
+            e.replyMessage("message:" + name).queue();
+        } catch (EmbedNotFoundException ex) {
+            e.replyErr("Embed does not exist").queue();
+        } catch (JSONException ex) {
+            e.replyErr("Embed is invalid").queue();
         }
     }
 }

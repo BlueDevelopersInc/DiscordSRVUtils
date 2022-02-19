@@ -335,6 +335,7 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
+        CommandManager.get().addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
@@ -346,6 +347,7 @@ public class DiscordSRVUtils {
             StatusManager.get().reloadTimer();
         }
     }
+
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
         return channel.sendMessage(msg);
     }
@@ -367,9 +369,6 @@ public class DiscordSRVUtils {
         errorHandler.severe(sv);
     }
 
-    public String getCommandPrefix() {
-        return config.prefix();
-    }
 
     public Connection getDatabase() throws SQLException {
         return databaseManager.getConnection();

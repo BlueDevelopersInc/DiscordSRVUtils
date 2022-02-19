@@ -22,16 +22,18 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class DenySuggestionCommand extends Command {
     public DenySuggestionCommand() {
-        super("denysuggestion", CommandType.GUILDS, "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN, "deny");
+        super("denysuggestion", "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+                new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
+        addAliases("deny");
         setAdminOnly(true);
     }
 
@@ -42,22 +44,14 @@ public class DenySuggestionCommand extends Command {
             return;
         }
 
-        String[] args = e.getArgs();
-        if (!(args.length >= 2)) {
-            e.replyErr("Missing Arguments. Usage: approvesuggestion <Suggestion Number>" + getCommandPrefix() + "").queue();
-        } else {
-            if (!Utils.isInt(args[1])) {
-                e.replyErr("Invalid Suggestion Number").queue();
+        int number = (int) e.getOption("number").getAsLong();
+        e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+            if (suggestion == null) {
+                e.replyErr("Suggestion not found").queue();
                 return;
             }
-            int number = Integer.parseInt(args[1]);
-            e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), false, "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-                if (suggestion == null) {
-                    e.replyErr("Suggestion not found").queue();
-                    return;
-                }
-                e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), false, "Successfully denied suggestion", "Could not deny suggestion");
-            });
-        }
+            e.handleCF(suggestion.setApproved(false, e.getAuthor().getIdLong()), "Successfully denied suggestion", "Could not deny suggestion");
+        });
+
     }
 }

@@ -23,13 +23,13 @@
 package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -41,7 +41,8 @@ public class SuggestCommand extends Command {
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand() {
-        super("suggest", CommandType.GUILDS, "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS);
+        super("suggest", "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
+                new OptionData(OptionType.STRING, "suggestion", "Your Suggestion", true));
     }
 
     @Override
@@ -75,18 +76,12 @@ public class SuggestCommand extends Command {
             }
         }
 
-        String[] args = e.getArgs();
-        if (!(args.length >= 2)) {
-            e.replyErr("What is your suggestion? Usage: " + getCommandPrefix() + "suggest <suggestion>").queue();
-            return;
-        } else {
-            String suggestionText = Utils.parseArgs(args, 1);
-            e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), false, "Error creating suggestion").thenAcceptAsync(suggestion -> {
-                antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
-                e.replySuccess("Successfully created suggestion").queue();
 
-            });
-        }
+        String suggestionText = e.getOption("suggestion").getAsString();
+        e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
+            antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
+            e.replySuccess("Successfully created suggestion").queue();
 
+        });
     }
 }

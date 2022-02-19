@@ -25,10 +25,15 @@ package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionMapping;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
@@ -41,29 +46,20 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommandEvent {
     private final Member member;
-    private final Message message;
     private final User author;
     private final MessageChannel channel;
     private final JDA jda;
+    @Getter
+    private final SlashCommandEvent event;
 
-    protected CommandEvent(Member member, Message message, User author, MessageChannel channel, JDA jda) {
-        this.member = member;
-        this.message = message;
-        this.author = author;
-        this.channel = channel;
-        this.jda = jda;
-    }
 
     public Member getMember() {
         return member;
     }
 
-    public Message getMessage() {
-        return message;
-    }
 
     public User getAuthor() {
         return author;
@@ -73,19 +69,19 @@ public class CommandEvent {
         return channel;
     }
 
-    public MessageAction reply(String content) {
-        return getMessage().reply(content);
+    public ReplyAction reply(String content) {
+        return event.reply(content);
     }
 
-    public MessageAction reply(MessageEmbed embed) {
-        return getMessage().reply(embed);
+    public ReplyAction reply(MessageEmbed embed) {
+        return event.replyEmbeds(embed);
     }
 
-    public MessageAction reply(Message msg) {
-        return getMessage().reply(msg);
+    public ReplyAction reply(Message msg) {
+        return event.reply(msg);
     }
 
-    public MessageAction replyMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public ReplyAction replyMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
         holders.add(new PlaceholdObject(getAuthor(), "user"));
         if (getChannel() instanceof TextChannel) {
             holders.add(new PlaceholdObject(getMember(), "member"));
@@ -95,28 +91,24 @@ public class CommandEvent {
         return reply(MessageManager.get().getMessage(content, holders, placehold).build());
     }
 
-    public MessageAction replyMessage(String content, PlaceholdObjectList holders) {
+    public ReplyAction replyMessage(String content, PlaceholdObjectList holders) {
         return replyMessage(content, holders, null);
     }
 
-    public MessageAction replyMessage(String content) {
+    public ReplyAction replyMessage(String content) {
         return replyMessage(content, new PlaceholdObjectList(), null);
     }
 
-    public MessageAction replyErr(String msg) {
+    public ReplyAction replyErr(String msg) {
         return reply(Embed.error(msg));
     }
 
-    public MessageAction replyErr(String msg, String footer) {
+    public ReplyAction replyErr(String msg, String footer) {
         return reply(Embed.error(msg, footer));
     }
 
-    public MessageAction replySuccess(String msg) {
+    public ReplyAction replySuccess(String msg) {
         return reply(Embed.success(msg));
-    }
-
-    public String[] getArgs() {
-        return getMessage().getContentRaw().split(" ");
     }
 
     public JDA getJDA() {
@@ -127,26 +119,28 @@ public class CommandEvent {
         return ((TextChannel) getChannel()).getGuild();
     }
 
-    public CompletableFuture handleCF(CompletableFuture cf, boolean shouldDM, String success, String failure) {
+    public OptionMapping getOption(String name) {
+        return getEvent().getOption(name);
+    }
+
+    public CompletableFuture handleCF(CompletableFuture cf, String success, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(success, "Success Message");
         Checks.notNull(failure, "Failure Message");
         cf.thenRunAsync(() -> {
-            MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
-            channel.sendMessage(Embed.success(success)).queue();
+            reply(Embed.success(success)).queue();
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else if (!(ex instanceof InsufficientPermissionException)) {
-                channel.sendMessage(Embed.error(failure)).queue();
+                reply(Embed.error(failure)).queue();
                 DiscordSRVUtils.get().defaultHandle(ex);
             } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
-                channel.sendMessage(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).queue();
+                reply(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).queue();
             }
             return x;
         });
@@ -154,22 +148,23 @@ public class CommandEvent {
     }
 
 
-    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, boolean shouldDM, String failure) {
+    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(failure, "Failure Message");
         cf.handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            MessageChannel channel = shouldDM ? getAuthor().openPrivateChannel().complete() : getChannel();
             if (ex instanceof UnCheckedRateLimitedException) {
-                channel.sendMessage(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else if (!(ex instanceof InsufficientPermissionException)) {
-                channel.sendMessage(Embed.error(failure)).queue();
+                reply(Embed.error(failure)).queue();
                 DiscordSRVUtils.get().defaultHandle(ex);
             } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = DiscordSRVUtils.get().getJDA().getGuildChannelById(exc.getChannelId());
-                channel.sendMessage(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + chnl == null ? "" : " In #" + chnl.getName())).queue();
+                exc.getPermission();
+                assert chnl != null;
+                reply(Embed.error(failure, " In #" + chnl.getName())).queue();
             }
             return x;
         });

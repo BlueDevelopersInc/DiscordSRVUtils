@@ -23,45 +23,47 @@
 package tk.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 public class LevelCommand extends Command {
     public LevelCommand() {
-        super("level", CommandType.EVERYWHERE, "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING, "rank");
+        super("level", "Get leveling info about a user or yourself", "[P]level [Player name or user mention]", null, CommandCategory.LEVELING,
+                new OptionData(OptionType.USER, "user_mention", "User to get level of, must be linked", false),
+                new OptionData(OptionType.STRING, "player_name", "Player Name to get level of", false));
+        addAliases("rank");
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
         PlayerStats target;
-        if (args.length <= 1) {
+
+        if (e.getOption("user_mention") != null) {
+            User user = e.getOption("user_mention").getAsUser();
+            target = LevelingManager.get().getPlayerStats(user.getIdLong()).get();
+            if (target == null) {
+                e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account");
+                return;
+            }
+        } else if (e.getOption("player_name") != null) {
+            String name = e.getOption("player_name").getAsString();
+            target = LevelingManager.get().getPlayerStats(name).get();
+            if (target == null) {
+                e.replyErr("Player never joined before").queue();
+                return;
+            }
+        } else {
             target = LevelingManager.get().getPlayerStats(e.getAuthor().getIdLong()).get();
             if (target == null) {
                 e.replyErr("Your account is not linked with any Minecraft Account. Use `/discordsrv link` in game to link your account").queue();
                 return;
-            }
-        } else {
-            if (e.getMessage().getMentionedMembers().isEmpty()) {
-                String name = args[1];
-                target = LevelingManager.get().getPlayerStats(name).get();
-                if (target == null) {
-                    e.replyErr("Player never joined before").queue();
-                    return;
-                }
-            } else {
-                User user = e.getMessage().getMentionedUsers().get(0);
-                target = LevelingManager.get().getPlayerStats(user.getIdLong()).get();
-                if (target == null) {
-                    e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account").queue();
-                    return;
-                }
             }
         }
 

@@ -25,39 +25,54 @@ package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
+import lombok.Getter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Command {
     private final String cmd;
     private final DiscordSRVUtils main = DiscordSRVUtils.get();
-    private final CommandType type;
     private final Permission requestPermission;
     private final String description;
     private final String usage;
-    private final String[] aliases;
+    @Getter
+    private final List<String> aliases = new ArrayList<>();
+    @Getter
+    private final OptionData[] options;
     public DiscordSRVUtils core = DiscordSRVUtils.get();
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
 
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, String... aliases) {
+    public Command(String cmd, String description, String usage, Permission requiredPermission, OptionData... options) {
         this.cmd = cmd;
-        this.type = type;
+        this.options = options;
         this.description = description;
         this.usage = usage;
-        this.aliases = aliases;
         this.requestPermission = requiredPermission;
     }
 
-    public Command(String cmd, CommandType type, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
         this.cmd = cmd;
-        this.type = type;
+        this.options = options;
         this.description = description;
         this.usage = usage;
-        this.aliases = aliases;
+        this.requestPermission = requiredPermission;
+        this.category = category;
+        category.addCommand(this);
+    }
+
+    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+        addAliases(aliases);
+        this.cmd = cmd;
+        options = new OptionData[0];
+        this.description = description;
+        this.usage = usage;
         this.requestPermission = requiredPermission;
         this.category = category;
         category.addCommand(this);
@@ -70,19 +85,12 @@ public abstract class Command {
     }
 
     public final String getUsage() {
-        return usage.replace("[P]", getCommandPrefix());
+        return usage.replace("[P]", "/");
     }
 
-    public final String[] getAliases() {
-        return aliases;
-    }
 
     public final String getCmd() {
         return cmd;
-    }
-
-    public final CommandType getCommandType() {
-        return type;
     }
 
     public final Permission getRequiredPermission() {
@@ -92,28 +100,31 @@ public abstract class Command {
     public MessageEmbed getHelpEmbed() {
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setTitle(getCommandPrefix() + cmd + " Command")
+        embed.setTitle("/" + cmd + " Command")
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
                 .addField("Usage", getUsage(), false)
                 .setThumbnail(main.getJDA().getSelfUser().getEffectiveAvatarUrl());
 
-        if (aliases.length >= 1) embed.addField("aliases", getAliasesString(), false);
+        if (aliases.size() >= 1) embed.addField("aliases", getAliasesString(), false);
         return embed.build();
 
     }
 
-    public final String getCommandPrefix() {
-        return CommandManager.get().getCommandPrefix();
+    public void addAliases(String... aliases) {
+        for (String alias : aliases) {
+            this.aliases.add(alias);
+        }
     }
+
 
     public final String getAliasesString() {
         String a = "";
         for (String s : aliases) {
             if (a.isEmpty()) {
-                a = getCommandPrefix() + s;
+                a = "/" + s;
             } else {
-                a = a + "\n" + getCommandPrefix() + s;
+                a = a + "\n" + "/" + s;
             }
         }
         return a;

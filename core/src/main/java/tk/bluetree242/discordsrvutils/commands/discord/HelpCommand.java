@@ -23,8 +23,13 @@
 package tk.bluetree242.discordsrvutils.commands.discord;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.*;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 
 import java.awt.*;
 import java.time.Instant;
@@ -32,13 +37,13 @@ import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super("help", CommandType.EVERYWHERE, "Get Help about commands", "[P]help [Command]", null, "h");
+        super("help", "Get Help about commands", "[P]help [Command]", null,
+                new OptionData(OptionType.STRING, "command", "Command to get help of", false));
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
-        if (args.length <= 1) {
+        if (e.getOption("command") == null) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.GREEN);
             embed.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
@@ -55,10 +60,10 @@ public class HelpCommand extends Command {
                     embed.addField(category.toString(), joiner.toString(), false);
                 }
             }
-            embed.setDescription("Use " + getCommandPrefix() + "help <Command> to get Help for a command");
+            embed.setDescription("Use " + "/" + "help <Command> to get Help for a command");
             e.reply(embed.build()).queue();
         } else {
-            String cmd = args[1].toLowerCase();
+            String cmd = e.getOption("command").getAsString();
             Command executor = CommandManager.get().getCommandHashMap().get(cmd);
             if (executor == null) {
                 e.reply(Embed.error("Command not found")).queue();

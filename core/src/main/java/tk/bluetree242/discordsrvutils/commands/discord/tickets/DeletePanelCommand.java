@@ -22,41 +22,38 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class DeletePanelCommand extends Command {
 
     public DeletePanelCommand() {
-        super("deletepanel", CommandType.GUILDS, "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN, "dp");
+        super("deletepanel", "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+                new OptionData(OptionType.STRING, "id", "Panel ID", true));
+        addAliases("dp");
         setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String[] args = e.getArgs();
-        if (args.length <= 1) {
-            e.reply(Embed.error("Please specify the id of panel, for panel list use " + getCommandPrefix() + "panelist")).queue();
-        } else {
-            DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(args[1]), panel -> {
-                if (panel == null) {
-                    e.reply(Embed.error("Panel not found, use " + getCommandPrefix() + "panelist for list of panels")).queue();
-                } else {
-                    DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
-                        e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
-                    }, error -> {
-                        DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-                    });
-                }
-            }, error -> {
-                DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
-            });
-        }
-
+        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getOption("id").getAsString()), panel -> {
+            if (panel == null) {
+                e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+            } else {
+                DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
+                    e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
+                }, error -> {
+                    DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                });
+            }
+        }, error -> {
+            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+        });
     }
 }

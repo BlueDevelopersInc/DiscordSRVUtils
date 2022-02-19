@@ -22,24 +22,29 @@
 
 package tk.bluetree242.discordsrvutils.commands.discord.status;
 
+import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class StatusCommand extends Command {
     public StatusCommand() {
-        super("status", CommandType.GUILDS, "Set the status message", "[P]status <ping channel>", null);
+        super("status", "Set the status message", "[P]status <ping channel>", null,
+                new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
         setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        if (e.getMessage().getMentionedChannels().isEmpty()) {
-            e.replyErr("Please mention a channel").queue();
+
+        GuildChannel channel = e.getOption("channel").getAsGuildChannel();
+        if (!(channel instanceof TextChannel)) {
+            e.replyErr("Sorry this can only be a text channel").queue();
             return;
-        } else {
-            e.handleCF(StatusManager.get().newMessage(e.getMessage().getMentionedChannels().get(0)), false, "Check " + e.getMessage().getMentionedChannels().get(0).getAsMention(), "Error creating status message");
         }
+        e.handleCF(StatusManager.get().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
     }
 }

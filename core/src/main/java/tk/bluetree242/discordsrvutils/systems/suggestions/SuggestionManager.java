@@ -49,8 +49,8 @@ import java.util.concurrent.CompletableFuture;
 public class SuggestionManager {
 
     private static SuggestionManager main;
-    public boolean loading = false;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    public boolean loading = false;
 
     public SuggestionManager() {
         main = this;

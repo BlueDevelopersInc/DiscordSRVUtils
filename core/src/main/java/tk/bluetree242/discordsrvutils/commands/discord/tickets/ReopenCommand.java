@@ -26,12 +26,11 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandType;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class ReopenCommand extends Command {
     public ReopenCommand() {
-        super("reopen", CommandType.GUILDS, "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
+        super("reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
     }
 
     @Override
@@ -44,6 +43,7 @@ public class ReopenCommand extends Command {
             if (!ticket.isClosed()) {
                 e.replyErr("Ticket is already opened").queue();
             } else {
+                e.reply("Reopening Ticket...").setEphemeral(true).queue();
                 DiscordSRVUtils.get().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
                     DiscordSRVUtils.get().defaultHandle(err);
                 });

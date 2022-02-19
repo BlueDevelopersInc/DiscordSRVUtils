@@ -23,11 +23,18 @@
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
 
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.CommandListUpdateAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.other.LinkAccountCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.status.StatusCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
@@ -71,11 +78,9 @@ public class CommandManager {
         registerCommand(new ApproveSuggestionCommand());
         registerCommand(new DenySuggestionCommand());
         registerCommand(new StatusCommand());
+        registerCommand(new LinkAccountCommand());
     }
 
-    public String getCommandPrefix() {
-        return core.getCommandPrefix();
-    }
 
     public void registerCommand(Command cmd) {
         if (getCommandHashMap().get(cmd.getCmd()) != null) return;
@@ -116,6 +121,48 @@ public class CommandManager {
 
     public List<Command> getCommandsWithoutAliases() {
         return commandswithoutaliases;
+    }
+
+    public void addSlashCommands() {
+        if (core.getGuild() == null) {
+            core.severe("Default Guild not found (is the bot in a guild?)");
+            return;
+        }
+        if (core.getJDA().getGuilds().size() >= 2) {
+            core.getLogger().warning("Found " + core.getJDA().getGuilds().size() + " Servers! Slash Commands will be added in " + core.getGuild().getName());
+            core.getLogger().warning("If you don't want this kick the bot from the servers and leave it on one server only.");
+        }
+        CommandListUpdateAction commands = core.getGuild().updateCommands();
+        for (Command command : this.commands) {
+            if (!command.isEnabled()) continue;
+            addCmd(command.getCmd(), command, commands);
+            for (String alias : command.getAliases()) {
+                addCmd(alias, command, commands);
+            }
+        }
+        commands.queue(null, r -> {
+            if (!(r instanceof ErrorResponseException)) {
+                if (r instanceof RateLimitedException) {
+                    core.severe("Could not add slash commands due to rate limits.");
+                    return;
+                }
+                core.severe("Could not add slash commands to discord server.");
+                r.printStackTrace();
+            } else {
+                ErrorResponseException err = (ErrorResponseException) r;
+                if (err.getErrorResponse() == ErrorResponse.MISSING_ACCESS) {
+                    String link = core.getJDA().getInviteUrl(Permission.ADMINISTRATOR);
+                    core.severe("Could Not Add Slash Command to Server Because your bot is missing some scopes! Please use this invite " + link);
+                } else {
+                    core.severe("Could not add slash commands to discord server.");
+                    r.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void addCmd(String alias, Command cmd, CommandListUpdateAction action) {
+        action.addCommands(new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()));
     }
 
 
