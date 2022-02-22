@@ -29,7 +29,7 @@ public class LitebansHook extends PluginHook {
 
     @Override
     public String getRequiredPlugin() {
-        return "Litebans";
+        return "LiteBans";
     }
 
     @Override
