@@ -151,6 +151,7 @@ public class CommandManager {
             } else {
                 ErrorResponseException err = (ErrorResponseException) r;
                 if (err.getErrorResponse() == ErrorResponse.MISSING_ACCESS) {
+                    core.getJDA().setRequiredScopes("applications.commands");
                     String link = core.getJDA().getInviteUrl(Permission.ADMINISTRATOR);
                     core.severe("Could Not Add Slash Command to Server Because your bot is missing some scopes! Please use this invite " + link);
                 } else {
