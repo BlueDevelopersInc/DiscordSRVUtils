@@ -34,7 +34,6 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -52,8 +51,6 @@ public class SuggestionManager {
 
     private final DiscordSRVUtils core;
     public boolean loading = false;
-
-
 
 
     public static Emoji getYesEmoji() {
@@ -194,7 +191,7 @@ public class SuggestionManager {
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
                         , null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-                    builder.setActionRows(getActionRow(0,0));
+                    builder.setActionRows(getActionRow(0, 0));
                 }
                 Message msg = core.queueMsg(builder.build(), channel).complete();
                 PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");

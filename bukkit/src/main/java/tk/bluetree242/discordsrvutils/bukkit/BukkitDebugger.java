@@ -2,19 +2,6 @@ package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.alexh.weak.Dynamic;
-import github.scarsz.discordsrv.hooks.SkriptHook;
-import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.json.JSONObject;
-import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.platform.Debugger;
-import tk.bluetree242.discordsrvutils.utils.Utils;
-
-
 import github.scarsz.discordsrv.dependencies.commons.io.FileUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.ArrayUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.RandomStringUtils;
@@ -23,8 +10,18 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.exception.ExceptionUt
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.SkriptHook;
+import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.json.JSONArray;
-
+import org.json.JSONObject;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.platform.Debugger;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -46,6 +43,7 @@ public class BukkitDebugger implements Debugger {
     private final SecureRandom RANDOM = new SecureRandom();
     private final OkHttpClient client = new OkHttpClient.Builder().build();
     private final DiscordSRVUtils core;
+
     @Override
     public String run() throws Exception {
         return run(null);
@@ -136,7 +134,8 @@ public class BukkitDebugger implements Debugger {
         files.add(fileMap("tickets.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "tickets.yml")));
         files.add(fileMap("leveling.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling.yml")));
         files.add(fileMap("status.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "status.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));
+        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
         return files;
     }

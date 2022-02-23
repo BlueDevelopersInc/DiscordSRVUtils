@@ -30,7 +30,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 
 import java.security.SecureRandom;

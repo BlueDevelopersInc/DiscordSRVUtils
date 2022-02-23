@@ -29,6 +29,7 @@ import java.util.TimerTask;
 @RequiredArgsConstructor
 public class StatusTimer extends TimerTask {
     private final StatusManager manager;
+
     @Override
     public void run() {
         manager.editMessage(true);

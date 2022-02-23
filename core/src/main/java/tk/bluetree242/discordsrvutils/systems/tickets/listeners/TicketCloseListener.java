@@ -27,7 +27,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonCl
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class TicketCloseListener extends ListenerAdapter {
 

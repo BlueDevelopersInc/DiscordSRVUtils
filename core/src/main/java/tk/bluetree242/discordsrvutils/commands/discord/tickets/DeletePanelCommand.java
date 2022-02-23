@@ -29,7 +29,6 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class DeletePanelCommand extends Command {
 

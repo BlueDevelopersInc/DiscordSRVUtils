@@ -48,7 +48,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class MessageManager {
@@ -59,7 +58,6 @@ public class MessageManager {
     //messages folder path
 
 
-    
     public Path getMessagesDirectory() {
         return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
     }

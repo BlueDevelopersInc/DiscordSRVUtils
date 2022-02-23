@@ -28,8 +28,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 @RequiredArgsConstructor
 public abstract class StatusListener {
-    public boolean registered = false;
     private final DiscordSRVUtils core;
+    public boolean registered = false;
 
     public static StatusListener get() {
         return DiscordSRVUtils.get().getPlatform().getStatusListener();

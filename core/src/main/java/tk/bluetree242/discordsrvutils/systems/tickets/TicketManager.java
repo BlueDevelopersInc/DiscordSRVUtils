@@ -46,7 +46,6 @@ public class TicketManager {
     private final DiscordSRVUtils core;
 
 
-
     public CompletableFuture<Panel> getPanelById(String id) {
         return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {

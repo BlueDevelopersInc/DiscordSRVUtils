@@ -42,7 +42,9 @@ import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
-import tk.bluetree242.discordsrvutils.platform.*;
+import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
+import tk.bluetree242.discordsrvutils.platform.PlatformServer;
+import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.listeners.game.GameLevelingListener;
@@ -56,14 +58,9 @@ import tk.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
@@ -74,12 +71,29 @@ public class DiscordSRVUtils {
     //file separator string
     public final String fileseparator = System.getProperty("file.separator");
     private final PluginPlatform main;
+    @Getter
+    private final MessageManager messageManager = new MessageManager(this);
+    @Getter
+    private final CommandManager commandManager = new CommandManager(this);
+    @Getter
+    private final TicketManager ticketManager = new TicketManager(this);
+    @Getter
+    private final WaiterManager waiterManager = new WaiterManager(this);
+    @Getter
+    private final LevelingManager levelingManager = new LevelingManager(this);
+    @Getter
+    private final SuggestionManager suggestionManager = new SuggestionManager(this);
+    @Getter
+    private final StatusManager statusManager = new StatusManager(this);
+    @Getter
+    private final PluginHookManager pluginHookManager = new PluginHookManager(this);
     //Mode for suggestions voting
     public SuggestionVoteMode voteMode;
     //latest error that occurred on our thread pool
     //Plugins we hooked into
     // faster getter for the logger
-    @Getter public Logger logger;
+    @Getter
+    public Logger logger;
     //Configurations
     private ConfManager<Config> configManager;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager;
@@ -116,15 +130,7 @@ public class DiscordSRVUtils {
     private UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
     private DatabaseManager databaseManager;
-    @Getter
-    private final MessageManager messageManager = new MessageManager(this);
-    @Getter private final CommandManager commandManager = new CommandManager(this);
-    @Getter private final TicketManager ticketManager = new TicketManager(this);
-    @Getter private final WaiterManager waiterManager = new WaiterManager(this);
-    @Getter private final LevelingManager levelingManager = new LevelingManager(this);
-    @Getter private final SuggestionManager suggestionManager = new SuggestionManager(this);
-    @Getter private final StatusManager statusManager = new StatusManager(this);
-    @Getter private final PluginHookManager pluginHookManager = new PluginHookManager(this);
+
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
         initConfigs();
@@ -374,7 +380,6 @@ public class DiscordSRVUtils {
     public Guild getGuild() {
         return getDiscordSRV().getMainGuild();
     }
-
 
 
     /**

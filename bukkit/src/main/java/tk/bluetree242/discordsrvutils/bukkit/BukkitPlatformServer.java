@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitPlatformServer extends PlatformServer {
-    @Getter private final Debugger debugger = new BukkitDebugger(DiscordSRVUtils.get());
+    @Getter
+    private final Debugger debugger = new BukkitDebugger(DiscordSRVUtils.get());
+
     @Override
     public boolean isPluginEnabled(String name) {
         return Bukkit.getPluginManager().isPluginEnabled(name);

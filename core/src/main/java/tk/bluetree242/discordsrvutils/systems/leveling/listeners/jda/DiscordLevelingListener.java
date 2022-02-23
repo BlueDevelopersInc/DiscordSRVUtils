@@ -31,10 +31,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
-import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 
 import java.security.SecureRandom;
 
@@ -57,7 +55,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             if (val == null) {
                                 core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                             } else {
-                                if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
+                                if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS))
+                                    return;
                                 core.getLevelingManager().antispamMap.remove(stats.getUuid());
                                 core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                             }

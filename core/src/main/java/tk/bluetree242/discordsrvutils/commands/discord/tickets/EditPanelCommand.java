@@ -30,7 +30,6 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 public class EditPanelCommand extends Command {

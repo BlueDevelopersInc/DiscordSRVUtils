@@ -29,7 +29,6 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 
 import java.awt.*;

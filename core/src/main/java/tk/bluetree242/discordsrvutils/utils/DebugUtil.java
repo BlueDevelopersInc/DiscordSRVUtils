@@ -22,10 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.utils;
 
-import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-
-import java.security.SecureRandom;
 
 // This idea is taken from discordsrv, and i do not own the bin
 // I Copied some of the original discordsrv code for some reason. This code isn't 100% mine

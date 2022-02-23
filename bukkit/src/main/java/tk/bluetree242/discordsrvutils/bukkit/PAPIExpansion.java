@@ -28,7 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 
 import java.util.List;
 

@@ -27,7 +27,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 
 public class DenySuggestionCommand extends Command {
     public DenySuggestionCommand() {

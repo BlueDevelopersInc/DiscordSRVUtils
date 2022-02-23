@@ -26,7 +26,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.awt.*;

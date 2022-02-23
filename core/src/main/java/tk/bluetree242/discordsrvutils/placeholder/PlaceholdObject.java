@@ -26,9 +26,6 @@ import github.scarsz.discordsrv.util.NamedValueFormatter;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
-import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

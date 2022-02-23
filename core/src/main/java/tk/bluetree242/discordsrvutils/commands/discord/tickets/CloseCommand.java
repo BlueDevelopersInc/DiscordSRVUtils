@@ -26,7 +26,6 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 
 public class CloseCommand extends Command {
     public CloseCommand() {

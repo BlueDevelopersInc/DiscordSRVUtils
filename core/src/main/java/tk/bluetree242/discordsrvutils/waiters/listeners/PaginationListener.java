@@ -30,7 +30,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.Messag
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
-import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 
 public class PaginationListener extends ListenerAdapter {
