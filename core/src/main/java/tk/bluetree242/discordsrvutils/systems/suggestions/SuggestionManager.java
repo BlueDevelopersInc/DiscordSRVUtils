@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -46,19 +47,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@RequiredArgsConstructor
 public class SuggestionManager {
 
-    private static SuggestionManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     public boolean loading = false;
 
-    public SuggestionManager() {
-        main = this;
-    }
 
-    public static SuggestionManager get() {
-        return main;
-    }
+
 
     public static Emoji getYesEmoji() {
         return Utils.getEmoji(DiscordSRVUtils.get().getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
@@ -75,7 +71,7 @@ public class SuggestionManager {
     }
 
     public CompletableFuture<Suggestion> getSuggestionByNumber(int num) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 return getSuggestionByNumber(num, conn);
             } catch (SQLException e) {
@@ -85,7 +81,7 @@ public class SuggestionManager {
     }
 
     public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 return getSuggestionByMessageID(MessageID, conn);
             } catch (SQLException e) {
@@ -183,7 +179,7 @@ public class SuggestionManager {
             throw new IllegalStateException("Suggestions Channel not found");
         }
 
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions ORDER BY SuggestionNumber DESC ");
                 ResultSet r1 = p1.executeQuery();
@@ -194,7 +190,7 @@ public class SuggestionManager {
 
                 Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
-                MessageBuilder builder = MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(),
+                MessageBuilder builder = core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(),
                         PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
                         , null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
@@ -221,7 +217,7 @@ public class SuggestionManager {
     }
 
     public CompletableFuture<Void> migrateSuggestions() {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
             boolean sent = false;
             loading = true;
@@ -229,7 +225,7 @@ public class SuggestionManager {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
                 ResultSet r1 = p1.executeQuery();
                 while (r1.next()) {
-                    Suggestion suggestion = SuggestionManager.get().getSuggestion(r1);
+                    Suggestion suggestion = core.getSuggestionManager().getSuggestion(r1);
                     try {
                         Message msg = suggestion.getMessage();
                         if (msg != null) {
@@ -239,7 +235,7 @@ public class SuggestionManager {
                                     if (!sent) {
                                         core.logger.info(warnmsg);
                                         sent = true;
-                                        SuggestionManager.get().loading = true;
+                                        core.getSuggestionManager().loading = true;
                                     }
                                     msg.clearReactions().queue();
                                     msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
@@ -250,7 +246,7 @@ public class SuggestionManager {
                             } else {
                                 if (core.voteMode == SuggestionVoteMode.REACTIONS) {
                                     if (!sent) {
-                                        SuggestionManager.get().loading = true;
+                                        core.getSuggestionManager().loading = true;
                                         core.logger.info(warnmsg);
                                         sent = true;
                                     }
@@ -267,7 +263,7 @@ public class SuggestionManager {
                 if (sent) {
                     core.logger.info("Suggestions Migration has finished.");
                 }
-                SuggestionManager.get().loading = false;
+                core.getSuggestionManager().loading = false;
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }

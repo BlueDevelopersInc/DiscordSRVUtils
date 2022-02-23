@@ -35,7 +35,7 @@ public class TicketCloseListener extends ListenerAdapter {
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
-        core.handleCF(TicketManager.get().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
             if (ticket != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getReactionEmote().getName().equals("\uD83D\uDD12")) {
@@ -51,8 +51,8 @@ public class TicketCloseListener extends ListenerAdapter {
                 if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
                     e.getReaction().removeReaction(e.getUser()).queue();
                     if (ticket.isClosed()) {
-                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {
-                            core.defaultHandle(ex);
+                        core.getAsyncManager().handleCF(ticket.reopen(e.getUser()), null, ex -> {
+                            core.getErrorHandler().defaultHandle(ex);
                         });
                     }
                 }
@@ -62,7 +62,7 @@ public class TicketCloseListener extends ListenerAdapter {
 
     public void onButtonClick(ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
-        core.handleCF(TicketManager.get().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
             if (ticket != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getButton().getId().equals("close_ticket")) {
@@ -78,8 +78,8 @@ public class TicketCloseListener extends ListenerAdapter {
                 if (e.getButton().getId().equals("reopen_ticket")) {
                     e.deferEdit().queue();
                     if (ticket.isClosed()) {
-                        core.handleCF(ticket.reopen(e.getUser()), null, ex -> {
-                            core.defaultHandle(ex);
+                        core.getAsyncManager().handleCF(ticket.reopen(e.getUser()), null, ex -> {
+                            core.getErrorHandler().defaultHandle(ex);
                         });
                     }
                 } else return;

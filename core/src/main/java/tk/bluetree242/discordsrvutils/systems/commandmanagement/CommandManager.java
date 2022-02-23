@@ -47,19 +47,14 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager {
-    private static CommandManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final ConcurrentHashMap<String, Command> cmds = new ConcurrentHashMap<>();
     private final List<Command> commands = new ArrayList<>();
     private final List<Command> commandswithoutaliases = new ArrayList<>();
 
-    public CommandManager() {
-        main = this;
+    public CommandManager(DiscordSRVUtils core) {
+        this.core = core;
         registerCommands();
-    }
-
-    public static CommandManager get() {
-        return main;
     }
 
     public void registerCommands() {

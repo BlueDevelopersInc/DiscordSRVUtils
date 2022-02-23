@@ -52,7 +52,7 @@ public class PanelListCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanels(), panels -> {
+        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanels(), panels -> {
             if (panels.isEmpty()) {
                 e.replyErr("There are no panels to show").queue();
                 return;
@@ -60,7 +60,7 @@ public class PanelListCommand extends Command {
             e.reply("Loading Pages...").setEphemeral(true).queue();
             new PaginationWaiter(e.getChannel(), getEmbeds(panels), e.getAuthor());
         }, failure -> {
-            DiscordSRVUtils.get().defaultHandle(failure, e.getChannel());
+            DiscordSRVUtils.get().getErrorHandler().defaultHandle(failure, e.getChannel());
         });
     }
 

@@ -52,7 +52,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             Map<String, Integer> valueMap = new HashMap<>();
             //Removed Tickets Because it caused lag on a few servers
                 /*
-                if (!TicketManager.get().getPanels().get().isEmpty())
+                if (!core.getTicketManager().getPanels().get().isEmpty())
                 valueMap.put("Tickets", 1);
                  */
             if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);

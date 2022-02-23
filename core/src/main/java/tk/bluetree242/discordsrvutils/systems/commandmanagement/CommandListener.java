@@ -35,9 +35,9 @@ public class CommandListener extends ListenerAdapter {
 
     public void onSlashCommand(SlashCommandEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             String cmd = e.getName();
-            Command executor = CommandManager.get().getCommandHashMap().get(cmd);
+            Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
             if (executor == null || !executor.isEnabled()) return;
             try {
                 if (executor.getRequiredPermission() != null) {

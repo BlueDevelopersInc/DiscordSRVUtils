@@ -24,14 +24,16 @@ package tk.bluetree242.discordsrvutils;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class DatabaseManager {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     //database connection pool
     private HikariDataSource sql;
 

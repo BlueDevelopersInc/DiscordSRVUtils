@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -49,46 +50,40 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+@RequiredArgsConstructor
 public class MessageManager {
-    private static MessageManager instance;
-    private final Logger logger = DiscordSRVUtils.get().getLogger();
     //default messages to use
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     //messages folder path
-    @Getter
-    private final Path messagesDirectory = Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
 
 
-    public MessageManager() {
-        instance = this;
-        initDefaultMessages();
+    
+    public Path getMessagesDirectory() {
+        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
     }
 
-    public static MessageManager get() {
-        return instance;
-    }
 
     public void init() {
-        if (messagesDirectory.toFile().mkdir()) {
+        if (getMessagesDirectory().toFile().mkdir()) {
             defaultMessages.forEach((key, val) -> {
                 try {
-                    File file = new File(messagesDirectory + core.fileseparator + key + ".json");
+                    File file = new File(getMessagesDirectory() + core.fileseparator + key + ".json");
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);
                     writer.close();
                 } catch (FileNotFoundException e) {
-                    logger.severe("Error creating default message \"" + key + "\"");
+                    core.getLogger().severe("Error creating default message \"" + key + "\"");
                 } catch (IOException e) {
-                    logger.severe("Error writing default message \"" + key + "\"");
+                    core.getLogger().severe("Error writing default message \"" + key + "\"");
                 }
             });
         }
     }
 
-    private void initDefaultMessages() {
+    public void initDefaultMessages() {
         //prepare a list of all messages
         String[] messages = new String[]{"afk",
                 "ban",
@@ -115,7 +110,7 @@ public class MessageManager {
                 //add them to the map
                 defaultMessages.put(msg, new String(core.getPlatform().getResource("messages/" + msg + ".json").readAllBytes()));
             } catch (IOException e) {
-                logger.severe("Could not load " + msg + ".json");
+                core.getLogger().severe("Could not load " + msg + ".json");
             }
         }
     }
@@ -204,7 +199,7 @@ public class MessageManager {
     }
 
     public JSONObject getMessageJSONByName(String name) {
-        File file = new File(messagesDirectory + core.fileseparator + name + ".json");
+        File file = new File(getMessagesDirectory() + core.fileseparator + name + ".json");
         if (!file.exists()) {
             if (defaultMessages.containsKey(name)) {
                 try {

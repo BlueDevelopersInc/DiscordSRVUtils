@@ -43,30 +43,30 @@ public class DiscordLevelingListener extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
             if (e.getGuild().getIdLong() == core.getGuild().getIdLong()) {
                 if (core.getLevelingConfig().enabled()) {
-                    core.handleCF(LevelingManager.get().getPlayerStats(e.getMember().getIdLong()), stats -> {
+                    core.getAsyncManager().handleCF(core.getLevelingManager().getPlayerStats(e.getMember().getIdLong()), stats -> {
                         if (stats == null) {
                             return;
                         }
                         if (core.getLevelingConfig().antispam_messages()) {
-                            Long val = LevelingManager.get().antispamMap.get(stats.getUuid());
+                            Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
                             if (val == null) {
-                                LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                                core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                             } else {
-                                if (!(System.nanoTime() - val >= LevelingManager.get().MAP_EXPIRATION_NANOS)) return;
-                                LevelingManager.get().antispamMap.remove(stats.getUuid());
-                                LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                                if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
+                                core.getLevelingManager().antispamMap.remove(stats.getUuid());
+                                core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                             }
                         }
                         int toAdd = new SecureRandom().nextInt(50);
-                        boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
-                        core.handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
+                        boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
+                        core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
                         if (leveledUp) {
-                            core.queueMsg(MessageManager.get().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
+                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),
                                     new PlaceholdObject(e.getMember(), "member"),
@@ -82,11 +82,11 @@ public class DiscordLevelingListener extends ListenerAdapter {
 
     //give leveling roles when they rejoin the discord server
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (core.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
-                PlayerStats stats = core.handleCFOnAnother(LevelingManager.get().getPlayerStats(e.getUser().getIdLong()));
+                PlayerStats stats = core.getAsyncManager().handleCFOnAnother(core.getLevelingManager().getPlayerStats(e.getUser().getIdLong()));
                 if (stats == null) return;
-                Role role = LevelingManager.get().getRoleForLevel(stats.getLevel());
+                Role role = core.getLevelingManager().getRoleForLevel(stats.getLevel());
                 if (role != null) {
                     e.getGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
                 }

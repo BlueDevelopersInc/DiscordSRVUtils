@@ -22,11 +22,15 @@
 
 package tk.bluetree242.discordsrvutils.systems.status;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.TimerTask;
 
+@RequiredArgsConstructor
 public class StatusTimer extends TimerTask {
+    private final StatusManager manager;
     @Override
     public void run() {
-        StatusManager.get().editMessage(true);
+        manager.editMessage(true);
     }
 }

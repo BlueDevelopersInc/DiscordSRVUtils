@@ -23,23 +23,25 @@
 package tk.bluetree242.discordsrvutils.updatechecker;
 
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+@RequiredArgsConstructor
 public class UpdateChecker {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void updateCheck() {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             //do updatechecker
             try {
                 if (!core.isEnabled()) return;
                 OkHttpClient client = new OkHttpClient();
                 JSONObject versionConfig = core.getVersionConfig();
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                        .addFormDataPart("version", core.getDescription().getVersion())
+                        .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
                         .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
                         .addFormDataPart("commit", versionConfig.getString("commit"))
                         .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
@@ -90,12 +92,12 @@ public class UpdateChecker {
     }
 
     public void updateCheck(PlatformPlayer p) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();
                 JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                        .addFormDataPart("version", DiscordSRVUtils.get().getDescription().getVersion())
+                        .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
                         .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
                         .addFormDataPart("commit", versionConfig.getString("commit"))
                         .addFormDataPart("buildDate", versionConfig.getString("buildDate"))

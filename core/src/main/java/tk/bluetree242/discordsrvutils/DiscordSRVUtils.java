@@ -79,7 +79,7 @@ public class DiscordSRVUtils {
     //latest error that occurred on our thread pool
     //Plugins we hooked into
     // faster getter for the logger
-    public Logger logger;
+    @Getter public Logger logger;
     //Configurations
     private ConfManager<Config> configManager;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager;
@@ -107,16 +107,24 @@ public class DiscordSRVUtils {
     //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
     @Getter
-    private AsyncManager asyncManager;
+    private AsyncManager asyncManager = new AsyncManager(this);
     @Getter
-    private JdaManager jdaManager;
+    private JdaManager jdaManager = new JdaManager(this);
     @Getter
-    private ErrorHandler errorHandler;
+    private ErrorHandler errorHandler = new ErrorHandler(this);
     @Getter
-    private UpdateChecker updateChecker;
+    private UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
     private DatabaseManager databaseManager;
-
+    @Getter
+    private final MessageManager messageManager = new MessageManager(this);
+    @Getter private final CommandManager commandManager = new CommandManager(this);
+    @Getter private final TicketManager ticketManager = new TicketManager(this);
+    @Getter private final WaiterManager waiterManager = new WaiterManager(this);
+    @Getter private final LevelingManager levelingManager = new LevelingManager(this);
+    @Getter private final SuggestionManager suggestionManager = new SuggestionManager(this);
+    @Getter private final StatusManager statusManager = new StatusManager(this);
+    @Getter private final PluginHookManager pluginHookManager = new PluginHookManager(this);
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
         initConfigs();
@@ -146,22 +154,6 @@ public class DiscordSRVUtils {
         //initialize discordsrv listener
         dsrvlistener = new DiscordSRVListener();
         //Initialize Managers
-        //These automatically set themselves so just a simple constructor call
-        new MessageManager();
-        new CommandManager();
-        new TicketManager();
-        new WaiterManager();
-        new LevelingManager();
-        new SuggestionManager();
-        new StatusManager();
-        new PluginHookManager();
-        //put status listener to make StatusListener.get() work
-        main.getStatusListener();
-        asyncManager = new AsyncManager();
-        jdaManager = new JdaManager();
-        errorHandler = new ErrorHandler();
-        updateChecker = new UpdateChecker();
-        databaseManager = new DatabaseManager();
     }
 
     private void initConfigs() {
@@ -189,7 +181,7 @@ public class DiscordSRVUtils {
     }
 
     public void onEnable() {
-        updateCheck();
+        updateChecker.updateCheck();
         try {
             if (!main.getServer().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -253,21 +245,22 @@ public class DiscordSRVUtils {
 
     public void onDisable() throws ExecutionException, InterruptedException {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
-        PluginHookManager.get().removeHookAll();
+        pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
-            StatusManager.get().unregisterTimer();
-            StatusManager.get().editMessage(false).get();
+            statusManager.unregisterTimer();
+            statusManager.editMessage(false).get();
         }
         asyncManager.stop();
-        if (WaiterManager.get() != null) WaiterManager.get().timer.cancel();
+        if (waiterManager != null) waiterManager.timer.cancel();
         databaseManager.close();
         instance = null;
     }
 
     private void whenStarted() {
         main.addHooks();
-        MessageManager.get().init();
+        messageManager.initDefaultMessages();
+        messageManager.init();
     }
 
     public void registerListeners() {
@@ -292,7 +285,7 @@ public class DiscordSRVUtils {
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
         statusConfigConfManager.reloadConfig();
         statusConfig = statusConfigConfManager.reloadConfigData();
-        LevelingManager.get().reloadLevelingRoles();
+        levelingManager.reloadLevelingRoles();
         setSettings();
     }
 
@@ -308,10 +301,10 @@ public class DiscordSRVUtils {
 
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
-        executeAsync(() -> {
+        asyncManager.executeAsync(() -> {
             registerListeners();
             setSettings();
-            PluginHookManager.get().hookAll();
+            pluginHookManager.hookAll();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
                 for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
@@ -322,12 +315,12 @@ public class DiscordSRVUtils {
                 }
             }
             //fix issues with any ticket or panel
-            TicketManager.get().fixTickets();
+            ticketManager.fixTickets();
             voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
-            SuggestionManager.get().migrateSuggestions();
-            StatusManager.get().editMessage(true);
-            StatusManager.get().registerTimer();
+            suggestionManager.migrateSuggestions();
+            statusManager.editMessage(true);
+            statusManager.registerTimer();
             logger.info("Plugin is ready to function.");
         });
 
@@ -335,16 +328,16 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
-        CommandManager.get().addSlashCommands();
+        commandManager.addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
-        LevelingManager.get().cachedUUIDS.refreshAll(LevelingManager.get().cachedUUIDS.asMap().keySet());
+        levelingManager.cachedUUIDS.refreshAll(levelingManager.cachedUUIDS.asMap().keySet());
         if (StatusListener.get() != null) {
             if (StatusListener.get().registered) {
                 StatusListener.get().unregister();
             }
             StatusListener.get().register();
-            StatusManager.get().reloadTimer();
+            statusManager.reloadTimer();
         }
     }
 
@@ -356,13 +349,9 @@ public class DiscordSRVUtils {
         return getDiscordSRV().getJDA();
     }
 
-    public MessageManager getMessageManager() {
-        return MessageManager.get();
-    }
-
 
     public JSONObject getVersionConfig() throws IOException {
-        return new JSONObject(new String(getResource("version-config.json").readAllBytes()));
+        return new JSONObject(new String(getPlatform().getResource("version-config.json").readAllBytes()));
     }
 
     public void severe(String sv) {
@@ -386,22 +375,7 @@ public class DiscordSRVUtils {
         return getDiscordSRV().getMainGuild();
     }
 
-    public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
-        return CompletableFuture.supplyAsync(v, getPool());
-    }
 
-    public CompletableFuture<Void> completableFutureRun(Runnable r) {
-        return CompletableFuture.runAsync(r, getPool());
-    }
-
-
-    public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
-        asyncManager.handleCF(cf, success, failure);
-    }
-
-    public <U> U handleCFOnAnother(CompletableFuture<U> cf) {
-        return asyncManager.handleCFOnAnother(cf);
-    }
 
     /**
      * @return true if plugin enabled and discordsrv ready, else false
@@ -415,51 +389,13 @@ public class DiscordSRVUtils {
         return main.isEnabled();
     }
 
-    public void updateCheck(PlatformPlayer p) {
-        updateChecker.updateCheck(p);
-    }
-
     public Config getMainConfig() {
         return config;
     }
 
-    public Logger getLogger() {
-        return main.getLogger();
-    }
-
-    public PlatformPluginDescription getDescription() {
-        return main.getDescription();
-    }
-
-    public void updateCheck() {
-        updateChecker.updateCheck();
-    }
-
-    public void executeAsync(Runnable r) {
-        asyncManager.executeAsync(r);
-    }
-
-    public void defaultHandle(Throwable ex, MessageChannel channel) {
-        errorHandler.defaultHandle(ex, channel);
-    }
-
-    public void defaultHandle(Throwable ex) {
-        errorHandler.defaultHandle(ex);
-    }
-
-
     // Allow the user to set variables inside SpEL Strings and expression turns just nothing
     public String execute(Object o) {
         return "";
-    }
-
-
-    private InputStream getResource(String s) {
-        return main.getResource(s);
-    }
-
-    public ThreadPoolExecutor getPool() {
-        return asyncManager.getPool();
     }
 
 }

@@ -40,7 +40,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
-            sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getDescription().getVersion());
+            sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getPlatform().getDescription().getVersion());
             String build = core.getVersionConfig().getString("buildNumber");
             if (!build.equals("NONE")) {
                 sender.sendMessage("&eBuild #" + build);
@@ -74,9 +74,9 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
             } else if (args[0].equalsIgnoreCase("updatecheck")) {
                 if (sender.hasPermission("discordsrvutils.updatecheck")) {
                     if (sender instanceof ConsoleCommandUser) {
-                        DiscordSRVUtils.get().updateCheck();
+                        DiscordSRVUtils.get().getUpdateChecker().updateCheck();
                     } else {
-                        DiscordSRVUtils.get().updateCheck((PlatformPlayer) sender);
+                        DiscordSRVUtils.get().getUpdateChecker().updateCheck((PlatformPlayer) sender);
                     }
                     return;
                 }

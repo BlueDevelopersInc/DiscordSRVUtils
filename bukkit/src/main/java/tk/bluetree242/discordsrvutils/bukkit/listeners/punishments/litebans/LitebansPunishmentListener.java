@@ -46,28 +46,28 @@ public class LitebansPunishmentListener extends Events.Listener {
     }
 
     public void entryAdded(Entry e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (!core.isReady()) return;
             LitebansPunishment punishment = new LitebansPunishment(e);
 
             Message msg = null;
             switch (e.getType().toUpperCase()) {
                 case "BAN":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (!e.isPermanent()) {
-                        msg = MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     if (e.isIpban()) {
-                        msg = MessageManager.get().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     if (e.isPermanent() && e.isIpban()) {
-                        msg = MessageManager.get().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
                 case "MUTE":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (!e.isPermanent()) {
-                        msg = MessageManager.get().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
                 default:
@@ -90,20 +90,20 @@ public class LitebansPunishmentListener extends Events.Listener {
 
     public void entryRemoved(Entry e) {
         if (!core.isReady()) return;
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (!core.isEnabled()) return;
             LitebansPunishment punishment = new LitebansPunishment(e);
 
             Message msg = null;
             switch (e.getType().toUpperCase()) {
                 case "BAN":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     if (e.isIpban()) {
-                        msg = MessageManager.get().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     }
                     break;
                 case "MUTE":
-                    msg = MessageManager.get().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
                     break;
             }
             if (!e.isSilent())

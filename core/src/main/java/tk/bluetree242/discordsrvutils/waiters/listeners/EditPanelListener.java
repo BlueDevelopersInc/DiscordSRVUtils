@@ -155,7 +155,7 @@ public class EditPanelListener extends ListenerAdapter {
     }
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             EditPanelWaiter waiter = EditPanelWaiter.getWaiter(e.getChannel(), e.getUser());
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.ORANGE);
@@ -165,14 +165,14 @@ public class EditPanelListener extends ListenerAdapter {
                 String name = e.getReactionEmote().getName();
                 if (name.equals("✅")) {
                     waiter.expire(false);
-                    core.handleCF(waiter.getEditor().apply(), panel -> {
+                    core.getAsyncManager().handleCF(waiter.getEditor().apply(), panel -> {
                         if (panel == null) {
                             e.getChannel().sendMessage(Embed.error("Something unexpected happened, please contact the devs")).queue();
                         } else {
                             e.getChannel().sendMessage(Embed.success("Successfully applied changes")).queue();
                         }
                     }, err -> {
-                        core.defaultHandle(err, e.getChannel());
+                        core.getErrorHandler().defaultHandle(err, e.getChannel());
                     });
                 } else if (name.equals("❌")) {
                     waiter.expire(false);

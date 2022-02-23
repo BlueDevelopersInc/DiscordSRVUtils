@@ -43,7 +43,7 @@ public class GameLevelingListener extends PlatformListener {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onJoin(PlatformJoinEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling WHERE UUID=?");
                 p1.setString(1, e.getPlayer().getUniqueId().toString());
@@ -72,23 +72,23 @@ public class GameLevelingListener extends PlatformListener {
     public void onChat(PlatformChatEvent e) {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
-        core.handleCF(LevelingManager.get().getPlayerStats(e.getPlayer().getUniqueId()), stats -> {
+        core.getAsyncManager().handleCF(core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId()), stats -> {
             if (stats == null) {
                 return;
             }
             if (core.getLevelingConfig().antispam_messages()) {
-                Long val = LevelingManager.get().antispamMap.get(stats.getUuid());
+                Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
                 if (val == null) {
-                    LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                 } else {
-                    if (!(System.nanoTime() - val >= LevelingManager.get().MAP_EXPIRATION_NANOS)) return;
-                    LevelingManager.get().antispamMap.remove(stats.getUuid());
-                    LevelingManager.get().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
+                    core.getLevelingManager().antispamMap.remove(stats.getUuid());
+                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                 }
             }
             int toAdd = new SecureRandom().nextInt(50);
-            boolean leveledUp = core.handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
-            core.handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
+            boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
+            core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
             if (leveledUp) {
                 e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
             }

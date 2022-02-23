@@ -65,7 +65,7 @@ public class EssentialsAFKListener implements Listener {
 
     @EventHandler
     public void onAfk(AfkStatusChangeEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             boolean afk = e.getAffected().isAfk();
             Player player = e.getAffected().getBase();
             if (!shouldSend(player)) return;
@@ -79,9 +79,9 @@ public class EssentialsAFKListener implements Listener {
                 }
                 Message msg;
                 if (e.getValue()) {
-                    msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
+                    msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
                 } else {
-                    msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
+                    msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
                 }
                 core.queueMsg(msg, channel).queue();
             }

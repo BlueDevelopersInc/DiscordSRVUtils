@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.systems.status;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -42,31 +43,27 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 
+@RequiredArgsConstructor
 public class StatusManager {
     private static StatusManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
-    private final Path dataPath = Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
-    private StatusTimer timer = new StatusTimer();
-
-    public StatusManager() {
-        main = this;
-        dataPath.getParent().toFile().mkdir();
+    private final DiscordSRVUtils core;
+    private StatusTimer timer = new StatusTimer(this);
+    
+    public Path getDataPath() {
+        return Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
     }
 
-    public static StatusManager get() {
-        return main;
-    }
 
     public Message getStatusMessage(boolean online) {
         PlaceholdObjectList holders = new PlaceholdObjectList();
         holders.add(new PlaceholdObject(core.getPlatform().getServer().getOriginal(), "server"));
-        return MessageManager.get().parseMessageFromJson(MessageManager.get().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
+        return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
     public CompletableFuture<Message> newMessage(TextChannel channel) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             //path for some temp storage which should not be stored in database
-            File file = dataPath.toFile();
+            File file = getDataPath().toFile();
             JSONObject json = new JSONObject();
             json.put("channel", channel.getIdLong());
             //Its already async, complete() should be fine
@@ -74,9 +71,8 @@ public class StatusManager {
             json.put("message", msg.getIdLong());
             try {
                 if (!file.exists()) {
-                    dataPath.getParent().toFile().mkdir();
+                    getDataPath().getParent().toFile().mkdirs();
                     file.createNewFile();
-                    dataPath.getParent().toFile().mkdir();
                 }
                 FileWriter writer = new FileWriter(file);
                 writer.write(json.toString());
@@ -90,26 +86,25 @@ public class StatusManager {
     }
 
     public Long getMessageId() throws IOException {
-        File file = dataPath.toFile();
+        File file = getDataPath().toFile();
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("message");
     }
 
     public Long getChannelId() throws IOException {
-        File file = dataPath.toFile();
+        File file = getDataPath().toFile();
         if (!file.exists()) return null;
         JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
         return json.getLong("channel");
     }
 
     public CompletableFuture<Void> editMessage(boolean online) {
-        return core.completableFutureRun(() -> {
-            StatusManager manager = StatusManager.get();
-            Message toSend = manager.getStatusMessage(online);
+        return core.getAsyncManager().completableFutureRun(() -> {
+            Message toSend = getStatusMessage(online);
             try {
-                Long messageId = manager.getMessageId();
-                Long channelId = manager.getChannelId();
+                Long messageId = getMessageId();
+                Long channelId = getChannelId();
                 if (messageId == null || channelId == null) return;
                 Message msg = Objects.requireNonNull(core.getGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
                 if (msg == null) return;
@@ -129,7 +124,7 @@ public class StatusManager {
         if (timer != null) {
             timer.cancel();
         }
-        new Timer().schedule(timer = new StatusTimer(), 1000, core.getStatusConfig().update_delay() * 1000);
+        new Timer().schedule(timer = new StatusTimer(this), 1000, core.getStatusConfig().update_delay() * 1000);
     }
 
     public void unregisterTimer() {

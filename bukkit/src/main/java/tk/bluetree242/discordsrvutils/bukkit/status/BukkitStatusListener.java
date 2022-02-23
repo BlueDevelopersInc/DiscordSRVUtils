@@ -22,15 +22,22 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.status;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.status.StatusListener;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 
 public class BukkitStatusListener extends StatusListener implements Listener, EventExecutor {
+    private final DiscordSRVUtils core;
+    public BukkitStatusListener(DiscordSRVUtils core) {
+        super(core);
+        this.core = core;
+    }
 
     public void register() {
         for (String event : core.getStatusConfig().update_events()) {
@@ -50,7 +57,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
             if (((Cancellable) event).isCancelled()) return;
         }
         Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform().getOriginal(), () -> {
-            StatusManager.get().editMessage(true);
+            core.getStatusManager().editMessage(true);
         }, 1);
     }
 

@@ -75,7 +75,7 @@ public class PlayerStats {
     }
 
     public CompletableFuture<Void> setLevel(int level) {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET Level=? WHERE UUID=?");
                 p1.setInt(1, level);
@@ -101,7 +101,7 @@ public class PlayerStats {
             event = new LevelupEvent(this, uuid);
         }
         LevelupEvent finalEvent = event;
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 if (xp >= 300) {
                     PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=0, Level=? WHERE UUID=?");
@@ -112,7 +112,7 @@ public class PlayerStats {
                     this.xp = 0;
                     String id = core.getDiscordSRV().getDiscordId(uuid);
                     if (id == null) return true;
-                    LevelingManager manager = LevelingManager.get();
+                    LevelingManager manager = core.getLevelingManager();
                     Member member = core.getGuild().retrieveMemberById(id).complete();
                     if (member == null) return true;
                     Collection actions = new ArrayList<>();
@@ -151,7 +151,7 @@ public class PlayerStats {
     }
 
     public CompletableFuture<Void> addMessage(MessageType type) {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = null;
                 switch (type) {

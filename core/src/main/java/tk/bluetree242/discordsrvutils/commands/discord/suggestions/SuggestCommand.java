@@ -70,7 +70,7 @@ public class SuggestCommand extends Command {
         Long val = antispamMap.get(e.getAuthor().getIdLong());
         if (val == null) {
         } else {
-            if (!(System.nanoTime() - val >= LevelingManager.get().MAP_EXPIRATION_NANOS)) {
+            if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) {
                 e.replyErr("Slow down.. you need to wait 2 minutes before every new suggestion").queue();
                 return;
             }
@@ -78,7 +78,7 @@ public class SuggestCommand extends Command {
 
 
         String suggestionText = e.getOption("suggestion").getAsString();
-        e.handleCF(SuggestionManager.get().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
+        e.handleCF(core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
             antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
             e.replySuccess("Successfully created suggestion").queue();
 

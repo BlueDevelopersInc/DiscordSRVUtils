@@ -98,7 +98,7 @@ public class Panel {
     }
 
     public CompletableFuture<Void> delete() {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("DELETE FROM ticket_panels WHERE ID=?");
                 p1.setString(1, id);
@@ -112,7 +112,7 @@ public class Panel {
                         msg.delete().queue();
                     });
                 }
-                core.handleCFOnAnother(getTickets()).forEach(t -> {
+                core.getAsyncManager().handleCFOnAnother(getTickets()).forEach(t -> {
                     t.delete();
                 });
                 PreparedStatement p3 = conn.prepareStatement("DELETE FROM tickets WHERE ID=?");
@@ -125,7 +125,7 @@ public class Panel {
     }
 
     public CompletableFuture<Set<Ticket>> getTicketsForUser(User user, boolean includeClosed) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 Set<Ticket> result = new HashSet<>();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
@@ -134,9 +134,9 @@ public class Panel {
                 while (r1.next()) {
                     if (Utils.getDBoolean(r1.getString("Closed"))) {
                         if (includeClosed)
-                            TicketManager.get().getTicket(r1, this);
+                            core.getTicketManager().getTicket(r1, this);
                     } else {
-                        TicketManager.get().getTicket(r1, this);
+                        core.getTicketManager().getTicket(r1, this);
                     }
                 }
                 return result;
@@ -148,7 +148,7 @@ public class Panel {
     }
 
     public CompletableFuture<@Nullable Ticket> openTicket(User user) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             if (user.isBot()) return null;
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=? ORDER BY OpenTime");
@@ -156,7 +156,7 @@ public class Panel {
                 ResultSet r = check.executeQuery();
                 while (r.next()) {
                     if (!Utils.getDBoolean(r.getString("Closed"))) {
-                        return TicketManager.get().getTicket(r, this);
+                        return core.getTicketManager().getTicket(r, this);
                     }
                 }
                 if (runningProcesses.containsKey(user.getIdLong())) return null;
@@ -168,7 +168,7 @@ public class Panel {
                 }
                 action.addPermissionOverride(core.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
                 TextChannel channel = action.complete();
-                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
+                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
                         new PlaceholdObject(core.getGuild(), "guild"),
                         new PlaceholdObject(core.getGuild().getMember(user), "member"),
                         new PlaceholdObject(user, "user"),
@@ -195,14 +195,14 @@ public class Panel {
     }
 
     public CompletableFuture<Set<Ticket>> getTickets() {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 Set<Ticket> val = new HashSet<>();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE ID=?");
                 p1.setString(1, id);
                 ResultSet r1 = p1.executeQuery();
                 while (r1.next())
-                    val.add(TicketManager.get().getTicket(r1, this));
+                    val.add(core.getTicketManager().getTicket(r1, this));
                 return val;
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -246,7 +246,7 @@ public class Panel {
 
 
         public CompletableFuture<Panel> create() {
-            return core.completableFuture(() -> {
+            return core.getAsyncManager().completableFuture(() -> {
                 Checks.notNull(name, "Name");
                 Checks.notNull(channelId, "Channel");
                 Checks.notNull(openedCategory, "OpenedCategory");
@@ -260,7 +260,7 @@ public class Panel {
                     throw new IllegalArgumentException("Channel was not found");
                 }
                 Panel panel = new Panel(name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
-                Message msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                 panel.messageId = msg.getIdLong();
                 try (Connection conn = core.getDatabase()) {
                     PreparedStatement p1 = conn.prepareStatement("INSERT INTO ticket_panels(Name, ID, Channel, MessageID, OpenedCategory, ClosedCategory) VALUES (?, ?, ?, ?, ?, ?)");
@@ -324,7 +324,7 @@ public class Panel {
         }
 
         public CompletableFuture<Panel> apply() {
-            return core.completableFuture(() -> {
+            return core.getAsyncManager().completableFuture(() -> {
                 try (Connection conn = core.getDatabase()) {
                     Checks.notNull(name, "Name");
                     Checks.notNull(channelId, "Channel");
@@ -341,11 +341,11 @@ public class Panel {
                     Message msg;
                     try {
                         if (!panel.name.equals(name)) {
-                            msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                            msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                         } else
                             msg = channel.retrieveMessageById(panel.messageId).complete();
                     } catch (ErrorResponseException ex) {
-                        msg = channel.sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                        msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                     }
                     PreparedStatement p1 = conn.prepareStatement("UPDATE ticket_panels SET Name=?, Channel=?, MessageID=?, OpenedCategory=?, ClosedCategory=? WHERE ID=?");
                     p1.setString(1, name);

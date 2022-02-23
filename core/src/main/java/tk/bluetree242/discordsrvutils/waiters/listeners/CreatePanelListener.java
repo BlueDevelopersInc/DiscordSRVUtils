@@ -141,10 +141,10 @@ public class CreatePanelListener extends ListenerAdapter {
                     waiter.getBuilder().setAllowedRoles(rls);
                 }
                 waiter.expire(false);
-                core.handleCF(waiter.getBuilder().create(), panel -> {
+                core.getAsyncManager().handleCF(waiter.getBuilder().create(), panel -> {
                     e.getChannel().sendMessage(Embed.success("Panel successfully created with ID " + panel.getId())).queue();
                 }, failure -> {
-                    core.defaultHandle(failure, e.getChannel());
+                    core.getErrorHandler().defaultHandle(failure, e.getChannel());
                 });
             }
         }

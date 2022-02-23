@@ -32,7 +32,7 @@ public class JoinUpdateChecker extends PlatformListener {
 
     public void onJoin(PlatformJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
-            DiscordSRVUtils.get().updateCheck(e.getPlayer());
+            DiscordSRVUtils.get().getUpdateChecker().updateCheck(e.getPlayer());
         }
     }
 }

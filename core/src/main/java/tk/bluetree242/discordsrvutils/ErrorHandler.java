@@ -24,17 +24,17 @@ package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.util.logging.Logger;
 
+@RequiredArgsConstructor
 public class ErrorHandler {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
-    private final Logger logger = core.getLogger();
+    private final DiscordSRVUtils core;
     @Getter
     private String finalError = null;
     @Getter
@@ -42,25 +42,25 @@ public class ErrorHandler {
 
     protected void startupError(Throwable ex, @NotNull String msg) {
         core.getPlatform().disable();
-        logger.warning(msg);
+        core.getLogger().warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
-            logger.severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+            core.getLogger().severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
         } catch (Exception e) {
             e.printStackTrace();
         }
         //tell them where to report
-        logger.severe("Send this to support at https://discordsrvutils.xyz/support");
+        core.getLogger().severe("Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
     }
 
     public void defaultHandle(Throwable ex) {
         //handle error on thread pool
         if (!core.getMainConfig().minimize_errors()) {
-            logger.warning("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            core.getLogger().warning("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
 
             ex.printStackTrace();
-            logger.warning("Read the note above the error Please.");
+            core.getLogger().warning("Read the note above the error Please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
                 for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
@@ -72,7 +72,7 @@ public class ErrorHandler {
             lastErrorTime = System.currentTimeMillis();
 
         } else {
-            logger.severe("DiscordSRVUtils had an error. Error minimization enabled.");
+            core.getLogger().severe("DiscordSRVUtils had an error. Error minimization enabled.");
         }
         finalError = Utils.exceptionToStackTrack(ex);
     }
@@ -80,7 +80,7 @@ public class ErrorHandler {
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         //send message for errors
         channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
-        logger.severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+        core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }
 

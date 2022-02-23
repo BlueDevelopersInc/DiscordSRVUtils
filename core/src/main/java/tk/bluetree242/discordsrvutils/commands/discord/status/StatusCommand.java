@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
@@ -45,6 +46,6 @@ public class StatusCommand extends Command {
             e.replyErr("Sorry this can only be a text channel").queue();
             return;
         }
-        e.handleCF(StatusManager.get().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
+        e.handleCF(DiscordSRVUtils.get().getStatusManager().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
     }
 }

@@ -37,7 +37,7 @@ public class PaginationListener extends ListenerAdapter {
 
 
     public void onMessageReactionAdd(MessageReactionAddEvent e) {
-        DiscordSRVUtils.get().executeAsync(() -> {
+        DiscordSRVUtils.get().getAsyncManager().executeAsync(() -> {
             boolean backward = e.getReactionEmote().getName().equals("⏪");
             PaginationWaiter waiter = getWaiter(e.getMessageIdLong(), e.getUser().getIdLong());
             if (waiter != null) {
@@ -71,7 +71,7 @@ public class PaginationListener extends ListenerAdapter {
     }
 
     public PaginationWaiter getWaiter(long message, long userID) {
-        for (Waiter w : WaiterManager.get().getWaiterByName("PaginationWaiter")) {
+        for (Waiter w : DiscordSRVUtils.get().getWaiterManager().getWaiterByName("PaginationWaiter")) {
             PaginationWaiter waiter = (PaginationWaiter) w;
             if (waiter.getMessage().getIdLong() == message) {
                 if (waiter.getUser().getIdLong() == userID)

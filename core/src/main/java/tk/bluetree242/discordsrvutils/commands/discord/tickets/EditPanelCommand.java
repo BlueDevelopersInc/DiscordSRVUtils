@@ -44,11 +44,11 @@ public class EditPanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         String id = e.getOption("id").getAsString();
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(id), panel -> {
+        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
             } else {
-                DiscordSRVUtils.get().handleCF(TicketManager.getInstance().getPanelById(id), s -> {
+                DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), s -> {
                     if (panel == null) {
                         e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
                     } else {
@@ -58,15 +58,15 @@ public class EditPanelCommand extends Command {
                             EditPanelWaiter.addReactions(msg);
 
                         }, error -> {
-                            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
                         });
                     }
                 }, error -> {
-                    DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
                 });
             }
         }, error -> {
-            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
         });
     }
 }

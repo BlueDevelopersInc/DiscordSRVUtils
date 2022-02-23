@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -40,24 +41,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@RequiredArgsConstructor
 public class TicketManager {
-    private static TicketManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
-    public TicketManager() {
-        main = this;
-    }
 
-    public static TicketManager get() {
-        return main;
-    }
-
-    public static TicketManager getInstance() {
-        return get();
-    }
 
     public CompletableFuture<Panel> getPanelById(String id) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
                 p1.setString(1, id);
@@ -73,7 +64,7 @@ public class TicketManager {
     }
 
     public CompletableFuture<Set<Panel>> getPanels() {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
                 ResultSet r1 = p1.executeQuery();
@@ -106,7 +97,7 @@ public class TicketManager {
     }
 
     public CompletableFuture<Panel> getPanelByMessageId(long messageId) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
                 p1.setLong(1, messageId);
@@ -122,7 +113,7 @@ public class TicketManager {
     }
 
     public CompletableFuture<Ticket> getTicketByMessageId(long messageId) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE MessageID=?");
                 p1.setLong(1, messageId);
@@ -138,7 +129,7 @@ public class TicketManager {
     }
 
     public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE Channel=?");
                 p1.setLong(1, channelId);
@@ -182,7 +173,7 @@ public class TicketManager {
             p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
             r1 = p1.executeQuery();
             while (r1.next()) {
-                Panel panel = TicketManager.get().getPanel(r1);
+                Panel panel = getPanel(r1);
                 try {
                     Message msg = core.getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
                     if (msg.getButtons().isEmpty()) {

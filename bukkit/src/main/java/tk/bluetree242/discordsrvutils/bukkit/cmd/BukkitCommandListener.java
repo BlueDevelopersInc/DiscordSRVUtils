@@ -45,7 +45,7 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        DiscordSRVUtils.get().executeAsync(() -> {
+        DiscordSRVUtils.get().getAsyncManager().executeAsync(() -> {
             try {
                 cmd.onRunAsync(args, wrapUser(sender), label);
             } catch (Throwable throwable) {

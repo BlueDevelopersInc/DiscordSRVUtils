@@ -23,19 +23,16 @@
 package tk.bluetree242.discordsrvutils.systems.status;
 
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
+@RequiredArgsConstructor
 public abstract class StatusListener {
-    private static StatusListener main;
     public boolean registered = false;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
-
-    public StatusListener() {
-        main = this;
-    }
+    private final DiscordSRVUtils core;
 
     public static StatusListener get() {
-        return main;
+        return DiscordSRVUtils.get().getPlatform().getStatusListener();
     }
 
     public abstract void register();

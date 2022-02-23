@@ -116,7 +116,7 @@ public class Suggestion {
     }
 
     public CompletableFuture<SuggestionNote> addNote(Long staff, String note) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO suggestion_notes(staffid, notetext, suggestionnumber, creationtime) VALUES (?,?,?,?)");
                 p1.setLong(1, staff);
@@ -135,7 +135,7 @@ public class Suggestion {
     }
 
     public CompletableFuture<Void> setApproved(boolean approved, Long staffID) {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
                 p1.setString(1, Utils.getDBoolean(approved));
@@ -182,23 +182,23 @@ public class Suggestion {
 
         if (isApproved() == null) {
             if (!notes.isEmpty()) {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestion_noted_message(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_noted_message(), holders, null).build();
             } else {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestions_message(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(), holders, null).build();
             }
         } else if (isApproved()) {
             holders.add(new PlaceholdObject(core.getJDA().retrieveUserById(approver).complete(), "approver"));
             if (!notes.isEmpty()) {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestion_noted_approved(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_noted_approved(), holders, null).build();
             } else {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestion_approved(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_approved(), holders, null).build();
             }
         } else {
             holders.add(new PlaceholdObject(core.getJDA().retrieveUserById(approver).complete(), "approver"));
             if (!notes.isEmpty()) {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestion_noted_denied(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_noted_denied(), holders, null).build();
             } else {
-                return MessageManager.get().getMessage(core.getSuggestionsConfig().suggestion_denied(), holders, null).build();
+                return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_denied(), holders, null).build();
             }
         }
     }

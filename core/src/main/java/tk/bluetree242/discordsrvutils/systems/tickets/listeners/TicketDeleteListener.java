@@ -36,7 +36,7 @@ public class TicketDeleteListener extends ListenerAdapter {
 
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
         if (DiscordSRVUtils.get().getMainConfig().bungee_mode()) return;
-        DiscordSRVUtils.get().executeAsync(() -> {
+        DiscordSRVUtils.get().getAsyncManager().executeAsync(() -> {
             try (Connection conn = DiscordSRVUtils.get().getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
                 p1.setLong(1, e.getChannel().getIdLong());

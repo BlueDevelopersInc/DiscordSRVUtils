@@ -42,7 +42,7 @@ public class AFKPlusListener implements Listener {
 
     @EventHandler
     public void onAfk(AFKStartEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
@@ -53,7 +53,7 @@ public class AFKPlusListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
@@ -61,7 +61,7 @@ public class AFKPlusListener implements Listener {
 
     @EventHandler
     public void onNoLongerAfk(AFKStopEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
@@ -72,7 +72,7 @@ public class AFKPlusListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });

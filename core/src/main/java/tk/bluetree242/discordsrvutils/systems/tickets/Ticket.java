@@ -80,7 +80,7 @@ public class Ticket {
 
 
     public CompletableFuture<Void> close(User userWhoClosed) {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             if (closed) return;
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
@@ -94,7 +94,7 @@ public class Ticket {
                 if (override != null) {
                     override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                 }
-                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
+                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
                         new PlaceholdObject(userWhoClosed, "user"),
                         new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
@@ -118,7 +118,7 @@ public class Ticket {
     }
 
     public CompletableFuture<Boolean> reopen(User userWhoOpened) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             if (!closed) return false;
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
@@ -134,7 +134,7 @@ public class Ticket {
                 } else {
                     return false;
                 }
-                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(MessageManager.get().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(
+                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(
                         new PlaceholdObject(userWhoOpened, "user"),
                         new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core.getGuild(), "guild"),
@@ -155,7 +155,7 @@ public class Ticket {
     }
 
     public CompletableFuture<Void> delete() {
-        return core.completableFutureRun(() -> {
+        return core.getAsyncManager().completableFutureRun(() -> {
             TextChannel channel = core.getGuild().getTextChannelById(channelID);
             if (channel != null) {
                 channel.delete().queue();

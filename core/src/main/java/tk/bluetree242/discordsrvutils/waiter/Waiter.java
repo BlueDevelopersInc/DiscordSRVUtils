@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.waiter;
 
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 public abstract class Waiter extends ListenerAdapter {
     private final long startTime;
@@ -31,7 +32,7 @@ public abstract class Waiter extends ListenerAdapter {
 
     public Waiter() {
         startTime = System.currentTimeMillis();
-        WaiterManager.get().getWaiters().add(this);
+        DiscordSRVUtils.get().getWaiterManager().getWaiters().add(this);
     }
 
     public final long getStartTime() {
@@ -46,13 +47,13 @@ public abstract class Waiter extends ListenerAdapter {
 
     public final void expire() {
         expired = true;
-        WaiterManager.get().getWaiters().remove(this);
+        DiscordSRVUtils.get().getWaiterManager().getWaiters().remove(this);
         whenExpired();
     }
 
     public final void expire(boolean callExpired) {
         expired = true;
-        WaiterManager.get().getWaiters().remove(this);
+        DiscordSRVUtils.get().getWaiterManager().getWaiters().remove(this);
         if (callExpired)
             whenExpired();
     }

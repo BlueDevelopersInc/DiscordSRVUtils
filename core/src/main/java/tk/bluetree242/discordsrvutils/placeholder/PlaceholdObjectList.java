@@ -51,9 +51,9 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         variables.put("jda", DiscordSRVUtils.get().getJDA());
         variables.put("DSU", DiscordSRVUtils.get());
         variables.put("server", DiscordSRVUtils.get().getPlatform().getServer().getOriginal());
-        variables.put("TicketManager", TicketManager.get());
-        variables.put("LevelingManager", LevelingManager.get());
-        variables.put("CommandManager", CommandManager.get());
+        variables.put("TicketManager", DiscordSRVUtils.get().getTicketManager());
+        variables.put("LevelingManager", DiscordSRVUtils.get().getLevelingManager());
+        variables.put("CommandManager", DiscordSRVUtils.get().getCommandManager());
         for (PlaceholdObject holder : this) {
             variables.put(holder.display, holder.getObject());
             Map<String, Method> map = holder.getholdersMap();

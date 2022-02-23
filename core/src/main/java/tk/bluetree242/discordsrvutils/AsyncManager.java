@@ -23,13 +23,16 @@
 package tk.bluetree242.discordsrvutils;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+@RequiredArgsConstructor
 public class AsyncManager {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     @Getter
     private ThreadPoolExecutor pool;
 
@@ -38,7 +41,7 @@ public class AsyncManager {
         Thread thread = new Thread(r);
         thread.setName("DSU-THREAD");
         thread.setDaemon(true);
-        thread.setUncaughtExceptionHandler((t, e) -> core.defaultHandle(e));
+        thread.setUncaughtExceptionHandler((t, e) -> core.getErrorHandler().defaultHandle(e));
         return thread;
     }
 
@@ -79,6 +82,14 @@ public class AsyncManager {
             while (ex instanceof ExecutionException) e = (Exception) ex.getCause();
             throw (RuntimeException) e;
         }
+    }
+
+    public CompletableFuture<Void> completableFutureRun(Runnable r) {
+        return CompletableFuture.runAsync(r, getPool());
+    }
+
+    public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
+        return CompletableFuture.supplyAsync(v, getPool());
     }
 
     public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {

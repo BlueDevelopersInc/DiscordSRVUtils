@@ -55,7 +55,7 @@ public class BukkitDebugger implements Debugger {
         if (stacktrace == null) stacktrace = core.getErrorHandler().getFinalError();
         JSONArray data = new JSONArray();
         Map<String, String> information = new HashMap<>();
-        information.put("DSU Version", core.getDescription().getVersion());
+        information.put("DSU Version", core.getPlatform().getDescription().getVersion());
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
         information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
         information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
@@ -75,7 +75,7 @@ public class BukkitDebugger implements Debugger {
                         "\n    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()) +
                         "\n    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive())
         );
-        information.put("ExecutorService Status", core.getPool() == null ? "null" : (core.getPool().isShutdown() ? "Shutdown" : "Q:" + core.getPool().getQueue().size() + ", R:" + core.getPool().getActiveCount() + ", AV:" + core.getPool().getPoolSize()));
+        information.put("ExecutorService Status", core.getAsyncManager().getPool() == null ? "null" : (core.getAsyncManager().getPool().isShutdown() ? "Shutdown" : "Q:" + core.getAsyncManager().getPool().getQueue().size() + ", R:" + core.getAsyncManager().getPool().getActiveCount() + ", AV:" + core.getAsyncManager().getPool().getPoolSize()));
         information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));

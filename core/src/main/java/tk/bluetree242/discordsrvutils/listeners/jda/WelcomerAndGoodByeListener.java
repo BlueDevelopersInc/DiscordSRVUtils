@@ -36,7 +36,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
 
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().welcomer_enabled()) {
                     MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getChannel(core.getMainConfig().welcomer_channel());
@@ -47,7 +47,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                         holders.add(new PlaceholdObject(e.getUser(), "user"));
                         holders.add(new PlaceholdObject(e.getGuild(), "guild"));
                         holders.add(new PlaceholdObject(e.getMember(), "member"));
-                        channel.sendMessage(MessageManager.get().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
+                        channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
                     }
                     if (core.getMainConfig().welcomer_role() != 0) {
                         Role role = core.getGuild().getRoleById(core.getMainConfig().welcomer_role());
@@ -63,7 +63,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
     }
 
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().goodbye_enabled()) {
                     MessageChannel channel = core.getChannel(core.getMainConfig().goodbye_channel());
@@ -75,7 +75,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     holders.add(new PlaceholdObject(e.getUser(), "user"));
                     holders.add(new PlaceholdObject(e.getGuild(), "guild"));
                     holders.add(new PlaceholdObject(e.getMember(), "member"));
-                    channel.sendMessage(MessageManager.get().getMessage(core.getMainConfig().goodbye_message(), holders, null).build()).queue();
+                    channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().goodbye_message(), holders, null).build()).queue();
                 }
             }
         });

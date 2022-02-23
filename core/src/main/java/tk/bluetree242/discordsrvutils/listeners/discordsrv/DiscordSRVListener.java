@@ -53,7 +53,7 @@ public class DiscordSRVListener {
     @Subscribe
     public void onLink(AccountLinkedEvent e) {
         if (!core.isReady()) return;
-        LevelingManager manager = LevelingManager.get();
+        LevelingManager manager = core.getLevelingManager();
         manager.getPlayerStats(e.getUser().getIdLong()).thenAcceptAsync(stats -> {
             int level = stats.getLevel();
             if (stats == null) return;
@@ -79,8 +79,8 @@ public class DiscordSRVListener {
     public void onUnlink(AccountUnlinkedEvent e) {
         if (!core.isReady()) return;
 
-        LevelingManager manager = LevelingManager.get();
-        core.executeAsync(() -> {
+        LevelingManager manager = core.getLevelingManager();
+        core.getAsyncManager().executeAsync(() -> {
             Member member = core.getGuild().retrieveMemberById(e.getDiscordId()).complete();
             if (member != null) {
                 for (Role role : manager.getRolesToRemove(null)) {

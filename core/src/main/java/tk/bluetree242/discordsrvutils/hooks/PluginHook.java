@@ -27,7 +27,7 @@ import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 
 public abstract class PluginHook {
     public PluginHook() {
-        PluginHookManager.get().getHooks().add(this);
+        DiscordSRVUtils.get().getPluginHookManager().getHooks().add(this);
     }
 
     public abstract String getRequiredPlugin();

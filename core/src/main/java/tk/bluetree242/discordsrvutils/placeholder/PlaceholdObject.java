@@ -81,10 +81,10 @@ public class PlaceholdObject {
             variables.put("guild", DiscordSRVUtils.get().getGuild());
             variables.put("jda", DiscordSRVUtils.get().getJDA());
             variables.put("DSU", DiscordSRVUtils.get());
-            variables.put("TicketManager", TicketManager.get());
+            variables.put("TicketManager", DiscordSRVUtils.get().getTicketManager());
             variables.put("server", DiscordSRVUtils.get().getPlatform().getServer().getOriginal());
-            variables.put("LevelingManager", LevelingManager.get());
-            variables.put("CommandManager", CommandManager.get());
+            variables.put("LevelingManager", DiscordSRVUtils.get().getLevelingManager());
+            variables.put("CommandManager", DiscordSRVUtils.get().getCommandManager());
             variables.put(display, ob);
             val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
         }

@@ -45,7 +45,7 @@ public class ApproveSuggestionCommand extends Command {
         }
 
         int number = (int) e.getOption("number").getAsLong();
-        e.handleCF(SuggestionManager.get().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
+        e.handleCF(core.getSuggestionManager().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
             if (suggestion == null) {
                 e.replyErr("Suggestion not found").queue();
                 return;

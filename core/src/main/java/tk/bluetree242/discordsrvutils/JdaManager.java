@@ -44,12 +44,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdaManager {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     //listeners that should be registered
     @Getter
     private final List<ListenerAdapter> listeners = new ArrayList<>();
 
-    public JdaManager() {
+    public JdaManager(DiscordSRVUtils core) {
+        this.core = core;
         //Add The JDA Listeners to the List
         listeners.add(new CommandListener());
         listeners.add(new WelcomerAndGoodByeListener());
@@ -62,6 +63,7 @@ public class JdaManager {
         listeners.add(new DiscordLevelingListener());
         listeners.add(new SuggestionListener());
     }
+
 
     public JDA getJDA() {
         return core.getPlatform().getDiscordSRV().getJDA();

@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
@@ -73,7 +74,7 @@ public class EditPanelWaiter extends Waiter {
     }
 
     public static EditPanelWaiter getWaiter(TextChannel channel, User user) {
-        for (Waiter w : WaiterManager.get().getWaiterByName("EditPanel")) {
+        for (Waiter w : DiscordSRVUtils.get().getWaiterManager().getWaiterByName("EditPanel")) {
             EditPanelWaiter waiter = (EditPanelWaiter) w;
             if (waiter.getChannel().getIdLong() == channel.getIdLong()) {
                 if (waiter.getUser().getIdLong() == user.getIdLong()) {

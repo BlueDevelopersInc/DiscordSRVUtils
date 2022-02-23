@@ -41,7 +41,7 @@ public class CMIAfkListener implements Listener {
 
     @EventHandler
     public void onAfk(CMIAfkEnterEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             Player player = e.getPlayer();
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
@@ -52,7 +52,7 @@ public class CMIAfkListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = MessageManager.get().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
@@ -60,7 +60,7 @@ public class CMIAfkListener implements Listener {
 
     @EventHandler
     public void onNoLongerAfk(CMIAfkLeaveEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             Player player = e.getPlayer();
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
@@ -71,7 +71,7 @@ public class CMIAfkListener implements Listener {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = MessageManager.get().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });

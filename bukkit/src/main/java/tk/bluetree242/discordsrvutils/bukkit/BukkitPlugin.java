@@ -51,6 +51,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     private final DiscordSRVUtilsBukkit main;
     @Getter
     private final BukkitDiscordSRV discordSRV;
+    private DiscordSRVUtils core;
+    private StatusListener statusListener;
 
     public BukkitPlugin(DiscordSRVUtilsBukkit main) {
         this.main = main;
@@ -121,7 +123,11 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public StatusListener getStatusListener() {
-        return StatusListener.get() == null ? new BukkitStatusListener() : StatusListener.get();
+        return statusListener == null ? new BukkitStatusListener(core) : statusListener;
+    }
+
+    protected void setDiscordSRVUtils(DiscordSRVUtils core) {
+        this.core = core;
     }
 
     @Override

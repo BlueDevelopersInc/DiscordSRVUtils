@@ -26,6 +26,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -45,11 +46,11 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class LevelingManager {
-    private static LevelingManager main;
     public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
     public final Map<UUID, Long> antispamMap = new HashMap<>();
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private boolean adding = false;
     public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
@@ -65,16 +66,9 @@ public class LevelingManager {
     @Getter
     private JSONObject levelingRolesRaw;
 
-    public LevelingManager() {
-        main = this;
-    }
-
-    public static LevelingManager get() {
-        return main;
-    }
 
     public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 return getPlayerStats(conn, uuid);
             } catch (SQLException e) {
@@ -122,15 +116,15 @@ public class LevelingManager {
     }
 
     public CompletableFuture<PlayerStats> getPlayerStats(long discordID) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
             if (uuid == null) return null;
-            return core.handleCFOnAnother(getPlayerStats(uuid));
+            return core.getAsyncManager().handleCFOnAnother(getPlayerStats(uuid));
         });
     }
 
     public CompletableFuture<PlayerStats> getPlayerStats(String name) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 return getPlayerStats(conn, name);
             } catch (SQLException e) {
@@ -174,7 +168,7 @@ public class LevelingManager {
     }
 
     public CompletableFuture<List<PlayerStats>> getLeaderboard(int max) {
-        return core.completableFuture(() -> {
+        return core.getAsyncManager().completableFuture(() -> {
             try (Connection conn = core.getDatabase()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC ");
                 List<PlayerStats> leaderboard = new ArrayList<>();

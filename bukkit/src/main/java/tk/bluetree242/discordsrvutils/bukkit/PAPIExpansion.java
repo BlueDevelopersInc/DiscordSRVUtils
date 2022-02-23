@@ -52,7 +52,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return core.getDescription().getVersion();
+        return core.getPlatform().getDescription().getVersion();
     }
 
     @Override
@@ -76,13 +76,13 @@ public class PAPIExpansion extends PlaceholderExpansion {
         identifier = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("level")) {
             if (p == null) return "Unknown";
-            return LevelingManager.get().getCachedStats(p.getUniqueId()).getLevel() + "";
+            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getLevel() + "";
         } else if (identifier.equalsIgnoreCase("xp")) {
             if (p == null) return "Unknown";
-            return LevelingManager.get().getCachedStats(p.getUniqueId()).getXp() + "";
+            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getXp() + "";
         } else if (identifier.equalsIgnoreCase("rank")) {
             if (p == null) return "Unknown";
-            return LevelingManager.get().getCachedStats(p.getUniqueId()).getRank() + "";
+            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getRank() + "";
         }
         return null;
     }

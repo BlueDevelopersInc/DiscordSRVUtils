@@ -42,18 +42,18 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getPanelById(e.getOption("id").getAsString()), panel -> {
+        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(e.getOption("id").getAsString()), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
             } else {
-                DiscordSRVUtils.get().handleCF(panel.delete(), s -> {
+                DiscordSRVUtils.get().getAsyncManager().handleCF(panel.delete(), s -> {
                     e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
                 }, error -> {
-                    DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
                 });
             }
         }, error -> {
-            DiscordSRVUtils.get().defaultHandle(error, e.getChannel());
+            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
         });
     }
 }

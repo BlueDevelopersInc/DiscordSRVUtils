@@ -22,24 +22,17 @@
 
 package tk.bluetree242.discordsrvutils.hooks;
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class PluginHookManager {
 
-    private static PluginHookManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final List<PluginHook> hooks = new ArrayList<>();
-
-    public PluginHookManager() {
-        main = this;
-    }
-
-    public static PluginHookManager get() {
-        return main;
-    }
 
     public List<PluginHook> getHooks() {
         return hooks;

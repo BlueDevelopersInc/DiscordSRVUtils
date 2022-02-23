@@ -33,18 +33,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WaiterManager {
 
     private static WaiterManager main;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final Set<Waiter> waiters = ConcurrentHashMap.newKeySet();
     public Timer timer = new Timer();
 
-    public WaiterManager() {
-        main = this;
+    public WaiterManager(DiscordSRVUtils core) {
+        this.core = core;
         timer.schedule(new WaiterCanceller(), 0, 1000);
     }
 
-    public static WaiterManager get() {
-        return main;
-    }
 
     public Set<Waiter> getWaiters() {
         return waiters;

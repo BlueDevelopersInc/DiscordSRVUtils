@@ -46,12 +46,12 @@ public class SuggestionListener extends ListenerAdapter {
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
-        core.handleCF(SuggestionManager.get().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
+        core.getAsyncManager().handleCF(core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
 
             Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
             Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
             Emoji no = Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌"));
-            if (SuggestionManager.get().loading) {
+            if (core.getSuggestionManager().loading) {
                 e.getReaction().removeReaction(e.getUser()).queue();
                 return;
             }
@@ -69,18 +69,18 @@ public class SuggestionListener extends ListenerAdapter {
             }
             msg.editMessage(suggestion.getCurrentMsg()).queue();
         }, error -> {
-            core.defaultHandle(error);
+            core.getErrorHandler().defaultHandle(error);
         });
     }
 
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent e) {
-        core.handleCF(SuggestionManager.get().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
+        core.getAsyncManager().handleCF(core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
             Message msg = suggestion.getMessage();
             if ((System.currentTimeMillis() - msg.getTimeEdited().toEpochSecond()) > 1000) {
                 msg.editMessage(suggestion.getCurrentMsg()).queue();
             }
         }, error -> {
-            core.defaultHandle(error);
+            core.getErrorHandler().defaultHandle(error);
         });
     }
 
@@ -88,12 +88,12 @@ public class SuggestionListener extends ListenerAdapter {
     public void onButtonClick(ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
-        core.handleCF(SuggestionManager.get().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
+        core.getAsyncManager().handleCF(core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong()), suggestion -> {
 
             Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
             Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
             Emoji no = Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌"));
-            if (SuggestionManager.get().loading) {
+            if (core.getSuggestionManager().loading) {
                 return;
             }
             if (!core.getSuggestionsConfig().allow_submitter_vote()) {
@@ -118,7 +118,7 @@ public class SuggestionListener extends ListenerAdapter {
                     }
                     suggestion.getVotes().add(new SuggestionVote(e.getUser().getIdLong(), suggestion.getNumber(), true));
                 } catch (SQLException ex) {
-                    core.defaultHandle(ex);
+                    core.getErrorHandler().defaultHandle(ex);
                     return;
                 }
                 e.deferEdit().queue();
@@ -139,7 +139,7 @@ public class SuggestionListener extends ListenerAdapter {
                     suggestion.getVotes().add(new SuggestionVote(e.getUser().getIdLong(), suggestion.getNumber(), false));
 
                 } catch (SQLException ex) {
-                    core.defaultHandle(ex);
+                    core.getErrorHandler().defaultHandle(ex);
                     return;
                 }
                 e.deferEdit().queue();
@@ -154,7 +154,7 @@ public class SuggestionListener extends ListenerAdapter {
                     }
                     e.deferEdit().queue();
                 } catch (SQLException ex) {
-                    core.defaultHandle(ex);
+                    core.getErrorHandler().defaultHandle(ex);
                     return;
                 }
             }
@@ -165,14 +165,14 @@ public class SuggestionListener extends ListenerAdapter {
     }
 
     public void onMessageReceived(MessageReceivedEvent e) {
-        core.executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             if (e.getAuthor().isBot()) return;
             if (e.getMessage().isWebhookMessage()) return;
             if (!core.getSuggestionsConfig().enabled()) return;
             if (e.getChannel().getIdLong() == core.getSuggestionsConfig().suggestions_channel()) {
                 if (core.getSuggestionsConfig().set_suggestion_from_channel()) {
                     e.getMessage().delete().queue();
-                    SuggestionManager.get().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong());
+                    core.getSuggestionManager().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong());
                 }
             }
         });

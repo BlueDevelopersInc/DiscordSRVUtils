@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.waiters;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
@@ -41,7 +42,7 @@ public class CreatePanelWaiter extends Waiter {
 
 
     public static CreatePanelWaiter getWaiter(TextChannel channel, User user) {
-        for (Waiter w : WaiterManager.get().getWaiterByName("CreatePanel")) {
+        for (Waiter w : DiscordSRVUtils.get().getWaiterManager().getWaiterByName("CreatePanel")) {
             CreatePanelWaiter waiter = (CreatePanelWaiter) w;
             if (waiter.getChannel().getIdLong() == channel.getIdLong()) {
                 if (waiter.getUser().getIdLong() == user.getIdLong()) {

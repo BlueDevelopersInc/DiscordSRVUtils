@@ -64,7 +64,7 @@ public class HelpCommand extends Command {
             e.reply(embed.build()).queue();
         } else {
             String cmd = e.getOption("command").getAsString();
-            Command executor = CommandManager.get().getCommandHashMap().get(cmd);
+            Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
             if (executor == null) {
                 e.reply(Embed.error("Command not found")).queue();
             } else {

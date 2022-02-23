@@ -35,7 +35,7 @@ public class ReopenCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().handleCF(TicketManager.get().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
+        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
             if (ticket == null) {
                 e.replyErr("You are not in a ticket").queue();
                 return;
@@ -44,12 +44,12 @@ public class ReopenCommand extends Command {
                 e.replyErr("Ticket is already opened").queue();
             } else {
                 e.reply("Reopening Ticket...").setEphemeral(true).queue();
-                DiscordSRVUtils.get().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
-                    DiscordSRVUtils.get().defaultHandle(err);
+                DiscordSRVUtils.get().getAsyncManager().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
+                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
                 });
             }
         }, err -> {
-            DiscordSRVUtils.get().defaultHandle(err);
+            DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
         });
     }
 }

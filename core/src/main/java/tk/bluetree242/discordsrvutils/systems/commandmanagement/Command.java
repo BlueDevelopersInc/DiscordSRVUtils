@@ -147,7 +147,7 @@ public abstract class Command {
     }
 
     public boolean isEnabled() {
-        return !CommandManager.get().getDisabledCommands(true).contains(this);
+        return !core.getCommandManager().getDisabledCommands(true).contains(this);
     }
 
 }
