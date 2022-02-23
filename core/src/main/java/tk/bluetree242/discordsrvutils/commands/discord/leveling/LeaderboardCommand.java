@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
@@ -57,7 +58,7 @@ public class LeaderboardCommand extends Command {
         }
         embed.setTitle("Leaderboard");
         embed.setDescription(joiner.toString());
-        embed.setThumbnail(e.getGuild().getIconUrl());
+        embed.setThumbnail(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getIconUrl());
         e.reply(embed.build()).queue();
     }
 }

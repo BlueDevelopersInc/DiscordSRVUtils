@@ -44,7 +44,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
     public String apply(String s, PlatformPlayer placehold) {
         final String[] val = {s};
         Map<String, Object> variables = new HashMap<>();
-        variables.put("guild", DiscordSRVUtils.get().getGuild());
+        variables.put("guild", DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild());
         variables.put("jda", DiscordSRVUtils.get().getJDA());
         variables.put("DSU", DiscordSRVUtils.get());
         variables.put("server", DiscordSRVUtils.get().getPlatform().getServer().getOriginal());

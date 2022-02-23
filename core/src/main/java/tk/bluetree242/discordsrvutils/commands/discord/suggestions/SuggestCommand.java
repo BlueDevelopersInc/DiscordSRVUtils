@@ -54,13 +54,13 @@ public class SuggestCommand extends Command {
             e.replyErr("Suggestions Channel set to 0... Please change it").queue();
             return;
         }
-        TextChannel channel = core.getGuild().getTextChannelById(channelId);
+        TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
         if (channel == null) {
             e.replyErr("Suggestions Channel not found").queue();
             return;
         }
 
-        if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getSuggestionsConfig().suggestion_muted_role()))) {
+        if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getSuggestionsConfig().suggestion_muted_role()))) {
             e.replyErr("You are suggestion muted").queue();
             return;
         }

@@ -119,15 +119,15 @@ public class CommandManager {
     }
 
     public void addSlashCommands() {
-        if (core.getGuild() == null) {
+        if (core.getPlatform().getDiscordSRV().getMainGuild() == null) {
             core.severe("Default Guild not found (is the bot in a guild?)");
             return;
         }
         if (core.getJDA().getGuilds().size() >= 2) {
-            core.getLogger().warning("Found " + core.getJDA().getGuilds().size() + " Servers! Slash Commands will be added in " + core.getGuild().getName());
+            core.getLogger().warning("Found " + core.getJDA().getGuilds().size() + " Servers! Slash Commands will be added in " + core.getPlatform().getDiscordSRV().getMainGuild().getName());
             core.getLogger().warning("If you don't want this kick the bot from the servers and leave it on one server only.");
         }
-        CommandListUpdateAction commands = core.getGuild().updateCommands();
+        CommandListUpdateAction commands = core.getPlatform().getDiscordSRV().getMainGuild().updateCommands();
         for (Command command : this.commands) {
             if (!command.isEnabled()) continue;
             addCmd(command.getCmd(), command, commands);

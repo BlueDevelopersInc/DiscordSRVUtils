@@ -115,7 +115,7 @@ public class PaginationWaiter extends Waiter {
     @Override
     public void whenExpired() {
         message.editMessage(":timer: Timed out")/*setActionRows()*/.override(true).queue();
-        if (message.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
+        if (message.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
             message.clearReactions().queue();
     }
 

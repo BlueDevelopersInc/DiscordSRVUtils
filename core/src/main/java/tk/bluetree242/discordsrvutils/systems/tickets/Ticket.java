@@ -81,22 +81,22 @@ public class Ticket {
     public CompletableFuture<Void> close(User userWhoClosed) {
         return core.getAsyncManager().completableFutureRun(() -> {
             if (closed) return;
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
                 p1.setString(1, id);
                 p1.setLong(2, userID);
                 p1.execute();
                 User user = core.getJDA().retrieveUserById(userID).complete();
-                Member member = core.getGuild().getMember(user);
-                core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-                PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
+                Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+                core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
+                PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
                 if (override != null) {
                     override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                 }
-                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
                         new PlaceholdObject(userWhoClosed, "user"),
-                        new PlaceholdObject(core.getGuild().getMember(userWhoClosed), "member"),
-                        new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoClosed), "member"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
                 ), null).build()).setActionRow(
                         Button.success("reopen_ticket", Emoji.fromUnicode("\uD83D\uDD13")).withLabel(core.getTicketsConfig().ticket_reopen_button()),
@@ -119,24 +119,24 @@ public class Ticket {
     public CompletableFuture<Boolean> reopen(User userWhoOpened) {
         return core.getAsyncManager().completableFuture(() -> {
             if (!closed) return false;
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE tickets SET Closed='true' WHERE ID=? AND UserID=?");
                 p1.setString(1, id);
                 p1.setLong(2, userID);
                 p1.execute();
                 User user = core.getJDA().retrieveUserById(userID).complete();
-                Member member = core.getGuild().getMember(user);
-                core.getGuild().getTextChannelById(channelID).getManager().setParent(core.getGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
-                PermissionOverride override = core.getGuild().getTextChannelById(channelID).getPermissionOverride(member);
+                Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+                core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
+                PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
                 if (override != null) {
                     override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
                 } else {
                     return false;
                 }
-                Message msg = core.getGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(
                         new PlaceholdObject(userWhoOpened, "user"),
-                        new PlaceholdObject(core.getGuild().getMember(userWhoOpened), "member"),
-                        new PlaceholdObject(core.getGuild(), "guild"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoOpened), "member"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
                         new PlaceholdObject(panel, "panel")
                 ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 messageID = msg.getIdLong();
@@ -155,7 +155,7 @@ public class Ticket {
 
     public CompletableFuture<Void> delete() {
         return core.getAsyncManager().completableFutureRun(() -> {
-            TextChannel channel = core.getGuild().getTextChannelById(channelID);
+            TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID);
             if (channel != null) {
                 channel.delete().queue();
             }

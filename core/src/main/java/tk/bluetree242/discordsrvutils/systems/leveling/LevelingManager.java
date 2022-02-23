@@ -69,7 +69,7 @@ public class LevelingManager {
 
     public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 return getPlayerStats(conn, uuid);
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -125,7 +125,7 @@ public class LevelingManager {
 
     public CompletableFuture<PlayerStats> getPlayerStats(String name) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 return getPlayerStats(conn, name);
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -169,7 +169,7 @@ public class LevelingManager {
 
     public CompletableFuture<List<PlayerStats>> getLeaderboard(int max) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC ");
                 List<PlayerStats> leaderboard = new ArrayList<>();
                 ResultSet r1 = p1.executeQuery();
@@ -200,7 +200,7 @@ public class LevelingManager {
         });
         Long id = (Long) map.get(keys.get(0));
         if (id != null) {
-            return core.getGuild().getRoleById(id);
+            return core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(id);
         }
         return null;
     }
@@ -211,7 +211,7 @@ public class LevelingManager {
         List<Object> values = new ArrayList<>(map.values());
         for (Object value : values) {
             Long id = (Long) value;
-            roles.add(core.getGuild().getRoleById(id));
+            roles.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(id));
         }
         if (level != null)
             roles.remove(getRoleForLevel(level));

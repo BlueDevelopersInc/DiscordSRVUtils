@@ -76,7 +76,7 @@ public class PlayerStats {
 
     public CompletableFuture<Void> setLevel(int level) {
         return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET Level=? WHERE UUID=?");
                 p1.setInt(1, level);
                 p1.setString(2, uuid.toString());
@@ -102,7 +102,7 @@ public class PlayerStats {
         }
         LevelupEvent finalEvent = event;
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 if (xp >= 300) {
                     PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=0, Level=? WHERE UUID=?");
                     p1.setInt(1, level + 1);
@@ -113,16 +113,16 @@ public class PlayerStats {
                     String id = core.getDiscordSRV().getDiscordId(uuid);
                     if (id == null) return true;
                     LevelingManager manager = core.getLevelingManager();
-                    Member member = core.getGuild().retrieveMemberById(id).complete();
+                    Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
                     if (member == null) return true;
                     Collection actions = new ArrayList<>();
                     for (Role role : manager.getRolesToRemove(level)) {
                         if (member.getRoles().contains(role))
-                            actions.add(core.getGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
+                            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
                     }
                     Role toAdd = manager.getRoleForLevel(level);
                     if (toAdd != null) {
-                        actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
+                        actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
                     }
                     if (!actions.isEmpty())
                         RestAction.allOf(actions).queue();
@@ -152,7 +152,7 @@ public class PlayerStats {
 
     public CompletableFuture<Void> addMessage(MessageType type) {
         return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = null;
                 switch (type) {
                     case DISCORD:

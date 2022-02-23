@@ -90,6 +90,10 @@ public class JdaManager {
         } else return getJDA().getTextChannelById(id);
     }
 
+    public TextChannel getChannel(long id) {
+        return getChannel(id, null);
+    }
+
     public List<Long> getAdminIds() {
         return core.getMainConfig().admins();
     }
@@ -110,7 +114,7 @@ public class JdaManager {
     public List<Role> getAdminsRoles() {
         List<Role> roles = new ArrayList<>();
         for (Long lng : getAdminIds()) {
-            roles.add(core.getGuild().getRoleById(lng));
+            roles.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(lng));
         }
         return roles;
     }
@@ -118,7 +122,7 @@ public class JdaManager {
 
     public boolean isAdmin(long id) {
         if (getAdminIds().contains(id)) return true;
-        Member member = core.getGuild().retrieveMemberById(id).complete();
+        Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
         if (member != null) {
             for (Role role : member.getRoles()) {
                 if (getAdminIds().contains(role.getIdLong())) return true;

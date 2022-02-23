@@ -98,14 +98,14 @@ public class Panel {
 
     public CompletableFuture<Void> delete() {
         return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("DELETE FROM ticket_panels WHERE ID=?");
                 p1.setString(1, id);
                 p1.execute();
                 PreparedStatement p2 = conn.prepareStatement("DELETE FROM panel_allowed_roles WHERE PanelID=?");
                 p2.setString(1, id);
                 p2.execute();
-                TextChannel channel = core.getGuild().getTextChannelById(channelId);
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
                 if (channel != null) {
                     channel.retrieveMessageById(getMessageId()).queue(msg -> {
                         msg.delete().queue();
@@ -125,7 +125,7 @@ public class Panel {
 
     public CompletableFuture<Set<Ticket>> getTicketsForUser(User user, boolean includeClosed) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 Set<Ticket> result = new HashSet<>();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=?");
                 p1.setLong(1, user.getIdLong());
@@ -149,7 +149,7 @@ public class Panel {
     public CompletableFuture<@Nullable Ticket> openTicket(User user) {
         return core.getAsyncManager().completableFuture(() -> {
             if (user.isBot()) return null;
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement check = conn.prepareStatement("SELECT * FROM tickets WHERE UserID=? ORDER BY OpenTime");
                 check.setLong(1, user.getIdLong());
                 ResultSet r = check.executeQuery();
@@ -160,19 +160,19 @@ public class Panel {
                 }
                 if (runningProcesses.containsKey(user.getIdLong())) return null;
                 runningProcesses.put(user.getIdLong(), id);
-                ChannelAction<TextChannel> action = core.getGuild().getCategoryById(openedCategory).createTextChannel("ticket-" + user.getName());
+                ChannelAction<TextChannel> action = core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(openedCategory).createTextChannel("ticket-" + user.getName());
                 action.addMemberPermissionOverride(user.getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), EnumSet.noneOf(Permission.class));
                 for (Long role : allowedRoles) {
                     action.addRolePermissionOverride(role, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), null);
                 }
-                action.addPermissionOverride(core.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
+                action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
                 TextChannel channel = action.complete();
                 Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
-                        new PlaceholdObject(core.getGuild(), "guild"),
-                        new PlaceholdObject(core.getGuild().getMember(user), "member"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(user), "member"),
                         new PlaceholdObject(user, "user"),
                         new PlaceholdObject(this, "panel"),
-                        new PlaceholdObject(core.getGuild(), "guild")
+                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
                 ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
@@ -195,7 +195,7 @@ public class Panel {
 
     public CompletableFuture<Set<Ticket>> getTickets() {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 Set<Ticket> val = new HashSet<>();
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE ID=?");
                 p1.setString(1, id);
@@ -250,18 +250,18 @@ public class Panel {
                 Checks.notNull(channelId, "Channel");
                 Checks.notNull(openedCategory, "OpenedCategory");
                 Checks.notNull(closedCategory, "ClosedCategory");
-                if (core.getGuild().getCategoryById(openedCategory) == null)
+                if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(openedCategory) == null)
                     throw new IllegalArgumentException("Opened Category was not found");
-                if (core.getGuild().getCategoryById(closedCategory) == null)
+                if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(closedCategory) == null)
                     throw new IllegalArgumentException("Closed Category was not found");
-                TextChannel channel = core.getGuild().getTextChannelById(channelId);
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
                 if (channel == null) {
                     throw new IllegalArgumentException("Channel was not found");
                 }
                 Panel panel = new Panel(name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
                 Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                 panel.messageId = msg.getIdLong();
-                try (Connection conn = core.getDatabase()) {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
                     PreparedStatement p1 = conn.prepareStatement("INSERT INTO ticket_panels(Name, ID, Channel, MessageID, OpenedCategory, ClosedCategory) VALUES (?, ?, ?, ?, ?, ?)");
                     p1.setString(1, name);
                     p1.setString(2, panel.id);
@@ -324,16 +324,16 @@ public class Panel {
 
         public CompletableFuture<Panel> apply() {
             return core.getAsyncManager().completableFuture(() -> {
-                try (Connection conn = core.getDatabase()) {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
                     Checks.notNull(name, "Name");
                     Checks.notNull(channelId, "Channel");
                     Checks.notNull(openedCategory, "OpenedCategory");
                     Checks.notNull(closedCategory, "ClosedCategory");
-                    if (core.getGuild().getCategoryById(openedCategory) == null)
+                    if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(openedCategory) == null)
                         throw new IllegalArgumentException("Opened Category was not found");
-                    if (core.getGuild().getCategoryById(closedCategory) == null)
+                    if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(closedCategory) == null)
                         throw new IllegalArgumentException("Closed Category was not found");
-                    TextChannel channel = core.getGuild().getTextChannelById(channelId);
+                    TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
                     if (channel == null) {
                         throw new IllegalArgumentException("Channel was not found");
                     }

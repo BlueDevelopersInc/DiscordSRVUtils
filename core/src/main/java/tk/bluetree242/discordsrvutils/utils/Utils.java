@@ -200,7 +200,7 @@ public class Utils {
     }
 
     public static Emoji getEmoji(String val, Emoji def) {
-        List<Emote> emotes = DiscordSRVUtils.get().getGuild().getEmotesByName(val, true);
+        List<Emote> emotes = DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getEmotesByName(val, true);
         Emote emote;
         if (!emotes.isEmpty()) {
             emote = emotes.get(0);

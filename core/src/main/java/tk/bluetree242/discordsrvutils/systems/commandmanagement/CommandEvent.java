@@ -84,7 +84,7 @@ public class CommandEvent {
         holders.add(new PlaceholdObject(getAuthor(), "user"));
         if (getChannel() instanceof TextChannel) {
             holders.add(new PlaceholdObject(getMember(), "member"));
-            holders.add(new PlaceholdObject(getGuild(), "guild"));
+            holders.add(new PlaceholdObject(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild(), "guild"));
         }
         holders.add(new PlaceholdObject(getChannel(), "channel"));
         return reply(DiscordSRVUtils.get().getMessageManager().getMessage(content, holders, placehold).build());

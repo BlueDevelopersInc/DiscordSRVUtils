@@ -70,7 +70,7 @@ public class EditPanelListener extends ListenerAdapter {
                     e.getChannel().sendMessage(Embed.error("You did not mention a channel. Please try again")).queue();
                     return;
                 }
-                if (channel.getGuild().getIdLong() != core.getGuild().getIdLong()) {
+                if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() != core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
                     e.getChannel().sendMessage(Embed.error("Channel cannot be outside of the main guild")).queue();
                     return;
                 }
@@ -86,7 +86,7 @@ public class EditPanelListener extends ListenerAdapter {
                     return;
                 }
                 long id = Long.parseLong(e.getMessage().getContentDisplay());
-                if (core.getGuild().getCategoryById(id) == null) {
+                if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(id) == null) {
                     e.getChannel().sendMessage(Embed.error("Category not found, is it inside this guild? Try Again")).queue();
                     return;
                 }
@@ -102,7 +102,7 @@ public class EditPanelListener extends ListenerAdapter {
                     return;
                 }
                 long id = Long.parseLong(e.getMessage().getContentDisplay());
-                if (core.getGuild().getCategoryById(id) == null) {
+                if (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(id) == null) {
                     e.getChannel().sendMessage(Embed.error("Category not found, is it inside this guild? Try Again")).queue();
                     return;
                 }
@@ -125,16 +125,16 @@ public class EditPanelListener extends ListenerAdapter {
                                 e.getChannel().sendMessage(Embed.error("Invalid, Try Again")).queue();
                                 return;
                             }
-                            if (e.getGuild().getRoleById(Long.parseLong(role)) == null) {
+                            if (core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(Long.parseLong(role)) == null) {
                                 e.getChannel().sendMessage(Embed.error("One of the Ids is invalid, try again")).queue();
                                 return;
                             }
-                            roles.add(e.getGuild().getRoleById(Long.parseLong(role)));
+                            roles.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(Long.parseLong(role)));
                         }
                     }
 
                     for (Role role : roles) {
-                        if (role.getGuild().getIdLong() != e.getGuild().getIdLong()) {
+                        if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() != core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
                             e.getChannel().sendMessage(Embed.error("One of the roles you mentioned is not in this guild")).queue();
                             return;
                         }

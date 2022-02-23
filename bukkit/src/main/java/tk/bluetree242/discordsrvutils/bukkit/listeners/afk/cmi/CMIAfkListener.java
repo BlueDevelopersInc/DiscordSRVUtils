@@ -46,7 +46,7 @@ public class CMIAfkListener implements Listener {
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));
-                TextChannel channel = core.getChannel(core.getMainConfig().afk_channel());
+                TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
@@ -65,7 +65,7 @@ public class CMIAfkListener implements Listener {
             if (core.getMainConfig().afk_message_enabled()) {
                 PlaceholdObjectList holders = new PlaceholdObjectList();
                 holders.add(new PlaceholdObject(player, "player"));
-                TextChannel channel = core.getChannel(core.getMainConfig().afk_channel());
+                TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;

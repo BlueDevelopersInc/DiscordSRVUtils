@@ -69,7 +69,7 @@ public class SuggestionManager {
 
     public CompletableFuture<Suggestion> getSuggestionByNumber(int num) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 return getSuggestionByNumber(num, conn);
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -79,7 +79,7 @@ public class SuggestionManager {
 
     public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 return getSuggestionByMessageID(MessageID, conn);
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
@@ -171,13 +171,13 @@ public class SuggestionManager {
         if (channelId == 0) {
             throw new IllegalStateException("Suggestions Channel set to 0... Please change it");
         }
-        TextChannel channel = core.getGuild().getTextChannelById(channelId);
+        TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
         if (channel == null) {
             throw new IllegalStateException("Suggestions Channel not found");
         }
 
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions ORDER BY SuggestionNumber DESC ");
                 ResultSet r1 = p1.executeQuery();
                 int num = 1;
@@ -218,7 +218,7 @@ public class SuggestionManager {
             String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
             boolean sent = false;
             loading = true;
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
                 ResultSet r1 = p1.executeQuery();
                 while (r1.next()) {

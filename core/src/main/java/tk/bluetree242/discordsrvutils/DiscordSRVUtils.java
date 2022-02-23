@@ -364,24 +364,6 @@ public class DiscordSRVUtils {
         errorHandler.severe(sv);
     }
 
-
-    public Connection getDatabase() throws SQLException {
-        return databaseManager.getConnection();
-    }
-
-    public TextChannel getChannel(long id, TextChannel channel) {
-        return jdaManager.getChannel(id, channel);
-    }
-
-    public TextChannel getChannel(long id) {
-        return getChannel(id, null);
-    }
-
-    public Guild getGuild() {
-        return getDiscordSRV().getMainGuild();
-    }
-
-
     /**
      * @return true if plugin enabled and discordsrv ready, else false
      */

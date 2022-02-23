@@ -116,7 +116,7 @@ public class Suggestion {
 
     public CompletableFuture<SuggestionNote> addNote(Long staff, String note) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO suggestion_notes(staffid, notetext, suggestionnumber, creationtime) VALUES (?,?,?,?)");
                 p1.setLong(1, staff);
                 p1.setString(2, Utils.b64Encode(note));
@@ -135,7 +135,7 @@ public class Suggestion {
 
     public CompletableFuture<Void> setApproved(boolean approved, Long staffID) {
         return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
                 p1.setString(1, Utils.getDBoolean(approved));
                 p1.setLong(2, staffID);

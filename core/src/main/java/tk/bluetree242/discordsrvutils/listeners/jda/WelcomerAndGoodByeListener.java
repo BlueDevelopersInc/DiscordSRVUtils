@@ -38,22 +38,22 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().welcomer_enabled()) {
-                    MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getChannel(core.getMainConfig().welcomer_channel());
+                    MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(core.getMainConfig().welcomer_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().welcomer_channel() + ". Join Message was not sent for " + e.getUser().getAsTag());
                     } else {
                         PlaceholdObjectList holders = new PlaceholdObjectList();
                         holders.add(new PlaceholdObject(e.getUser(), "user"));
-                        holders.add(new PlaceholdObject(e.getGuild(), "guild"));
+                        holders.add(new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
                         holders.add(new PlaceholdObject(e.getMember(), "member"));
                         channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
                     }
                     if (core.getMainConfig().welcomer_role() != 0) {
-                        Role role = core.getGuild().getRoleById(core.getMainConfig().welcomer_role());
+                        Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getMainConfig().welcomer_role());
                         if (role == null) {
                             core.severe("Welcomer Role not found... User did not receive any roles");
                         } else {
-                            e.getGuild().addRoleToMember(e.getMember(), role).queue();
+                            core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).queue();
                         }
                     }
                 }
@@ -65,14 +65,14 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().goodbye_enabled()) {
-                    MessageChannel channel = core.getChannel(core.getMainConfig().goodbye_channel());
+                    MessageChannel channel = core.getJdaManager().getChannel(core.getMainConfig().goodbye_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().goodbye_channel() + ". Leave Message was not sent for " + e.getUser().getAsTag());
                         return;
                     }
                     PlaceholdObjectList holders = new PlaceholdObjectList();
                     holders.add(new PlaceholdObject(e.getUser(), "user"));
-                    holders.add(new PlaceholdObject(e.getGuild(), "guild"));
+                    holders.add(new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
                     holders.add(new PlaceholdObject(e.getMember(), "member"));
                     channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().goodbye_message(), holders, null).build()).queue();
                 }

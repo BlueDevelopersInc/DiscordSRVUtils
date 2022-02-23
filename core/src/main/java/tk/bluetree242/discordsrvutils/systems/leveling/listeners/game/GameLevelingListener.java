@@ -43,7 +43,7 @@ public class GameLevelingListener extends PlatformListener {
 
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling WHERE UUID=?");
                 p1.setString(1, e.getPlayer().getUniqueId().toString());
                 ResultSet r1 = p1.executeQuery();

@@ -44,7 +44,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
         core.getAsyncManager().executeAsync(() -> {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
-            if (e.getGuild().getIdLong() == core.getGuild().getIdLong()) {
+            if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() == core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
                 if (core.getLevelingConfig().enabled()) {
                     core.getAsyncManager().handleCF(core.getLevelingManager().getPlayerStats(e.getMember().getIdLong()), stats -> {
                         if (stats == null) {
@@ -69,8 +69,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
                                     new PlaceholdObject(stats, "stats"),
                                     new PlaceholdObject(e.getAuthor(), "user"),
                                     new PlaceholdObject(e.getMember(), "member"),
-                                    new PlaceholdObject(e.getGuild(), "guild")
-                            ), null).build(), core.getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
+                                    new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
+                            ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
                     }, null);
                 }
@@ -87,7 +87,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                 if (stats == null) return;
                 Role role = core.getLevelingManager().getRoleForLevel(stats.getLevel());
                 if (role != null) {
-                    e.getGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
+                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
                 }
             }
         });

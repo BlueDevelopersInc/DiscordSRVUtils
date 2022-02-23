@@ -103,7 +103,7 @@ public class SuggestionListener extends ListenerAdapter {
                 }
             }
             if (e.getButton().getId().equals("yes")) {
-                try (Connection conn = core.getDatabase()) {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
                     PreparedStatement p1 = conn.prepareStatement("DELETE FROM suggestions_votes WHERE UserID=? AND SuggestionNumber=?");
                     p1.setLong(1, e.getUser().getIdLong());
                     p1.setInt(2, suggestion.getNumber());
@@ -123,7 +123,7 @@ public class SuggestionListener extends ListenerAdapter {
                 }
                 e.deferEdit().queue();
             } else if (e.getButton().getId().equals("no")) {
-                try (Connection conn = core.getDatabase()) {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
                     PreparedStatement p1 = conn.prepareStatement("DELETE FROM suggestions_votes WHERE UserID=? AND SuggestionNumber=?");
                     p1.setLong(1, e.getUser().getIdLong());
                     p1.setInt(2, suggestion.getNumber());
@@ -144,7 +144,7 @@ public class SuggestionListener extends ListenerAdapter {
                 }
                 e.deferEdit().queue();
             } else if (e.getButton().getId().equals("reset")) {
-                try (Connection conn = core.getDatabase()) {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
                     PreparedStatement p1 = conn.prepareStatement("DELETE FROM suggestions_votes WHERE UserID=? AND SuggestionNumber=?");
                     p1.setLong(1, e.getUser().getIdLong());
                     p1.setInt(2, suggestion.getNumber());

@@ -90,10 +90,10 @@ public class PanelListCommand extends Command {
             embed.addField(panel.getName(), String.join("\n", new String[]{
                     "**ID: **" + panel.getId(),
                     "**Message Channel: **" + "<#" + panel.getChannelId() + ">",
-                    "**Opened Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getOpenedCategory()).getName()).toUpperCase(),
-                    "**Closed Category: **" + (DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : DiscordSRVUtils.get().getGuild().getCategoryById(panel.getClosedCategory()).getName()).toUpperCase(),
+                    "**Opened Category: **" + (DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()).getName()).toUpperCase(),
+                    "**Closed Category: **" + (DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()).getName()).toUpperCase(),
                     "**Allowed Roles: **" + parseRoles(panel.getAllowedRoles()),
-                    /*language=md*/ "\n[Panel Message](" + "https://discord.com/channels/" + DiscordSRVUtils.get().getGuild().getId() + "/" + panel.getChannelId() + "/" + panel.getMessageId() + ")"
+                    /*language=md*/ "\n[Panel Message](" + "https://discord.com/channels/" + DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getId() + "/" + panel.getChannelId() + "/" + panel.getMessageId() + ")"
             }), false);
 
         }
@@ -107,7 +107,7 @@ public class PanelListCommand extends Command {
         }
         StringJoiner joiner = new StringJoiner(", ");
         for (Long role : roles) {
-            joiner.add(DiscordSRVUtils.get().getGuild().getRoleById(role) == null ? role + "" : DiscordSRVUtils.get().getGuild().getRoleById(role).getAsMention());
+            joiner.add(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getRoleById(role) == null ? role + "" : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getRoleById(role).getAsMention());
         }
         return joiner.toString();
     }

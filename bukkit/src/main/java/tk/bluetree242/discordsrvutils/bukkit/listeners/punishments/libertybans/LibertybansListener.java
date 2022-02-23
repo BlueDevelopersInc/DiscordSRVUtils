@@ -68,29 +68,29 @@ public class LibertybansListener {
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
         if (!un) {
-            Member discordMember = core.getGuild().retrieveMember(discordUser).complete();
+            Member discordMember = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMember(discordUser).complete();
             if (discordMember == null) return;
-            if (!core.getGuild().getSelfMember().canInteract(discordMember)) return;
+            if (!core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(discordMember)) return;
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case BAN:
-                    Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
+                    Role bannedRole = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)
-                        core.getGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
-                    else if (core.getGuild().getSelfMember().canInteract(bannedRole))
-                        core.getGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
+                    else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
+                        core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
                     else {
                         core.severe("Could not add Banned role to " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
                     break;
                 case MUTE:
-                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
-                    core.getGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
+                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
                     break;
                 default:
                     break;
@@ -99,23 +99,23 @@ public class LibertybansListener {
             if (!core.getBansConfig().isSyncUnpunishmentsWithDiscord()) return;
             switch (punishment.getType()) {
                 case BAN:
-                    Role bannedRole = core.getGuild().getRoleById(core.getBansConfig().bannedRole());
+                    Role bannedRole = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)
-                        core.getGuild().unban(discordUser).reason("Minecraft Synced UnBan").queue();
-                    else if (core.getGuild().getSelfMember().canInteract(bannedRole))
-                        core.getGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().unban(discordUser).reason("Minecraft Synced UnBan").queue();
+                    else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
+                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
                     else {
                         core.severe("Could not remove Banned role from " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
                     break;
                 case MUTE:
-                    Role role = core.getGuild().getRoleById(core.getBansConfig().mutedRole());
+                    Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
                             core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
-                    core.getGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
+                    core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
                 default:
                     break;
             }
@@ -157,7 +157,7 @@ public class LibertybansListener {
                 }
                 if (msg != null) {
                     if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                        TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
+                        TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
                         if (channel == null) {
                             core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
                             return;
@@ -194,7 +194,7 @@ public class LibertybansListener {
                 }
                 if (msg != null) {
                     if (core.getBansConfig().isSyncUnpunishmentsmsgWithDiscord()) {
-                        TextChannel channel = core.getChannel(core.getBansConfig().channel_id());
+                        TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
                         if (channel == null) {
                             core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For UnPunishment message");
                             return;

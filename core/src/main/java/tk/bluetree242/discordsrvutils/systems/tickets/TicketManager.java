@@ -48,7 +48,7 @@ public class TicketManager {
 
     public CompletableFuture<Panel> getPanelById(String id) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
                 p1.setString(1, id);
                 ResultSet r1 = p1.executeQuery();
@@ -64,7 +64,7 @@ public class TicketManager {
 
     public CompletableFuture<Set<Panel>> getPanels() {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
                 ResultSet r1 = p1.executeQuery();
                 Set<Panel> val = new HashSet<>();
@@ -97,7 +97,7 @@ public class TicketManager {
 
     public CompletableFuture<Panel> getPanelByMessageId(long messageId) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
                 p1.setLong(1, messageId);
                 ResultSet r1 = p1.executeQuery();
@@ -113,7 +113,7 @@ public class TicketManager {
 
     public CompletableFuture<Ticket> getTicketByMessageId(long messageId) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE MessageID=?");
                 p1.setLong(1, messageId);
                 ResultSet r1 = p1.executeQuery();
@@ -129,7 +129,7 @@ public class TicketManager {
 
     public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
         return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabase()) {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE Channel=?");
                 p1.setLong(1, channelId);
                 ResultSet r1 = p1.executeQuery();
@@ -158,11 +158,11 @@ public class TicketManager {
     }
 
     public void fixTickets() {
-        try (Connection conn = core.getDatabase()) {
+        try (Connection conn = core.getDatabaseManager().getConnection()) {
             PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
             ResultSet r1 = p1.executeQuery();
             while (r1.next()) {
-                TextChannel channel = core.getGuild().getTextChannelById(r1.getLong("Channel"));
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(r1.getLong("Channel"));
                 if (channel == null) {
                     PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
                     p.setLong(1, r1.getLong("Channel"));
@@ -174,7 +174,7 @@ public class TicketManager {
             while (r1.next()) {
                 Panel panel = getPanel(r1);
                 try {
-                    Message msg = core.getGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                    Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
                     if (msg.getButtons().isEmpty()) {
                         msg.clearReactions().queue();
                         msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();

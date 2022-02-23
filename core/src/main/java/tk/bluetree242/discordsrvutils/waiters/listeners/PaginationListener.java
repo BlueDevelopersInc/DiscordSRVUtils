@@ -41,20 +41,20 @@ public class PaginationListener extends ListenerAdapter {
             PaginationWaiter waiter = getWaiter(e.getMessageIdLong(), e.getUser().getIdLong());
             if (waiter != null) {
                 if (waiter.getUser().getIdLong() != e.getUser().getIdLong()) {
-                    if (e.getChannel() instanceof TextChannel && e.getGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE)) {
+                    if (e.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE)) {
                         e.getReaction().removeReaction(e.getUser()).submit();
                     }
                     return;
                 }
                 if (e.getReactionEmote().getName().equals("🗑️")) {
                     waiter.expire(false);
-                    if (e.getChannel() instanceof TextChannel && e.getGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE))
+                    if (e.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE))
                         waiter.getMessage().clearReactions().queue();
 
                     waiter.getMessage().editMessage("Cancelled by user.").override(true).queue();
                     return;
                 }
-                if (e.getChannel() instanceof TextChannel && e.getGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE)) {
+                if (e.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) e.getChannel(), Permission.MESSAGE_MANAGE)) {
                     e.getReaction().removeReaction(e.getUser()).submit();
                 }
                 int page = waiter.getPage() + (backward ? (-1) : (1));

@@ -59,16 +59,16 @@ public class DiscordSRVListener {
             if (stats == null) return;
             String id = e.getUser().getId();
             if (id == null) return;
-            Member member = core.getGuild().retrieveMemberById(id).complete();
+            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
             if (member == null) return;
             Collection actions = new ArrayList<>();
             for (Role role : manager.getRolesToRemove(stats.getLevel())) {
                 if (member.getRoles().contains(role))
-                    actions.add(core.getGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
+                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
             }
             Role toAdd = manager.getRoleForLevel(level);
             if (toAdd != null && !member.getRoles().contains(toAdd)) {
-                actions.add(core.getGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
             }
             RestAction.allOf(actions).queue();
         });
@@ -81,11 +81,11 @@ public class DiscordSRVListener {
 
         LevelingManager manager = core.getLevelingManager();
         core.getAsyncManager().executeAsync(() -> {
-            Member member = core.getGuild().retrieveMemberById(e.getDiscordId()).complete();
+            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(e.getDiscordId()).complete();
             if (member != null) {
                 for (Role role : manager.getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
-                        core.getGuild().removeRoleFromMember(member, role).reason("Account Unlinked").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("Account Unlinked").queue();
                 }
             }
         });

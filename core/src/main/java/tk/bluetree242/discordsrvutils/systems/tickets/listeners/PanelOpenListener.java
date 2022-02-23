@@ -40,7 +40,7 @@ public class PanelOpenListener extends ListenerAdapter {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
                 e.getReaction().removeReaction(e.getUser()).queue();
-                if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
+                if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
                     return;
                 }
                 core.getAsyncManager().handleCF(panel.openTicket(e.getUser()), null, er -> {
@@ -55,7 +55,7 @@ public class PanelOpenListener extends ListenerAdapter {
         core.getAsyncManager().handleCF(core.getTicketManager().getPanelByMessageId(e.getMessageIdLong()), panel -> {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
-                if (e.getMember().getRoles().contains(core.getGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
+                if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
                     e.deferReply(true).setContent("You are Ticket Muted").queue();
                     return;
                 }

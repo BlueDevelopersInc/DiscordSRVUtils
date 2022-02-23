@@ -105,7 +105,7 @@ public class StatusManager {
                 Long messageId = getMessageId();
                 Long channelId = getChannelId();
                 if (messageId == null || channelId == null) return;
-                Message msg = Objects.requireNonNull(core.getGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
+                Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
                 if (msg == null) return;
                 //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
                 msg.editMessage(toSend).complete();
