@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -106,7 +107,7 @@ public class MessageManager {
         for (String msg : messages) {
             try {
                 //add them to the map
-                defaultMessages.put(msg, new String(core.getPlatform().getResource("messages/" + msg + ".json").readAllBytes()));
+                defaultMessages.put(msg, new String(IOUtils.toByteArray(core.getPlatform().getResource("messages/" + msg + ".json"))));
             } catch (IOException e) {
                 core.getLogger().severe("Could not load " + msg + ".json");
             }
