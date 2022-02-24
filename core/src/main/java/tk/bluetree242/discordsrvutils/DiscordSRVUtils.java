@@ -140,7 +140,7 @@ public class DiscordSRVUtils {
     }
 
     public PlatformServer getServer() {
-        return getPlatform().getServer();
+        return getServer();
     }
 
     public PluginPlatform getPlatform() {

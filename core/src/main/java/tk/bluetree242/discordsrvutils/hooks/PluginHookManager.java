@@ -40,7 +40,7 @@ public class PluginHookManager {
 
     public void hookAll() {
         for (PluginHook hook : new ArrayList<>(hooks)) {
-            if (core.getPlatform().getServer().isPluginEnabled(hook.getRequiredPlugin())) {
+            if (core.getServer().isPluginEnabled(hook.getRequiredPlugin())) {
                 try {
                     hook.hook();
                 } catch (Exception e) {

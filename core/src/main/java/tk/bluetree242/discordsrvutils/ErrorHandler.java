@@ -44,7 +44,7 @@ public class ErrorHandler {
         core.getLogger().warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
-            core.getLogger().severe(core.getPlatform().getServer().getDebugger().run(Utils.exceptionToStackTrack(ex)));
+            core.getLogger().severe(core.getServer().getDebugger().run(Utils.exceptionToStackTrack(ex)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,7 +85,7 @@ public class ErrorHandler {
 
     public void severe(String sv) {
         core.getLogger().severe(sv);
-        for (PlatformPlayer p : core.getPlatform().getServer().getOnlinePlayers()) {
+        for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
                 //tell admins that something was wrong
                 p.sendMessage("&7[&eDSU&7] &c" + sv);

@@ -66,7 +66,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 if (sender.hasPermission("discordsrvutils.debug")) {
                     sender.sendMessage("&aPreparing Debug Report... Please wait");
                     try {
-                        sender.sendMessage("&aYour Debug report is available at: &e" + core.getPlatform().getServer().getDebugger().run());
+                        sender.sendMessage("&aYour Debug report is available at: &e" + core.getServer().getDebugger().run());
                     } catch (Exception e) {
                         sender.sendMessage("&cERROR: " + e.getMessage());
                     }
