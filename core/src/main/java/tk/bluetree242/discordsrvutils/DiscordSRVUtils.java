@@ -43,6 +43,7 @@ import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import tk.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
+import tk.bluetree242.discordsrvutils.other.MessageFilter;
 import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
@@ -298,8 +299,8 @@ public class DiscordSRVUtils {
 
     private void addMessageFilter() {
         try {
-            Class messageFilter = Class.forName("tk.bluetree242.discordsrvutils.other.MessageFilter");
-            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter((Filter) messageFilter.newInstance());
+            MessageFilter filter = new MessageFilter(this);
+            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(filter);
         } catch (Exception e) {
             severe("Failed to add Message Filter");
             e.printStackTrace();
