@@ -67,7 +67,7 @@ public class LitebansPunishmentListener extends Events.Listener {
                 case "MUTE":
                     msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     if (!e.isPermanent()) {
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     }
                     break;
                 default:
@@ -117,6 +117,7 @@ public class LitebansPunishmentListener extends Events.Listener {
                             core.queueMsg(msg, channel).queue();
                     }
                 }
+
             syncPunishment(e, false);
         });
     }
@@ -125,12 +126,13 @@ public class LitebansPunishmentListener extends Events.Listener {
         String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getUniqueId()).getUniqueId());
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
+        core.getLogger().info(discordUser + "");
         if (!un) {
             Member discordMember = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMember(discordUser).complete();
             if (discordMember == null) return;
             if (!core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(discordMember)) return;
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
-            switch (punishment.getType()) {
+            switch (punishment.getType().toUpperCase()) {
                 case "BAN":
                     Role bannedRole = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)
@@ -155,7 +157,7 @@ public class LitebansPunishmentListener extends Events.Listener {
             }
         } else {
             if (!core.getBansConfig().isSyncUnpunishmentsWithDiscord()) return;
-            switch (punishment.getType()) {
+            switch (punishment.getType().toUpperCase()) {
                 case "BAN":
                     Role bannedRole = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)

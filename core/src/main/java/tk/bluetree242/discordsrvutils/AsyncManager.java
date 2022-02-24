@@ -85,11 +85,11 @@ public class AsyncManager {
     }
 
     public CompletableFuture<Void> completableFutureRun(Runnable r) {
-        return CompletableFuture.runAsync(r, getPool());
+        return CompletableFuture.runAsync(r, getPool() == null ? null : getPool());
     }
 
     public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
-        return CompletableFuture.supplyAsync(v, getPool());
+        return CompletableFuture.supplyAsync(v, getPool() == null ? null : getPool());
     }
 
     public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
