@@ -27,8 +27,8 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 public abstract class Waiter extends ListenerAdapter {
     private final long startTime;
-    private boolean expired = false;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private boolean expired = false;
 
     public Waiter() {
         startTime = System.currentTimeMillis();

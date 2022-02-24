@@ -34,8 +34,9 @@ import java.util.Map;
 public class PlaceholdObject {
     private final Map<String, Method> map = new HashMap<>();
     private final Object ob;
-    protected String display;
     private final DiscordSRVUtils core;
+    protected String display;
+
     public PlaceholdObject(DiscordSRVUtils core, Object ob, String display) {
         this.core = core;
         this.ob = ob;

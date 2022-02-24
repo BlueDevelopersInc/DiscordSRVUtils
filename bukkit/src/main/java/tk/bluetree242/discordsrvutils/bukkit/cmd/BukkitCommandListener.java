@@ -40,7 +40,7 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
 
     public BukkitCommandListener(DiscordSRVUtils core) {
         this.core = core;
-        cmd  = new DiscordSRVUtilsCommand(core);
+        cmd = new DiscordSRVUtilsCommand(core);
     }
 
     @Nullable

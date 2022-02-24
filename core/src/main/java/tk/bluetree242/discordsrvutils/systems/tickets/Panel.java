@@ -169,7 +169,7 @@ public class Panel {
                 }
                 action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
                 TextChannel channel = action.complete();
-                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(core, 
+                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(core,
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(user), "member"),
                         new PlaceholdObject(core, user, "user"),
@@ -214,6 +214,7 @@ public class Panel {
     public Panel.Editor getEditor() {
         return new Panel.Editor(core, this);
     }
+
     @RequiredArgsConstructor
     public static class Builder {
         private final DiscordSRVUtils core;

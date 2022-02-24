@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.commands.game;
 
-import github.scarsz.discordsrv.util.DebugUtil;
 import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;

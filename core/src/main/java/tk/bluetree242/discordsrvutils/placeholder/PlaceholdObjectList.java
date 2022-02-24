@@ -35,6 +35,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
     private final DiscordSRVUtils core;
+
     public static PlaceholdObjectList ofArray(DiscordSRVUtils core, PlaceholdObject... holders) {
         PlaceholdObjectList list = new PlaceholdObjectList(core);
         for (PlaceholdObject holder : holders) {

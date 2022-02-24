@@ -39,6 +39,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomDiscordAccountLinkListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
+
     // Original From DiscordAccountLinkListener DiscordSRV Class
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;

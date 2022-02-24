@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Command {
+    public final DiscordSRVUtils core;
     private final String cmd;
     private final Permission requestPermission;
     private final String description;
@@ -43,7 +44,6 @@ public abstract class Command {
     private final List<String> aliases = new ArrayList<>();
     @Getter
     private final OptionData[] options;
-    public final DiscordSRVUtils core;
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;

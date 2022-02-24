@@ -43,6 +43,7 @@ public class Ticket {
     private final boolean closed;
     private final Panel panel;
     private Long messageID;
+
     public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {
         this.core = core;
         this.id = id;
@@ -93,7 +94,7 @@ public class Ticket {
                 if (override != null) {
                     override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                 }
-                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(core, 
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(core,
                         new PlaceholdObject(core, userWhoClosed, "user"),
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoClosed), "member"),
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
@@ -133,7 +134,7 @@ public class Ticket {
                 } else {
                     return false;
                 }
-                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(core, 
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(core,
                         new PlaceholdObject(core, userWhoOpened, "user"),
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoOpened), "member"),
                         new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),

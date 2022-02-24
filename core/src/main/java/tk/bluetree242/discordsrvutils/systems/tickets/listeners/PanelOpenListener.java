@@ -63,7 +63,7 @@ public class PanelOpenListener extends ListenerAdapter {
                 }
                 core.getAsyncManager().handleCF(panel.openTicket(e.getUser()).thenAcceptAsync(t -> {
                     ReplyAction action = e.deferReply(true);
-                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core, 
+                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core,
                             new PlaceholdObject(core, core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
                             new PlaceholdObject(core, e.getUser(), "user"),
                             new PlaceholdObject(core, t, "ticket"),

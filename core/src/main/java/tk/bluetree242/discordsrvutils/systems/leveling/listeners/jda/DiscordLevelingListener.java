@@ -67,7 +67,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                         boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
                         core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
                         if (leveledUp) {
-                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core, 
+                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core,
                                     new PlaceholdObject(core, stats, "stats"),
                                     new PlaceholdObject(core, e.getAuthor(), "user"),
                                     new PlaceholdObject(core, e.getMember(), "member"),

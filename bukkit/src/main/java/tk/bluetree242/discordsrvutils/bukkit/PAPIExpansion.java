@@ -22,7 +22,6 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;

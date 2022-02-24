@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
-import github.scarsz.discordsrv.util.DebugUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

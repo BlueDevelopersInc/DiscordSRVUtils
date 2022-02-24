@@ -36,6 +36,7 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 public class TicketDeleteListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
+
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {

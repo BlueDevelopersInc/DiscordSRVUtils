@@ -31,6 +31,7 @@ import java.util.TimerTask;
 @RequiredArgsConstructor
 public class WaiterCanceller extends TimerTask {
     private final DiscordSRVUtils core;
+
     @Override
     public void run() {
         try {

@@ -51,6 +51,7 @@ public class Suggestion {
     protected Message msg;
     protected Long approver;
     Set<SuggestionVote> votes;
+
     public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
         this.core = core;
         this.text = text;
