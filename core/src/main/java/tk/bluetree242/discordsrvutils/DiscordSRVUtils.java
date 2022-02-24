@@ -129,7 +129,7 @@ public class DiscordSRVUtils {
     @Getter
     private UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
-    private DatabaseManager databaseManager;
+    private DatabaseManager databaseManager = new DatabaseManager(this);
 
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
