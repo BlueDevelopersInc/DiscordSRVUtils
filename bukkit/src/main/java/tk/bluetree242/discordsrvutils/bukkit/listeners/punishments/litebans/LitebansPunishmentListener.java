@@ -126,7 +126,6 @@ public class LitebansPunishmentListener extends Events.Listener {
         String id = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(Bukkit.getOfflinePlayer(LitebansPunishment.toOfflinePlayer(punishment.getUuid()).getUniqueId()).getUniqueId());
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
-        core.getLogger().info(discordUser + "");
         if (!un) {
             Member discordMember = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMember(discordUser).complete();
             if (discordMember == null) return;
