@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.systems.tickets.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
@@ -32,12 +33,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class TicketDeleteListener extends ListenerAdapter {
-
+    private final DiscordSRVUtils core;
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        if (DiscordSRVUtils.get().getMainConfig().bungee_mode()) return;
-        DiscordSRVUtils.get().getAsyncManager().executeAsync(() -> {
-            try (Connection conn = DiscordSRVUtils.get().getDatabaseManager().getConnection()) {
+        if (core.getMainConfig().bungee_mode()) return;
+        core.getAsyncManager().executeAsync(() -> {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
                 PreparedStatement p1 = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
                 p1.setLong(1, e.getChannel().getIdLong());
                 p1.execute();

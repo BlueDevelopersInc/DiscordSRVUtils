@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.commands.discord;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
@@ -35,8 +36,8 @@ import java.time.Instant;
 import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
-    public HelpCommand() {
-        super("help", "Get Help about commands", "[P]help [Command]", null,
+    public HelpCommand(DiscordSRVUtils core) {
+        super(core, "help", "Get Help about commands", "[P]help [Command]", null,
                 new OptionData(OptionType.STRING, "command", "Command to get help of", false));
     }
 

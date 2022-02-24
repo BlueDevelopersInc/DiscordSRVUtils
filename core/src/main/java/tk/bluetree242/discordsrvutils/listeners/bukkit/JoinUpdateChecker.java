@@ -23,16 +23,18 @@
 package tk.bluetree242.discordsrvutils.listeners.bukkit;
 
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 
+@RequiredArgsConstructor
 public class JoinUpdateChecker extends PlatformListener {
-
+    private final DiscordSRVUtils core;
 
     public void onJoin(PlatformJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
-            DiscordSRVUtils.get().getUpdateChecker().updateCheck(e.getPlayer());
+            core.getUpdateChecker().updateCheck(e.getPlayer());
         }
     }
 }

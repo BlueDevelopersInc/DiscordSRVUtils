@@ -47,6 +47,7 @@ import java.util.concurrent.ExecutionException;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommandEvent {
+    private final DiscordSRVUtils core;
     private final Member member;
     private final User author;
     private final MessageChannel channel;
@@ -81,13 +82,13 @@ public class CommandEvent {
     }
 
     public ReplyAction replyMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
-        holders.add(new PlaceholdObject(getAuthor(), "user"));
+        holders.add(new PlaceholdObject(core, getAuthor(), "user"));
         if (getChannel() instanceof TextChannel) {
-            holders.add(new PlaceholdObject(getMember(), "member"));
-            holders.add(new PlaceholdObject(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild(), "guild"));
+            holders.add(new PlaceholdObject(core, getMember(), "member"));
+            holders.add(new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
         }
-        holders.add(new PlaceholdObject(getChannel(), "channel"));
-        return reply(DiscordSRVUtils.get().getMessageManager().getMessage(content, holders, placehold).build());
+        holders.add(new PlaceholdObject(core, getChannel(), "channel"));
+        return reply(core.getMessageManager().getMessage(content, holders, placehold).build());
     }
 
     public ReplyAction replyMessage(String content, PlaceholdObjectList holders) {
@@ -95,7 +96,7 @@ public class CommandEvent {
     }
 
     public ReplyAction replyMessage(String content) {
-        return replyMessage(content, new PlaceholdObjectList(), null);
+        return replyMessage(content, new PlaceholdObjectList(core), null);
     }
 
     public ReplyAction replyErr(String msg) {
@@ -135,10 +136,10 @@ public class CommandEvent {
                 reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else if (!(ex instanceof InsufficientPermissionException)) {
                 reply(Embed.error(failure)).queue();
-                DiscordSRVUtils.get().getErrorHandler().defaultHandle(ex);
+                core.getErrorHandler().defaultHandle(ex);
             } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
-                GuildChannel chnl = DiscordSRVUtils.get().getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
+                GuildChannel chnl = core.getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
                 reply(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).queue();
             }
             return x;
@@ -157,10 +158,10 @@ public class CommandEvent {
                 reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
             } else if (!(ex instanceof InsufficientPermissionException)) {
                 reply(Embed.error(failure)).queue();
-                DiscordSRVUtils.get().getErrorHandler().defaultHandle(ex);
+                core.getErrorHandler().defaultHandle(ex);
             } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
-                GuildChannel chnl = DiscordSRVUtils.get().getJDA().getGuildChannelById(exc.getChannelId());
+                GuildChannel chnl = core.getJDA().getGuildChannelById(exc.getChannelId());
                 exc.getPermission();
                 assert chnl != null;
                 reply(Embed.error(failure, " In #" + chnl.getName())).queue();

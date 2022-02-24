@@ -95,13 +95,13 @@ public class UpdateChecker {
         core.getAsyncManager().executeAsync(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();
-                JSONObject versionConfig = DiscordSRVUtils.get().getVersionConfig();
+                JSONObject versionConfig = core.getVersionConfig();
                 MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
                         .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
                         .addFormDataPart("buildNumber", versionConfig.getString("buildNumber"))
                         .addFormDataPart("commit", versionConfig.getString("commit"))
                         .addFormDataPart("buildDate", versionConfig.getString("buildDate"))
-                        .addFormDataPart("devUpdatechecker", DiscordSRVUtils.get().getMainConfig().dev_updatechecker() + "")
+                        .addFormDataPart("devUpdatechecker", core.getMainConfig().dev_updatechecker() + "")
                         .build();
 
                 Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
@@ -117,7 +117,7 @@ public class UpdateChecker {
                     p.sendMessage("&7[&eDSU&7] &c" + res.getString("message"));
                 }
             } catch (Exception ex) {
-                DiscordSRVUtils.get().getLogger().severe("Could not check for updates: " + ex.getMessage());
+                core.getLogger().severe("Could not check for updates: " + ex.getMessage());
             }
 
         });

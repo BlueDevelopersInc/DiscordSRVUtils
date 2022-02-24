@@ -158,7 +158,7 @@ public class DiscordSRVUtils {
         //set the instance
         instance = this;
         //initialize discordsrv listener
-        dsrvlistener = new DiscordSRVListener();
+        dsrvlistener = new DiscordSRVListener(this);
         //Initialize Managers
     }
 
@@ -272,8 +272,8 @@ public class DiscordSRVUtils {
     public void registerListeners() {
         jdaManager.registerListeners();
         main.registerListeners();
-        main.addListener(new GameLevelingListener());
-        main.addListener(new JoinUpdateChecker());
+        main.addListener(new GameLevelingListener(this));
+        main.addListener(new JoinUpdateChecker(this));
     }
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
@@ -338,11 +338,11 @@ public class DiscordSRVUtils {
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.refreshAll(levelingManager.cachedUUIDS.asMap().keySet());
-        if (StatusListener.get() != null) {
-            if (StatusListener.get().registered) {
-                StatusListener.get().unregister();
+        if (main.getStatusListener() != null) {
+            if (main.getStatusListener().registered) {
+                main.getStatusListener().unregister();
             }
-            StatusListener.get().register();
+            main.getStatusListener().register();
             statusManager.reloadTimer();
         }
     }

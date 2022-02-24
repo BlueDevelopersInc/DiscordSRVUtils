@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
@@ -38,8 +39,8 @@ public class SuggestCommand extends Command {
     public final Long ANTISPAM_EXPIRATION = Duration.ofSeconds(120L).toNanos();
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
-    public SuggestCommand() {
-        super("suggest", "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
+    public SuggestCommand(DiscordSRVUtils core) {
+        super(core, "suggest", "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
                 new OptionData(OptionType.STRING, "suggestion", "Your Suggestion", true));
     }
 

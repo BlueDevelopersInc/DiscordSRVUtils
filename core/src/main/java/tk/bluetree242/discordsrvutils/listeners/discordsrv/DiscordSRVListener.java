@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
@@ -37,8 +38,9 @@ import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@RequiredArgsConstructor
 public class DiscordSRVListener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onReady(DiscordReadyEvent e) {

@@ -29,24 +29,27 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class CustomDiscordAccountLinkListener extends ListenerAdapter {
+    private final DiscordSRVUtils core;
     // Original From DiscordAccountLinkListener DiscordSRV Class
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;
-        if (event.getChannel().getIdLong() != DiscordSRVUtils.get().getMainConfig().linkaccount_channel()) return;
+        if (event.getChannel().getIdLong() != core.getMainConfig().linkaccount_channel()) return;
         String response = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (response != null) event.getMessage().reply(response).queue();
     }
 
 
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (!DiscordSRVUtils.get().isRemovedDiscordSRVAccountLinkListener()) return;
+        if (!core.isRemovedDiscordSRVAccountLinkListener()) return;
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {

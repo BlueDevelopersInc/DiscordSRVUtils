@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+
 public class AdvancedBanPunishment implements Punishment {
     private final me.leoko.advancedban.utils.Punishment punishment;
 

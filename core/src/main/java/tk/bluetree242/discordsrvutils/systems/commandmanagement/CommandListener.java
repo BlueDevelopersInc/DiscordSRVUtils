@@ -26,11 +26,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
+@RequiredArgsConstructor
 public class CommandListener extends ListenerAdapter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
 
     public void onSlashCommand(SlashCommandEvent e) {
@@ -63,7 +66,7 @@ public class CommandListener extends ListenerAdapter {
                     }
                 }
                 core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
-                executor.run(new CommandEvent(e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
+                executor.run(new CommandEvent(core, e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
             } catch (InsufficientPermissionException ex) {
                 ex.printStackTrace();
                 e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();

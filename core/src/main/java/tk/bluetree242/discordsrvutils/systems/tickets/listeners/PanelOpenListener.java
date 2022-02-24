@@ -27,12 +27,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonCl
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
+@RequiredArgsConstructor
 public class PanelOpenListener extends ListenerAdapter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
@@ -61,11 +63,11 @@ public class PanelOpenListener extends ListenerAdapter {
                 }
                 core.getAsyncManager().handleCF(panel.openTicket(e.getUser()).thenAcceptAsync(t -> {
                     ReplyAction action = e.deferReply(true);
-                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(
-                            new PlaceholdObject(core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
-                            new PlaceholdObject(e.getUser(), "user"),
-                            new PlaceholdObject(t, "ticket"),
-                            new PlaceholdObject(panel, "panel")
+                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core, 
+                            new PlaceholdObject(core, core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
+                            new PlaceholdObject(core, e.getUser(), "user"),
+                            new PlaceholdObject(core, t, "ticket"),
+                            new PlaceholdObject(core, panel, "panel")
                     );
                     core.getMessageManager().messageToReplyAction(action, core.getMessageManager().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
                 }), null, er -> {

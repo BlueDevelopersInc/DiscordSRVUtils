@@ -26,8 +26,9 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 
 public abstract class PluginHook {
+    private final DiscordSRVUtils core = DiscordSRVUtils.get();
     public PluginHook() {
-        DiscordSRVUtils.get().getPluginHookManager().getHooks().add(this);
+        core.getPluginHookManager().getHooks().add(this);
     }
 
     public abstract String getRequiredPlugin();
@@ -37,8 +38,8 @@ public abstract class PluginHook {
     public abstract void removeHook();
 
     public final String toString() {
-        if (DiscordSRVUtils.get().getPlatform().getServer().isPluginInstalled(getRequiredPlugin())) {
-            PlatformPluginDescription info = DiscordSRVUtils.get().getPlatform().getServer().getPluginDescription(getRequiredPlugin());
+        if (core.getPlatform().getServer().isPluginInstalled(getRequiredPlugin())) {
+            PlatformPluginDescription info = core.getPlatform().getServer().getPluginDescription(getRequiredPlugin());
             return info.getName() + " v" + info.getVersion();
         }
         return getClass().getSimpleName();

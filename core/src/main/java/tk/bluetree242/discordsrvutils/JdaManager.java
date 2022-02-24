@@ -52,16 +52,16 @@ public class JdaManager {
     public JdaManager(DiscordSRVUtils core) {
         this.core = core;
         //Add The JDA Listeners to the List
-        listeners.add(new CommandListener());
-        listeners.add(new WelcomerAndGoodByeListener());
-        listeners.add(new CreatePanelListener());
-        listeners.add(new PaginationListener());
-        listeners.add(new TicketDeleteListener());
-        listeners.add(new PanelOpenListener());
-        listeners.add(new TicketCloseListener());
-        listeners.add(new EditPanelListener());
-        listeners.add(new DiscordLevelingListener());
-        listeners.add(new SuggestionListener());
+        listeners.add(new CommandListener(core));
+        listeners.add(new WelcomerAndGoodByeListener(core));
+        listeners.add(new CreatePanelListener(core));
+        listeners.add(new PaginationListener(core));
+        listeners.add(new TicketDeleteListener(core));
+        listeners.add(new PanelOpenListener(core));
+        listeners.add(new TicketCloseListener(core));
+        listeners.add(new EditPanelListener(core));
+        listeners.add(new DiscordLevelingListener(core));
+        listeners.add(new SuggestionListener(core));
     }
 
 

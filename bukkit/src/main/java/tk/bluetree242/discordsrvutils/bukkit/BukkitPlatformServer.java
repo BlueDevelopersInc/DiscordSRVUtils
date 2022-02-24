@@ -39,8 +39,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitPlatformServer extends PlatformServer {
+    private final DiscordSRVUtils core;
     @Getter
-    private final Debugger debugger = new BukkitDebugger(DiscordSRVUtils.get());
+    private final Debugger debugger;
+
+    public BukkitPlatformServer(DiscordSRVUtils core) {
+        this.core = core;
+        debugger = new BukkitDebugger(core);
+    }
 
     @Override
     public boolean isPluginEnabled(String name) {
@@ -63,7 +69,7 @@ public class BukkitPlatformServer extends PlatformServer {
     public List<PlatformPlayer> getOnlinePlayers() {
         List<PlatformPlayer> result = new ArrayList<>();
         for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-            result.add(new BukkitPlayer(onlinePlayer));
+            result.add(new BukkitPlayer(core, onlinePlayer));
         }
         return result;
     }

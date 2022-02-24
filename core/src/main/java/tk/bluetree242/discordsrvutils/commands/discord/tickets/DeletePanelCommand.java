@@ -32,8 +32,8 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class DeletePanelCommand extends Command {
 
-    public DeletePanelCommand() {
-        super("deletepanel", "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+    public DeletePanelCommand(DiscordSRVUtils core) {
+        super(core, "deletepanel", "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("dp");
         setAdminOnly(true);
@@ -41,18 +41,18 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(e.getOption("id").getAsString()), panel -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(e.getOption("id").getAsString()), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
             } else {
-                DiscordSRVUtils.get().getAsyncManager().handleCF(panel.delete(), s -> {
+                core.getAsyncManager().handleCF(panel.delete(), s -> {
                     e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
                 }, error -> {
-                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
+                    core.getErrorHandler().defaultHandle(error, e.getChannel());
                 });
             }
         }, error -> {
-            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
+            core.getErrorHandler().defaultHandle(error, e.getChannel());
         });
     }
 }

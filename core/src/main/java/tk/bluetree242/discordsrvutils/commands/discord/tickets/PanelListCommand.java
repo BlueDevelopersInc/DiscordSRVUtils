@@ -39,8 +39,8 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 public class PanelListCommand extends Command {
-    public PanelListCommand() {
-        super("panelist", "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
+    public PanelListCommand(DiscordSRVUtils core) {
+        super(core, "panelist", "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
         setAdminOnly(true);
     }
 
@@ -51,15 +51,15 @@ public class PanelListCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanels(), panels -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getPanels(), panels -> {
             if (panels.isEmpty()) {
                 e.replyErr("There are no panels to show").queue();
                 return;
             }
             e.reply("Loading Pages...").setEphemeral(true).queue();
-            new PaginationWaiter(e.getChannel(), getEmbeds(panels), e.getAuthor());
+            new PaginationWaiter(core, e.getChannel(), getEmbeds(panels), e.getAuthor());
         }, failure -> {
-            DiscordSRVUtils.get().getErrorHandler().defaultHandle(failure, e.getChannel());
+            core.getErrorHandler().defaultHandle(failure, e.getChannel());
         });
     }
 
@@ -69,7 +69,7 @@ public class PanelListCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.GREEN);
         embed.setTimestamp(Instant.now());
-        embed.setThumbnail(DiscordSRVUtils.get().getJDA().getSelfUser().getEffectiveAvatarUrl());
+        embed.setThumbnail(core.getJDA().getSelfUser().getEffectiveAvatarUrl());
         embed.setTitle("Panels");
         embed.setFooter("Page 1/" + getPageCount(panels));
         int currentPage = 1;
@@ -82,7 +82,7 @@ public class PanelListCommand extends Command {
                 embed = new EmbedBuilder();
                 embed.setColor(Color.GREEN);
                 embed.setTimestamp(Instant.now());
-                embed.setThumbnail(DiscordSRVUtils.get().getJDA().getSelfUser().getEffectiveAvatarUrl());
+                embed.setThumbnail(core.getJDA().getSelfUser().getEffectiveAvatarUrl());
                 embed.setTitle("Panels");
                 embed.setFooter("Page " + currentPage + "/" + getPageCount(panels));
             }
@@ -90,10 +90,10 @@ public class PanelListCommand extends Command {
             embed.addField(panel.getName(), String.join("\n", new String[]{
                     "**ID: **" + panel.getId(),
                     "**Message Channel: **" + "<#" + panel.getChannelId() + ">",
-                    "**Opened Category: **" + (DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()).getName()).toUpperCase(),
-                    "**Closed Category: **" + (DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()).getName()).toUpperCase(),
+                    "**Opened Category: **" + (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()) == null ? String.valueOf(panel.getOpenedCategory()) : core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory()).getName()).toUpperCase(),
+                    "**Closed Category: **" + (core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()) == null ? String.valueOf(panel.getClosedCategory()) : core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory()).getName()).toUpperCase(),
                     "**Allowed Roles: **" + parseRoles(panel.getAllowedRoles()),
-                    /*language=md*/ "\n[Panel Message](" + "https://discord.com/channels/" + DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getId() + "/" + panel.getChannelId() + "/" + panel.getMessageId() + ")"
+                    /*language=md*/ "\n[Panel Message](" + "https://discord.com/channels/" + core.getPlatform().getDiscordSRV().getMainGuild().getId() + "/" + panel.getChannelId() + "/" + panel.getMessageId() + ")"
             }), false);
 
         }
@@ -107,7 +107,7 @@ public class PanelListCommand extends Command {
         }
         StringJoiner joiner = new StringJoiner(", ");
         for (Long role : roles) {
-            joiner.add(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getRoleById(role) == null ? role + "" : DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getRoleById(role).getAsMention());
+            joiner.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(role) == null ? role + "" : core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(role).getAsMention());
         }
         return joiner.toString();
     }

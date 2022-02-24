@@ -35,14 +35,15 @@ public class PlaceholdObject {
     private final Map<String, Method> map = new HashMap<>();
     private final Object ob;
     protected String display;
-
-    public PlaceholdObject(Object ob, String display) {
+    private final DiscordSRVUtils core;
+    public PlaceholdObject(DiscordSRVUtils core, Object ob, String display) {
+        this.core = core;
         this.ob = ob;
         this.display = display;
     }
 
-    public static String applyMultiple(String s, PlaceholdObject... holders) {
-        return PlaceholdObjectList.ofArray(holders).apply(s);
+    public static String applyMultiple(DiscordSRVUtils core, String s, PlaceholdObject... holders) {
+        return PlaceholdObjectList.ofArray(core, holders).apply(s);
     }
 
 
@@ -72,18 +73,18 @@ public class PlaceholdObject {
             }
         });
 
-        val[0] = DiscordSRVUtils.get().getPlatform().placehold(placehold, s);
+        val[0] = core.getPlatform().placehold(placehold, s);
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
-            variables.put("guild", DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild());
-            variables.put("jda", DiscordSRVUtils.get().getJDA());
-            variables.put("DSU", DiscordSRVUtils.get());
-            variables.put("TicketManager", DiscordSRVUtils.get().getTicketManager());
-            variables.put("server", DiscordSRVUtils.get().getPlatform().getServer().getOriginal());
-            variables.put("LevelingManager", DiscordSRVUtils.get().getLevelingManager());
-            variables.put("CommandManager", DiscordSRVUtils.get().getCommandManager());
+            variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
+            variables.put("jda", core.getJDA());
+            variables.put("DSU", core);
+            variables.put("TicketManager", core.getTicketManager());
+            variables.put("server", core.getPlatform().getServer().getOriginal());
+            variables.put("LevelingManager", core.getLevelingManager());
+            variables.put("CommandManager", core.getCommandManager());
             variables.put(display, ob);
-            val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
+            val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
         }
         return val[0];
     }

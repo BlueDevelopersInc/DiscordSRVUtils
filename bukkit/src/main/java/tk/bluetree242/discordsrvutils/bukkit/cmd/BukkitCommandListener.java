@@ -35,7 +35,13 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.List;
 
 public class BukkitCommandListener implements CommandExecutor, TabCompleter {
-    private final DiscordSRVUtilsCommand cmd = new DiscordSRVUtilsCommand();
+    private final DiscordSRVUtils core;
+    private final DiscordSRVUtilsCommand cmd;
+
+    public BukkitCommandListener(DiscordSRVUtils core) {
+        this.core = core;
+        cmd  = new DiscordSRVUtilsCommand(core);
+    }
 
     @Nullable
     @Override
@@ -45,7 +51,7 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        DiscordSRVUtils.get().getAsyncManager().executeAsync(() -> {
+        core.getAsyncManager().executeAsync(() -> {
             try {
                 cmd.onRunAsync(args, wrapUser(sender), label);
             } catch (Throwable throwable) {
@@ -58,7 +64,7 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
 
     private CommandUser wrapUser(CommandSender sender) {
         if (sender instanceof Player) {
-            return new BukkitPlayer(((Player) sender));
+            return new BukkitPlayer(core, ((Player) sender));
         } else if (sender instanceof ConsoleCommandSender) {
             return new BukkitConsoleCommandUser();
         } else {

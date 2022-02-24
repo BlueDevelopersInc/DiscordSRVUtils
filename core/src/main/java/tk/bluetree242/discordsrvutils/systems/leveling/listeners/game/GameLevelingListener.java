@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.systems.leveling.listeners.game;
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -38,8 +39,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class GameLevelingListener extends PlatformListener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
@@ -89,7 +91,7 @@ public class GameLevelingListener extends PlatformListener {
             boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
             core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
             if (leveledUp) {
-                e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(new PlaceholdObject(stats, "stats"), new PlaceholdObject(e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
+                e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
             }
         }, null);
     }

@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.afkplus;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import lombok.RequiredArgsConstructor;
 import net.lapismc.afkplus.api.AFKStartEvent;
 import net.lapismc.afkplus.api.AFKStopEvent;
 import org.bukkit.Bukkit;
@@ -36,8 +37,9 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.Essentials
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
+@RequiredArgsConstructor
 public class AFKPlusListener implements Listener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @EventHandler
     public void onAfk(AFKStartEvent e) {
@@ -45,14 +47,14 @@ public class AFKPlusListener implements Listener {
             Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
-                PlaceholdObjectList holders = new PlaceholdObjectList();
-                holders.add(new PlaceholdObject(player, "player"));
+                PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                holders.add(new PlaceholdObject(core, player, "player"));
                 TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(core, player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
@@ -64,14 +66,14 @@ public class AFKPlusListener implements Listener {
             Player player = Bukkit.getPlayer(e.getPlayer().getUUID());
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
-                PlaceholdObjectList holders = new PlaceholdObjectList();
-                holders.add(new PlaceholdObject(player, "player"));
+                PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                holders.add(new PlaceholdObject(core, player, "player"));
                 TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(core, player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });

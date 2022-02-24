@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
@@ -33,8 +34,8 @@ import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 import java.awt.*;
 
 public class CreatePanelCommand extends Command {
-    public CreatePanelCommand() {
-        super("createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+    public CreatePanelCommand(DiscordSRVUtils core) {
+        super(core, "createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
         setAdminOnly(true);
     }
 
@@ -48,6 +49,6 @@ public class CreatePanelCommand extends Command {
         embed.setColor(Color.ORANGE);
         embed.setDescription("**Step 1: Please Send the name of the panel**");
         e.reply(embed.build()).queue();
-        new CreatePanelWaiter((TextChannel) e.getChannel(), e.getMember().getUser());
+        new CreatePanelWaiter(core, (TextChannel) e.getChannel(), e.getMember().getUser());
     }
 }

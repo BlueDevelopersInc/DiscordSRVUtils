@@ -22,11 +22,13 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
+@RequiredArgsConstructor
 public class LibertybansHook extends PluginHook {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private LibertybansListener listener;
 
     @Override
@@ -37,7 +39,7 @@ public class LibertybansHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        listener = new LibertybansListener();
+        listener = new LibertybansListener(core);
     }
 
     @Override

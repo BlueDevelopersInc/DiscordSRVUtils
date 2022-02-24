@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,14 +34,16 @@ import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 
+@RequiredArgsConstructor
 public class BukkitListener implements Listener {
+    private final DiscordSRVUtils core;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
         PlatformChatEvent event = new PlatformChatEvent() {
             @Override
             public PlatformPlayer getPlayer() {
-                return new BukkitPlayer(e.getPlayer());
+                return new BukkitPlayer(core, e.getPlayer());
             }
 
             @Override
@@ -49,7 +52,7 @@ public class BukkitListener implements Listener {
             }
         };
 
-        for (Object o : DiscordSRVUtils.get().getPlatform().getListeners()) {
+        for (Object o : core.getPlatform().getListeners()) {
             PlatformListener listener = (PlatformListener) o;
             listener.onChat(event);
         }
@@ -60,11 +63,11 @@ public class BukkitListener implements Listener {
         PlatformJoinEvent event = new PlatformJoinEvent() {
             @Override
             public PlatformPlayer getPlayer() {
-                return new BukkitPlayer(e.getPlayer());
+                return new BukkitPlayer(core, e.getPlayer());
             }
         };
 
-        for (Object o : DiscordSRVUtils.get().getPlatform().getListeners()) {
+        for (Object o : core.getPlatform().getListeners()) {
             PlatformListener listener = (PlatformListener) o;
             listener.onJoin(event);
         }

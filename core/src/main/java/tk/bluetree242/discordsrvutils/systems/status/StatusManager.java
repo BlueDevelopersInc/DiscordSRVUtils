@@ -54,8 +54,8 @@ public class StatusManager {
 
 
     public Message getStatusMessage(boolean online) {
-        PlaceholdObjectList holders = new PlaceholdObjectList();
-        holders.add(new PlaceholdObject(core.getPlatform().getServer().getOriginal(), "server"));
+        PlaceholdObjectList holders = new PlaceholdObjectList(core);
+        holders.add(new PlaceholdObject(core, core.getPlatform().getServer().getOriginal(), "server"));
         return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 

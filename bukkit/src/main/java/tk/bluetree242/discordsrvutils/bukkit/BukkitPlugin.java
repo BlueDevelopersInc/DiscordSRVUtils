@@ -59,8 +59,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         discordSRV = new BukkitDiscordSRV();
     }
 
-    public static String applyPlaceholders(String s, Player player) {
-        if (!DiscordSRVUtils.get().isEnabled()) return s;
+    public String applyPlaceholders(String s, Player player) {
+        if (!core.isEnabled()) return s;
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             String to = s.replace("&", "** ** *");
             String fina = PlaceholderAPI.setPlaceholders(player, to);
@@ -81,7 +81,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public PlatformServer getServer() {
-        return new BukkitPlatformServer();
+        return new BukkitPlatformServer(core);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public void registerListeners() {
-        Bukkit.getServer().getPluginManager().registerEvents(new BukkitListener(), main);
+        Bukkit.getServer().getPluginManager().registerEvents(new BukkitListener(core), main);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public void registerCommands() {
-        BukkitCommandListener listener = new BukkitCommandListener();
+        BukkitCommandListener listener = new BukkitCommandListener(core);
         Objects.requireNonNull(main.getCommand("discordsrvutils")).setExecutor(listener);
         Objects.requireNonNull(main.getCommand("discordsrvutils")).setTabCompleter(listener);
     }
@@ -133,15 +133,15 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     @Override
     public void addHooks() {
         //Punishments
-        new AdvancedBanHook();
-        new LibertybansHook();
-        new LitebansHook();
+        new AdvancedBanHook(core);
+        new LibertybansHook(core);
+        new LitebansHook(core);
         //Afk
-        new EssentialsHook();
-        new CMIHook();
-        new AfkPlusHook();
+        new EssentialsHook(core);
+        new CMIHook(core);
+        new AfkPlusHook(core);
         //PAPI
-        new PAPIExpansion.Hook();
+        new PAPIExpansion.Hook(core);
     }
 
     @Override

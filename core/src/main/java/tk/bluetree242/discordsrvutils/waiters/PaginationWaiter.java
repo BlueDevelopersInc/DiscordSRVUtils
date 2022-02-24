@@ -31,14 +31,15 @@ import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import java.util.List;
 
 public class PaginationWaiter extends Waiter {
-
+    private final DiscordSRVUtils core;
     private final MessageChannel channel;
     private final List<MessageEmbed> embeds;
     private final User user;
     private Message message;
     private int currentPage = 1;
 
-    public PaginationWaiter(MessageChannel channel, List<MessageEmbed> embeds, User user) {
+    public PaginationWaiter(DiscordSRVUtils core, MessageChannel channel, List<MessageEmbed> embeds, User user) {
+        this.core = core;
         this.embeds = embeds;
         this.user = user;
         this.channel = channel;
@@ -115,7 +116,7 @@ public class PaginationWaiter extends Waiter {
     @Override
     public void whenExpired() {
         message.editMessage(":timer: Timed out")/*setActionRows()*/.override(true).queue();
-        if (message.getChannel() instanceof TextChannel && DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
+        if (message.getChannel() instanceof TextChannel && core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().hasPermission((GuildChannel) message.getChannel(), Permission.MESSAGE_MANAGE))
             message.clearReactions().queue();
     }
 

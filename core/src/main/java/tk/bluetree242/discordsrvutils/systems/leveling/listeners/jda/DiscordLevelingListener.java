@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -36,8 +37,9 @@ import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
 
+@RequiredArgsConstructor
 public class DiscordLevelingListener extends ListenerAdapter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
@@ -65,11 +67,11 @@ public class DiscordLevelingListener extends ListenerAdapter {
                         boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
                         core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
                         if (leveledUp) {
-                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(
-                                    new PlaceholdObject(stats, "stats"),
-                                    new PlaceholdObject(e.getAuthor(), "user"),
-                                    new PlaceholdObject(e.getMember(), "member"),
-                                    new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
+                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core, 
+                                    new PlaceholdObject(core, stats, "stats"),
+                                    new PlaceholdObject(core, e.getAuthor(), "user"),
+                                    new PlaceholdObject(core, e.getMember(), "member"),
+                                    new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
                             ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
                     }, null);

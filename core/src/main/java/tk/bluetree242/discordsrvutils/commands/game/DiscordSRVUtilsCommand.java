@@ -22,20 +22,22 @@
 
 package tk.bluetree242.discordsrvutils.commands.game;
 
+import github.scarsz.discordsrv.util.DebugUtil;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.PlatformCommand;
-import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class DiscordSRVUtilsCommand implements PlatformCommand {
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
@@ -65,7 +67,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 if (sender.hasPermission("discordsrvutils.debug")) {
                     sender.sendMessage("&aPreparing Debug Report... Please wait");
                     try {
-                        sender.sendMessage("&aYour Debug report is available at: &e" + DebugUtil.run());
+                        sender.sendMessage("&aYour Debug report is available at: &e" + core.getPlatform().getServer().getDebugger().run());
                     } catch (Exception e) {
                         sender.sendMessage("&cERROR: " + e.getMessage());
                     }
@@ -74,9 +76,9 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
             } else if (args[0].equalsIgnoreCase("updatecheck")) {
                 if (sender.hasPermission("discordsrvutils.updatecheck")) {
                     if (sender instanceof ConsoleCommandUser) {
-                        DiscordSRVUtils.get().getUpdateChecker().updateCheck();
+                        core.getUpdateChecker().updateCheck();
                     } else {
-                        DiscordSRVUtils.get().getUpdateChecker().updateCheck((PlatformPlayer) sender);
+                        core.getUpdateChecker().updateCheck((PlatformPlayer) sender);
                     }
                     return;
                 }

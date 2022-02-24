@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseExc
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -49,7 +50,7 @@ import java.util.concurrent.CompletableFuture;
 public class Panel {
 
     public static Map<Long, String> runningProcesses = new HashMap<>();
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final String id;
     private String name;
     private Long messageId;
@@ -58,7 +59,8 @@ public class Panel {
     private Long closedCategory;
     private Set<Long> allowedRoles;
 
-    public Panel(String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
+    public Panel(DiscordSRVUtils core, String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
+        this.core = core;
         this.name = name;
         this.id = id;
         this.messageId = messageId;
@@ -167,12 +169,12 @@ public class Panel {
                 }
                 action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
                 TextChannel channel = action.complete();
-                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(user), "member"),
-                        new PlaceholdObject(user, "user"),
-                        new PlaceholdObject(this, "panel"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
+                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(core, 
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(user), "member"),
+                        new PlaceholdObject(core, user, "user"),
+                        new PlaceholdObject(core, this, "panel"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
                 ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 PreparedStatement p1 = conn.prepareStatement("INSERT INTO tickets (ID, Channel, MessageID, Closed, UserID, OpenTime) VALUES (?, ?, ?, ?, ?, ?)");
                 p1.setString(1, id);
@@ -183,7 +185,7 @@ public class Panel {
                 p1.setLong(6, System.currentTimeMillis());
                 p1.execute();
                 runningProcesses.remove(user.getIdLong());
-                return new Ticket(id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());
+                return new Ticket(core, id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
@@ -210,11 +212,11 @@ public class Panel {
     }
 
     public Panel.Editor getEditor() {
-        return new Panel.Editor(this);
+        return new Panel.Editor(core, this);
     }
-
+    @RequiredArgsConstructor
     public static class Builder {
-        private final DiscordSRVUtils core = DiscordSRVUtils.get();
+        private final DiscordSRVUtils core;
         private String name;
         private Long channelId;
         private Long openedCategory;
@@ -258,8 +260,8 @@ public class Panel {
                 if (channel == null) {
                     throw new IllegalArgumentException("Channel was not found");
                 }
-                Panel panel = new Panel(name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
-                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                Panel panel = new Panel(core, name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
+                Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                 panel.messageId = msg.getIdLong();
                 try (Connection conn = core.getDatabaseManager().getConnection()) {
                     PreparedStatement p1 = conn.prepareStatement("INSERT INTO ticket_panels(Name, ID, Channel, MessageID, OpenedCategory, ClosedCategory) VALUES (?, ?, ?, ?, ?, ?)");
@@ -285,7 +287,7 @@ public class Panel {
     }
 
     public static class Editor {
-        private final DiscordSRVUtils core = DiscordSRVUtils.get();
+        private final DiscordSRVUtils core;
         private final Panel panel;
         private String name;
         private Long channelId;
@@ -293,7 +295,8 @@ public class Panel {
         private Long closedCategory;
         private Set<Long> allowedRoles;
 
-        public Editor(Panel panel) {
+        public Editor(DiscordSRVUtils core, Panel panel) {
+            this.core = core;
             this.panel = panel;
             this.name = panel.name;
             this.channelId = panel.channelId;
@@ -340,11 +343,11 @@ public class Panel {
                     Message msg;
                     try {
                         if (!panel.name.equals(name)) {
-                            msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                            msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                         } else
                             msg = channel.retrieveMessageById(panel.messageId).complete();
                     } catch (ErrorResponseException ex) {
-                        msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(new PlaceholdObject(panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                        msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                     }
                     PreparedStatement p1 = conn.prepareStatement("UPDATE ticket_panels SET Name=?, Channel=?, MessageID=?, OpenedCategory=?, ClosedCategory=? WHERE ID=?");
                     p1.setString(1, name);

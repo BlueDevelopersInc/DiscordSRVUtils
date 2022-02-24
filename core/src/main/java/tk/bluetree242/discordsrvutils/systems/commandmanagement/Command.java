@@ -36,7 +36,6 @@ import java.util.List;
 
 public abstract class Command {
     private final String cmd;
-    private final DiscordSRVUtils main = DiscordSRVUtils.get();
     private final Permission requestPermission;
     private final String description;
     private final String usage;
@@ -44,12 +43,13 @@ public abstract class Command {
     private final List<String> aliases = new ArrayList<>();
     @Getter
     private final OptionData[] options;
-    public DiscordSRVUtils core = DiscordSRVUtils.get();
+    public final DiscordSRVUtils core;
     private boolean adminOnly = false;
     private boolean ownerOnly = false;
     private CommandCategory category = null;
 
-    public Command(String cmd, String description, String usage, Permission requiredPermission, OptionData... options) {
+    public Command(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, OptionData... options) {
+        this.core = core;
         this.cmd = cmd;
         this.options = options;
         this.description = description;
@@ -57,7 +57,8 @@ public abstract class Command {
         this.requestPermission = requiredPermission;
     }
 
-    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
+    public Command(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
+        this.core = core;
         this.cmd = cmd;
         this.options = options;
         this.description = description;
@@ -67,7 +68,8 @@ public abstract class Command {
         category.addCommand(this);
     }
 
-    public Command(String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+    public Command(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
+        this.core = core;
         addAliases(aliases);
         this.cmd = cmd;
         options = new OptionData[0];
@@ -104,7 +106,7 @@ public abstract class Command {
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
                 .addField("Usage", getUsage(), false)
-                .setThumbnail(main.getJDA().getSelfUser().getEffectiveAvatarUrl());
+                .setThumbnail(core.getJDA().getSelfUser().getEffectiveAvatarUrl());
 
         if (aliases.size() >= 1) embed.addField("aliases", getAliasesString(), false);
         return embed.build();

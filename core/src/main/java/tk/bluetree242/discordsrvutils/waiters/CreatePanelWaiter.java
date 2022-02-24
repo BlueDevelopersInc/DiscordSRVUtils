@@ -29,12 +29,13 @@ import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 
 public class CreatePanelWaiter extends Waiter {
-    private final Panel.Builder builder = new Panel.Builder();
+    private final Panel.Builder builder;
     private final TextChannel channel;
     private final User user;
     private int step = 1;
 
-    public CreatePanelWaiter(TextChannel channel, User user) {
+    public CreatePanelWaiter(DiscordSRVUtils core, TextChannel channel, User user) {
+        builder = new Panel.Builder(core);
         this.channel = channel;
         this.user = user;
     }

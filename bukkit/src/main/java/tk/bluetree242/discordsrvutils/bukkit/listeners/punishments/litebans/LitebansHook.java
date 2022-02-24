@@ -22,9 +22,14 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import lombok.RequiredArgsConstructor;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
+@RequiredArgsConstructor
 public class LitebansHook extends PluginHook {
+    private final DiscordSRVUtils core;
     LitebansPunishmentListener listener;
 
     @Override
@@ -35,7 +40,7 @@ public class LitebansHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        listener = new LitebansPunishmentListener();
+        listener = new LitebansPunishmentListener(core);
     }
 
     @Override

@@ -31,10 +31,6 @@ public abstract class StatusListener {
     private final DiscordSRVUtils core;
     public boolean registered = false;
 
-    public static StatusListener get() {
-        return DiscordSRVUtils.get().getPlatform().getStatusListener();
-    }
-
     public abstract void register();
 
     public abstract void unregister();

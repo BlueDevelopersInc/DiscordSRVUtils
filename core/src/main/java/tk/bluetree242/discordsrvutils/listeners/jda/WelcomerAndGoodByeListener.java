@@ -27,12 +27,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
+@RequiredArgsConstructor
 public class WelcomerAndGoodByeListener extends ListenerAdapter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
@@ -42,10 +44,10 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().welcomer_channel() + ". Join Message was not sent for " + e.getUser().getAsTag());
                     } else {
-                        PlaceholdObjectList holders = new PlaceholdObjectList();
-                        holders.add(new PlaceholdObject(e.getUser(), "user"));
-                        holders.add(new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
-                        holders.add(new PlaceholdObject(e.getMember(), "member"));
+                        PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                        holders.add(new PlaceholdObject(core, e.getUser(), "user"));
+                        holders.add(new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
+                        holders.add(new PlaceholdObject(core, e.getMember(), "member"));
                         channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
                     }
                     if (core.getMainConfig().welcomer_role() != 0) {
@@ -70,10 +72,10 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().goodbye_channel() + ". Leave Message was not sent for " + e.getUser().getAsTag());
                         return;
                     }
-                    PlaceholdObjectList holders = new PlaceholdObjectList();
-                    holders.add(new PlaceholdObject(e.getUser(), "user"));
-                    holders.add(new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
-                    holders.add(new PlaceholdObject(e.getMember(), "member"));
+                    PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                    holders.add(new PlaceholdObject(core, e.getUser(), "user"));
+                    holders.add(new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
+                    holders.add(new PlaceholdObject(core, e.getMember(), "member"));
                     channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().goodbye_message(), holders, null).build()).queue();
                 }
             }

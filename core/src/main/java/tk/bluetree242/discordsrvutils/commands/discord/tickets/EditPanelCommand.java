@@ -33,8 +33,8 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 public class EditPanelCommand extends Command {
-    public EditPanelCommand() {
-        super("editpanel", "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+    public EditPanelCommand(DiscordSRVUtils core) {
+        super(core, "editpanel", "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("ep");
         setAdminOnly(true);
@@ -43,11 +43,11 @@ public class EditPanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         String id = e.getOption("id").getAsString();
-        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), panel -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), panel -> {
             if (panel == null) {
                 e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
             } else {
-                DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), s -> {
+                core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), s -> {
                     if (panel == null) {
                         e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
                     } else {
@@ -57,15 +57,15 @@ public class EditPanelCommand extends Command {
                             EditPanelWaiter.addReactions(msg);
 
                         }, error -> {
-                            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
+                            core.getErrorHandler().defaultHandle(error, e.getChannel());
                         });
                     }
                 }, error -> {
-                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
+                    core.getErrorHandler().defaultHandle(error, e.getChannel());
                 });
             }
         }, error -> {
-            DiscordSRVUtils.get().getErrorHandler().defaultHandle(error, e.getChannel());
+            core.getErrorHandler().defaultHandle(error, e.getChannel());
         });
     }
 }

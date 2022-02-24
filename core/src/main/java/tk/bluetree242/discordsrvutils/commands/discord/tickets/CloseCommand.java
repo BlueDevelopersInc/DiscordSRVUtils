@@ -28,13 +28,13 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class CloseCommand extends Command {
-    public CloseCommand() {
-        super("close", "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+    public CloseCommand(DiscordSRVUtils core) {
+        super(core, "close", "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
             if (ticket == null) {
                 e.replyErr("You are not in a ticket").queue();
                 return;
@@ -43,12 +43,12 @@ public class CloseCommand extends Command {
                 e.replyErr("Ticket is already closed").queue();
             } else {
                 e.reply("Closing Ticket...").setEphemeral(true).queue();
-                DiscordSRVUtils.get().getAsyncManager().handleCF(ticket.close(e.getAuthor()), null, err -> {
-                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
+                core.getAsyncManager().handleCF(ticket.close(e.getAuthor()), null, err -> {
+                    core.getErrorHandler().defaultHandle(err);
                 });
             }
         }, err -> {
-            DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
+            core.getErrorHandler().defaultHandle(err);
         });
     }
 }

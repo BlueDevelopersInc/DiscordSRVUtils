@@ -22,6 +22,8 @@
 
 package tk.bluetree242.discordsrvutils.bukkit;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -31,8 +33,9 @@ import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class PAPIExpansion extends PlaceholderExpansion {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @Override
     public String getIdentifier() {
@@ -41,7 +44,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public boolean canRegister() {
-        return DiscordSRVUtils.get().isEnabled();
+        return core.isEnabled();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        if (!DiscordSRVUtils.get().isReady()) return "...";
+        if (!core.isReady()) return "...";
         identifier = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("level")) {
             if (p == null) return "Unknown";
@@ -87,9 +90,11 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     protected static class Hook extends PluginHook {
+        private final DiscordSRVUtils core;
         private PAPIExpansion expansion;
 
-        public Hook() {
+        public Hook(DiscordSRVUtils core) {
+            this.core = core;
             if (Bukkit.getPluginManager().isPluginEnabled(getRequiredPlugin())) hook();
         }
 
@@ -101,8 +106,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
         @Override
         public void hook() {
             //on next tick because of those bukkit sync errors when PAPI fires the registration event
-            Bukkit.getScheduler().runTask((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal(), () -> {
-                (expansion = new PAPIExpansion()).register();
+            Bukkit.getScheduler().runTask((Plugin) core.getPlatform().getOriginal(), () -> {
+                (expansion = new PAPIExpansion(core)).register();
             });
         }
 

@@ -44,7 +44,10 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             disable();
             return;
         }
-        if (core == null) core = new DiscordSRVUtils(new BukkitPlugin(this));
+        if (core == null) {
+            core = new DiscordSRVUtils(new BukkitPlugin(this));
+            ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
+        }
         core.onEnable();
         //bstats stuff
         Metrics metrics = new Metrics(this, 9456);
@@ -81,7 +84,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
-            core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener());
+            core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener(core));
         }
     }
 

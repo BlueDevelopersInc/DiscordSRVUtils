@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import lombok.RequiredArgsConstructor;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
 import me.leoko.advancedban.utils.Punishment;
@@ -35,8 +36,9 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
+@RequiredArgsConstructor
 public class AdvancedBanPunishmentListener implements Listener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @EventHandler
     public void onPunish(PunishmentEvent e) {
@@ -46,22 +48,22 @@ public class AdvancedBanPunishmentListener implements Listener {
             Message msg = null;
             switch (e.getPunishment().getType()) {
                 case BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case TEMP_BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case IP_BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case TEMP_IP_BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case MUTE:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case TEMP_MUTE:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 default:
                     break;
@@ -89,15 +91,15 @@ public class AdvancedBanPunishmentListener implements Listener {
             switch (e.getPunishment().getType()) {
                 case BAN:
                 case TEMP_BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case IP_BAN:
                 case TEMP_IP_BAN:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 case MUTE:
                 case TEMP_MUTE:
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                     break;
                 default:
                     break;

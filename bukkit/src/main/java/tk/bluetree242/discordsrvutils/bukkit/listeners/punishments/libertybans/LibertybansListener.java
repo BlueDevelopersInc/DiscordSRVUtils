@@ -42,11 +42,12 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 public class LibertybansListener {
     private final LibertyBans plugin;
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final RegisteredListener pListener;
     private final RegisteredListener pardonListener;
 
-    public LibertybansListener() {
+    public LibertybansListener(DiscordSRVUtils core) {
+        this.core = core;
         Omnibus omnibus = OmnibusProvider.getOmnibus();
         plugin = omnibus.getRegistry().getProvider(LibertyBans.class).orElseThrow();
         pListener = omnibus.getEventBus().registerListener(PostPunishEvent.class, ListenerPriorities.NORMAL, new PunishmentListener());
@@ -132,24 +133,24 @@ public class LibertybansListener {
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
                     case BAN:
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         if (e.getPunishment().isTemporary()) {
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         }
                         if (e.getPunishment().getVictim().getType() == Victim.VictimType.ADDRESS) {
                             if (e.getPunishment().isTemporary())
-                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                             else {
-                                msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                             }
                         }
 
                         break;
 
                     case MUTE:
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         if (e.getPunishment().isTemporary()) {
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         }
                         break;
                     default:
@@ -181,13 +182,13 @@ public class LibertybansListener {
                 Message msg = null;
                 switch (e.getPunishment().getType()) {
                     case BAN:
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         if (e.getPunishment().getVictim().getType() == Victim.VictimType.ADDRESS) {
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         }
                         break;
                     case MUTE:
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(new PlaceholdObject(punishment, "punishment")), null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment")), null).build();
                         break;
                     default:
                         break;

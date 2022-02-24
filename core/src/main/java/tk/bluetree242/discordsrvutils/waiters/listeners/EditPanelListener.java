@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -40,8 +41,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 public class EditPanelListener extends ListenerAdapter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
         EmbedBuilder embed = new EmbedBuilder();

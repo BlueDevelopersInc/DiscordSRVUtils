@@ -129,7 +129,7 @@ public class SuggestionManager {
                     notesr.getLong("CreationTime")
             ));
         }
-        Suggestion suggestion = new Suggestion(
+        Suggestion suggestion = new Suggestion(core,
                 Utils.b64Decode(r.getString("SuggestionText")),
                 r.getInt("SuggestionNumber"),
                 r.getLong("Submitter"),
@@ -185,10 +185,10 @@ public class SuggestionManager {
                     num = r1.getInt("SuggestionNumber") + 1;
                 }
 
-                Suggestion suggestion = new Suggestion(text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
+                Suggestion suggestion = new Suggestion(core, text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
                 User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
                 MessageBuilder builder = core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(),
-                        PlaceholdObjectList.ofArray(new PlaceholdObject(suggestion, "suggestion"), new PlaceholdObject(submitter, "submitter"))
+                        PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, suggestion, "suggestion"), new PlaceholdObject(core, submitter, "submitter"))
                         , null);
                 if (core.voteMode == SuggestionVoteMode.BUTTONS) {
                     builder.setActionRows(getActionRow(0, 0));

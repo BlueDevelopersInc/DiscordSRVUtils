@@ -24,12 +24,15 @@ package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi;
 
 import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
+@RequiredArgsConstructor
 public class CMIHook extends PluginHook {
+    private final DiscordSRVUtils core;
     private CMIAfkListener listener;
 
     @Override
@@ -40,14 +43,14 @@ public class CMIHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new CMIAfkListener(), (Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new CMIAfkListener(core), (Plugin) core.getPlatform().getOriginal());
     }
 
     @Override
     public void removeHook() {
         if (listener == null) return;
-        CMIAfkEnterEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
-        CMIAfkLeaveEvent.getHandlerList().unregister((Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        CMIAfkEnterEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
+        CMIAfkLeaveEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
         listener = null;
     }
 }

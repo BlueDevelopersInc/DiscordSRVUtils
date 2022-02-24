@@ -46,13 +46,13 @@ public class Suggestion {
     protected final Long creationTime;
     protected final Set<SuggestionNote> notes;
     protected final Long MessageID;
-    protected DiscordSRVUtils core = DiscordSRVUtils.get();
+    protected final DiscordSRVUtils core;
     protected Boolean Approved;
     protected Message msg;
     protected Long approver;
     Set<SuggestionVote> votes;
-
-    public Suggestion(String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
+    public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
+        this.core = core;
         this.text = text;
         this.number = number;
         this.submitter = submitter;
@@ -173,10 +173,10 @@ public class Suggestion {
     }
 
     public Message getCurrentMsg() {
-        PlaceholdObjectList holders = PlaceholdObjectList.ofArray(new PlaceholdObject(this, "suggestion"), new PlaceholdObject(core.getJDA().retrieveUserById(submitter).complete(), "submitter"));
+        PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, this, "suggestion"), new PlaceholdObject(core, core.getJDA().retrieveUserById(submitter).complete(), "submitter"));
         if (!notes.isEmpty()) {
-            holders.add(new PlaceholdObject(getLatestNote(), "note"));
-            holders.add(new PlaceholdObject(core.getJDA().retrieveUserById(getLatestNote().getStaffID()).complete(), "staff"));
+            holders.add(new PlaceholdObject(core, getLatestNote(), "note"));
+            holders.add(new PlaceholdObject(core, core.getJDA().retrieveUserById(getLatestNote().getStaffID()).complete(), "staff"));
         }
 
         if (isApproved() == null) {
@@ -186,14 +186,14 @@ public class Suggestion {
                 return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(), holders, null).build();
             }
         } else if (isApproved()) {
-            holders.add(new PlaceholdObject(core.getJDA().retrieveUserById(approver).complete(), "approver"));
+            holders.add(new PlaceholdObject(core, core.getJDA().retrieveUserById(approver).complete(), "approver"));
             if (!notes.isEmpty()) {
                 return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_noted_approved(), holders, null).build();
             } else {
                 return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_approved(), holders, null).build();
             }
         } else {
-            holders.add(new PlaceholdObject(core.getJDA().retrieveUserById(approver).complete(), "approver"));
+            holders.add(new PlaceholdObject(core, core.getJDA().retrieveUserById(approver).complete(), "approver"));
             if (!notes.isEmpty()) {
                 return core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestion_noted_denied(), holders, null).build();
             } else {

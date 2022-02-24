@@ -26,6 +26,7 @@ import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,8 +36,9 @@ import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.Essentials
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
+@RequiredArgsConstructor
 public class CMIAfkListener implements Listener {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @EventHandler
     public void onAfk(CMIAfkEnterEvent e) {
@@ -44,14 +46,14 @@ public class CMIAfkListener implements Listener {
             Player player = e.getPlayer();
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
-                PlaceholdObjectList holders = new PlaceholdObjectList();
-                holders.add(new PlaceholdObject(player, "player"));
+                PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                holders.add(new PlaceholdObject(core, player, "player"));
                 TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().afk_message(), holders, new BukkitPlayer(core, player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });
@@ -63,14 +65,14 @@ public class CMIAfkListener implements Listener {
             Player player = e.getPlayer();
             if (!EssentialsAFKListener.shouldSend(player)) return;
             if (core.getMainConfig().afk_message_enabled()) {
-                PlaceholdObjectList holders = new PlaceholdObjectList();
-                holders.add(new PlaceholdObject(player, "player"));
+                PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                holders.add(new PlaceholdObject(core, player, "player"));
                 TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
                 if (channel == null) {
                     core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
                     return;
                 }
-                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(player)).build();
+                Message msg = core.getMessageManager().getMessage(core.getMainConfig().no_longer_afk_message(), holders, new BukkitPlayer(core, player)).build();
                 core.queueMsg(msg, channel).queue();
             }
         });

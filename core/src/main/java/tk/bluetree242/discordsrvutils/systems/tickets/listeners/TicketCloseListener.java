@@ -26,11 +26,13 @@ package tk.bluetree242.discordsrvutils.systems.tickets.listeners;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
+@RequiredArgsConstructor
 public class TicketCloseListener extends ListenerAdapter {
 
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;

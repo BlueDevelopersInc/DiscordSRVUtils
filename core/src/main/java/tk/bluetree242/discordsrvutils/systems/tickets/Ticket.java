@@ -36,15 +36,15 @@ import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
 public class Ticket {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private final String id;
     private final Long userID;
     private final Long channelID;
     private final boolean closed;
     private final Panel panel;
     private Long messageID;
-
-    public Ticket(String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {
+    public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {
+        this.core = core;
         this.id = id;
         this.userID = userID;
         this.channelID = channelID;
@@ -93,11 +93,11 @@ public class Ticket {
                 if (override != null) {
                     override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
                 }
-                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(
-                        new PlaceholdObject(userWhoClosed, "user"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoClosed), "member"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
-                        new PlaceholdObject(panel, "panel")
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_closed_message(), PlaceholdObjectList.ofArray(core, 
+                        new PlaceholdObject(core, userWhoClosed, "user"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoClosed), "member"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
+                        new PlaceholdObject(core, panel, "panel")
                 ), null).build()).setActionRow(
                         Button.success("reopen_ticket", Emoji.fromUnicode("\uD83D\uDD13")).withLabel(core.getTicketsConfig().ticket_reopen_button()),
                         Button.danger("delete_ticket", Emoji.fromUnicode("\uD83D\uDDD1️")).withLabel(core.getTicketsConfig().delete_ticket_button())
@@ -133,11 +133,11 @@ public class Ticket {
                 } else {
                     return false;
                 }
-                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(
-                        new PlaceholdObject(userWhoOpened, "user"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoOpened), "member"),
-                        new PlaceholdObject(core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
-                        new PlaceholdObject(panel, "panel")
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(core, 
+                        new PlaceholdObject(core, userWhoOpened, "user"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild().getMember(userWhoOpened), "member"),
+                        new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
+                        new PlaceholdObject(core, panel, "panel")
                 ), null).build()).setActionRow(Button.danger("close_ticket", Emoji.fromUnicode("\uD83D\uDD12")).withLabel(core.getTicketsConfig().ticket_close_button())).complete();
                 messageID = msg.getIdLong();
                 PreparedStatement p2 = conn.prepareStatement("UPDATE tickets SET MessageID=?, Closed='false' WHERE UserID=? AND ID=? ");

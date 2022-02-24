@@ -28,13 +28,13 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class ReopenCommand extends Command {
-    public ReopenCommand() {
-        super("reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
+    public ReopenCommand(DiscordSRVUtils core) {
+        super(core, "reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        DiscordSRVUtils.get().getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
+        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
             if (ticket == null) {
                 e.replyErr("You are not in a ticket").queue();
                 return;
@@ -43,12 +43,12 @@ public class ReopenCommand extends Command {
                 e.replyErr("Ticket is already opened").queue();
             } else {
                 e.reply("Reopening Ticket...").setEphemeral(true).queue();
-                DiscordSRVUtils.get().getAsyncManager().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
-                    DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
+                core.getAsyncManager().handleCF(ticket.reopen(e.getAuthor()), null, err -> {
+                    core.getErrorHandler().defaultHandle(err);
                 });
             }
         }, err -> {
-            DiscordSRVUtils.get().getErrorHandler().defaultHandle(err);
+            core.getErrorHandler().defaultHandle(err);
         });
     }
 }

@@ -31,8 +31,8 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class StatusCommand extends Command {
-    public StatusCommand() {
-        super("status", "Set the status message", "[P]status <ping channel>", null,
+    public StatusCommand(DiscordSRVUtils core) {
+        super(core, "status", "Set the status message", "[P]status <ping channel>", null,
                 new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
         setAdminOnly(true);
     }
@@ -45,6 +45,6 @@ public class StatusCommand extends Command {
             e.replyErr("Sorry this can only be a text channel").queue();
             return;
         }
-        e.handleCF(DiscordSRVUtils.get().getStatusManager().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
+        e.handleCF(core.getStatusManager().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
     }
 }

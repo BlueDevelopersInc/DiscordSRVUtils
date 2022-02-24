@@ -39,7 +39,7 @@ public class WaiterManager {
 
     public WaiterManager(DiscordSRVUtils core) {
         this.core = core;
-        timer.schedule(new WaiterCanceller(), 0, 1000);
+        timer.schedule(new WaiterCanceller(core), 0, 1000);
     }
 
 

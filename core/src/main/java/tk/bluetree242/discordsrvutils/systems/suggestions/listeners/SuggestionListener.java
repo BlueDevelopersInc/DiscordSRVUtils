@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageRecei
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionVote;
@@ -38,10 +39,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class SuggestionListener extends ListenerAdapter {
 
 
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;

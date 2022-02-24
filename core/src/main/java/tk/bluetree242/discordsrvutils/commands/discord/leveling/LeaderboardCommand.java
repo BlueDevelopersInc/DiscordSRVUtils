@@ -33,8 +33,8 @@ import java.awt.*;
 import java.util.StringJoiner;
 
 public class LeaderboardCommand extends Command {
-    public LeaderboardCommand() {
-        super("leaderboard", "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
+    public LeaderboardCommand(DiscordSRVUtils core) {
+        super(core, "leaderboard", "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class LeaderboardCommand extends Command {
         }
         embed.setTitle("Leaderboard");
         embed.setDescription(joiner.toString());
-        embed.setThumbnail(DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild().getIconUrl());
+        embed.setThumbnail(core.getPlatform().getDiscordSRV().getMainGuild().getIconUrl());
         e.reply(embed.build()).queue();
     }
 }

@@ -31,11 +31,13 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.UUID;
 
 public class BukkitPlayer extends PlatformPlayer {
+    private final DiscordSRVUtils core;
     @Getter
     private final Player player;
 
-    public BukkitPlayer(Player player) {
+    public BukkitPlayer(DiscordSRVUtils core, Player player) {
         this.player = player;
+        this.core = core;
     }
 
     @Override
@@ -60,6 +62,6 @@ public class BukkitPlayer extends PlatformPlayer {
 
     @Override
     public String placeholders(String s) {
-        return DiscordSRVUtils.get().getPlatform().placehold(this, s);
+        return core.getPlatform().placehold(this, s);
     }
 }

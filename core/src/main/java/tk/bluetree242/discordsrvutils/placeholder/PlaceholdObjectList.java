@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.placeholder;
 
 import github.scarsz.discordsrv.util.NamedValueFormatter;
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
@@ -31,10 +32,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
-
-    public static PlaceholdObjectList ofArray(PlaceholdObject... holders) {
-        PlaceholdObjectList list = new PlaceholdObjectList();
+    private final DiscordSRVUtils core;
+    public static PlaceholdObjectList ofArray(DiscordSRVUtils core, PlaceholdObject... holders) {
+        PlaceholdObjectList list = new PlaceholdObjectList(core);
         for (PlaceholdObject holder : holders) {
             list.add(holder);
         }
@@ -44,13 +46,13 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
     public String apply(String s, PlatformPlayer placehold) {
         final String[] val = {s};
         Map<String, Object> variables = new HashMap<>();
-        variables.put("guild", DiscordSRVUtils.get().getPlatform().getDiscordSRV().getMainGuild());
-        variables.put("jda", DiscordSRVUtils.get().getJDA());
-        variables.put("DSU", DiscordSRVUtils.get());
-        variables.put("server", DiscordSRVUtils.get().getPlatform().getServer().getOriginal());
-        variables.put("TicketManager", DiscordSRVUtils.get().getTicketManager());
-        variables.put("LevelingManager", DiscordSRVUtils.get().getLevelingManager());
-        variables.put("CommandManager", DiscordSRVUtils.get().getCommandManager());
+        variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
+        variables.put("jda", core.getJDA());
+        variables.put("DSU", core);
+        variables.put("server", core.getPlatform().getServer().getOriginal());
+        variables.put("TicketManager", core.getTicketManager());
+        variables.put("LevelingManager", core.getLevelingManager());
+        variables.put("CommandManager", core.getCommandManager());
         for (PlaceholdObject holder : this) {
             variables.put(holder.display, holder.getObject());
             Map<String, Method> map = holder.getholdersMap();
@@ -69,8 +71,8 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
             });
         }
 
-        val[0] = DiscordSRVUtils.get().getPlatform().placehold(placehold, val[0]);
-        val[0] = NamedValueFormatter.formatExpressions(val[0], DiscordSRVUtils.get(), variables);
+        val[0] = core.getPlatform().placehold(placehold, val[0]);
+        val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
         return val[0];
     }
 

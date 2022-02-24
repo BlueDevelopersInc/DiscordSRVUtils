@@ -86,7 +86,7 @@ public class TicketManager {
         while (r2.next()) {
             allowedRoles.add(r2.getLong("RoleID"));
         }
-        return new Panel(r.getString("Name"),
+        return new Panel(core, r.getString("Name"),
                 r.getString("ID"),
                 r.getLong("MessageID"),
                 r.getLong("Channel"),
@@ -150,7 +150,7 @@ public class TicketManager {
             ResultSet r1 = p.executeQuery();
             if (r1.next()) panel = getPanel(r1);
         }
-        return new Ticket(r.getString("ID"), r.getLong("UserID"), r.getLong("Channel"), Utils.getDBoolean(r.getString("Closed")), panel, r.getLong("MessageID"));
+        return new Ticket(core, r.getString("ID"), r.getLong("UserID"), r.getLong("Channel"), Utils.getDBoolean(r.getString("Closed")), panel, r.getLong("MessageID"));
     }
 
     protected Ticket getTicket(ResultSet r) throws SQLException {

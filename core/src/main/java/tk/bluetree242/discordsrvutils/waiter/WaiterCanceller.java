@@ -22,22 +22,25 @@
 
 package tk.bluetree242.discordsrvutils.waiter;
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.Set;
 import java.util.TimerTask;
 
+@RequiredArgsConstructor
 public class WaiterCanceller extends TimerTask {
+    private final DiscordSRVUtils core;
     @Override
     public void run() {
         try {
-            Set<Waiter> waiters = DiscordSRVUtils.get().getWaiterManager().getWaiters();
+            Set<Waiter> waiters = core.getWaiterManager().getWaiters();
             for (Waiter waiter : waiters) {
                 if (!waiter.isExpired()) {
                     if (waiter.getExpirationTime() <= System.currentTimeMillis()) {
                         waiter.expire();
                     }
-                } else DiscordSRVUtils.get().getWaiterManager().getWaiters().remove(waiter);
+                } else core.getWaiterManager().getWaiters().remove(waiter);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

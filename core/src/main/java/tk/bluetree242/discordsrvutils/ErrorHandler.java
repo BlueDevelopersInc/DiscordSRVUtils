@@ -23,12 +23,12 @@
 package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
+import github.scarsz.discordsrv.util.DebugUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import tk.bluetree242.discordsrvutils.utils.DebugUtil;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 
@@ -45,7 +45,7 @@ public class ErrorHandler {
         core.getLogger().warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
-            core.getLogger().severe(DebugUtil.run(Utils.exceptionToStackTrack(ex)));
+            core.getLogger().severe(core.getPlatform().getServer().getDebugger().run(Utils.exceptionToStackTrack(ex)));
         } catch (Exception e) {
             e.printStackTrace();
         }

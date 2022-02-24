@@ -161,7 +161,7 @@ public class LevelingManager {
     }
 
     public PlayerStats getPlayerStats(ResultSet r, int rank) throws SQLException {
-        PlayerStats stats = new PlayerStats(UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
+        PlayerStats stats = new PlayerStats(core, UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
         if (!adding)
             cachedUUIDS.put(stats.getUuid(), stats);
         return stats;

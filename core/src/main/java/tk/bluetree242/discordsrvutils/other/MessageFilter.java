@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.other;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -31,8 +32,9 @@ import org.apache.logging.log4j.message.Message;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 //fix the big messages that look like spam
+@RequiredArgsConstructor
 public class MessageFilter implements Filter {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
 
     @Override
     public Result getOnMismatch() {

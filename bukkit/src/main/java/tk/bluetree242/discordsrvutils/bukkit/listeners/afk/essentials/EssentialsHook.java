@@ -23,12 +23,15 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials;
 
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
+@RequiredArgsConstructor
 public class EssentialsHook extends PluginHook {
+    private final DiscordSRVUtils core;
     private EssentialsAFKListener listener;
 
     @Override
@@ -39,7 +42,7 @@ public class EssentialsHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(), (Plugin) DiscordSRVUtils.get().getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new EssentialsAFKListener(core), (Plugin) core.getPlatform().getOriginal());
     }
 
     @Override

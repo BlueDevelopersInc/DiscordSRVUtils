@@ -58,22 +58,22 @@ public class CommandManager {
     }
 
     public void registerCommands() {
-        registerCommand(new TestMessageCommand());
-        registerCommand(new HelpCommand());
-        registerCommand(new CreatePanelCommand());
-        registerCommand(new PanelListCommand());
-        registerCommand(new DeletePanelCommand());
-        registerCommand(new EditPanelCommand());
-        registerCommand(new CloseCommand());
-        registerCommand(new ReopenCommand());
-        registerCommand(new LevelCommand());
-        registerCommand(new LeaderboardCommand());
-        registerCommand(new SuggestCommand());
-        registerCommand(new SuggestionNoteCommand());
-        registerCommand(new ApproveSuggestionCommand());
-        registerCommand(new DenySuggestionCommand());
-        registerCommand(new StatusCommand());
-        registerCommand(new LinkAccountCommand());
+        registerCommand(new TestMessageCommand(core));
+        registerCommand(new HelpCommand(core));
+        registerCommand(new CreatePanelCommand(core));
+        registerCommand(new PanelListCommand(core));
+        registerCommand(new DeletePanelCommand(core));
+        registerCommand(new EditPanelCommand(core));
+        registerCommand(new CloseCommand(core));
+        registerCommand(new ReopenCommand(core));
+        registerCommand(new LevelCommand(core));
+        registerCommand(new LeaderboardCommand(core));
+        registerCommand(new SuggestCommand(core));
+        registerCommand(new SuggestionNoteCommand(core));
+        registerCommand(new ApproveSuggestionCommand(core));
+        registerCommand(new DenySuggestionCommand(core));
+        registerCommand(new StatusCommand(core));
+        registerCommand(new LinkAccountCommand(core));
     }
 
 

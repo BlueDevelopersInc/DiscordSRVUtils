@@ -22,13 +22,15 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
+@RequiredArgsConstructor
 public class AdvancedBanHook extends PluginHook {
-    private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    private final DiscordSRVUtils core;
     private AdvancedBanPunishmentListener listener;
 
     @Override
@@ -39,7 +41,7 @@ public class AdvancedBanHook extends PluginHook {
     @Override
     public void hook() {
         removeHook();
-        Bukkit.getPluginManager().registerEvents(listener = new AdvancedBanPunishmentListener(), (Plugin) core.getPlatform().getOriginal());
+        Bukkit.getPluginManager().registerEvents(listener = new AdvancedBanPunishmentListener(core), (Plugin) core.getPlatform().getOriginal());
     }
 
     @Override
