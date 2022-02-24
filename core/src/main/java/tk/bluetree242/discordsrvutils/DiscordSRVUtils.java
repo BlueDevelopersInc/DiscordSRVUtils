@@ -33,6 +33,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import lombok.Getter;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.json.JSONObject;
@@ -357,7 +358,7 @@ public class DiscordSRVUtils {
 
 
     public JSONObject getVersionConfig() throws IOException {
-        return new JSONObject(new String(getPlatform().getResource("version-config.json").readAllBytes()));
+        return new JSONObject(new String(IOUtils.toByteArray(getPlatform().getResource("version-config.json"))));
     }
 
     public void severe(String sv) {
