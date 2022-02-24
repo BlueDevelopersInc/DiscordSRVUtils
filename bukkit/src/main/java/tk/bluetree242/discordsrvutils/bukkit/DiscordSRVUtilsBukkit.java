@@ -84,6 +84,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
+            ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
             core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener(core));
         }
     }
