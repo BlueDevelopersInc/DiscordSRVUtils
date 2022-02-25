@@ -118,7 +118,7 @@ public class LitebansPunishmentListener extends Events.Listener {
                     }
                 }
 
-            syncPunishment(e, false);
+            syncPunishment(e, true);
         });
     }
 
