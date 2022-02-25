@@ -71,4 +71,22 @@ public interface LevelingConfig {
     @ConfDefault.DefaultString("message:level")
     String level_command_message();
 
+    @ConfKey("level-command-invalid-player")
+    @ConfComments("#Message when player not found when you run /rank <player_name> command")
+    @AnnotationBasedSorter.Order(50)
+    @ConfDefault.DefaultString("Player never joined before")
+    String level_command_invalid_player();
+
+    @ConfKey("level-command-not-linked")
+    @ConfComments("#Message when user not linked when using /rank")
+    @AnnotationBasedSorter.Order(60)
+    @ConfDefault.DefaultString("Your account is not linked with any Minecraft Account. Use `/discordsrv link` in game to link your account")
+    String level_command_not_linked();
+
+    @ConfKey("level-command-other-not-linked")
+    @ConfComments("#Message when user not linked when using /rank <mention another user>")
+    @AnnotationBasedSorter.Order(70)
+    @ConfDefault.DefaultString("[user.name]'s discord account is not linked with minecraft account")
+    String level_command_other_not_linked();
+
 }

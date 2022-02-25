@@ -49,20 +49,20 @@ public class LevelCommand extends Command {
             User user = e.getOption("user_mention").getAsUser();
             target = core.getLevelingManager().getPlayerStats(user.getIdLong()).get();
             if (target == null) {
-                e.replyErr(user.getAsTag() + "'s discord account is not linked with minecraft account");
+                e.replyErr(new PlaceholdObject(core, user, "user").apply(core.getLevelingConfig().level_command_other_not_linked()));
                 return;
             }
         } else if (e.getOption("player_name") != null) {
             String name = e.getOption("player_name").getAsString();
             target = core.getLevelingManager().getPlayerStats(name).get();
             if (target == null) {
-                e.replyErr("Player never joined before").queue();
+                e.replyErr(core.getLevelingConfig().level_command_invalid_player()).queue();
                 return;
             }
         } else {
             target = core.getLevelingManager().getPlayerStats(e.getAuthor().getIdLong()).get();
             if (target == null) {
-                e.replyErr("Your account is not linked with any Minecraft Account. Use `/discordsrv link` in game to link your account").queue();
+                e.replyErr(core.getLevelingConfig().level_command_not_linked()).queue();
                 return;
             }
         }
