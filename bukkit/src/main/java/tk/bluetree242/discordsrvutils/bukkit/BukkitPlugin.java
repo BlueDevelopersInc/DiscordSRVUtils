@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -59,11 +60,13 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         discordSRV = new BukkitDiscordSRV();
     }
 
-    public String applyPlaceholders(String s, Player player) {
+    public String applyPlaceholders(String s, Object player) {
         if (!core.isEnabled()) return s;
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             String to = s.replace("&", "** ** *");
-            String fina = PlaceholderAPI.setPlaceholders(player, to);
+            String fina = null;
+            if (player instanceof BukkitPlayer) fina = PlaceholderAPI.setPlaceholders((Player) player, to);
+            else if (player instanceof BukkitOfflinePlayer) PlaceholderAPI.setPlaceholders((OfflinePlayer) player, to);
             return fina.replace("** ** *", "&");
         }
         return s;
@@ -146,7 +149,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public String placehold(PlatformPlayer player, String s) {
-        Player p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).getPlayer() : null : null;
+        Object p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).getPlayer() : (player instanceof BukkitOfflinePlayer ? ((BukkitOfflinePlayer) player).getPlayer() : null) : null;
+
         return applyPlaceholders(s, p);
     }
 }

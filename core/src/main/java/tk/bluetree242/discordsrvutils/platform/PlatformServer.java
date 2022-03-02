@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.platform;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class PlatformServer {
 
@@ -43,5 +44,7 @@ public abstract class PlatformServer {
     public abstract Object getOriginal();
 
     public abstract Debugger getDebugger();
+
+    public abstract PlatformPlayer getOfflinePlayer(UUID uuid);
 
 }

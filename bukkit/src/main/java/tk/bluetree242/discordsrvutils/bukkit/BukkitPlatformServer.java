@@ -37,6 +37,7 @@ import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BukkitPlatformServer extends PlatformServer {
     private final DiscordSRVUtils core;
@@ -88,6 +89,11 @@ public class BukkitPlatformServer extends PlatformServer {
     @Override
     public Object getOriginal() {
         return Bukkit.getServer();
+    }
+
+    @Override
+    public PlatformPlayer getOfflinePlayer(UUID uuid) {
+        return new BukkitOfflinePlayer(Bukkit.getOfflinePlayer(uuid), core);
     }
 
 
