@@ -60,13 +60,13 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         discordSRV = new BukkitDiscordSRV();
     }
 
-    public String applyPlaceholders(String s, Object player) {
+    private String applyPlaceholders(String s, Object player) {
         if (!core.isEnabled()) return s;
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             String to = s.replace("&", "** ** *");
             String fina = null;
-            if (player instanceof BukkitPlayer) fina = PlaceholderAPI.setPlaceholders((Player) player, to);
-            else if (player instanceof BukkitOfflinePlayer) PlaceholderAPI.setPlaceholders((OfflinePlayer) player, to);
+            if (player instanceof Player) fina = PlaceholderAPI.setPlaceholders((Player) player, to);
+            else if (player instanceof OfflinePlayer) PlaceholderAPI.setPlaceholders((OfflinePlayer) player, to);
             return fina.replace("** ** *", "&");
         }
         return s;
