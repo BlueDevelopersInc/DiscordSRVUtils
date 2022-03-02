@@ -10,8 +10,10 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class BukkitOfflinePlayer extends PlatformPlayer {
-    @Getter private final OfflinePlayer player;
+    @Getter
+    private final OfflinePlayer player;
     private final DiscordSRVUtils core;
+
     @Override
     public String getName() {
         return player.getName();
