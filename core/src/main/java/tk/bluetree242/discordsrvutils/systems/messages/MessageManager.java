@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -163,7 +164,9 @@ public class MessageManager {
                 }
             }
         }
-        return null;
+        try {
+            return Color.decode(color);
+        } catch (Exception s) {return null;}
     }
 
     public EmbedBuilder parseEmbedFromJSON(JSONObject json) {
