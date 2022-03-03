@@ -1,0 +1,80 @@
+/*
+ *  LICENSE
+ *  DiscordSRVUtils
+ *  -------------
+ *  Copyright (C) 2020 - 2021 BlueTree242
+ *  -------------
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this program.  If not, see
+ *  <http://www.gnu.org/licenses/gpl-3.0.html>.
+ *  END
+ */
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+rootProject.allprojects {
+    plugins.apply('java')
+    plugins.apply("com.github.johnrengelman.shadow")
+    project.shadowJar {
+        classifier ''
+        relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependencies.emoji-java"
+        relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
+        relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependencies.dazzleconf"
+        relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependencies.hikariCP"
+        relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependencies.hsqldb"
+        relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependencies.mariadb"
+        relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependencies.yaml"
+        relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
+        relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
+        relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
+        relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
+        relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
+        relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
+        relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
+    }
+}
+
+compileJava.options.encoding 'UTF-8'
+
+dependencies {
+    implementation 'com.vdurmont:emoji-java:5.1.1'
+    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
+    implementation 'com.zaxxer:HikariCP:3.4.5'
+    implementation 'org.hsqldb:hsqldb:2.4.1'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
+    compileOnly('com.discordsrv:discordsrv:1.24.0') {
+        exclude group: 'net.kyori'
+    }
+    implementation "org.flywaydb:flyway-core:7.5.3"
+    implementation group: 'org.json', name: 'json', version: '20210307'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
+    implementation 'commons-io:commons-io:2.6'
+}
+
+
+test {
+    useJUnitPlatform()
+}
