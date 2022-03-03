@@ -232,13 +232,12 @@ public class MessageManager {
                 msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
             if (!json.isNull("embed")) {
-                msg.setEmbed(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+                msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
             }
         } else {
             if (holders != null) {
                 content = holders.apply(content);
             }
-            content = core.getPlatform().placehold(placehold, content);
             content = Utils.colors(content);
             msg.setContent(content);
         }
