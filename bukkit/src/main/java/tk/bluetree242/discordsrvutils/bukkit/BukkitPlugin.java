@@ -157,8 +157,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public String placehold(PlatformPlayer player, String s) {
-        Object p = player != null ? player instanceof BukkitPlayer ? ((BukkitPlayer) player).getPlayer() : (player instanceof BukkitOfflinePlayer ? ((BukkitOfflinePlayer) player).getPlayer() : null) : null;
-
-        return applyPlaceholders(s, p);
+        if (player instanceof BukkitPlayer) return applyPlaceholders(s, ((BukkitPlayer) player).getPlayer());
+        else if (player instanceof BukkitOfflinePlayer) return applyPlaceholders(s, ((BukkitOfflinePlayer) player).getPlayer());
+        else return applyPlaceholders(s, null);
     }
 }

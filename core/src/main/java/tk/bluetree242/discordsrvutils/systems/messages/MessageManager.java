@@ -188,8 +188,8 @@ public class MessageManager {
         if (!ob.isNull(val)) {
             String raw = ob.getString(val);
             if (holders != null) {
-                raw = holders.apply(raw);
-            }
+                raw = holders.apply(raw, placehold);
+            } else raw = new PlaceholdObjectList(core).apply(raw, placehold);
             return raw;
         }
         return null;
