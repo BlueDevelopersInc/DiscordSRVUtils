@@ -190,7 +190,6 @@ public class MessageManager {
             if (holders != null) {
                 raw = holders.apply(raw);
             }
-            raw = core.getPlatform().placehold(placehold, raw);
             return raw;
         }
         return null;

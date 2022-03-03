@@ -51,6 +51,7 @@ rootProject.allprojects {
         relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
         relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
         relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
+        relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
     }
 }
 
@@ -70,6 +71,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
+    implementation 'commons-io:commons-io:2.6'
 }
 
 
