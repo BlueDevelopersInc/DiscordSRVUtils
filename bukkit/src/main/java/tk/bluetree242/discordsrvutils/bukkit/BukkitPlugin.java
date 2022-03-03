@@ -66,7 +66,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
             String to = s.replace("&", "** ** *");
             String fina = null;
             if (player instanceof Player) fina = PlaceholderAPI.setPlaceholders((Player) player, to);
-            else if (player instanceof OfflinePlayer) PlaceholderAPI.setPlaceholders((OfflinePlayer) player, to);
+            else if (player instanceof OfflinePlayer) fina = PlaceholderAPI.setPlaceholders((OfflinePlayer) player, to);
+            else fina = PlaceholderAPI.setPlaceholders(null, to);
             return fina.replace("** ** *", "&");
         }
         return s;
