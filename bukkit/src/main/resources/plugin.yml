@@ -37,7 +37,7 @@ permissions:
     default: false
     description: Allow usage of /dsu updatecheck
   discordsrvutils.updatechecker:
-    default: false
+    default: op
     description: Allow sending update messages when player joins
 
 
