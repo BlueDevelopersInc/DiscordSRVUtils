@@ -25,12 +25,15 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class PAPIExpansion extends PlaceholderExpansion {
@@ -56,10 +59,6 @@ public class PAPIExpansion extends PlaceholderExpansion {
         return core.getPlatform().getDescription().getVersion();
     }
 
-    @Override
-    public List<String> getPlaceholders() {
-        return List.of("level", "rank", "xp");
-    }
 
     @Override
     public String getRequiredPlugin() {
@@ -72,18 +71,27 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player p, String identifier) {
+    public String onPlaceholderRequest(Player p, @NotNull String identifier) {
+        return onPlaceholderRequest(p != null ? p.getUniqueId() : null, identifier);
+    }
+
+    @Override
+    public String onRequest(OfflinePlayer p, @NotNull String identifier) {
+        return onPlaceholderRequest(p != null ? p.getUniqueId() : null, identifier);
+    }
+
+    public String onPlaceholderRequest(UUID p, String identifier) {
         if (!core.isReady()) return "...";
         identifier = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("level")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getLevel() + "";
+            return core.getLevelingManager().getCachedStats(p).getLevel() + "";
         } else if (identifier.equalsIgnoreCase("xp")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getXp() + "";
+            return core.getLevelingManager().getCachedStats(p).getXp() + "";
         } else if (identifier.equalsIgnoreCase("rank")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p.getUniqueId()).getRank() + "";
+            return core.getLevelingManager().getCachedStats(p).getRank() + "";
         }
         return null;
     }
