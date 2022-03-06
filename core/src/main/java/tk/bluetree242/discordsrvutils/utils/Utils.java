@@ -168,7 +168,7 @@ public class Utils {
     }
 
     public static String b64Encode(@NotNull String text) {
-        return Base64.getEncoder().encodeToString(text.getBytes());
+        return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String b64Encode(@NotNull byte[] bytes) {
