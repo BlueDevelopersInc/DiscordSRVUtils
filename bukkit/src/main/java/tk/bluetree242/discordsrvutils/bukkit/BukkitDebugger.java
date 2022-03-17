@@ -69,7 +69,6 @@ public class BukkitDebugger implements Debugger {
         information.put("/discord command executor", (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() + "" : ""));
         information.put("threads",
                 "\n    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()) +
-                        "\n    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()) +
                         "\n    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()) +
                         "\n    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive())
         );
@@ -275,7 +274,7 @@ public class BukkitDebugger implements Debugger {
     private String getRelevantLinesFromServerLog() {
         List<String> output = new LinkedList<>();
         try {
-            FileReader fr = new FileReader(new File("logs/latest.log"));
+            FileReader fr = new FileReader("logs/latest.log");
             BufferedReader br = new BufferedReader(fr);
             boolean done = false;
             while (!done) {
@@ -303,7 +302,7 @@ public class BukkitDebugger implements Debugger {
         }
     }
 
-    public byte[] encrypt(byte[] key, byte[] data) throws Exception {
+    public byte[] encrypt(byte[] key, byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             byte[] iv = new byte[cipher.getBlockSize()];

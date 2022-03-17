@@ -64,9 +64,7 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
-    compileOnly('com.discordsrv:discordsrv:1.24.0') {
-        exclude group: 'net.kyori'
-    }
+    compileOnly('com.discordsrv:discordsrv:1.25.0')
     implementation "org.flywaydb:flyway-core:7.5.3"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
