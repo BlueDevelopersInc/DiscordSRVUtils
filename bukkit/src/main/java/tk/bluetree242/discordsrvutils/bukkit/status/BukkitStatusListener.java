@@ -51,13 +51,11 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
     }
 
     @Override
-    public void execute(@NotNull Listener listener, @NotNull Event event) throws EventException {
+    public void execute(@NotNull Listener listener, @NotNull Event event) {
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform().getOriginal(), () -> {
-            core.getStatusManager().editMessage(true);
-        }, 1);
+        Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform().getOriginal(), () -> core.getStatusManager().editMessage(true), 1);
     }
 
     public void unregister() {
