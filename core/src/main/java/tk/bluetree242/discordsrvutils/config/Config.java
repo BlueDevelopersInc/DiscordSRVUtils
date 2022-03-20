@@ -64,6 +64,12 @@ public interface Config {
     @ConfDefault.DefaultStrings({})
     List<String> disabled_commands();
 
+    @AnnotationBasedSorter.Order(34)
+    @ConfKey("register-slash-commands")
+    @ConfComments("# Should We register slash commands into your discordserver?\n# This will not remove the currently registered commands, to remove them use /dsu removeslash")
+    @ConfDefault.DefaultBoolean(true)
+    boolean register_slash();
+
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
     @ConfComments("#Should we do Welcomer?")

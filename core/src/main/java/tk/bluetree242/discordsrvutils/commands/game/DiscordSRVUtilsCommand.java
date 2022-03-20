@@ -81,6 +81,14 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     }
                     return;
                 }
+            } else if (args[0].equalsIgnoreCase("removeslash")) {
+                if (!core.isReady()) {
+                    sender.sendMessage("&cSorry but plugin isn't ready yet to do this action");
+                } else {
+                    core.getPlatform().getDiscordSRV().getMainGuild().updateCommands().queue(
+                            s -> sender.sendMessage("&aSuccessfully Removed Slash Commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()),
+                            f -> sender.sendMessage("&cCould not remove slash commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()));
+                }
             }
         }
         sender.sendMessage("&cSubCommand not found");

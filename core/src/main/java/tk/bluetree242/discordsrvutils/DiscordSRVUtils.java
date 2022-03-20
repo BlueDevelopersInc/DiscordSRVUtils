@@ -331,6 +331,7 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
+        if (config.register_slash())
         commandManager.addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
