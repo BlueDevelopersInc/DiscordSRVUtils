@@ -39,5 +39,8 @@ permissions:
   discordsrvutils.updatechecker:
     default: op
     description: Allow sending update messages when player joins
+  discordsrvutils.removeslash:
+    default: op
+    description: Allows use of /dsu removeslash
 
 
