@@ -111,7 +111,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
             if (sender.hasPermission("discordsrvutils.removeslash")) {
                 values.add("removeslash");
             }
-            }
+        }
 
         List<String> result = new ArrayList<>();
         for (String a : values) {

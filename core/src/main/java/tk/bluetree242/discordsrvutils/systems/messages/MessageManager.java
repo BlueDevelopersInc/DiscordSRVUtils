@@ -166,7 +166,9 @@ public class MessageManager {
         }
         try {
             return Color.decode(color);
-        } catch (Exception s) {return null;}
+        } catch (Exception s) {
+            return null;
+        }
     }
 
     public EmbedBuilder parseEmbedFromJSON(JSONObject json) {

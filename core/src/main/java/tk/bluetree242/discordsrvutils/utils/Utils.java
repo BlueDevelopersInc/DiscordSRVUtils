@@ -176,12 +176,14 @@ public class Utils {
     }
 
     @Contract("_ -> new")
-    public static @NotNull String b64Decode(String text) {
+    public static @NotNull
+    String b64Decode(String text) {
         return new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8);
     }
 
 
-    public static @NotNull String parseArgs(String[] args, int start, int end) {
+    public static @NotNull
+    String parseArgs(String[] args, int start, int end) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             if (i <= end) {
@@ -191,7 +193,8 @@ public class Utils {
         return argss.replaceAll("\\s+$", "");
     }
 
-    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
+    public static @NotNull
+    String parseArgs(String @NotNull [] args, int start) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             argss = argss + args[i] + " ";
