@@ -83,7 +83,6 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 }
             } else if (args[0].equalsIgnoreCase("removeslash")) {
                 if (sender.hasPermission("discordsrvutils.removeslash")) {
-
                     if (!core.isReady()) {
                         sender.sendMessage("&cSorry but plugin isn't ready yet to do this action");
                     } else {
@@ -91,6 +90,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                                 s -> sender.sendMessage("&aSuccessfully Removed Slash Commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()),
                                 f -> sender.sendMessage("&cCould not remove slash commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()));
                     }
+                    return;
                 }
             }
         }
