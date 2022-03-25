@@ -105,12 +105,11 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 values.add("reload");
             if (sender.hasPermission("discordsrvutils.debug"))
                 values.add("debug");
-
             if (sender.hasPermission("discordsrvutils.updatecheck"))
                 values.add("updatecheck");
-            if (sender.hasPermission("discordsrvutils.removeslash")) {
+            if (sender.hasPermission("discordsrvutils.removeslash"))
                 values.add("removeslash");
-            }
+
         }
 
         List<String> result = new ArrayList<>();
