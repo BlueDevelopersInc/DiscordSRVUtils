@@ -24,6 +24,9 @@ package tk.bluetree242.discordsrvutils.utils;
 
 import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -44,15 +47,13 @@ public class Utils {
     public static String readFile(String path)
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
-        String fileContents = new String(encoded, StandardCharsets.UTF_8);
-        return fileContents;
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     public static String readFile(File file)
             throws IOException {
         byte[] encoded = Files.readAllBytes(file.getAbsoluteFile().toPath());
-        String fileContents = new String(encoded, StandardCharsets.UTF_8);
-        return fileContents;
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     public static boolean isLong(String s) {
@@ -75,8 +76,7 @@ public class Utils {
 
 
     public static boolean getDBoolean(String s) {
-        if (s.equalsIgnoreCase("true")) return true;
-        return false;
+        return s.equalsIgnoreCase("true");
     }
 
     public static String getDBoolean(Boolean s) {
@@ -94,13 +94,13 @@ public class Utils {
     public static String getDuration(Long ms) {
         String val = "";
         Long remaining = ms;
-        Long days = TimeUnit.MILLISECONDS.toDays(ms);
+        long days = TimeUnit.MILLISECONDS.toDays(ms);
         remaining = remaining - TimeUnit.DAYS.toMillis(days);
-        Long hours = TimeUnit.MILLISECONDS.toHours(remaining);
+        long hours = TimeUnit.MILLISECONDS.toHours(remaining);
         remaining = remaining - TimeUnit.HOURS.toMillis(hours);
-        Long minutes = TimeUnit.MILLISECONDS.toMinutes(remaining);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(remaining);
         remaining = remaining - TimeUnit.MINUTES.toMillis(minutes);
-        Long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
         if (days != 0) {
             val = days + " Day" + (days <= 1 ? "" : "s");
         }
@@ -137,7 +137,7 @@ public class Utils {
             String returnvalue = "";
             for (String l : s.split("")) {
                 len++;
-                if (len >= 97 && len <= 100 && len <= 100) {
+                if (len >= 97 && len <= 100) {
                     returnvalue = returnvalue + ".";
                 } else {
                     if (len <= 100)
@@ -152,17 +152,17 @@ public class Utils {
     public static String trim(String s, int limit) {
         if (s.length() >= 100) {
             int len = 0;
-            String returnvalue = "";
+            StringBuilder returnvalue = new StringBuilder();
             for (String l : s.split("")) {
                 len++;
                 if (len >= (limit - 3) && len <= limit && len <= limit) {
-                    returnvalue = returnvalue + ".";
+                    returnvalue.append(".");
                 } else {
                     if (len <= limit)
-                        returnvalue = returnvalue + l;
+                        returnvalue.append(l);
                 }
             }
-            return returnvalue;
+            return returnvalue.toString();
         }
         return s;
     }
@@ -226,5 +226,13 @@ public class Utils {
 
     public static String colors(String s) {
         return DiscordSRVUtils.get().getServer().colors(s);
+    }
+
+    public static Member retrieveMember(Guild guild, long id) {
+        try {
+            return guild.retrieveMemberById(id).complete();
+        } catch (ErrorResponseException e) {
+            return null;
+        }
     }
 }

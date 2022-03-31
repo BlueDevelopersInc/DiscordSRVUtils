@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class DiscordSRVListener {
             if (stats == null) return;
             String id = e.getUser().getId();
             if (id == null) return;
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+            Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
             if (member == null) return;
             Collection actions = new ArrayList<>();
             for (Role role : manager.getRolesToRemove(stats.getLevel())) {
@@ -83,7 +84,7 @@ public class DiscordSRVListener {
 
         LevelingManager manager = core.getLevelingManager();
         core.getAsyncManager().executeAsync(() -> {
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(e.getDiscordId()).complete();
+            Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getDiscordUser().getIdLong());
             if (member != null) {
                 for (Role role : manager.getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
