@@ -26,7 +26,7 @@ import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
