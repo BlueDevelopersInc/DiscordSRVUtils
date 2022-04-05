@@ -83,7 +83,7 @@ public class LevelingManager {
             if (!levelingRoles.exists()) {
                 levelingRoles.createNewFile();
                 FileWriter writer = new FileWriter(levelingRoles);
-                writer.write("{\n\n}");
+                writer.write(new JSONObject().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-roles/").toString(1));
                 writer.close();
                 levelingRolesRaw = new JSONObject();
             } else {
@@ -191,13 +191,16 @@ public class LevelingManager {
         Map<String, Object> map = levelingRolesRaw.toMap();
         List<String> keys = new ArrayList<>(map.keySet());
         if (keys.isEmpty()) return null;
-        keys = keys.stream().filter(num -> Integer.parseInt(num) <= level).collect(Collectors.toList());
-        keys.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return Integer.parseInt(o2) - Integer.parseInt(o1);
-            }
-        });
+        keys = keys.stream()
+                .filter(num -> {
+                    try {
+                        return Integer.parseInt(num) <= level;
+                    } catch (NumberFormatException ex) {
+                        return false; //not a level, maybe the _wiki one?
+                    }
+                })
+                .collect(Collectors.toList());
+        keys.sort((o1, o2) -> Integer.parseInt(o2) - Integer.parseInt(o1));
         Long id = (Long) map.get(keys.get(0));
         if (id != null) {
             return core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(id);

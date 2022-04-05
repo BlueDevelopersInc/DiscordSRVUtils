@@ -26,17 +26,14 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SuggestCommand extends Command {
+public class SuggestCommand extends SuggestionCommand {
 
-    public final Long ANTISPAM_EXPIRATION = Duration.ofSeconds(120L).toNanos();
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand(DiscordSRVUtils core) {
@@ -67,14 +64,12 @@ public class SuggestCommand extends Command {
         }
 
         Long val = antispamMap.get(e.getAuthor().getIdLong());
-        if (val == null) {
-        } else {
+        if (val != null) {
             if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) {
                 e.replyErr("Slow down.. you need to wait 2 minutes before every new suggestion").queue();
                 return;
             }
         }
-
 
         String suggestionText = e.getOption("suggestion").getAsString();
         e.handleCF(core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {

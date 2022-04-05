@@ -29,7 +29,7 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
-public class ApproveSuggestionCommand extends Command {
+public class ApproveSuggestionCommand extends SuggestionCommand {
     public ApproveSuggestionCommand(DiscordSRVUtils core) {
         super(core, "approvesuggestion", "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));

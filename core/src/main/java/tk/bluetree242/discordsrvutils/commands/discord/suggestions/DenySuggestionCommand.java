@@ -29,7 +29,7 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
-public class DenySuggestionCommand extends Command {
+public class DenySuggestionCommand extends SuggestionCommand {
     public DenySuggestionCommand(DiscordSRVUtils core) {
         super(core, "denysuggestion", "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));

@@ -61,4 +61,8 @@ public class LeaderboardCommand extends Command {
         embed.setThumbnail(core.getPlatform().getDiscordSRV().getMainGuild().getIconUrl());
         e.reply(embed.build()).queue();
     }
+
+    public boolean isEnabled() {
+        return core.getLevelingConfig().enabled() && super.isEnabled();
+    }
 }
