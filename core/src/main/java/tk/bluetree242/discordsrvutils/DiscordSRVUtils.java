@@ -32,7 +32,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import lombok.Getter;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.config.*;
@@ -67,6 +66,7 @@ public class DiscordSRVUtils {
     private static DiscordSRVUtils instance;
     //file separator string
     public final String fileseparator = System.getProperty("file.separator");
+    private final MessageFilter messageFilter = new MessageFilter(this);
     private final PluginPlatform main;
     @Getter
     private final MessageManager messageManager = new MessageManager(this);
@@ -118,15 +118,15 @@ public class DiscordSRVUtils {
     //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
     @Getter
-    private AsyncManager asyncManager = new AsyncManager(this);
+    private final AsyncManager asyncManager = new AsyncManager(this);
     @Getter
-    private JdaManager jdaManager = new JdaManager(this);
+    private final JdaManager jdaManager = new JdaManager(this);
     @Getter
-    private ErrorHandler errorHandler = new ErrorHandler(this);
+    private final ErrorHandler errorHandler = new ErrorHandler(this);
     @Getter
-    private UpdateChecker updateChecker = new UpdateChecker(this);
+    private final UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
-    private DatabaseManager databaseManager = new DatabaseManager(this);
+    private final DatabaseManager databaseManager = new DatabaseManager(this);
 
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
@@ -192,7 +192,7 @@ public class DiscordSRVUtils {
                 main.disable();
                 return;
             }
-            addMessageFilter();
+            messageFilter.add();
             try {
                 //Reload Configurations
                 reloadConfigs();
@@ -248,6 +248,7 @@ public class DiscordSRVUtils {
 
     public void onDisable() throws ExecutionException, InterruptedException {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
+        messageFilter.remove();
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
@@ -290,16 +291,6 @@ public class DiscordSRVUtils {
         statusConfig = statusConfigConfManager.reloadConfigData();
         levelingManager.reloadLevelingRoles();
         setSettings();
-    }
-
-    private void addMessageFilter() {
-        try {
-            MessageFilter filter = new MessageFilter(this);
-            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(filter);
-        } catch (Exception e) {
-            severe("Failed to add Message Filter");
-            e.printStackTrace();
-        }
     }
 
     public void whenReady() {

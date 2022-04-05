@@ -24,12 +24,15 @@ package tk.bluetree242.discordsrvutils.other;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+
+import java.lang.reflect.Field;
 
 //fix the big messages that look like spam
 @RequiredArgsConstructor
@@ -46,7 +49,7 @@ public class MessageFilter implements Filter {
         return Result.NEUTRAL;
     }
 
-    public Result handle(String loggerName, Level level, String message, Throwable throwable) {
+    public Result handle(String loggerName, Level level, String message) {
         if (!core.isEnabled()) return Result.NEUTRAL;
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
             //Ignorable message
@@ -61,7 +64,7 @@ public class MessageFilter implements Filter {
             }
             return Result.DENY;
         }
-        if (loggerName.startsWith("hsqldb.db.HSQLDB7C892AA07F.ENGINE")) {
+        if (loggerName.contains("tk.bluetree242.discordsrvutils.dependencies.hsqldb")) {
             log(level, message, "Hsqldb");
             return Result.DENY;
         }
@@ -75,8 +78,7 @@ public class MessageFilter implements Filter {
                 logEvent.getLoggerName(),
                 logEvent.getLevel(),
                 logEvent.getMessage()
-                        .getFormattedMessage(),
-                logEvent.getThrown());
+                        .getFormattedMessage());
     }
 
     @Override
@@ -84,8 +86,8 @@ public class MessageFilter implements Filter {
         return handle(
                 logger.getName(),
                 level,
-                message,
-                null);
+                message
+        );
     }
 
     @Override
@@ -93,8 +95,8 @@ public class MessageFilter implements Filter {
         return handle(
                 logger.getName(),
                 level,
-                message.toString(),
-                throwable);
+                message.toString()
+        );
     }
 
     @Override
@@ -102,8 +104,8 @@ public class MessageFilter implements Filter {
         return handle(
                 logger.getName(),
                 level,
-                message.getFormattedMessage(),
-                throwable);
+                message.getFormattedMessage()
+        );
     }
 
     //1 method so i can easily reformat the messages
@@ -123,7 +125,51 @@ public class MessageFilter implements Filter {
         }
     }
 
-    public void stop() {
+    public void add() {
+        try {
+            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(this);
+        } catch (Exception e) {
+            core.logger.severe("Failed to add Message Filter");
+            e.printStackTrace();
+        }
+    }
+
+    public void remove() {
+        try {
+            org.apache.logging.log4j.core.Logger logger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
+
+            Field configField = null;
+            Class<?> targetClass = logger.getClass();
+
+            while (targetClass != null) {
+                try {
+                    configField = targetClass.getDeclaredField("config");
+                    break;
+                } catch (NoSuchFieldException ignored) {}
+
+                try {
+                    configField = targetClass.getDeclaredField("privateConfig");
+                    break;
+                } catch (NoSuchFieldException ignored) {}
+
+                targetClass = targetClass.getSuperclass();
+            }
+
+            if (configField != null) {
+                if (!configField.isAccessible()) configField.setAccessible(true);
+
+                Object config = configField.get(logger);
+                Field configField2 = config.getClass().getDeclaredField("config");
+                if (!configField2.isAccessible()) configField2.setAccessible(true);
+
+                Object config2 = configField2.get(config);
+                if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
+                    ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(this);
+                }
+            }
+        } catch (Throwable t) {
+            core.logger.severe("Failed to remove Message Filter");
+        }
     }
 
 }
