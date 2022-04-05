@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
