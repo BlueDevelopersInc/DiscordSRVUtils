@@ -63,9 +63,9 @@ dependencies {
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
     compileOnly('com.discordsrv:discordsrv:1.25.0')
-    implementation "org.flywaydb:flyway-core:7.5.3"
+    implementation "org.flywaydb:flyway-core:8.5.7"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
