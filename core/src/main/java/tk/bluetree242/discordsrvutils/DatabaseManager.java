@@ -81,6 +81,7 @@ public class DatabaseManager {
         //Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
+                .baselineOnMigrate(true)
                 .locations("classpath:migrations")
                 .validateMigrationNaming(true).group(true)
                 .table("discordsrvutils_schema")
