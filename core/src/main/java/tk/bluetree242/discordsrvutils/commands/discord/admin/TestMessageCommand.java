@@ -43,11 +43,11 @@ public class TestMessageCommand extends Command {
     public void run(CommandEvent e) throws Exception {
         String name = e.getOption("name").getAsString();
         try {
-            e.replyMessage("message:" + name).queue();
+            e.replyMessage("message:" + name).setEphemeral(true).queue();
         } catch (EmbedNotFoundException ex) {
-            e.replyErr("Embed does not exist").queue();
+            e.replyErr("Embed does not exist").setEphemeral(true).queue();
         } catch (JSONException ex) {
-            e.replyErr("Embed is invalid").queue();
+            e.replyErr("Embed is invalid").setEphemeral(true).queue();
         }
     }
 }

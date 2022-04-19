@@ -124,23 +124,27 @@ public class CommandEvent {
     }
 
     public CompletableFuture handleCF(CompletableFuture cf, String success, String failure) {
+        return handleCF(cf, false, success, failure);
+    }
+
+    public CompletableFuture handleCF(CompletableFuture cf, boolean ephermal, String success, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(success, "Success Message");
         Checks.notNull(failure, "Failure Message");
         cf.thenRunAsync(() -> {
-            reply(Embed.success(success)).queue();
+            reply(Embed.success(success)).setEphemeral(ephermal).queue();
         }).handleAsync((e, x) -> {
             Exception ex = (Exception) ((Throwable) x).getCause();
             while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
             if (ex instanceof UnCheckedRateLimitedException) {
-                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
+                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ex.getCause()).getRetryAfter()))).setEphemeral(ephermal).queue();
             } else if (!(ex instanceof InsufficientPermissionException)) {
                 reply(Embed.error(failure)).queue();
                 core.getErrorHandler().defaultHandle(ex);
             } else {
                 InsufficientPermissionException exc = (InsufficientPermissionException) ex;
                 GuildChannel chnl = core.getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
-                reply(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).queue();
+                reply(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).setEphemeral(ephermal).queue();
             }
             return x;
         });

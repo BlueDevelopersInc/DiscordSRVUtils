@@ -84,6 +84,16 @@ public class DiscordSRVUtils {
     private final StatusManager statusManager = new StatusManager(this);
     @Getter
     private final PluginHookManager pluginHookManager = new PluginHookManager(this);
+    @Getter
+    private final AsyncManager asyncManager = new AsyncManager(this);
+    @Getter
+    private final JdaManager jdaManager = new JdaManager(this);
+    @Getter
+    private final ErrorHandler errorHandler = new ErrorHandler(this);
+    @Getter
+    private final UpdateChecker updateChecker = new UpdateChecker(this);
+    @Getter
+    private final DatabaseManager databaseManager = new DatabaseManager(this);
     //Mode for suggestions voting
     public SuggestionVoteMode voteMode;
     //latest error that occurred on our thread pool
@@ -117,16 +127,6 @@ public class DiscordSRVUtils {
     private StatusConfig statusConfig;
     //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
-    @Getter
-    private final AsyncManager asyncManager = new AsyncManager(this);
-    @Getter
-    private final JdaManager jdaManager = new JdaManager(this);
-    @Getter
-    private final ErrorHandler errorHandler = new ErrorHandler(this);
-    @Getter
-    private final UpdateChecker updateChecker = new UpdateChecker(this);
-    @Getter
-    private final DatabaseManager databaseManager = new DatabaseManager(this);
 
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;

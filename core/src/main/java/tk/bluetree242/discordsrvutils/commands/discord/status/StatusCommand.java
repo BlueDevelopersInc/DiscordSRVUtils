@@ -45,6 +45,6 @@ public class StatusCommand extends Command {
             e.replyErr("Sorry this can only be a text channel").queue();
             return;
         }
-        e.handleCF(core.getStatusManager().newMessage((TextChannel) channel), "Check " + channel.getAsMention(), "Error creating status message");
+        e.handleCF(core.getStatusManager().newMessage((TextChannel) channel), true, "Check " + channel.getAsMention(), "Error creating status message");
     }
 }

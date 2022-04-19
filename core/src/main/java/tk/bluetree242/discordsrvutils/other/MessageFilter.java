@@ -145,12 +145,14 @@ public class MessageFilter implements Filter {
                 try {
                     configField = targetClass.getDeclaredField("config");
                     break;
-                } catch (NoSuchFieldException ignored) {}
+                } catch (NoSuchFieldException ignored) {
+                }
 
                 try {
                     configField = targetClass.getDeclaredField("privateConfig");
                     break;
-                } catch (NoSuchFieldException ignored) {}
+                } catch (NoSuchFieldException ignored) {
+                }
 
                 targetClass = targetClass.getSuperclass();
             }
