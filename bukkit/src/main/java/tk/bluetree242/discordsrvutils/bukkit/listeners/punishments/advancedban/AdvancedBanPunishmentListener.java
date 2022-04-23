@@ -70,12 +70,14 @@ public class AdvancedBanPunishmentListener implements Listener {
             }
             if (msg != null) {
                 if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                    TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
-                    if (channel == null) {
-                        core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
-                        return;
-                    } else
-                        core.queueMsg(msg, channel).queue();
+                    for (Long id : core.getBansConfig().channel_ids()) {
+                        TextChannel channel = core.getJdaManager().getChannel(id);
+                        if (channel == null) {
+                            core.severe("No channel was found with id " + id + " For Punishment message");
+                            return;
+                        } else
+                            core.queueMsg(msg, channel).queue();
+                    }
                 }
             }
             syncPunishment(e.getPunishment(), false);
@@ -105,13 +107,15 @@ public class AdvancedBanPunishmentListener implements Listener {
                     break;
             }
             if (msg != null) {
-                if (core.getBansConfig().isSyncUnpunishmentsmsgWithDiscord()) {
-                    TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
-                    if (channel == null) {
-                        core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For UnPunishment message");
-                        return;
+                if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
+                    for (Long id : core.getBansConfig().channel_ids()) {
+                        TextChannel channel = core.getJdaManager().getChannel(id);
+                        if (channel == null) {
+                            core.severe("No channel was found with id " + id + " For Punishment message");
+                            return;
+                        } else
+                            core.queueMsg(msg, channel).queue();
                     }
-                    core.queueMsg(msg, channel).queue();
                 }
             }
             syncPunishment(e.getPunishment(), true);

@@ -76,12 +76,14 @@ public class LitebansPunishmentListener extends Events.Listener {
             if (!e.isSilent())
                 if (msg != null) {
                     if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                        TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
-                        if (channel == null) {
-                            core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
-                            return;
-                        } else
-                            core.queueMsg(msg, channel).queue();
+                        for (Long id : core.getBansConfig().channel_ids()) {
+                            TextChannel channel = core.getJdaManager().getChannel(id);
+                            if (channel == null) {
+                                core.severe("No channel was found with id " + id + " For Punishment message");
+                                return;
+                            } else
+                                core.queueMsg(msg, channel).queue();
+                        }
                     }
                 }
             syncPunishment(e, false);
@@ -109,12 +111,14 @@ public class LitebansPunishmentListener extends Events.Listener {
             if (!e.isSilent())
                 if (msg != null) {
                     if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
-                        TextChannel channel = core.getJdaManager().getChannel(core.getBansConfig().channel_id());
-                        if (channel == null) {
-                            core.severe("No channel was found with id " + core.getBansConfig().channel_id() + " For Punishment message");
-                            return;
-                        } else
-                            core.queueMsg(msg, channel).queue();
+                        for (Long id : core.getBansConfig().channel_ids()) {
+                            TextChannel channel = core.getJdaManager().getChannel(id);
+                            if (channel == null) {
+                                core.severe("No channel was found with id " + id + " For Punishment message");
+                                return;
+                            } else
+                                core.queueMsg(msg, channel).queue();
+                        }
                     }
                 }
 

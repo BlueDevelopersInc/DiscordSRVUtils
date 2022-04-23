@@ -27,6 +27,8 @@ import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
+import java.util.Set;
+
 public interface PunishmentsIntegrationConfig {
     @ConfKey("sync_minecraft_punishments_to_discord")
     @ConfDefault.DefaultBoolean(true)
@@ -41,11 +43,11 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(20)
     boolean isSendPunishmentmsgesToDiscord();
 
-    @ConfKey("punishment_messages_channel")
-    @ConfDefault.DefaultLong(0)
-    @ConfComments("\n#The channel to send punishment messages. 0 for default discordsrv's channel")
+    @ConfKey("punishment_messages_channels")
+    @ConfDefault.DefaultLongs({0})
+    @ConfComments("\n#The Channels to send punishment messages in, add 0 for discordsrv main chat channel")
     @AnnotationBasedSorter.Order(21)
-    long channel_id();
+    Set<Long> channel_ids();
 
     @ConfKey("muted_role")
     @ConfDefault.DefaultLong(0)
