@@ -80,7 +80,7 @@ public class AFKPlusListener implements Listener {
     }
 
     public void remove() {
-        AFKStartEvent.getHandlerList().unregister((Listener) core.getPlatform().getOriginal());
-        AFKStopEvent.getHandlerList().unregister((Listener) core.getPlatform().getOriginal());
+        AFKStartEvent.getHandlerList().unregister(this);
+        AFKStopEvent.getHandlerList().unregister(this);
     }
 }
