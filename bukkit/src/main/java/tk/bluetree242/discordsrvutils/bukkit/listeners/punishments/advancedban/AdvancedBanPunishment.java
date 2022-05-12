@@ -22,20 +22,18 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
+import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-
-public class AdvancedBanPunishment implements Punishment {
+@RequiredArgsConstructor
+public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.utils.Punishment> {
     private final me.leoko.advancedban.utils.Punishment punishment;
-
-    public AdvancedBanPunishment(me.leoko.advancedban.utils.Punishment punishment) {
-        this.punishment = punishment;
-    }
+    private final boolean revoke;
 
     @Override
     public String getDuration() {
-        if (punishment.getEnd() == -1)
+        if (isPermanent())
             return "Permanent";
         return Utils.getDuration((punishment.getEnd() - punishment.getStart()) + 1);
     }
@@ -53,5 +51,35 @@ public class AdvancedBanPunishment implements Punishment {
     @Override
     public String getReason() {
         return punishment.getReason();
+    }
+
+    @Override
+    public boolean isPermanent() {
+        return punishment.getEnd() == -1;
+    }
+
+    @Override
+    public me.leoko.advancedban.utils.Punishment getOrigin() {
+        return punishment;
+    }
+
+    @Override
+    public PunishmentProvider getPunishmentProvider() {
+        return PunishmentProvider.ADVANCEDBAN;
+    }
+
+    @Override
+    public PunishmentType getPunishmentType() {
+        return null;
+    }
+
+    @Override
+    public boolean isRevoke() {
+        return revoke;
+    }
+
+    @Override
+    public boolean isIp() {
+        return punishment.getType().isIpOrientated();
     }
 }

@@ -22,7 +22,13 @@
 
 package tk.bluetree242.discordsrvutils.interfaces;
 
-public interface Punishment {
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+
+public interface Punishment<O> {
 
     String getDuration();
 
@@ -31,4 +37,87 @@ public interface Punishment {
     String getName();
 
     String getReason();
+
+    boolean isPermanent();
+
+    O getOrigin();
+
+    PunishmentProvider getPunishmentProvider();
+
+    PunishmentType getPunishmentType();
+
+    boolean isRevoke();
+
+    boolean isIp();
+
+    enum PunishmentProvider {
+        ADVANCEDBAN,LITEBANS,LIBERTYBANS
+    }
+
+    enum PunishmentType {
+        BAN, MUTE
+    }
+
+    static void handlePunishment(Punishment punishment, DiscordSRVUtils core) {
+        Message msg = null;
+        PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
+        if (!punishment.isRevoke()) {
+            switch (punishment.getPunishmentType()) {
+                case BAN:
+                    if (punishment.isPermanent()) {
+                        if (punishment.isIp())
+                            core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
+                        else
+                            core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
+                    } else {
+                        if (punishment.isIp())
+                            core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
+                        else
+                            core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                    }
+                    break;
+                case MUTE:
+                    if (punishment.isPermanent()) {
+                        core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
+                    } else {
+                        if (punishment.isIp())
+                            core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
+                        else
+                            core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (punishment.getPunishmentType()) {
+                case BAN:
+                        if (punishment.isIp())
+                            core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
+                        else
+                            core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
+
+                    break;
+                case MUTE:
+                            core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (msg != null) {
+            if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
+                for (Long id : core.getBansConfig().channel_ids()) {
+                    TextChannel channel = core.getJdaManager().getChannel(id);
+                    if (channel == null) {
+                        core.severe("No channel was found with id " + id + " For Punishment message");
+                        return;
+                    } else
+                        core.queueMsg(msg, channel).queue();
+                }
+            }
+        }
+        //TODO: Sync Punishments
+    }
+    
 }

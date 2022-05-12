@@ -30,7 +30,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.UUID;
 
-public class LitebansPunishment implements Punishment {
+public class LitebansPunishment implements Punishment<Entry> {
     private final Entry punishment;
 
     public LitebansPunishment(Entry entry) {
@@ -63,5 +63,35 @@ public class LitebansPunishment implements Punishment {
     @Override
     public String getReason() {
         return punishment.getReason();
+    }
+
+    @Override
+    public boolean isPermanent() {
+        return punishment.isPermanent();
+    }
+
+    @Override
+    public Entry getOrigin() {
+        return punishment;
+    }
+
+    @Override
+    public PunishmentProvider getPunishmentProvider() {
+        return PunishmentProvider.LITEBANS;
+    }
+
+    @Override
+    public PunishmentType getPunishmentType() {
+        return PunishmentType.valueOf(punishment.getType());
+    }
+
+    @Override
+    public boolean isRevoke() {
+        return !punishment.isActive();
+    }
+
+    @Override
+    public boolean isIp() {
+        return punishment.isIpban();
     }
 }

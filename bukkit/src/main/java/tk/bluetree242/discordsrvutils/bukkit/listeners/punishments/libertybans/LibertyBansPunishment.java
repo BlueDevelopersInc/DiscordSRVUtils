@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import space.arim.libertybans.api.Operator;
 import space.arim.libertybans.api.PlayerOperator;
@@ -30,14 +31,11 @@ import space.arim.libertybans.api.Victim;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-public class LibertyBansPunishment implements Punishment {
+@RequiredArgsConstructor
+public class LibertyBansPunishment implements Punishment<space.arim.libertybans.api.punish.Punishment> {
     private final space.arim.libertybans.api.punish.Punishment punishment;
     private final Operator operator;
-
-    public LibertyBansPunishment(space.arim.libertybans.api.punish.Punishment punishment, Operator operator) {
-        this.punishment = punishment;
-        this.operator = operator;
-    }
+    private final boolean revoke;
 
     @Override
     public String getDuration() {
@@ -70,5 +68,44 @@ public class LibertyBansPunishment implements Punishment {
     @Override
     public String getReason() {
         return punishment.getReason();
+    }
+
+    @Override
+    public boolean isPermanent() {
+        return punishment.isPermanent();
+    }
+
+    @Override
+    public space.arim.libertybans.api.punish.Punishment getOrigin() {
+        return punishment;
+    }
+
+    @Override
+    public PunishmentProvider getPunishmentProvider() {
+        return PunishmentProvider.LIBERTYBANS;
+    }
+
+    @Override
+    public PunishmentType getPunishmentType() {
+        switch (punishment.getType()) {
+            case BAN:
+                return PunishmentType.BAN;
+            case MUTE:
+                return PunishmentType.MUTE;
+            default:
+                return null;
+        }
+    }
+
+
+
+    @Override
+    public boolean isRevoke() {
+        return revoke;
+    }
+
+    @Override
+    public boolean isIp() {
+        return !(punishment.getVictim() instanceof PlayerVictim);
     }
 }
