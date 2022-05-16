@@ -32,7 +32,7 @@ import java.util.Set;
 public interface PunishmentsIntegrationConfig {
     @ConfKey("sync_minecraft_punishments_to_discord")
     @ConfDefault.DefaultBoolean(true)
-    @ConfComments("#Should we sync Bans plugin punishments to discord?\n" +
+    @ConfComments("#Should we sync Bans plugin punishments to discord? We recommend disabling this & the unpunishments one if you use litebans or libertybans\n" +
             "#Mutes are included.")
     @AnnotationBasedSorter.Order(10)
     boolean isSyncPunishmentsWithDiscord();
