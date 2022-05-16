@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans;
 
 import litebans.api.Entry;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
@@ -30,12 +31,11 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class LitebansPunishment implements Punishment<Entry> {
     private final Entry punishment;
+    private final boolean revoke;
 
-    public LitebansPunishment(Entry entry) {
-        punishment = entry;
-    }
 
     protected static OfflinePlayer toOfflinePlayer(String uuid) {
         return Bukkit.getOfflinePlayer(UUID.fromString(uuid));
@@ -87,7 +87,7 @@ public class LitebansPunishment implements Punishment<Entry> {
 
     @Override
     public boolean isGrant() {
-        return punishment.isActive();
+        return !revoke;
     }
 
     @Override

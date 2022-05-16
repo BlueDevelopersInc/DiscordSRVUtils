@@ -44,7 +44,7 @@ public class LitebansPunishmentListener extends Events.Listener {
     public void entryAdded(Entry e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!core.isReady()) return;
-            LitebansPunishment punishment = new LitebansPunishment(e);
+            LitebansPunishment punishment = new LitebansPunishment(e, false);
             Punishment.handlePunishment(punishment, core);
         });
     }
@@ -52,7 +52,7 @@ public class LitebansPunishmentListener extends Events.Listener {
     public void entryRemoved(Entry e) {
         if (!core.isReady()) return;
         core.getAsyncManager().executeAsync(() -> {
-            LitebansPunishment punishment = new LitebansPunishment(e);
+            LitebansPunishment punishment = new LitebansPunishment(e, true);
             Punishment.handlePunishment(punishment, core);
         });
     }
