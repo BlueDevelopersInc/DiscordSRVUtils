@@ -31,36 +31,6 @@ import java.util.UUID;
 
 public interface Punishment<O> {
 
-    String getDuration();
-
-    String getOperator();
-
-    String getName();
-
-    String getReason();
-
-    boolean isPermanent();
-
-    O getOrigin();
-
-    PunishmentProvider getPunishmentProvider();
-
-    PunishmentType getPunishmentType();
-
-    boolean isRevoke();
-
-    boolean isIp();
-
-    UUID getTargetUUID();
-
-    enum PunishmentProvider {
-        ADVANCEDBAN,LITEBANS,LIBERTYBANS
-    }
-
-    enum PunishmentType {
-        BAN, MUTE
-    }
-
     static void handlePunishment(Punishment punishment, DiscordSRVUtils core) {
         Message msg = null;
         PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
@@ -95,14 +65,14 @@ public interface Punishment<O> {
         } else {
             switch (punishment.getPunishmentType()) {
                 case BAN:
-                        if (punishment.isIp())
-                            core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
-                        else
-                            core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
+                    if (punishment.isIp())
+                        core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
+                    else
+                        core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
 
                     break;
                 case MUTE:
-                            core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
+                    core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
                     break;
                 default:
                     break;
@@ -178,5 +148,35 @@ public interface Punishment<O> {
             }
         }
     }
-    
+
+    String getDuration();
+
+    String getOperator();
+
+    String getName();
+
+    String getReason();
+
+    boolean isPermanent();
+
+    O getOrigin();
+
+    PunishmentProvider getPunishmentProvider();
+
+    PunishmentType getPunishmentType();
+
+    boolean isRevoke();
+
+    boolean isIp();
+
+    UUID getTargetUUID();
+
+    enum PunishmentProvider {
+        ADVANCEDBAN, LITEBANS, LIBERTYBANS
+    }
+
+    enum PunishmentType {
+        BAN, MUTE
+    }
+
 }

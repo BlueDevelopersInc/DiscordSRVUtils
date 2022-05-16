@@ -22,13 +22,9 @@
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import lombok.RequiredArgsConstructor;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
-import me.leoko.advancedban.utils.Punishment;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
