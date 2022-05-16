@@ -82,7 +82,7 @@ public class LitebansPunishment implements Punishment<Entry> {
 
     @Override
     public PunishmentType getPunishmentType() {
-        return PunishmentType.valueOf(punishment.getType());
+        return PunishmentType.get(punishment.getType());
     }
 
     @Override

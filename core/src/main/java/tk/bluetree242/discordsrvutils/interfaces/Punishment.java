@@ -32,6 +32,7 @@ import java.util.UUID;
 public interface Punishment<O> {
 
     static void handlePunishment(Punishment punishment, DiscordSRVUtils core) {
+        if (punishment.getPunishmentType() == PunishmentType.UNKNOWN) return;
         Message msg = null;
         PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
         if (punishment.isGrant()) {
@@ -39,25 +40,25 @@ public interface Punishment<O> {
                 case BAN:
                     if (punishment.isPermanent()) {
                         if (punishment.isIp())
-                            core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
                         else
-                            core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
                     } else {
                         if (punishment.isIp())
-                            core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
                         else
-                            core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
                     }
                     break;
                 case MUTE:
                     if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
                         if (punishment.isPermanent()) {
-                            core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
                         } else {
                             if (punishment.isIp())
-                                core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
                             else
-                                core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
                         }
                         break;
                     }
@@ -68,14 +69,14 @@ public interface Punishment<O> {
             switch (punishment.getPunishmentType()) {
                 case BAN:
                     if (punishment.isIp())
-                        core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
                     else
-                        core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
 
                     break;
                 case MUTE:
                     if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
-                        core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
                         break;
                     }
                 default:
@@ -181,7 +182,15 @@ public interface Punishment<O> {
     }
 
     enum PunishmentType {
-        BAN, MUTE
+        BAN, MUTE, UNKNOWN;
+
+        public static PunishmentType get(String name) {
+            try {
+                return valueOf(name.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return UNKNOWN;
+            }
+        }
     }
 
 }

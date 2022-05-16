@@ -73,7 +73,7 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public PunishmentType getPunishmentType() {
-        return null;
+        return PunishmentType.get(punishment.getType().getBasic().name());
     }
 
     @Override
