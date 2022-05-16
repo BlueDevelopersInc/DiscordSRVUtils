@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.UUID;
 
@@ -101,7 +102,7 @@ public interface Punishment<O> {
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
         if (punishment.isGrant()) {
-            Member discordMember = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMember(discordUser).complete();
+            Member discordMember = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), discordUser.getIdLong());
             if (discordMember == null) return;
             if (!core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(discordMember)) return;
             if (!core.getBansConfig().isSyncPunishmentsWithDiscord()) return;
