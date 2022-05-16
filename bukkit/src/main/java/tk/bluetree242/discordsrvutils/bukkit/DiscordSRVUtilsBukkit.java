@@ -61,7 +61,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
             if (core.getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
             if (core.getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
-            if (core.getBansConfig().isSendPunishmentmsgesToDiscord() && isAnyPunishmentsPluginInstalled())
+            if (core.getBansConfig().isSendPunishmentMsgsToDiscord() && isAnyPunishmentsPluginInstalled())
                 valueMap.put("Punishment Messages", 1);
             if (getServer().getPluginManager().isPluginEnabled("Essentials") && core.getMainConfig().afk_message_enabled())
                 valueMap.put("AFK Messages", 1);

@@ -50,15 +50,17 @@ public interface Punishment<O> {
                     }
                     break;
                 case MUTE:
-                    if (punishment.isPermanent()) {
-                        core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
-                    } else {
-                        if (punishment.isIp())
-                            core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
-                        else
-                            core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                    if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
+                        if (punishment.isPermanent()) {
+                            core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
+                        } else {
+                            if (punishment.isIp())
+                                core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
+                            else
+                                core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                        }
+                        break;
                     }
-                    break;
                 default:
                     break;
             }
@@ -72,14 +74,16 @@ public interface Punishment<O> {
 
                     break;
                 case MUTE:
-                    core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
-                    break;
+                    if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
+                        core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
+                        break;
+                    }
                 default:
                     break;
             }
         }
         if (msg != null) {
-            if (core.getBansConfig().isSendPunishmentmsgesToDiscord()) {
+            if (core.getBansConfig().isSendPunishmentMsgsToDiscord()) {
                 for (Long id : core.getBansConfig().channel_ids()) {
                     TextChannel channel = core.getJdaManager().getChannel(id);
                     if (channel == null) {
@@ -91,6 +95,7 @@ public interface Punishment<O> {
             }
         }
         // SYNC PUNISHMENT
+        if (!punishment.isPermanent() && !core.getBansConfig().isSyncTempPunishments()) return;
         String id = core.getDiscordSRV().getDiscordId(punishment.getTargetUUID());
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();

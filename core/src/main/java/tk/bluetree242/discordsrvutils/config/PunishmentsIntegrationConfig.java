@@ -39,9 +39,15 @@ public interface PunishmentsIntegrationConfig {
 
     @ConfKey("send_punishment_messages_to_discord")
     @ConfDefault.DefaultBoolean(true)
-    @ConfComments("\n#Should we send the message of a person punished on discord?\n#Muted included")
+    @ConfComments("\n#Should we send the message of a person punished on discord? Disabling this disabling any messages (even the ones below)")
     @AnnotationBasedSorter.Order(20)
-    boolean isSendPunishmentmsgesToDiscord();
+    boolean isSendPunishmentMsgsToDiscord();
+
+    @ConfKey("send_mute_messages_to_discord")
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("\n#Should we send the message of a person muted on discord?")
+    @AnnotationBasedSorter.Order(21)
+    boolean isSendMuteMsgsToDiscord();
 
     @ConfKey("punishment_messages_channels")
     @ConfDefault.DefaultLongs({0})
@@ -97,6 +103,12 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(70)
     String TempMutedMessage();
 
+    @ConfKey("sync_minecraft_temp_punishments")
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("\n#Should we sync the temp punishments to discord?")
+    @AnnotationBasedSorter.Order(71)
+    boolean isSyncTempPunishments();
+
     @ConfKey("sync_minecraft_unpunishments_to_discord")
     @ConfDefault.DefaultBoolean(true)
     @ConfComments("\n\n#Should we send the unpunishments (unban, unmute, unipban) to discord? (User will be unbanned/muted on discord)")
@@ -107,7 +119,7 @@ public interface PunishmentsIntegrationConfig {
     @ConfDefault.DefaultBoolean(true)
     @ConfComments("\n#Should we send the unpunishments messages on main chat channel?")
     @AnnotationBasedSorter.Order(90)
-    boolean isSyncUnpunishmentsmsgWithDiscord();
+    boolean isSyncUnpunishmentsMsgWithDiscord();
 
 
     @ConfKey("unbanned_message")
