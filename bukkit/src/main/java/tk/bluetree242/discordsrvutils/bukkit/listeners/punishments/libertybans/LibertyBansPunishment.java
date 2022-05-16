@@ -31,6 +31,8 @@ import space.arim.libertybans.api.Victim;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class LibertyBansPunishment implements Punishment<space.arim.libertybans.api.punish.Punishment> {
     private final space.arim.libertybans.api.punish.Punishment punishment;
@@ -101,11 +103,21 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
 
     @Override
     public boolean isRevoke() {
-        return revoke;
+        return !revoke;
     }
 
     @Override
     public boolean isIp() {
         return !(punishment.getVictim() instanceof PlayerVictim);
+    }
+
+    @Override
+    public UUID getTargetUUID() {
+        if (punishment.getVictim().getType() == Victim.VictimType.ADDRESS) {
+            return null;
+        } else {
+            PlayerVictim victim = (PlayerVictim) punishment.getVictim();
+            return victim.getUUID();
+        }
     }
 }

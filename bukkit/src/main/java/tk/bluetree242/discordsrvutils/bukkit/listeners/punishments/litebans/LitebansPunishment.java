@@ -87,11 +87,16 @@ public class LitebansPunishment implements Punishment<Entry> {
 
     @Override
     public boolean isRevoke() {
-        return !punishment.isActive();
+        return punishment.isActive();
     }
 
     @Override
     public boolean isIp() {
         return punishment.isIpban();
+    }
+
+    @Override
+    public UUID getTargetUUID() {
+        return punishment.getUuid() == null ? null : UUID.fromString(punishment.getUuid());
     }
 }

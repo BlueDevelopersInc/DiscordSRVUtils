@@ -23,8 +23,11 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.utils.Punishment> {
@@ -75,11 +78,16 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public boolean isRevoke() {
-        return revoke;
+        return !revoke;
     }
 
     @Override
     public boolean isIp() {
         return punishment.getType().isIpOrientated();
+    }
+
+    @Override
+    public UUID getTargetUUID() {
+        return Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId();
     }
 }
