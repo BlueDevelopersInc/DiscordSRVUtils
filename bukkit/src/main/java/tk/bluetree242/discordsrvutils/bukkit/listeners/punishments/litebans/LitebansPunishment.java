@@ -86,7 +86,7 @@ public class LitebansPunishment implements Punishment<Entry> {
     }
 
     @Override
-    public boolean isRevoke() {
+    public boolean isGrant() {
         return punishment.isActive();
     }
 

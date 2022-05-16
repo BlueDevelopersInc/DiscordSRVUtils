@@ -77,7 +77,7 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
     }
 
     @Override
-    public boolean isRevoke() {
+    public boolean isGrant() {
         return !revoke;
     }
 

@@ -34,7 +34,7 @@ public interface Punishment<O> {
     static void handlePunishment(Punishment punishment, DiscordSRVUtils core) {
         Message msg = null;
         PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
-        if (!punishment.isRevoke()) {
+        if (punishment.isGrant()) {
             switch (punishment.getPunishmentType()) {
                 case BAN:
                     if (punishment.isPermanent()) {
@@ -99,7 +99,7 @@ public interface Punishment<O> {
         String id = core.getDiscordSRV().getDiscordId(punishment.getTargetUUID());
         if (id == null) return;
         User discordUser = core.getJDA().retrieveUserById(id).complete();
-        if (punishment.isRevoke()) {
+        if (punishment.isGrant()) {
             Member discordMember = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMember(discordUser).complete();
             if (discordMember == null) return;
             if (!core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(discordMember)) return;
@@ -170,7 +170,7 @@ public interface Punishment<O> {
 
     PunishmentType getPunishmentType();
 
-    boolean isRevoke();
+    boolean isGrant();
 
     boolean isIp();
 

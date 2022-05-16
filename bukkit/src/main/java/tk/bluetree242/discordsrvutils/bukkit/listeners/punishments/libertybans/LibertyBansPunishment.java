@@ -101,7 +101,7 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
 
 
     @Override
-    public boolean isRevoke() {
+    public boolean isGrant() {
         return !revoke;
     }
 
