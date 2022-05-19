@@ -103,7 +103,8 @@ public class MessageManager {
                 "unmute",
                 "welcome",
                 "status-online",
-                "status-offline"};
+                "status-offline",
+                "warn"};
         for (String msg : messages) {
             try {
                 //add them to the map
