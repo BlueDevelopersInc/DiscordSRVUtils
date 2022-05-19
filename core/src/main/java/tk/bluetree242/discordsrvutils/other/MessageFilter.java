@@ -50,7 +50,6 @@ public class MessageFilter implements Filter {
     }
 
     public Result handle(String loggerName, Level level, String message) {
-        if (!core.isEnabled()) return Result.NEUTRAL;
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
             //Ignorable message
             if (!message.contains("Driver does not support get/set network timeout for connections."))
@@ -64,7 +63,7 @@ public class MessageFilter implements Filter {
             }
             return Result.DENY;
         }
-        if (loggerName.contains("tk.bluetree242.discordsrvutils.dependencies.hsqldb")) {
+        if (loggerName.contains("hsqldb.db")) {
             log(level, message, "Hsqldb");
             return Result.DENY;
         }
