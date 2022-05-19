@@ -3,7 +3,7 @@ name: DiscordSRVUtils
 softdepend:
   - DiscordSRV
   - Essentials
-  - Advancedban
+  - AdvancedBan
   - PlaceholderAPI
   - Litebans
   - LibertyBans
