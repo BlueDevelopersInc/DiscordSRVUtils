@@ -55,6 +55,12 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(22)
     boolean isSendMuteMsgsToDiscord();
 
+    @ConfKey("send_warn_messages_to_discord")
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("\n#Should we send the message of a person warned on discord?")
+    @AnnotationBasedSorter.Order(23)
+    boolean isSendWarnMsgsToDiscord();
+
     @ConfKey("punishment_messages_channels")
     @ConfDefault.DefaultLongs({0})
     @ConfComments("\n#The Channels to send punishment messages in, add 0 for discordsrv main chat channel")
@@ -69,50 +75,56 @@ public interface PunishmentsIntegrationConfig {
 
     @ConfKey("banned_role")
     @ConfDefault.DefaultLong(0)
-    @ConfComments("\n#The role to give when player is muted. Will ban if this role id wasn't found")
+    @ConfComments("\n#The role to give when player was muted. Will ban if this role id wasn't found")
     @AnnotationBasedSorter.Order(23)
     long bannedRole();
 
     @ConfKey("banned_message")
     @ConfDefault.DefaultString("message:ban")
-    @ConfComments("\n\n#Message to send when a person is banned.")
+    @ConfComments("\n\n#Message to send when a person was banned.")
     @AnnotationBasedSorter.Order(30)
     String bannedMessage();
 
     @ConfKey("temp_banned_message")
     @ConfDefault.DefaultString("message:ban")
-    @ConfComments("\n#Message to send when a person is Temporary banned.")
+    @ConfComments("\n#Message to send when a person was Temporary banned.")
     @AnnotationBasedSorter.Order(40)
     String tempBannedMessage();
 
     @ConfKey("ip_banned_message")
     @ConfDefault.DefaultString("message:ban")
-    @ConfComments("\n#Message to send when a person is IP banned.")
+    @ConfComments("\n#Message to send when a person was IP banned.")
     @AnnotationBasedSorter.Order(50)
     String IPBannedMessage();
 
     @ConfKey("temp_ip_banned_message")
     @ConfDefault.DefaultString("message:ban")
-    @ConfComments("\n#Message to send when a person is Temporary IP banned.")
+    @ConfComments("\n#Message to send when a person was Temporary IP banned.")
     @AnnotationBasedSorter.Order(60)
     String TempIPBannedMessage();
 
     @ConfKey("muted_message")
     @ConfDefault.DefaultString("message:mute")
-    @ConfComments("\n#Message to send when a person is Muted.")
+    @ConfComments("\n#Message to send when a person was Muted.")
     @AnnotationBasedSorter.Order(70)
     String MutedMessage();
 
     @ConfKey("temp_muted_message")
     @ConfDefault.DefaultString("message:mute")
-    @ConfComments("\n#Message to send when a person is Temporary Muted.")
+    @ConfComments("\n#Message to send when a person was Temporary Muted.")
     @AnnotationBasedSorter.Order(70)
     String TempMutedMessage();
+
+    @ConfKey("warned_message")
+    @ConfDefault.DefaultString("message:warn")
+    @ConfComments("\n#Message to send when a person was warned")
+    @AnnotationBasedSorter.Order(71)
+    String warnedMessage();
 
     @ConfKey("sync_minecraft_temp_punishments")
     @ConfDefault.DefaultBoolean(true)
     @ConfComments("\n#Should we sync the temp punishments to discord?")
-    @AnnotationBasedSorter.Order(71)
+    @AnnotationBasedSorter.Order(72)
     boolean isSyncTempPunishments();
 
     @ConfKey("sync_minecraft_unpunishments_to_discord")

@@ -63,8 +63,12 @@ public interface Punishment<O> {
                             else
                                 msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
                         }
-                        break;
                     }
+                    break;
+                case WARN:
+                    if (core.getBansConfig().isSendWarnMsgsToDiscord())
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
+                    break;
                 default:
                     break;
             }
@@ -185,7 +189,7 @@ public interface Punishment<O> {
     }
 
     enum PunishmentType {
-        BAN, MUTE, UNKNOWN;
+        BAN, MUTE, WARN, UNKNOWN;
 
         public static PunishmentType get(String name) {
             try {

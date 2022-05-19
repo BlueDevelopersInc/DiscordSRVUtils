@@ -89,14 +89,7 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
 
     @Override
     public PunishmentType getPunishmentType() {
-        switch (punishment.getType()) {
-            case BAN:
-                return PunishmentType.BAN;
-            case MUTE:
-                return PunishmentType.MUTE;
-            default:
-                return null;
-        }
+        return PunishmentType.get(punishment.getType().name());
     }
 
 
