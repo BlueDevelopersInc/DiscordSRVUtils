@@ -9,7 +9,6 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.exception.ExceptionUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
-import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.SkriptHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -20,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 import tk.bluetree242.discordsrvutils.platform.Debugger;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -55,6 +55,7 @@ public class BukkitDebugger implements Debugger {
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getPlatform().getDescription().getVersion());
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
+        information.put("DSU Hooked Plugins", core.getPluginHookManager().getHooks().stream().filter(PluginHook::isHooked).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
         information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
         information.put("DSU Status", core.isEnabled() ? "Enabled" : "Disabled");
@@ -73,7 +74,7 @@ public class BukkitDebugger implements Debugger {
                         "\n    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive())
         );
         information.put("ExecutorService Status", core.getAsyncManager().getPool() == null ? "null" : (core.getAsyncManager().getPool().isShutdown() ? "Shutdown" : "Q:" + core.getAsyncManager().getPool().getQueue().size() + ", R:" + core.getAsyncManager().getPool().getActiveCount() + ", AV:" + core.getAsyncManager().getPool().getPoolSize()));
-        information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
+        information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(github.scarsz.discordsrv.hooks.PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
         Map<String, String> versionConfig = new HashMap<>();

@@ -48,4 +48,9 @@ public class LibertybansHook extends PluginHook {
         listener.unregister();
         listener = null;
     }
+
+    @Override
+    public boolean isHooked() {
+        return listener != null;
+    }
 }

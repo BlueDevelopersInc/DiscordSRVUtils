@@ -123,5 +123,10 @@ public class PAPIExpansion extends PlaceholderExpansion {
             expansion.unregister();
             expansion = null;
         }
+
+        @Override
+        public boolean isHooked() {
+            return expansion != null;
+        }
     }
 }

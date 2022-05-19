@@ -53,4 +53,9 @@ public class CMIHook extends PluginHook {
         CMIAfkLeaveEvent.getHandlerList().unregister((Plugin) core.getPlatform().getOriginal());
         listener = null;
     }
+
+    @Override
+    public boolean isHooked() {
+        return listener != null;
+    }
 }

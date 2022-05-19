@@ -45,4 +45,6 @@ public abstract class PluginHook {
         }
         return getClass().getSimpleName();
     }
+
+    public abstract boolean isHooked();
 }

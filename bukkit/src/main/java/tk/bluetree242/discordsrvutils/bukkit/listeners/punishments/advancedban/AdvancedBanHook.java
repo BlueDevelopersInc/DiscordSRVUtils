@@ -50,4 +50,9 @@ public class AdvancedBanHook extends PluginHook {
         listener.remove();
         listener = null;
     }
+
+    @Override
+    public boolean isHooked() {
+        return listener != null;
+    }
 }

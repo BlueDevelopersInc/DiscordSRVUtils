@@ -42,7 +42,10 @@ public class PluginHookManager {
         for (PluginHook hook : new ArrayList<>(hooks)) {
             if (core.getServer().isPluginEnabled(hook.getRequiredPlugin())) {
                 try {
-                    hook.hook();
+                    if (!hook.isHooked()) {
+                        hook.hook();
+                        core.getLogger().info("Successfully hooked into " + hook.getRequiredPlugin());
+                    }
                 } catch (Exception e) {
                     core.getLogger().severe("Failed to hook into " + hook.getRequiredPlugin());
                 }
