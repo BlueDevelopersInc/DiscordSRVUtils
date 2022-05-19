@@ -43,10 +43,16 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(20)
     boolean isSendPunishmentMsgsToDiscord();
 
+    @ConfKey("send_ban_messages_to_discord")
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("\n#Should we send the message of a person banned on discord?")
+    @AnnotationBasedSorter.Order(21)
+    boolean isSendBanMsgsToDiscord();
+
     @ConfKey("send_mute_messages_to_discord")
     @ConfDefault.DefaultBoolean(true)
     @ConfComments("\n#Should we send the message of a person muted on discord?")
-    @AnnotationBasedSorter.Order(21)
+    @AnnotationBasedSorter.Order(22)
     boolean isSendMuteMsgsToDiscord();
 
     @ConfKey("punishment_messages_channels")

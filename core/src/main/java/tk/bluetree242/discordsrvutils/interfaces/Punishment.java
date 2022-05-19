@@ -39,16 +39,18 @@ public interface Punishment<O> {
         if (punishment.isGrant()) {
             switch (punishment.getPunishmentType()) {
                 case BAN:
-                    if (punishment.isPermanent()) {
-                        if (punishment.isIp())
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
-                        else
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
-                    } else {
-                        if (punishment.isIp())
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
-                        else
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                    if (core.getBansConfig().isSendBanMsgsToDiscord()) {
+                        if (punishment.isPermanent()) {
+                            if (punishment.isIp())
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
+                            else
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
+                        } else {
+                            if (punishment.isIp())
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
+                            else
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                        }
                     }
                     break;
                 case MUTE:
