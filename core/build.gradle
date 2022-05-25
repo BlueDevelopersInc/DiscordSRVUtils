@@ -1,3 +1,5 @@
+import nu.studer.gradle.jooq.JooqEdition
+
 /*
  *  LICENSE
  *  DiscordSRVUtils
@@ -54,6 +56,7 @@ rootProject.allprojects {
         relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
         relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
         relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
+        relocate 'org.jooq', 'tk.bluetree242.discordsrvutils.dependencies.jooq'
     }
 }
 
@@ -74,9 +77,9 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 
     //related to jooq
-    implementation "org.flywaydb:flyway-core:7.5.3"
     testImplementation 'org.hsqldb:hsqldb:2.4.1'
     jooqGenerator 'org.hsqldb:hsqldb:2.4.1'
+    implementation 'org.jooq:jooq:3.16.6'
 
 }
 
@@ -101,8 +104,8 @@ flyway {
 }
 
 jooq {
-    version = '3.16.5'  // default (can be omitted)
-    edition = nu.studer.gradle.jooq.JooqEdition.OSS  // default (can be omitted)
+    version = '3.16.6'  // default (can be omitted)
+    edition = JooqEdition.OSS  // default (can be omitted)
 
     configurations {
         main {  // name of the jOOQ configuration
