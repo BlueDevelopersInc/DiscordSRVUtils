@@ -27,23 +27,22 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -58,7 +57,7 @@ public class LevelingManager {
             .refreshAfterWrite(Duration.ofSeconds(30))
             .build(key -> {
                 adding = true;
-                PlayerStats stats = getPlayerStats(key).get();
+                PlayerStats stats = getPlayerStats(key, DiscordSRVUtils.get().getDatabaseManager().newJooqConnection());
                 adding = false;
                 return stats;
             });
@@ -66,16 +65,6 @@ public class LevelingManager {
     @Getter
     private JSONObject levelingRolesRaw;
 
-
-    public CompletableFuture<PlayerStats> getPlayerStats(UUID uuid) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                return getPlayerStats(conn, uuid);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
-    }
 
     public void reloadLevelingRoles() {
         try {
@@ -111,80 +100,79 @@ public class LevelingManager {
 
     public boolean isLinked(UUID uuid) {
         String discord = core.getDiscordSRV().getDiscordId(uuid);
-        if (discord == null) return false;
-        return true;
+        return discord != null;
     }
 
-    public CompletableFuture<PlayerStats> getPlayerStats(long discordID) {
-        return core.getAsyncManager().completableFuture(() -> {
-            UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
-            if (uuid == null) return null;
-            return core.getAsyncManager().handleCFOnAnother(getPlayerStats(uuid));
-        });
+    public PlayerStats getPlayerStats(long discordID, DSLContext conn) {
+        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        if (uuid == null) return null;
+        return getPlayerStats(uuid, conn);
     }
 
-    public CompletableFuture<PlayerStats> getPlayerStats(String name) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                return getPlayerStats(conn, name);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public PlayerStats getPlayerStats(long discordID) {
+        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        if (uuid == null) return null;
+        DSLContext conn = core.getDatabaseManager().newJooqConnection();
+        PlayerStats result = getPlayerStats(uuid, conn);
+        try {
+            conn.configuration().connectionProvider().acquire().close();
+        } catch (SQLException throwables) {
+            throw new UnCheckedSQLException(throwables);
+        }
+        return result;
+    }
+
+    public PlayerStats getPlayerStats(String name, DSLContext conn) {
+        return getPlayerStats(conn, name);
     }
 
 
-    public PlayerStats getPlayerStats(Connection conn, UUID uuid) throws SQLException {
-        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC");
-        ResultSet r1 = p1.executeQuery();
+    public PlayerStats getPlayerStats(UUID uuid, DSLContext conn) {
+        List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
         int num = 0;
-        while (r1.next()) {
+        for (LevelingRecord record : records) {
             num++;
-            if (r1.getString("UUID").equals(uuid.toString())) {
-                return getPlayerStats(r1, num);
+            if (record.getUuid().equals(uuid.toString())) {
+                return getPlayerStats(record, num);
             }
         }
         return null;
     }
 
-    public PlayerStats getPlayerStats(Connection conn, String name) throws SQLException {
-        PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC ");
-        ResultSet r1 = p1.executeQuery();
+    public PlayerStats getPlayerStats(DSLContext conn, String name) {
+        List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
         int num = 0;
-        while (r1.next()) {
+        for (LevelingRecord record : records) {
             num++;
-            if (r1.getString("Name").equalsIgnoreCase(name)) {
-                return getPlayerStats(r1, num);
+            if (record.getName().equals(name)) {
+                return getPlayerStats(record, num);
             }
         }
         return null;
     }
 
-    public PlayerStats getPlayerStats(ResultSet r, int rank) throws SQLException {
-        PlayerStats stats = new PlayerStats(core, UUID.fromString(r.getString("UUID")), r.getString("Name"), r.getInt("level"), r.getInt("xp"), r.getInt("MinecraftMessages"), r.getInt("DiscordMessages"), rank);
+    public PlayerStats getPlayerStats(LevelingRecord r, int rank) {
+        PlayerStats stats = new PlayerStats(core,
+                UUID.fromString(r.getUuid()),
+                r.getName(), r.getLevel(),
+                r.getXp(),
+                r.getMinecraftmessages(),
+                r.getDiscordmessages(),
+                rank);
         if (!adding)
             cachedUUIDS.put(stats.getUuid(), stats);
         return stats;
     }
 
-    public CompletableFuture<List<PlayerStats>> getLeaderboard(int max) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling ORDER BY Level DESC ");
-                List<PlayerStats> leaderboard = new ArrayList<>();
-                ResultSet r1 = p1.executeQuery();
-                int num = 0;
-                while (r1.next()) {
-                    num++;
-                    if (num <= max) {
-                        leaderboard.add(getPlayerStats(r1, num));
-                    }
-                }
-                return leaderboard;
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public List<PlayerStats> getLeaderboard(int max, DSLContext conn) {
+        List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).limit(max).fetch();
+        List<PlayerStats> leaderboard = new ArrayList<>();
+        int num = 0;
+        for (LevelingRecord record : records) {
+            num++;
+            leaderboard.add(getPlayerStats(record, 1));
+        }
+        return leaderboard;
     }
 
     public Role getRoleForLevel(int level) {

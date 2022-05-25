@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils.systems.leveling.listeners.game;
 
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -32,6 +33,7 @@ import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -46,6 +48,7 @@ public class GameLevelingListener extends PlatformListener {
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
+                //TODO: use jooq
                 PreparedStatement p1 = conn.prepareStatement("SELECT * FROM leveling WHERE UUID=?");
                 p1.setString(1, e.getPlayer().getUniqueId().toString());
                 ResultSet r1 = p1.executeQuery();
@@ -73,26 +76,33 @@ public class GameLevelingListener extends PlatformListener {
     public void onChat(PlatformChatEvent e) {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
-        core.getAsyncManager().handleCF(core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId()), stats -> {
-            if (stats == null) {
-                return;
-            }
-            if (core.getLevelingConfig().antispam_messages()) {
-                Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
-                if (val == null) {
-                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
-                } else {
-                    if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
-                    core.getLevelingManager().antispamMap.remove(stats.getUuid());
-                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
+        core.getAsyncManager().executeAsync(() -> {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
+                DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
+                if (stats == null) {
+                    return;
                 }
+                if (core.getLevelingConfig().antispam_messages()) {
+                    Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
+                    if (val == null) {
+                        core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    } else {
+                        if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
+                        core.getLevelingManager().antispamMap.remove(stats.getUuid());
+                        core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
+                    }
+                }
+                int toAdd = new SecureRandom().nextInt(50);
+                boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()), jooq);
+                stats.addMessage(MessageType.MINECRAFT, jooq);
+                if (leveledUp) {
+                    e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
+                }
+            } catch (SQLException ex) {
+                throw new UnCheckedSQLException(ex);
             }
-            int toAdd = new SecureRandom().nextInt(50);
-            boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer())));
-            core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.MINECRAFT));
-            if (leveledUp) {
-                e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
-            }
-        }, null);
+        });
+
     }
 }

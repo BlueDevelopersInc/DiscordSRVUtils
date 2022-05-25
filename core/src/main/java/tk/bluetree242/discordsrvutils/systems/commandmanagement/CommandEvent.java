@@ -32,8 +32,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.Optio
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
@@ -45,7 +46,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommandEvent {
     private final DiscordSRVUtils core;
     private final Member member;
@@ -173,6 +174,17 @@ public class CommandEvent {
             return x;
         });
         return cf;
+    }
+
+    private DSLContext connection;
+
+    public DSLContext getConnection() {
+        if (!isConnOpen()) return connection = core.getDatabaseManager().newJooqConnection();
+        return connection;
+    }
+
+    public boolean isConnOpen() {
+        return connection != null;
     }
 
 }

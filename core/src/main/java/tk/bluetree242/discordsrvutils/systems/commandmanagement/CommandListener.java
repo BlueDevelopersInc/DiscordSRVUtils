@@ -30,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
+import java.sql.SQLException;
+
 @RequiredArgsConstructor
 public class CommandListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
@@ -41,6 +43,7 @@ public class CommandListener extends ListenerAdapter {
             String cmd = e.getName();
             Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
             if (executor == null || !executor.isEnabled()) return;
+            CommandEvent event = new CommandEvent(core, e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e);
             try {
                 if (executor.getRequiredPermission() != null) {
                     if (e.getChannel() instanceof TextChannel) {
@@ -65,13 +68,20 @@ public class CommandListener extends ListenerAdapter {
                     }
                 }
                 core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
-                executor.run(new CommandEvent(core, e.getMember(), e.getUser(), e.getChannel(), e.getJDA(), e));
+                executor.run(event);
             } catch (InsufficientPermissionException ex) {
                 ex.printStackTrace();
                 e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
             } catch (Exception exception) {
                 exception.printStackTrace();
                 e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
+            }
+            if (event.isConnOpen()) {
+                try {
+                    event.getConnection().configuration().connectionProvider().acquire().close();
+                } catch (SQLException throwables) {
+                    core.getErrorHandler().defaultHandle(throwables);
+                }
             }
         });
 

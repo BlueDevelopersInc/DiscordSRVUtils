@@ -23,6 +23,8 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'nu.studer.jooq' version '7.1.1'
+    id "org.flywaydb.flyway" version "8.5.3"
 }
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -70,9 +72,94 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
     implementation 'commons-io:commons-io:2.6'
+
+    //related to jooq
+    implementation "org.flywaydb:flyway-core:7.5.3"
+    testImplementation 'org.hsqldb:hsqldb:2.4.1'
+    jooqGenerator 'org.hsqldb:hsqldb:2.4.1'
+
 }
 
 
 test {
     useJUnitPlatform()
 }
+
+//related to jooq
+afterEvaluate { evaluated ->
+    evaluated.tasks.findByName("generateJooq").doFirst {
+        evaluated.tasks.findByName("flywayMigrate").runTask()
+    }
+}
+flyway {
+    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;sql.syntax_mys=true"
+    user = 'SA'
+    password = ''
+    validateMigrationNaming = true
+    locations = ["filesystem:src/main/resources/migrations"]
+    group = true
+}
+
+jooq {
+    version = '3.16.5'  // default (can be omitted)
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS  // default (can be omitted)
+
+    configurations {
+        main {  // name of the jOOQ configuration
+            generateSchemaSourceOnCompilation = true  // default (can be omitted)
+            generationTool {
+                jdbc {
+                    driver = 'org.hsqldb.jdbc.JDBCDriver'
+                    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;sql.syntax_mys=true"
+                    user = 'SA'
+                    password = ''
+                    properties {
+                        property {
+                            key = 'ssl'
+                            value = 'false'
+                        }
+                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.JavaGenerator'
+                    database {
+                        name = 'org.jooq.meta.hsqldb.HSQLDBDatabase'
+                        inputSchema = 'PUBLIC'
+                        outputSchemaToDefault = true
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'tk.bluetree242.discordsrvutils.jooq'
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                    strategy {
+                        matchers {
+                            tables {
+                                table {
+                                    tableClass {
+                                        transform = "PASCAL"
+                                        expression = "\$0_TABLE"
+                                    }
+                                }
+                            }
+                            enums {
+                                "enum" {
+                                    enumClass {
+                                        transform = "PASCAL"
+                                        expression = "\$0_ENUM"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

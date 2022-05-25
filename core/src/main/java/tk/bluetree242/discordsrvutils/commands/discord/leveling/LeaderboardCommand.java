@@ -42,7 +42,7 @@ public class LeaderboardCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.GREEN);
         StringJoiner joiner = new StringJoiner("\n");
-        for (PlayerStats player : core.getLevelingManager().getLeaderboard(10).get()) {
+        for (PlayerStats player : core.getLevelingManager().getLeaderboard(10, core.getDatabaseManager().newJooqConnection())) {
             String prefix = "";
             switch (player.getRank()) {
                 case 1:

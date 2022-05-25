@@ -34,8 +34,10 @@ import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -54,10 +56,10 @@ public class DiscordSRVListener {
     }
 
     @Subscribe
-    public void onLink(AccountLinkedEvent e) {
+    public void onLink(AccountLinkedEvent e) throws SQLException {
         if (!core.isReady()) return;
         LevelingManager manager = core.getLevelingManager();
-        manager.getPlayerStats(e.getUser().getIdLong()).thenAcceptAsync(stats -> {
+        PlayerStats stats = manager.getPlayerStats(e.getUser().getIdLong());
             int level = stats.getLevel();
             if (stats == null) return;
             String id = e.getUser().getId();
@@ -74,7 +76,6 @@ public class DiscordSRVListener {
                 actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
             }
             RestAction.allOf(actions).queue();
-        });
 
     }
 

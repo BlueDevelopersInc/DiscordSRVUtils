@@ -28,14 +28,18 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class DiscordLevelingListener extends ListenerAdapter {
@@ -47,8 +51,10 @@ public class DiscordLevelingListener extends ListenerAdapter {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
             if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() == core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
-                if (core.getLevelingConfig().enabled()) {
-                    core.getAsyncManager().handleCF(core.getLevelingManager().getPlayerStats(e.getMember().getIdLong()), stats -> {
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
+                    DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                    if (core.getLevelingConfig().enabled()) {
+                        PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getMember().getIdLong());
                         if (stats == null) {
                             return;
                         }
@@ -64,8 +70,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             }
                         }
                         int toAdd = new SecureRandom().nextInt(50);
-                        boolean leveledUp = core.getAsyncManager().handleCFOnAnother(stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor())));
-                        core.getAsyncManager().handleCFOnAnother(stats.addMessage(MessageType.DISCORD));
+                        boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()), jooq);
+                        stats.addMessage(MessageType.DISCORD, jooq);
                         if (leveledUp) {
                             core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core,
                                     new PlaceholdObject(core, stats, "stats"),
@@ -74,7 +80,9 @@ public class DiscordLevelingListener extends ListenerAdapter {
                                     new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
                             ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
-                    }, null);
+                    }
+                } catch (SQLException ex) {
+                    throw new UnCheckedSQLException(ex);
                 }
             }
         });
@@ -85,7 +93,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (core.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
-                PlayerStats stats = core.getAsyncManager().handleCFOnAnother(core.getLevelingManager().getPlayerStats(e.getUser().getIdLong()));
+                PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getUser().getIdLong());
                 if (stats == null) return;
                 Role role = core.getLevelingManager().getRoleForLevel(stats.getLevel());
                 if (role != null) {
