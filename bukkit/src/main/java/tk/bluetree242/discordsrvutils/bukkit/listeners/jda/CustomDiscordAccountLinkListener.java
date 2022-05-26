@@ -32,6 +32,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.UUID;
@@ -49,7 +50,7 @@ public class CustomDiscordAccountLinkListener extends ListenerAdapter {
     }
 
 
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         if (!core.isRemovedDiscordSRVAccountLinkListener()) return;
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());

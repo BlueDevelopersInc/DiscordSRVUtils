@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonCl
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -42,7 +43,7 @@ import java.sql.SQLException;
 public class PanelOpenListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onButtonClick(ButtonClickEvent e) {
+    public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
             try (Connection conn = core.getDatabaseManager().getConnection()) {

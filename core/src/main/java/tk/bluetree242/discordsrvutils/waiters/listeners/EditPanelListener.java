@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -159,7 +160,7 @@ public class EditPanelListener extends ListenerAdapter {
         }
     }
 
-    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
+    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             EditPanelWaiter waiter = EditPanelWaiter.getWaiter(e.getChannel(), e.getUser());
             EmbedBuilder embed = new EmbedBuilder();

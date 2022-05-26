@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
@@ -48,7 +49,7 @@ import java.util.Set;
 public class CreatePanelListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             EmbedBuilder embed = new EmbedBuilder();
             CreatePanelWaiter waiter = CreatePanelWaiter.getWaiter(e.getChannel(), e.getAuthor());

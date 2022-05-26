@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
@@ -36,7 +37,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 public class WelcomerAndGoodByeListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onGuildMemberJoin(GuildMemberJoinEvent e) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().welcomer_enabled()) {
@@ -63,7 +64,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         });
     }
 
-    public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().goodbye_enabled()) {

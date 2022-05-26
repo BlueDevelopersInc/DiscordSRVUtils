@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCom
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 
@@ -37,7 +38,7 @@ public class CommandListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
 
-    public void onSlashCommand(SlashCommandEvent e) {
+    public void onSlashCommand(@NotNull SlashCommandEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
             String cmd = e.getName();

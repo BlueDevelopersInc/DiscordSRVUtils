@@ -39,7 +39,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     private final DiscordSRVUtils core;
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "discordsrvutils";
     }
 
@@ -49,12 +49,12 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "BlueTree242";
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return core.getPlatform().getDescription().getVersion();
     }
 

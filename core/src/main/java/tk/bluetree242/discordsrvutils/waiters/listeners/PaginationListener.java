@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.react.MessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.waiter.Waiter;
 import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
@@ -37,7 +38,7 @@ import tk.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 public class PaginationListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onMessageReactionAdd(MessageReactionAddEvent e) {
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             boolean backward = e.getReactionEmote().getName().equals("⏪");
             PaginationWaiter waiter = getWaiter(e.getMessageIdLong(), e.getUser().getIdLong());

@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
@@ -45,7 +46,7 @@ import java.sql.SQLException;
 public class DiscordLevelingListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
             if (e.getMessage().isWebhookMessage()) return;
@@ -90,7 +91,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
 
 
     //give leveling roles when they rejoin the discord server
-    public void onGuildMemberJoin(GuildMemberJoinEvent e) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (core.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
                 PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getUser().getIdLong());
