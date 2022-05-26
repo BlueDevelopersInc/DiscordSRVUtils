@@ -60,22 +60,22 @@ public class DiscordSRVListener {
         if (!core.isReady()) return;
         LevelingManager manager = core.getLevelingManager();
         PlayerStats stats = manager.getPlayerStats(e.getUser().getIdLong());
-            int level = stats.getLevel();
-            if (stats == null) return;
-            String id = e.getUser().getId();
-            if (id == null) return;
-            Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
-            if (member == null) return;
-            Collection actions = new ArrayList<>();
-            for (Role role : manager.getRolesToRemove(stats.getLevel())) {
-                if (member.getRoles().contains(role))
-                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
-            }
-            Role toAdd = manager.getRoleForLevel(level);
-            if (toAdd != null && !member.getRoles().contains(toAdd)) {
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
-            }
-            RestAction.allOf(actions).queue();
+        int level = stats.getLevel();
+        if (stats == null) return;
+        String id = e.getUser().getId();
+        if (id == null) return;
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
+        if (member == null) return;
+        Collection actions = new ArrayList<>();
+        for (Role role : manager.getRolesToRemove(stats.getLevel())) {
+            if (member.getRoles().contains(role))
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
+        }
+        Role toAdd = manager.getRoleForLevel(level);
+        if (toAdd != null && !member.getRoles().contains(toAdd)) {
+            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
+        }
+        RestAction.allOf(actions).queue();
 
     }
 

@@ -29,150 +29,133 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseExc
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.PanelAllowedRolesTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.TicketPanelsTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.PanelAllowedRolesRecord;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketPanelsRecord;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketsRecord;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class TicketManager {
     private final DiscordSRVUtils core;
 
 
-    public CompletableFuture<Panel> getPanelById(String id) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
-                p1.setString(1, id);
-                ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) {
-                    return null;
-                }
-                return getPanel(r1);
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
-        });
+    public Panel getPanelById(String id, DSLContext conn) {
+        TicketPanelsRecord record = conn
+                .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                .where(TicketPanelsTable.TICKET_PANELS.ID.eq(id))
+                .fetchOne();
+        if (record == null) return null;
+        return getPanel(record);
     }
 
-    public CompletableFuture<Set<Panel>> getPanels() {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
-                ResultSet r1 = p1.executeQuery();
-                Set<Panel> val = new HashSet<>();
-                while (r1.next()) {
-                    val.add(getPanel(r1));
-                }
-                return val;
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
-        });
-    }
-
-    public Panel getPanel(ResultSet r) throws SQLException {
-        Set<Long> allowedRoles = new HashSet<>();
-        PreparedStatement p = r.getStatement().getConnection().prepareStatement("SELECT * FROM panel_allowed_roles WHERE PanelID=?");
-        p.setString(1, r.getString("ID"));
-        ResultSet r2 = p.executeQuery();
-        while (r2.next()) {
-            allowedRoles.add(r2.getLong("RoleID"));
+    public Set<Panel> getPanels(DSLContext conn) {
+        List<TicketPanelsRecord> records = conn
+                .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                .fetch();
+        Set<Panel> result = new HashSet<>();
+        for (TicketPanelsRecord record : records) {
+            result.add(getPanel(record));
         }
-        return new Panel(core, r.getString("Name"),
-                r.getString("ID"),
-                r.getLong("MessageID"),
-                r.getLong("Channel"),
-                r.getLong("OpenedCategory"),
-                r.getLong("ClosedCategory"),
+        return result;
+    }
+
+    public Panel getPanel(TicketPanelsRecord r) {
+        Set<Long> allowedRoles = new HashSet<>();
+        DSLContext conn = r.configuration().dsl();
+        List<PanelAllowedRolesRecord> records = conn
+                .selectFrom(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES)
+                .where(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.PANELID.eq(r.getId()))
+                .fetch();
+        for (PanelAllowedRolesRecord record : records) {
+            allowedRoles.add(record.getRoleid());
+        }
+        return new Panel(core, r.getName(),
+                r.getId(),
+                r.getMessageid(),
+                r.getChannel(),
+                r.getOpenedcategory(),
+                r.getClosedcategory(),
                 allowedRoles);
     }
 
-    public CompletableFuture<Panel> getPanelByMessageId(long messageId) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM ticket_panels WHERE MessageID=?");
-                p1.setLong(1, messageId);
-                ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) {
-                    return null;
-                }
-                return getPanel(r1);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public Panel getPanelByMessageId(long messageId, DSLContext conn) {
+        TicketPanelsRecord record = conn
+                .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                .where(TicketPanelsTable.TICKET_PANELS.MESSAGEID.eq(messageId))
+                .fetchOne();
+        if (record == null) return null;
+        return getPanel(record);
     }
 
-    public CompletableFuture<Ticket> getTicketByMessageId(long messageId) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE MessageID=?");
-                p1.setLong(1, messageId);
-                ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) {
-                    return null;
-                }
-                return getTicket(r1);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public Ticket getTicketByMessageId(long messageId, DSLContext conn) {
+        TicketsRecord record = conn
+                .selectFrom(TicketsTable.TICKETS)
+                .where(TicketsTable.TICKETS.MESSAGEID.eq(messageId))
+                .fetchOne();
+        if (record == null) return null;
+        return getTicket(record);
     }
 
-    public CompletableFuture<Ticket> getTicketByChannel(long channelId) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets WHERE Channel=?");
-                p1.setLong(1, channelId);
-                ResultSet r1 = p1.executeQuery();
-                if (!r1.next()) {
-                    return null;
-                }
-                return getTicket(r1);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public Ticket getTicketByChannel(long channelId, DSLContext conn) {
+        TicketsRecord record = conn
+                .selectFrom(TicketsTable.TICKETS)
+                .where(TicketsTable.TICKETS.CHANNEL.eq(channelId))
+                .fetchOne();
+        if (record == null) return null;
+        return getTicket(record);
     }
 
-    protected Ticket getTicket(ResultSet r, Panel panel) throws SQLException {
+    protected Ticket getTicket(TicketsRecord r, Panel panel) {
         if (panel == null) {
-            PreparedStatement p = r.getStatement().getConnection().prepareStatement("SELECT * FROM ticket_panels WHERE ID=?");
-            p.setString(1, r.getString("ID"));
-            ResultSet r1 = p.executeQuery();
-            if (r1.next()) panel = getPanel(r1);
+            DSLContext conn = r.configuration().dsl();
+            panel = getPanelById(r.getId(), conn);
         }
-        return new Ticket(core, r.getString("ID"), r.getLong("UserID"), r.getLong("Channel"), Utils.getDBoolean(r.getString("Closed")), panel, r.getLong("MessageID"));
+        return new Ticket(core,
+                r.getId(),
+                r.getUserid(),
+                r.getChannel(),
+                Utils.getDBoolean(r.getClosed()),
+                panel,
+                r.getMessageid());
     }
 
-    protected Ticket getTicket(ResultSet r) throws SQLException {
+    protected Ticket getTicket(TicketsRecord r) {
         return getTicket(r, null);
     }
 
     public void fixTickets() {
         try (Connection conn = core.getDatabaseManager().getConnection()) {
-            PreparedStatement p1 = conn.prepareStatement("SELECT * FROM tickets");
-            ResultSet r1 = p1.executeQuery();
-            while (r1.next()) {
-                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(r1.getLong("Channel"));
+            DSLContext jooq = core.getDatabaseManager().jooq(conn);
+            List<TicketsRecord> tickets = jooq
+                    .selectFrom(TicketsTable.TICKETS)
+                    .fetch();
+            for (TicketsRecord record : tickets) {
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
                 if (channel == null) {
-                    PreparedStatement p = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
-                    p.setLong(1, r1.getLong("Channel"));
-                    p.execute();
+                    jooq.deleteFrom(TicketsTable.TICKETS)
+                            .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
+                            .execute();
                 }
             }
-            p1 = conn.prepareStatement("SELECT * FROM ticket_panels");
-            r1 = p1.executeQuery();
-            while (r1.next()) {
-                Panel panel = getPanel(r1);
+
+            //work with panels
+            List<TicketPanelsRecord> panels = jooq
+                    .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                    .fetch();
+            for (TicketPanelsRecord record : panels) {
+                Panel panel = getPanel(record);
                 try {
                     Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
                     if (msg.getButtons().isEmpty()) {
@@ -182,7 +165,7 @@ public class TicketManager {
                         msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
                     }
                 } catch (ErrorResponseException ex) {
-                    panel.getEditor().apply();
+                    panel.getEditor().apply(jooq);
                 }
             }
         } catch (SQLException e) {

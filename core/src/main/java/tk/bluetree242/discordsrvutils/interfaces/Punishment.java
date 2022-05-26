@@ -67,7 +67,7 @@ public interface Punishment<O> {
                     break;
                 case WARN:
                     if (core.getBansConfig().isSendWarnMsgsToDiscord())
-                    msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
                     break;
                 default:
                     break;

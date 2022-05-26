@@ -55,12 +55,11 @@ public class CommandEvent {
     private final JDA jda;
     @Getter
     private final SlashCommandEvent event;
-
+    private DSLContext connection;
 
     public Member getMember() {
         return member;
     }
-
 
     public User getAuthor() {
         return author;
@@ -152,7 +151,6 @@ public class CommandEvent {
         return cf;
     }
 
-
     public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, String failure) {
         Checks.notNull(cf, "CompletableFuture");
         Checks.notNull(failure, "Failure Message");
@@ -175,8 +173,6 @@ public class CommandEvent {
         });
         return cf;
     }
-
-    private DSLContext connection;
 
     public DSLContext getConnection() {
         if (!isConnOpen()) return connection = core.getDatabaseManager().newJooqConnection();

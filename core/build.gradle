@@ -99,7 +99,7 @@ flyway {
     user = 'SA'
     password = ''
     validateMigrationNaming = true
-    locations = ["filesystem:src/main/resources/migrations"]
+    locations = ["filesystem:src/main/resources/flyway-migrations"]
     group = true
 }
 

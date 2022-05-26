@@ -41,6 +41,7 @@ public class DatabaseManager {
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
+
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
         try {
@@ -86,7 +87,7 @@ public class DatabaseManager {
         //Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
-                .locations("classpath:migrations")
+                .locations("classpath:flyway-migrations")
                 .validateMigrationNaming(true).group(true)
                 .table("discordsrvutils_schema")
                 .load();
@@ -95,12 +96,8 @@ public class DatabaseManager {
         flyway.migrate();
     }
 
-    public Connection getConnection(){
-        try {
-            return sql.getConnection();
-        } catch (SQLException throwables) {
-            throw new UnCheckedSQLException(throwables);
-        }
+    public Connection getConnection() throws SQLException {
+        return sql.getConnection();
     }
 
     public DSLContext jooq(Connection conn) {
@@ -108,7 +105,11 @@ public class DatabaseManager {
     }
 
     public DSLContext newJooqConnection() {
-        return jooq(getConnection());
+        try {
+            return jooq(getConnection());
+        } catch (SQLException ex) {
+            throw new UnCheckedSQLException(ex);
+        }
     }
 
     public void close() {

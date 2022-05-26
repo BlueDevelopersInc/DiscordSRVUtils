@@ -67,6 +67,7 @@ public class MessageFilter implements Filter {
             log(level, message, "Hsqldb");
             return Result.DENY;
         }
+        if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.jooq")) return Result.DENY;
         return Result.NEUTRAL;
     }
 

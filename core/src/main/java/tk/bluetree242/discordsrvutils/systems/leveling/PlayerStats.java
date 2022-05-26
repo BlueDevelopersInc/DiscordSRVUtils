@@ -109,7 +109,7 @@ public class PlayerStats {
             Collection actions = new ArrayList<>();
             for (Role role : manager.getRolesToRemove(level)) {
                 if (member.getRoles().contains(role))
-                            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
+                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
             }
             Role toAdd = manager.getRoleForLevel(level);
             if (toAdd != null) {

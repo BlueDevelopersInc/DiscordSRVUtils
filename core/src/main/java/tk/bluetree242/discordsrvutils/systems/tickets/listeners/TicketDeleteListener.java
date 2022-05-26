@@ -26,24 +26,27 @@ package tk.bluetree242.discordsrvutils.systems.tickets.listeners;
 import github.scarsz.discordsrv.dependencies.jda.api.events.channel.text.TextChannelDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class TicketDeleteListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
-    public void onTextChannelDelete(TextChannelDeleteEvent e) {
+    public void onTextChannelDelete(@NotNull TextChannelDeleteEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("DELETE FROM tickets WHERE Channel=?");
-                p1.setLong(1, e.getChannel().getIdLong());
-                p1.execute();
+                DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                jooq.deleteFrom(TicketsTable.TICKETS)
+                        .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
+                        .execute();
             } catch (SQLException ex) {
                 throw new UnCheckedSQLException(ex);
             }
