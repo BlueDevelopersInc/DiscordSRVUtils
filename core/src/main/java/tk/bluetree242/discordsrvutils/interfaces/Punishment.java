@@ -34,77 +34,83 @@ public interface Punishment<O> {
 
     static void handlePunishment(Punishment punishment, DiscordSRVUtils core) {
         if (punishment.getPunishmentType() == PunishmentType.UNKNOWN) return;
-        if (!core.getBansConfig().isSendIpPunishmentsToDiscord() && punishment.isIp()) {
-            Message msg = null;
-            PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
-            if (punishment.isGrant()) {
-                switch (punishment.getPunishmentType()) {
-                    case BAN:
-                        if (core.getBansConfig().isSendBanMsgsToDiscord()) {
-                            if (punishment.isPermanent()) {
-                                if (punishment.isIp())
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
-                                else
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
-                            } else {
-                                if (punishment.isIp())
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
-                                else
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
-                            }
-                        }
-                        break;
-                    case MUTE:
-                        if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
-                            if (punishment.isPermanent()) {
-                                msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
-                            } else {
-                                if (punishment.isIp())
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
-                                else
-                                    msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
-                            }
-                        }
-                        break;
-                    case WARN:
-                        if (core.getBansConfig().isSendWarnMsgsToDiscord())
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                switch (punishment.getPunishmentType()) {
-                    case BAN:
-                        if (punishment.isIp())
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
-                        else
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
+        announcePunishment(punishment, core);
+        syncPunishment(punishment, core);
+    }
 
-                        break;
-                    case MUTE:
-                        if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
-                            msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
-                            break;
+    static void announcePunishment(Punishment punishment, DiscordSRVUtils core) {
+        if (!core.getBansConfig().isSendIpPunishmentsToDiscord() && punishment.isIp()) return;
+        Message msg = null;
+        PlaceholdObjectList placeholder = PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, punishment, "punishment"));
+        if (punishment.isGrant()) {
+            switch (punishment.getPunishmentType()) {
+                case BAN:
+                    if (core.getBansConfig().isSendBanMsgsToDiscord()) {
+                        if (punishment.isPermanent()) {
+                            if (punishment.isIp())
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().IPBannedMessage(), placeholder, null).build();
+                            else
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().bannedMessage(), placeholder, null).build();
+                        } else {
+                            if (punishment.isIp())
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempIPBannedMessage(), placeholder, null).build();
+                            else
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
                         }
-                    default:
-                        break;
-                }
-            }
-            if (msg != null) {
-                if (core.getBansConfig().isSendPunishmentMsgsToDiscord()) {
-                    for (Long id : core.getBansConfig().channel_ids()) {
-                        TextChannel channel = core.getJdaManager().getChannel(id);
-                        if (channel == null) {
-                            core.severe("No channel was found with id " + id + " For Punishment message");
-                            return;
-                        } else
-                            core.queueMsg(msg, channel).queue();
                     }
+                    break;
+                case MUTE:
+                    if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
+                        if (punishment.isPermanent()) {
+                            msg = core.getMessageManager().getMessage(core.getBansConfig().MutedMessage(), placeholder, null).build();
+                        } else {
+                            if (punishment.isIp())
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().TempMutedMessage(), placeholder, null).build();
+                            else
+                                msg = core.getMessageManager().getMessage(core.getBansConfig().tempBannedMessage(), placeholder, null).build();
+                        }
+                    }
+                    break;
+                case WARN:
+                    if (core.getBansConfig().isSendWarnMsgsToDiscord())
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (punishment.getPunishmentType()) {
+                case BAN:
+                    if (punishment.isIp())
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unipbannedMessage(), placeholder, null).build();
+                    else
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unbannedMessage(), placeholder, null).build();
+
+                    break;
+                case MUTE:
+                    if (core.getBansConfig().isSendMuteMsgsToDiscord()) {
+                        msg = core.getMessageManager().getMessage(core.getBansConfig().unmuteMessage(), placeholder, null).build();
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        if (msg != null) {
+            if (core.getBansConfig().isSendPunishmentMsgsToDiscord()) {
+                for (Long id : core.getBansConfig().channel_ids()) {
+                    TextChannel channel = core.getJdaManager().getChannel(id);
+                    if (channel == null) {
+                        core.severe("No channel was found with id " + id + " For Punishment message");
+                        return;
+                    } else
+                        core.queueMsg(msg, channel).queue();
                 }
             }
         }
-        // SYNC PUNISHMENT
+    }
+
+    static void syncPunishment(Punishment punishment, DiscordSRVUtils core) {
         if (!punishment.isPermanent() && !core.getBansConfig().isSyncTempPunishments()) return;
         String id = core.getDiscordSRV().getDiscordId(punishment.getTargetUUID());
         if (id == null) return;
