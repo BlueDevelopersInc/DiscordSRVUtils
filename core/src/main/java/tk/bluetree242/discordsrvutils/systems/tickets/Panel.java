@@ -120,9 +120,7 @@ public class Panel {
                 .execute();
         TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
         if (channel != null) {
-            channel.retrieveMessageById(getMessageId()).queue(msg -> {
-                msg.delete().queue();
-            });
+            channel.retrieveMessageById(getMessageId()).queue(msg -> msg.delete().queue());
         }
         getTickets(conn).forEach(Ticket::delete);
     }

@@ -98,25 +98,22 @@ public class StatusManager {
         return json.getLong("channel");
     }
 
-    public CompletableFuture<Void> editMessage(boolean online) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            Message toSend = getStatusMessage(online);
-            try {
-                Long messageId = getMessageId();
-                Long channelId = getChannelId();
-                if (messageId == null || channelId == null) return;
-                Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
-                if (msg == null) return;
-                //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
-                msg.editMessage(toSend).complete();
-            } catch (IOException ex) {
+    public void editMessage(boolean online) {
+        Message toSend = getStatusMessage(online);
+        try {
+            Long messageId = getMessageId();
+            Long channelId = getChannelId();
+            if (messageId == null || channelId == null) return;
+            Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
+            if (msg == null) return;
+            //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
+            msg.editMessage(toSend).complete();
+        } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
                 //Ignore the error for now
             } catch (ErrorResponseException ex) {
                 //message does not exist, ok that is fine
             }
-
-        });
     }
 
     public void registerTimer() {
