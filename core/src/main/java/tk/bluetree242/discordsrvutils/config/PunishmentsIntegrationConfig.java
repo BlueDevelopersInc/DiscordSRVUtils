@@ -61,10 +61,16 @@ public interface PunishmentsIntegrationConfig {
     @AnnotationBasedSorter.Order(23)
     boolean isSendWarnMsgsToDiscord();
 
+    @ConfKey("send_ip_punishment_messages_to_discord")
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("\n#Should we send the message of IP bans to discord? (all punishments included)")
+    @AnnotationBasedSorter.Order(24)
+    boolean isSendIpPunishmentsToDiscord();
+
     @ConfKey("punishment_messages_channels")
     @ConfDefault.DefaultLongs({0})
     @ConfComments("\n#The Channels to send punishment messages in, add 0 for discordsrv main chat channel")
-    @AnnotationBasedSorter.Order(21)
+    @AnnotationBasedSorter.Order(19)
     Set<Long> channel_ids();
 
     @ConfKey("muted_role")
