@@ -72,11 +72,12 @@ public class Panel {
 
     private static void addAllowedRoles(DSLContext conn, Set<Long> allowedRoles, Panel panel) {
         InsertSetMoreStep query = null;
+        if (allowedRoles.isEmpty()) return;
         for (Long r : allowedRoles) {
             if (query == null) query = conn.insertInto(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES)
                     .set(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.PANELID, panel.id)
                     .set(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.ROLEID, r);
-            else query.newRecord()
+            else query = query.newRecord()
                     .set(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.PANELID, panel.id)
                     .set(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.ROLEID, r);
         }
