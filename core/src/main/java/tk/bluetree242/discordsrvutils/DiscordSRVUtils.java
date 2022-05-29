@@ -56,7 +56,6 @@ import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {

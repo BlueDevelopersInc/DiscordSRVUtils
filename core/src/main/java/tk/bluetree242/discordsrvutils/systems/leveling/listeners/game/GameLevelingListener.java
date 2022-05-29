@@ -39,7 +39,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
@@ -55,12 +54,6 @@ public class GameLevelingListener extends PlatformListener {
                         .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
                         .fetchOne();
                 if (record == null) {
-                    PreparedStatement p2 = conn.prepareStatement("INSERT INTO leveling (UUID, Name, Level, XP) VALUES (?, ?, ?, ?)");
-                    p2.setString(1, e.getPlayer().getUniqueId().toString());
-                    p2.setString(2, e.getPlayer().getName());
-                    p2.setInt(3, 0);
-                    p2.setInt(4, 0);
-                    p2.execute();
                     jooq.insertInto(LevelingTable.LEVELING)
                             .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
                             .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
@@ -69,10 +62,6 @@ public class GameLevelingListener extends PlatformListener {
                             .execute();
                 } else {
                     if (!record.getName().equals(e.getPlayer().getName())) {
-                        PreparedStatement p2 = conn.prepareStatement("UPDATE leveling SET Name=? WHERE UUID=?");
-                        p2.setString(1, e.getPlayer().getName());
-                        p2.setString(2, e.getPlayer().getUniqueId().toString());
-                        p2.execute();
                         jooq.update(LevelingTable.LEVELING)
                                 .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
                                 .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))

@@ -109,11 +109,11 @@ public class StatusManager {
             //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
             msg.editMessage(toSend).complete();
         } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-                //Ignore the error for now
-            } catch (ErrorResponseException ex) {
-                //message does not exist, ok that is fine
-            }
+            throw new UncheckedIOException(ex);
+            //Ignore the error for now
+        } catch (ErrorResponseException ex) {
+            //message does not exist, ok that is fine
+        }
     }
 
     public void registerTimer() {
