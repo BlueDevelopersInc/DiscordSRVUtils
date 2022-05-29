@@ -83,7 +83,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                         }
                     }
                 } catch (SQLException ex) {
-                    throw new UnCheckedSQLException(ex);
+                    core.getErrorHandler().defaultHandle(ex, e.getChannel());
                 }
             }
         });

@@ -66,7 +66,7 @@ public class PanelOpenListener extends ListenerAdapter {
                     core.getMessageManager().messageToReplyAction(action, core.getMessageManager().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
                 }
             } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
+                core.getErrorHandler().defaultHandle(ex, e.getChannel());
             }
         });
     }

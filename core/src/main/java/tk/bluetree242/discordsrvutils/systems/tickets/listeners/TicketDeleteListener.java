@@ -48,7 +48,7 @@ public class TicketDeleteListener extends ListenerAdapter {
                         .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
                         .execute();
             } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
+                core.getErrorHandler().defaultHandle(ex, e.getChannel());
             }
         });
     }
