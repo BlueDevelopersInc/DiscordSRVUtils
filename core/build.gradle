@@ -95,7 +95,7 @@ afterEvaluate { evaluated ->
     }
 }
 flyway {
-    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;sql.syntax_mys=true"
+    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;shutdown=true;sql.syntax_mys=true"
     user = 'SA'
     password = ''
     validateMigrationNaming = true
