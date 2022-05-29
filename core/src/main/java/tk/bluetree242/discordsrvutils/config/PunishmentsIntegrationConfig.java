@@ -68,7 +68,7 @@ public interface PunishmentsIntegrationConfig {
     String bannedMessage();
 
     @ConfKey("temp_banned_message")
-    @ConfDefault.DefaultString("message:ban")
+    @ConfDefault.DefaultString("message:temp-ban")
     @ConfComments("\n#Message to send when a person was Temporary banned. Set to blank and we will not send it at all")
     @AnnotationBasedSorter.Order(40)
     String tempBannedMessage();

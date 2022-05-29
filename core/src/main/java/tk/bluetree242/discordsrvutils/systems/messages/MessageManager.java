@@ -104,7 +104,8 @@ public class MessageManager {
                 "welcome",
                 "status-online",
                 "status-offline",
-                "warn"};
+                "warn",
+                "temp-ban"};
         for (String msg : messages) {
             try {
                 //add them to the map

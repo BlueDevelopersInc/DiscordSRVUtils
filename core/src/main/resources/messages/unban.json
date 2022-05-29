@@ -1,9 +1,11 @@
 {
   "embed": {
-    "color": "red",
-    "author": {
-      "icon_url": "https://minotar.net/avatar/[punishment.name]",
-      "name": "[punishment.name] was unbanned by [punishment.operator]"
+    "title": "Revoked Punishment",
+    "description": "Player ``[punishment.name]`` was unbanned for ``[punishment.reason]``",
+    "color": "10771377",
+    "footer": {
+      "icon_url": "https://i.imgur.com/9IkDPIr.png",
+      "text": "[punishment.operator]"
     }
   }
 }
