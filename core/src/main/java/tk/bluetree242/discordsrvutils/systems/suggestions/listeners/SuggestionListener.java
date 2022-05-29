@@ -56,6 +56,7 @@ public class SuggestionListener extends ListenerAdapter {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
                 DSLContext jooq = core.getDatabaseManager().jooq(conn);
                 Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+                if (suggestion == null) return;
                 Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
                 Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
                 Emoji no = Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌"));
@@ -88,6 +89,7 @@ public class SuggestionListener extends ListenerAdapter {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
                 DSLContext jooq = core.getDatabaseManager().jooq(conn);
                 Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+                if (suggestion == null) return;
                 Message msg = suggestion.getMessage();
                 if (!msg.isEdited() || (System.currentTimeMillis() - msg.getTimeEdited().toEpochSecond()) > 1000) {
                     msg.editMessage(suggestion.getCurrentMsg()).queue();
@@ -106,7 +108,7 @@ public class SuggestionListener extends ListenerAdapter {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
                 DSLContext jooq = core.getDatabaseManager().jooq(conn);
                 Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
-
+                if (suggestion == null) return;
                 Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
                 Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
                 Emoji no = Utils.getEmoji(core.getSuggestionsConfig().no_reaction(), new Emoji("❌"));
