@@ -151,8 +151,9 @@ public class CreatePanelListener extends ListenerAdapter {
                     waiter.expire(false);
                     try (Connection conn = core.getDatabaseManager().getConnection()) {
                         Panel panel = waiter.getBuilder().create(core.getDatabaseManager().jooq(conn));
+                        e.getChannel().sendMessageEmbeds(Embed.success("Panel created with id " + panel.getId())).queue();
                     } catch (SQLException ex) {
-                        throw new UnCheckedSQLException(ex);
+                        core.getErrorHandler().defaultHandle(ex, e.getChannel());
                     }
                 }
             }
