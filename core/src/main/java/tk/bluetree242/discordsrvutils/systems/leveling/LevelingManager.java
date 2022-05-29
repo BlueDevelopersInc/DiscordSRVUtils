@@ -156,8 +156,8 @@ public class LevelingManager {
                 UUID.fromString(r.getUuid()),
                 r.getName(), r.getLevel(),
                 r.getXp(),
-                r.getMinecraftmessages(),
-                r.getDiscordmessages(),
+                r.getMinecraftmessages() == null ? 0 : r.getMinecraftmessages(),
+                r.getDiscordmessages() == null ? 0 : r.getDiscordmessages(),
                 rank);
         if (!adding)
             cachedUUIDS.put(stats.getUuid(), stats);
