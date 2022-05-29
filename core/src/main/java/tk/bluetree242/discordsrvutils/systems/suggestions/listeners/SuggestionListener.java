@@ -83,6 +83,7 @@ public class SuggestionListener extends ListenerAdapter {
     }
 
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent e) {
+        if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
             try (Connection conn = core.getDatabaseManager().getConnection()) {
                 DSLContext jooq = core.getDatabaseManager().jooq(conn);
