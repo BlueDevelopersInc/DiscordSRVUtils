@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 
 public class SuggestionNoteCommand extends SuggestionCommand {
     public SuggestionNoteCommand(DiscordSRVUtils core) {
@@ -46,13 +47,13 @@ public class SuggestionNoteCommand extends SuggestionCommand {
 
         int number = (int) e.getOption("number").getAsLong();
         String noteText = e.getOption("note").getAsString();
-        e.handleCF(core.getSuggestionManager().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-            if (suggestion == null) {
-                e.replyErr("Suggestion not found").queue();
-                return;
-            }
-            e.handleCF(suggestion.addNote(e.getAuthor().getIdLong(), noteText), "Successfully added note", "Could not add note");
-        });
+        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number, e.getConnection());
+        if (suggestion == null) {
+            e.replyErr("Suggestion not found").queue();
+            return;
+        }
+        suggestion.addNote(e.getAuthor().getIdLong(), noteText, e.getConnection());
+        e.replySuccess("Successfully added note").queue();
 
     }
 }

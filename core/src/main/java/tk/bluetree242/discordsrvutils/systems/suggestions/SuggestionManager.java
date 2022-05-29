@@ -2,7 +2,7 @@
  *  LICENSE
  *  DiscordSRVUtils
  *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
+ *  Copyright (C) 2020 - 2022 BlueTree242
  *  -------------
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as
@@ -30,19 +30,25 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseExc
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.SuggestionNotesRecord;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.SuggestionsRecord;
+import tk.bluetree242.discordsrvutils.jooq.tables.records.SuggestionsVotesRecord;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -67,103 +73,63 @@ public class SuggestionManager {
                 Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜")));
     }
 
-    public CompletableFuture<Suggestion> getSuggestionByNumber(int num) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                return getSuggestionByNumber(num, conn);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+
+    public Suggestion getSuggestionByNumber(int number, DSLContext conn) throws SQLException {
+        SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
+                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number)).fetchOne();
+        if (record == null) return null;
+        return getSuggestion(record);
     }
 
-    public CompletableFuture<Suggestion> getSuggestionByMessageID(Long MessageID) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                return getSuggestionByMessageID(MessageID, conn);
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public Suggestion getSuggestionByMessageID(Long MessageID, DSLContext conn) throws SQLException {
+        SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
+                .where(SuggestionsTable.SUGGESTIONS.MESSAGEID.eq(MessageID)).fetchOne();
+        if (record == null) return null;
+        return getSuggestion(record);
     }
 
-    public Suggestion getSuggestionByNumber(int number, Connection conn) throws SQLException {
-        PreparedStatement p = conn.prepareStatement("SELECT * FROM suggestions WHERE SuggestionNumber=?");
-        p.setInt(1, number);
-        ResultSet r = p.executeQuery();
-        if (!r.next()) return null;
-        return getSuggestion(r);
-    }
-
-    public Suggestion getSuggestionByMessageID(Long MessageID, Connection conn) throws SQLException {
-        PreparedStatement p = conn.prepareStatement("SELECT * FROM suggestions WHERE MessageID=?");
-        p.setLong(1, MessageID);
-        ResultSet r = p.executeQuery();
-        if (!r.next()) return null;
-        return getSuggestion(r);
-    }
-
-    public Suggestion getSuggestion(ResultSet r) throws SQLException {
+    public Suggestion getSuggestion(SuggestionsRecord r) throws SQLException {
         return getSuggestion(r, null, null);
     }
 
-    public Suggestion getSuggestion(ResultSet r, ResultSet notesr, ResultSet votesr) throws SQLException {
+    public Suggestion getSuggestion(SuggestionsRecord r, List<SuggestionNotesRecord> notesr, List<SuggestionsVotesRecord> votesr) {
+        DSLContext conn = r.configuration().dsl();
         if (notesr == null) {
-            PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestion_notes WHERE SuggestionNumber=?");
-            p1.setInt(1, r.getInt("SuggestionNumber"));
-            notesr = p1.executeQuery();
+            notesr = conn.selectFrom(SuggestionNotesTable.SUGGESTION_NOTES)
+                    .where(SuggestionNotesTable.SUGGESTION_NOTES.SUGGESTIONNUMBER.eq(r.getSuggestionnumber())).fetch();
         }
         if (core.voteMode != SuggestionVoteMode.REACTIONS)
             if (votesr == null) {
-                PreparedStatement p1 = r.getStatement().getConnection().prepareStatement("SELECT * FROM suggestions_votes WHERE SuggestionNumber=?");
-                p1.setInt(1, r.getInt("SuggestionNumber"));
-                votesr = p1.executeQuery();
+                votesr = conn.selectFrom(SuggestionsVotesTable.SUGGESTIONS_VOTES)
+                        .where(SuggestionsVotesTable.SUGGESTIONS_VOTES.SUGGESTIONNUMBER.eq(r.getSuggestionnumber().longValue()))
+                        .fetch();
             }
         Set<SuggestionNote> notes = new HashSet<>();
         Set<SuggestionVote> votes = new HashSet<>();
-        while (notesr.next()) {
+        for (SuggestionNotesRecord record : notesr) {
             notes.add(new SuggestionNote(
-                    notesr.getLong("StaffID"),
-                    Utils.b64Decode(notesr.getString("NoteText")),
-                    notesr.getInt("SuggestionNumber"),
-                    notesr.getLong("CreationTime")
+                    record.getStaffid(),
+                    Utils.b64Decode(record.getNotetext()),
+                    record.getSuggestionnumber(),
+                    record.getCreationtime()
             ));
         }
         Suggestion suggestion = new Suggestion(core,
-                Utils.b64Decode(r.getString("SuggestionText")),
-                r.getInt("SuggestionNumber"),
-                r.getLong("Submitter"),
-                r.getLong("ChannelID"), r.getLong("CreationTime"), notes, r.getLong("MessageID"),
-                r.getString("Approved") == null ? null : Utils.getDBoolean(r.getString("Approved")), r.getLong("Approver"), votes);
+                Utils.b64Decode(r.getSuggestiontext()),
+                r.getSuggestionnumber(),
+                r.getSubmitter(),
+                r.getChannelid(), r.getCreationtime(), notes, r.getMessageid(),
+                r.getApproved() == null ? null : Utils.getDBoolean(r.getApproved()), r.getApprover(), votes);
         if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-            while (votesr.next()) {
-                votes.add(new SuggestionVote(votesr.getLong("UserID"), votesr.getInt("SuggestionNumber"), Utils.getDBoolean(votesr.getString("Agree"))));
+            for (SuggestionsVotesRecord record : votesr) {
+                votes.add(new SuggestionVote(record.getUserid(), record.getSuggestionnumber().intValue(), Utils.getDBoolean(record.getAgree())));
             }
 
-        } else {
-            /*
-            for (MessageReaction reaction : suggestion.getMessage().getReactions()) {
-                if (reaction.getReactionEmote().getName().equals(SuggestionManager.getYesEmoji().getName())) {
-                    List<User> users = reaction.retrieveUsers().complete();
-                    for (User user : users) {
-                        if (!user.isBot())
-                        votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
-                    }
-                } else if (reaction.getReactionEmote().getName().equals(SuggestionManager.getNoEmoji().getName())) {
-                    List<User> users = reaction.retrieveUsers().complete();
-                    for (User user : users) {
-                        if (!user.isBot())
-                            votes.add(new SuggestionVote(user.getIdLong(), suggestion.getNumber(), true));
-                    }
-                }
-            }
-
-             */
         }
         return suggestion;
     }
 
-    public CompletableFuture<Suggestion> makeSuggestion(String text, Long SubmitterID) {
+    public Suggestion makeSuggestion(String text, Long SubmitterID, DSLContext conn) {
         if (!core.getSuggestionsConfig().enabled()) {
             throw new IllegalStateException("Suggestions are not enabled");
         }
@@ -176,41 +142,37 @@ public class SuggestionManager {
             throw new IllegalStateException("Suggestions Channel not found");
         }
 
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions ORDER BY SuggestionNumber DESC ");
-                ResultSet r1 = p1.executeQuery();
-                int num = 1;
-                if (r1.next()) {
-                    num = r1.getInt("SuggestionNumber") + 1;
-                }
+        SuggestionsRecord check = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
+                .orderBy(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.desc())
+                .limit(1)
+                .fetchOne();
+        int num = 1;
+        if (check != null) {
+            num = check.getSuggestionnumber() + 1;
+        }
 
-                Suggestion suggestion = new Suggestion(core, text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
-                User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
-                MessageBuilder builder = core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(),
-                        PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, suggestion, "suggestion"), new PlaceholdObject(core, submitter, "submitter"))
-                        , null);
-                if (core.voteMode == SuggestionVoteMode.BUTTONS) {
-                    builder.setActionRows(getActionRow(0, 0));
-                }
-                Message msg = core.queueMsg(builder.build(), channel).complete();
-                PreparedStatement p2 = conn.prepareStatement("INSERT INTO suggestions(suggestionnumber, suggestiontext, submitter, messageid, channelid, creationtime) VALUES (?,?,?,?,?,?)");
-                p2.setInt(1, num);
-                p2.setString(2, Utils.b64Encode(text));
-                p2.setLong(3, SubmitterID);
-                p2.setLong(4, msg.getIdLong());
-                p2.setLong(5, channelId);
-                p2.setLong(6, System.currentTimeMillis());
-                p2.execute();
-                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
-                    msg.addReaction(getYesEmoji().getNameInReaction()).queue();
-                    msg.addReaction(getNoEmoji().getNameInReaction()).queue();
-                }
-                return suggestion;
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+        Suggestion suggestion = new Suggestion(core, text, num, SubmitterID, channelId, System.currentTimeMillis(), new HashSet<>(), null, null, null, new HashSet<>());
+        User submitter = core.getJDA().retrieveUserById(SubmitterID).complete();
+        MessageBuilder builder = core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(),
+                PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, suggestion, "suggestion"), new PlaceholdObject(core, submitter, "submitter"))
+                , null);
+        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+            builder.setActionRows(getActionRow(0, 0));
+        }
+        Message msg = core.queueMsg(builder.build(), channel).complete();
+        conn.insertInto(SuggestionsTable.SUGGESTIONS)
+                .set(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER, num)
+                .set(SuggestionsTable.SUGGESTIONS.SUGGESTIONTEXT, Utils.b64Encode(text))
+                .set(SuggestionsTable.SUGGESTIONS.SUBMITTER, SubmitterID)
+                .set(SuggestionsTable.SUGGESTIONS.MESSAGEID, msg.getIdLong())
+                .set(SuggestionsTable.SUGGESTIONS.CHANNELID, channelId)
+                .set(SuggestionsTable.SUGGESTIONS.CREATIONTIME, System.currentTimeMillis())
+                .execute();
+        if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+            msg.addReaction(getYesEmoji().getNameInReaction()).queue();
+            msg.addReaction(getNoEmoji().getNameInReaction()).queue();
+        }
+        return suggestion;
     }
 
     public CompletableFuture<Void> migrateSuggestions() {
@@ -219,10 +181,12 @@ public class SuggestionManager {
             boolean sent = false;
             loading = true;
             try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("SELECT * FROM suggestions");
-                ResultSet r1 = p1.executeQuery();
-                while (r1.next()) {
-                    Suggestion suggestion = core.getSuggestionManager().getSuggestion(r1);
+                DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                List<SuggestionsRecord> records = jooq
+                        .selectFrom(SuggestionsTable.SUGGESTIONS)
+                        .fetch();
+                for (SuggestionsRecord record : records) {
+                    Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
                     try {
                         Message msg = suggestion.getMessage();
                         if (msg != null) {

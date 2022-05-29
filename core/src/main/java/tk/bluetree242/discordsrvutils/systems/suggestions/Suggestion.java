@@ -23,18 +23,16 @@
 package tk.bluetree242.discordsrvutils.systems.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Suggestion {
@@ -115,41 +113,28 @@ public class Suggestion {
         return ChannelID;
     }
 
-    public CompletableFuture<SuggestionNote> addNote(Long staff, String note) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("INSERT INTO suggestion_notes(staffid, notetext, suggestionnumber, creationtime) VALUES (?,?,?,?)");
-                p1.setLong(1, staff);
-                p1.setString(2, Utils.b64Encode(note));
-                p1.setInt(3, number);
-                p1.setLong(4, System.currentTimeMillis());
-                p1.execute();
-                SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
-                notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
-                return suggestionNote;
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
-        });
+    public SuggestionNote addNote(Long staff, String note, DSLContext conn) {
+        conn.insertInto(SuggestionNotesTable.SUGGESTION_NOTES)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.STAFFID, staff)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.NOTETEXT, Utils.b64Encode(note))
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.SUGGESTIONNUMBER, number)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.CREATIONTIME, System.currentTimeMillis())
+                .execute();
+        SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
+        notes.add(suggestionNote);
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        return suggestionNote;
     }
 
-    public CompletableFuture<Void> setApproved(boolean approved, Long staffID) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
-                p1.setString(1, Utils.getDBoolean(approved));
-                p1.setLong(2, staffID);
-                p1.setInt(3, number);
-                p1.execute();
-                this.Approved = approved;
-                this.approver = staffID;
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
-
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public void setApproved(boolean approved, Long staffID, DSLContext conn) {
+        conn.update(SuggestionsTable.SUGGESTIONS)
+                .set(SuggestionsTable.SUGGESTIONS.APPROVED, Utils.getDBoolean(approved))
+                .set(SuggestionsTable.SUGGESTIONS.APPROVER, staffID)
+                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number))
+                .execute();
+        this.Approved = approved;
+        this.approver = staffID;
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
     }
 
     public Message getMessage() {
