@@ -71,38 +71,5 @@ public class AsyncManager {
         if (isReady()) pool.execute(r);
     }
 
-    /**
-     * For doing a cf inside another one
-     */
-    public <U> U handleCFOnAnother(CompletableFuture<U> cf) {
-        try {
-            return cf.get();
-        } catch (ExecutionException | InterruptedException ex) {
-            Exception e = ex;
-            while (ex instanceof ExecutionException) e = (Exception) ex.getCause();
-            throw (RuntimeException) e;
-        }
-    }
-
-    public CompletableFuture<Void> completableFutureRun(Runnable r) {
-        return CompletableFuture.runAsync(r, getPool() == null ? null : getPool());
-    }
-
-    public <U> CompletableFuture<U> completableFuture(Supplier<U> v) {
-        return CompletableFuture.supplyAsync(v, getPool() == null ? null : getPool());
-    }
-
-    public <U> void handleCF(CompletableFuture<U> cf, Consumer<U> success, Consumer<Throwable> failure) {
-        if (success != null) cf.thenAcceptAsync(success);
-        cf.handle((e, x) -> {
-            Exception ex = (Exception) x.getCause();
-            while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            if (failure != null) {
-                failure.accept(ex);
-            } else core.getErrorHandler().defaultHandle(ex);
-            return x;
-        });
-    }
-
 
 }

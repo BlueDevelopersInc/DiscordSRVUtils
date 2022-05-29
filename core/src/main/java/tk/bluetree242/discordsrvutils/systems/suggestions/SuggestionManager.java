@@ -175,8 +175,7 @@ public class SuggestionManager {
         return suggestion;
     }
 
-    public CompletableFuture<Void> migrateSuggestions() {
-        return core.getAsyncManager().completableFutureRun(() -> {
+    public void migrateSuggestions() {
             String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
             boolean sent = false;
             loading = true;
@@ -228,8 +227,6 @@ public class SuggestionManager {
             } catch (SQLException e) {
                 throw new UnCheckedSQLException(e);
             }
-        });
-
     }
 
 

@@ -40,7 +40,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class StatusManager {
@@ -59,8 +58,7 @@ public class StatusManager {
         return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
-    public CompletableFuture<Message> newMessage(TextChannel channel) {
-        return core.getAsyncManager().completableFuture(() -> {
+    public Message newMessage(TextChannel channel) {
             //path for some temp storage which should not be stored in database
             File file = getDataPath().toFile();
             JSONObject json = new JSONObject();
@@ -77,11 +75,10 @@ public class StatusManager {
                 writer.write(json.toString());
                 writer.close();
                 //Should be written successfully
+                return msg;
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-            return msg;
-        });
     }
 
     public Long getMessageId() throws IOException {
