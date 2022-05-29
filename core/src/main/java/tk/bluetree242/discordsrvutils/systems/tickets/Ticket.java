@@ -110,8 +110,8 @@ public class Ticket {
                 .execute();
     }
 
-    public boolean reopen(User userWhoOpened, DSLContext conn) {
-        if (!closed) return false;
+    public void reopen(User userWhoOpened, DSLContext conn) {
+        if (!closed) return;
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "false")
                 .where(TicketsTable.TICKETS.ID.eq(id))
@@ -124,7 +124,7 @@ public class Ticket {
         if (override != null) {
             override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
         } else {
-            return false;
+            return;
         }
         Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_reopen_message(), PlaceholdObjectList.ofArray(core,
                 new PlaceholdObject(core, userWhoOpened, "user"),
@@ -140,7 +140,6 @@ public class Ticket {
                 .where(TicketsTable.TICKETS.USERID.eq(userID))
                 .and(TicketsTable.TICKETS.ID.eq(id))
                 .execute();
-        return true;
     }
 
     public void delete() {
