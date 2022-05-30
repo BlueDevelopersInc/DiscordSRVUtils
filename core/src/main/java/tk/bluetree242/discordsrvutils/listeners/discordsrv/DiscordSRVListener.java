@@ -37,7 +37,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 

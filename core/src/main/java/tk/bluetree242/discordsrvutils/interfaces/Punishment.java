@@ -44,30 +44,30 @@ public interface Punishment<O> {
         if (punishment.isGrant()) {
             switch (punishment.getPunishmentType()) {
                 case BAN:
-                        if (punishment.isPermanent()) {
-                            if (punishment.isIp())
-                                msg = punishmentMsg(core, core.getBansConfig().IPBannedMessage(), placeholder);
-                            else
-                                msg = punishmentMsg(core, core.getBansConfig().bannedMessage(), placeholder);
-                        } else {
-                            if (punishment.isIp())
-                                msg = punishmentMsg(core, core.getBansConfig().TempIPBannedMessage(), placeholder);
-                            else
-                                msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
-                        }
+                    if (punishment.isPermanent()) {
+                        if (punishment.isIp())
+                            msg = punishmentMsg(core, core.getBansConfig().IPBannedMessage(), placeholder);
+                        else
+                            msg = punishmentMsg(core, core.getBansConfig().bannedMessage(), placeholder);
+                    } else {
+                        if (punishment.isIp())
+                            msg = punishmentMsg(core, core.getBansConfig().TempIPBannedMessage(), placeholder);
+                        else
+                            msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
+                    }
                     break;
                 case MUTE:
-                        if (punishment.isPermanent()) {
-                            msg = punishmentMsg(core, core.getBansConfig().MutedMessage(), placeholder);
-                        } else {
-                            if (punishment.isIp())
-                                msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
-                            else
-                                msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
+                    if (punishment.isPermanent()) {
+                        msg = punishmentMsg(core, core.getBansConfig().MutedMessage(), placeholder);
+                    } else {
+                        if (punishment.isIp())
+                            msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
+                        else
+                            msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
                     }
                     break;
                 case WARN:
-                        msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
                     break;
                 default:
                     break;

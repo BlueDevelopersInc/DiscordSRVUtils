@@ -26,25 +26,17 @@ package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionMapping;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
-import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import tk.bluetree242.discordsrvutils.utils.Utils;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommandEvent {

@@ -59,26 +59,26 @@ public class StatusManager {
     }
 
     public Message newMessage(TextChannel channel) {
-            //path for some temp storage which should not be stored in database
-            File file = getDataPath().toFile();
-            JSONObject json = new JSONObject();
-            json.put("channel", channel.getIdLong());
-            //Its already async, complete() should be fine
-            Message msg = channel.sendMessage(getStatusMessage(true)).complete();
-            json.put("message", msg.getIdLong());
-            try {
-                if (!file.exists()) {
-                    getDataPath().getParent().toFile().mkdirs();
-                    file.createNewFile();
-                }
-                FileWriter writer = new FileWriter(file);
-                writer.write(json.toString());
-                writer.close();
-                //Should be written successfully
-                return msg;
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        //path for some temp storage which should not be stored in database
+        File file = getDataPath().toFile();
+        JSONObject json = new JSONObject();
+        json.put("channel", channel.getIdLong());
+        //Its already async, complete() should be fine
+        Message msg = channel.sendMessage(getStatusMessage(true)).complete();
+        json.put("message", msg.getIdLong());
+        try {
+            if (!file.exists()) {
+                getDataPath().getParent().toFile().mkdirs();
+                file.createNewFile();
             }
+            FileWriter writer = new FileWriter(file);
+            writer.write(json.toString());
+            writer.close();
+            //Should be written successfully
+            return msg;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public Long getMessageId() throws IOException {

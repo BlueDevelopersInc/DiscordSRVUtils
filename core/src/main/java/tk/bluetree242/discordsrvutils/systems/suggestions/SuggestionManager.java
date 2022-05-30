@@ -50,7 +50,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class SuggestionManager {
@@ -176,57 +175,57 @@ public class SuggestionManager {
     }
 
     public void migrateSuggestions() {
-            String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
-            boolean sent = false;
-            loading = true;
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                List<SuggestionsRecord> records = jooq
-                        .selectFrom(SuggestionsTable.SUGGESTIONS)
-                        .fetch();
-                for (SuggestionsRecord record : records) {
-                    Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
-                    try {
-                        Message msg = suggestion.getMessage();
-                        if (msg != null) {
-                            if (msg.getButtons().isEmpty()) {
-                                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
-                                } else {
-                                    if (!sent) {
-                                        core.logger.info(warnmsg);
-                                        sent = true;
-                                        core.getSuggestionManager().loading = true;
-                                    }
-                                    msg.clearReactions().queue();
-                                    msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                            Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                            Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                            Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
-                                }
+        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
+        boolean sent = false;
+        loading = true;
+        try (Connection conn = core.getDatabaseManager().getConnection()) {
+            DSLContext jooq = core.getDatabaseManager().jooq(conn);
+            List<SuggestionsRecord> records = jooq
+                    .selectFrom(SuggestionsTable.SUGGESTIONS)
+                    .fetch();
+            for (SuggestionsRecord record : records) {
+                Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
+                try {
+                    Message msg = suggestion.getMessage();
+                    if (msg != null) {
+                        if (msg.getButtons().isEmpty()) {
+                            if (core.voteMode == SuggestionVoteMode.REACTIONS) {
                             } else {
-                                if (core.voteMode == SuggestionVoteMode.REACTIONS) {
-                                    if (!sent) {
-                                        core.getSuggestionManager().loading = true;
-                                        core.logger.info(warnmsg);
-                                        sent = true;
-                                    }
-                                    msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                                    msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                                    msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                                if (!sent) {
+                                    core.logger.info(warnmsg);
+                                    sent = true;
+                                    core.getSuggestionManager().loading = true;
                                 }
+                                msg.clearReactions().queue();
+                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                        Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
+                            }
+                        } else {
+                            if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                                if (!sent) {
+                                    core.getSuggestionManager().loading = true;
+                                    core.logger.info(warnmsg);
+                                    sent = true;
+                                }
+                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                             }
                         }
-                    } catch (ErrorResponseException ex) {
-
                     }
+                } catch (ErrorResponseException ex) {
+
                 }
-                if (sent) {
-                    core.logger.info("Suggestions Migration has finished.");
-                }
-                core.getSuggestionManager().loading = false;
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
             }
+            if (sent) {
+                core.logger.info("Suggestions Migration has finished.");
+            }
+            core.getSuggestionManager().loading = false;
+        } catch (SQLException e) {
+            throw new UnCheckedSQLException(e);
+        }
     }
 
 
