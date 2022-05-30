@@ -190,12 +190,7 @@ public class Suggestion {
 
     public SuggestionNote getLatestNote() {
         List<SuggestionNote> noteList = new ArrayList<>(notes);
-        Collections.sort(noteList, new Comparator<SuggestionNote>() {
-            @Override
-            public int compare(SuggestionNote o1, SuggestionNote o2) {
-                return new Date(o2.getCreationTime()).compareTo(new Date(o1.getCreationTime()));
-            }
-        });
+        noteList.sort((o1, o2) -> new Date(o2.getCreationTime()).compareTo(new Date(o1.getCreationTime())));
         return noteList.get(0);
     }
 }
