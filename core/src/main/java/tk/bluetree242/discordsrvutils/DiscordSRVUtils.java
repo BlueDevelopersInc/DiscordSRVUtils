@@ -216,10 +216,10 @@ public class DiscordSRVUtils {
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             try {
-                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
-            } catch (ClassNotFoundException e) {
+                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.entities.Message").getDeclaredMethod("getInteraction");
+            } catch (ClassNotFoundException |  NoSuchMethodException e) {
                 //DiscordSRV is out of date
-                severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
+                severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
                 main.disable();
                 return;
             }
