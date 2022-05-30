@@ -178,7 +178,6 @@ public class LevelingManager {
     public Role getRoleForLevel(int level) {
         Map<String, Object> map = levelingRolesRaw.toMap();
         List<String> keys = new ArrayList<>(map.keySet());
-        if (keys.isEmpty()) return null;
         keys = keys.stream()
                 .filter(num -> {
                     try {
@@ -188,6 +187,7 @@ public class LevelingManager {
                     }
                 })
                 .collect(Collectors.toList());
+        if (keys.isEmpty()) return null;
         keys.sort((o1, o2) -> Integer.parseInt(o2) - Integer.parseInt(o1));
         Long id = (Long) map.get(keys.get(0));
         if (id != null) {
