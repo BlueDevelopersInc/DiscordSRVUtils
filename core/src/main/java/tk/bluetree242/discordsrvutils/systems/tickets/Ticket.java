@@ -80,8 +80,7 @@ public class Ticket {
         //set it without the message id
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "true")
-                .where(TicketsTable.TICKETS.ID.eq(id))
-                .and(TicketsTable.TICKETS.USERID.eq(userID))
+                .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
         Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
@@ -105,8 +104,7 @@ public class Ticket {
                 .set(TicketsTable.TICKETS.MESSAGEID, messageID)
                 .set(TicketsTable.TICKETS.CLOSED, "true")
                 .set(TicketsTable.TICKETS.OPENTIME, System.currentTimeMillis())
-                .where(TicketsTable.TICKETS.USERID.eq(userID))
-                .and(TicketsTable.TICKETS.ID.eq(id))
+                .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
     }
 
@@ -114,8 +112,7 @@ public class Ticket {
         if (!closed) return;
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "false")
-                .where(TicketsTable.TICKETS.ID.eq(id))
-                .and(TicketsTable.TICKETS.USERID.eq(userID))
+                .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
         Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
@@ -137,8 +134,7 @@ public class Ticket {
                 .set(TicketsTable.TICKETS.MESSAGEID, messageID)
                 .set(TicketsTable.TICKETS.CLOSED, "false")
                 .set(TicketsTable.TICKETS.OPENTIME, System.currentTimeMillis())
-                .where(TicketsTable.TICKETS.USERID.eq(userID))
-                .and(TicketsTable.TICKETS.ID.eq(id))
+                .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
     }
 
