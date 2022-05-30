@@ -63,10 +63,8 @@ public class MessageFilter implements Filter {
             }
             return Result.DENY;
         }
-        if (loggerName.contains("hsqldb.db")) {
-            log(level, message, "Hsqldb");
-            return Result.DENY;
-        }
+        if (loggerName.contains("hsqldb.db") && level == Level.INFO) return Result.DENY;
+        if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.jooq")) return Result.DENY;
         return Result.NEUTRAL;
     }
 

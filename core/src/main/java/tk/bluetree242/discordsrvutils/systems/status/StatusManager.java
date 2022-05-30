@@ -40,7 +40,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class StatusManager {
@@ -59,8 +58,7 @@ public class StatusManager {
         return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
-    public CompletableFuture<Message> newMessage(TextChannel channel) {
-        return core.getAsyncManager().completableFuture(() -> {
+    public Message newMessage(TextChannel channel) {
             //path for some temp storage which should not be stored in database
             File file = getDataPath().toFile();
             JSONObject json = new JSONObject();
@@ -77,11 +75,10 @@ public class StatusManager {
                 writer.write(json.toString());
                 writer.close();
                 //Should be written successfully
+                return msg;
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-            return msg;
-        });
     }
 
     public Long getMessageId() throws IOException {
@@ -98,25 +95,22 @@ public class StatusManager {
         return json.getLong("channel");
     }
 
-    public CompletableFuture<Void> editMessage(boolean online) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            Message toSend = getStatusMessage(online);
-            try {
-                Long messageId = getMessageId();
-                Long channelId = getChannelId();
-                if (messageId == null || channelId == null) return;
-                Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
-                if (msg == null) return;
-                //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
-                msg.editMessage(toSend).complete();
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-                //Ignore the error for now
-            } catch (ErrorResponseException ex) {
-                //message does not exist, ok that is fine
-            }
-
-        });
+    public void editMessage(boolean online) {
+        Message toSend = getStatusMessage(online);
+        try {
+            Long messageId = getMessageId();
+            Long channelId = getChannelId();
+            if (messageId == null || channelId == null) return;
+            Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
+            if (msg == null) return;
+            //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
+            msg.editMessage(toSend).complete();
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+            //Ignore the error for now
+        } catch (ErrorResponseException ex) {
+            //message does not exist, ok that is fine
+        }
     }
 
     public void registerTimer() {

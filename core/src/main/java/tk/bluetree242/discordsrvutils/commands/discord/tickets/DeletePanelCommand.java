@@ -29,6 +29,7 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 
 public class DeletePanelCommand extends Command {
 
@@ -41,18 +42,12 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(e.getOption("id").getAsString()), panel -> {
-            if (panel == null) {
-                e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-            } else {
-                core.getAsyncManager().handleCF(panel.delete(), s -> {
-                    e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
-                }, error -> {
-                    core.getErrorHandler().defaultHandle(error, e.getChannel());
-                });
-            }
-        }, error -> {
-            core.getErrorHandler().defaultHandle(error, e.getChannel());
-        });
+        Panel panel = core.getTicketManager().getPanelById(e.getOption("id").getAsString(), e.getConnection());
+        if (panel == null) {
+            e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+        } else {
+            panel.delete(e.getConnection());
+            e.replySuccess("Successfully deleted panel. Note that deleting ticket channels may take a while").queue();
+        }
     }
 }

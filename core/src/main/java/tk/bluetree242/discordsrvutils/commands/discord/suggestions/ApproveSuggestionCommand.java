@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 
 public class ApproveSuggestionCommand extends SuggestionCommand {
     public ApproveSuggestionCommand(DiscordSRVUtils core) {
@@ -44,12 +45,12 @@ public class ApproveSuggestionCommand extends SuggestionCommand {
         }
 
         int number = (int) e.getOption("number").getAsLong();
-        e.handleCF(core.getSuggestionManager().getSuggestionByNumber(number), "Error fetching suggestion").thenAcceptAsync(suggestion -> {
-            if (suggestion == null) {
-                e.replyErr("Suggestion not found").queue();
-                return;
-            }
-            e.handleCF(suggestion.setApproved(true, e.getAuthor().getIdLong()), "Successfully approved suggestion", "Could not approve suggestion");
-        });
+        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number, e.getConnection());
+        if (suggestion == null) {
+            e.replyErr("Suggestion not found").queue();
+            return;
+        }
+        suggestion.setApproved(true, e.getAuthor().getIdLong(), e.getConnection());
+        e.replySuccess("Successfully approved suggestion").queue();
     }
 }

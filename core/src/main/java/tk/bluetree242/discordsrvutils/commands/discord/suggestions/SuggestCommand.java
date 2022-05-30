@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,10 +73,7 @@ public class SuggestCommand extends SuggestionCommand {
         }
 
         String suggestionText = e.getOption("suggestion").getAsString();
-        e.handleCF(core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
-            antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
-            e.replySuccess("Successfully created suggestion").queue();
-
-        });
+        Suggestion suggestion = core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong(), e.getConnection());
+        e.replySuccess("Successfully created suggestion").queue();
     }
 }

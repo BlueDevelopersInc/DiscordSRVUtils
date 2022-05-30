@@ -26,17 +26,15 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import org.jooq.DSLContext;
+import org.jooq.TableField;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.LevelupEvent;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PlayerStats {
     private final DiscordSRVUtils core;
@@ -75,21 +73,14 @@ public class PlayerStats {
         return xp;
     }
 
-    public CompletableFuture<Void> setLevel(int level) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET Level=? WHERE UUID=?");
-                p1.setInt(1, level);
-                p1.setString(2, uuid.toString());
-                p1.execute();
-                this.level = level;
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public void setLevel(int level, DSLContext conn) {
+        conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, level)
+                .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
+                .execute();
+        this.level = level;
     }
 
-    public CompletableFuture<Boolean> setXP(int xp) {
+    public boolean setXP(int xp, DSLContext conn) {
         return setXP(xp, null);
     }
 
@@ -97,50 +88,43 @@ public class PlayerStats {
      * @param xp XP to add
      * @return true if player leveled up, false if not
      */
-    public CompletableFuture<Boolean> setXP(int xp, LevelupEvent event) {
+    public boolean setXP(int xp, LevelupEvent event, DSLContext conn) {
         if (event == null) {
             event = new LevelupEvent(this, uuid);
         }
         LevelupEvent finalEvent = event;
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                if (xp >= 300) {
-                    PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=0, Level=? WHERE UUID=?");
-                    p1.setInt(1, level + 1);
-                    p1.setString(2, uuid.toString());
-                    p1.execute();
-                    this.level = level + 1;
-                    this.xp = 0;
-                    String id = core.getDiscordSRV().getDiscordId(uuid);
-                    if (id == null) return true;
-                    LevelingManager manager = core.getLevelingManager();
-                    Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
-                    if (member == null) return true;
-                    Collection actions = new ArrayList<>();
-                    for (Role role : manager.getRolesToRemove(level)) {
-                        if (member.getRoles().contains(role))
-                            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
-                    }
-                    Role toAdd = manager.getRoleForLevel(level);
-                    if (toAdd != null) {
-                        actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
-                    }
-                    if (!actions.isEmpty())
-                        RestAction.allOf(actions).queue();
-                    DiscordSRV.api.callEvent(finalEvent);
-                    return true;
-                }
-                PreparedStatement p1 = conn.prepareStatement("UPDATE leveling SET XP=? WHERE UUID=?");
-                p1.setInt(1, xp);
-                p1.setString(2, uuid.toString());
-                p1.execute();
-                this.xp = xp;
-                return false;
-
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
+        if (xp >= 300) {
+            conn.update(LevelingTable.LEVELING)
+                    .set(LevelingTable.LEVELING.LEVEL, level + 1)
+                    .set(LevelingTable.LEVELING.XP, 0)
+                    .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
+                    .execute();
+            this.level = level + 1;
+            this.xp = 0;
+            String id = core.getDiscordSRV().getDiscordId(uuid);
+            if (id == null) return true;
+            LevelingManager manager = core.getLevelingManager();
+            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+            if (member == null) return true;
+            Collection actions = new ArrayList<>();
+            for (Role role : manager.getRolesToRemove(level)) {
+                if (member.getRoles().contains(role))
+                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
             }
-        });
+            Role toAdd = manager.getRoleForLevel(level);
+            if (toAdd != null) {
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
+            }
+            if (!actions.isEmpty())
+                RestAction.allOf(actions).queue();
+            DiscordSRV.api.callEvent(finalEvent);
+            return true;
+        }
+        conn.update(LevelingTable.LEVELING)
+                .set(LevelingTable.LEVELING.XP, xp)
+                .where(LevelingTable.LEVELING.UUID.eq(uuid.toString())).execute();
+        this.xp = xp;
+        return false;
     }
 
     public int getMinecraftMessages() {
@@ -151,26 +135,23 @@ public class PlayerStats {
         return discordMessages;
     }
 
-    public CompletableFuture<Void> addMessage(MessageType type) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = null;
-                switch (type) {
-                    case DISCORD:
-                        p1 = conn.prepareStatement("UPDATE leveling SET DiscordMessages=? WHERE UUID=?");
-                        p1.setInt(1, discordMessages + 1);
-                        break;
-                    case MINECRAFT:
-                        p1 = conn.prepareStatement("UPDATE leveling SET MinecraftMessages=? WHERE UUID=?");
-                        p1.setInt(1, minecraftMessages + 1);
-                        break;
-                }
-                p1.setString(2, uuid.toString());
-                p1.execute();
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public void addMessage(MessageType type, DSLContext conn) {
+        TableField toUpdate = null;
+        int value = 0;
+        switch (type) {
+            case DISCORD:
+                toUpdate = LevelingTable.LEVELING.DISCORDMESSAGES;
+                value = discordMessages + 1;
+                break;
+            case MINECRAFT:
+                toUpdate = LevelingTable.LEVELING.MINECRAFTMESSAGES;
+                value = minecraftMessages + 1;
+                break;
+        }
+        conn.update(LevelingTable.LEVELING)
+                .set(toUpdate, value)
+                .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
+                .execute();
     }
 
     public int getRank() {

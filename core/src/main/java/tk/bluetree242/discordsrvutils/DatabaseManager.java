@@ -26,6 +26,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -36,6 +40,7 @@ public class DatabaseManager {
     private final DiscordSRVUtils core;
     //database connection pool
     private HikariDataSource sql;
+    private boolean hsqldb = false;
 
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
@@ -57,6 +62,7 @@ public class DatabaseManager {
             pass = core.getSqlconfig().Password();
         } else {
             core.logger.info("MySQL is disabled, using hsqldb");
+            hsqldb = true;
             jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
             user = "SA";
             pass = "";
@@ -81,7 +87,7 @@ public class DatabaseManager {
         //Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
-                .locations("classpath:migrations")
+                .locations("classpath:flyway-migrations")
                 .validateMigrationNaming(true).group(true)
                 .table("discordsrvutils_schema")
                 .load();
@@ -92,6 +98,18 @@ public class DatabaseManager {
 
     public Connection getConnection() throws SQLException {
         return sql.getConnection();
+    }
+
+    public DSLContext jooq(Connection conn) {
+        return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL);
+    }
+
+    public DSLContext newJooqConnection() {
+        try {
+            return jooq(getConnection());
+        } catch (SQLException ex) {
+            throw new UnCheckedSQLException(ex);
+        }
     }
 
     public void close() {

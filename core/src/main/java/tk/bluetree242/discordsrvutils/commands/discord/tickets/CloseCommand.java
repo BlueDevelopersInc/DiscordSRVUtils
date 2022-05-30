@@ -26,6 +26,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
 public class CloseCommand extends Command {
     public CloseCommand(DiscordSRVUtils core) {
@@ -34,21 +35,16 @@ public class CloseCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong()), ticket -> {
-            if (ticket == null) {
-                e.replyErr("You are not in a ticket").queue();
-                return;
-            }
-            if (ticket.isClosed()) {
-                e.replyErr("Ticket is already closed").queue();
-            } else {
-                e.reply("Closing Ticket...").setEphemeral(true).queue();
-                core.getAsyncManager().handleCF(ticket.close(e.getAuthor()), null, err -> {
-                    core.getErrorHandler().defaultHandle(err);
-                });
-            }
-        }, err -> {
-            core.getErrorHandler().defaultHandle(err);
-        });
+        Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong(), e.getConnection());
+        if (ticket == null) {
+            e.replyErr("You are not in a ticket").queue();
+            return;
+        }
+        if (ticket.isClosed()) {
+            e.replyErr("Ticket is already closed").queue();
+        } else {
+            e.reply("Closing Ticket...").setEphemeral(true).queue();
+            ticket.close(e.getAuthor(), e.getConnection());
+        }
     }
 }

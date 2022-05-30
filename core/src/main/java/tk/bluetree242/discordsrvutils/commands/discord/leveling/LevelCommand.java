@@ -47,20 +47,20 @@ public class LevelCommand extends Command {
 
         if (e.getOption("user_mention") != null) {
             User user = e.getOption("user_mention").getAsUser();
-            target = core.getLevelingManager().getPlayerStats(user.getIdLong()).get();
+            target = core.getLevelingManager().getPlayerStats(user.getIdLong());
             if (target == null) {
                 e.replyErr(new PlaceholdObject(core, user, "user").apply(core.getLevelingConfig().level_command_other_not_linked()));
                 return;
             }
         } else if (e.getOption("player_name") != null) {
             String name = e.getOption("player_name").getAsString();
-            target = core.getLevelingManager().getPlayerStats(name).get();
+            target = core.getLevelingManager().getPlayerStats(name, e.getConnection());
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_invalid_player()).queue();
                 return;
             }
         } else {
-            target = core.getLevelingManager().getPlayerStats(e.getAuthor().getIdLong()).get();
+            target = core.getLevelingManager().getPlayerStats(e.getAuthor().getIdLong());
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_not_linked()).queue();
                 return;

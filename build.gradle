@@ -97,6 +97,9 @@ allprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
     }
 }
+dependencies {
+    implementation project(":bukkit")
+}
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
 def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
@@ -124,9 +127,6 @@ subprojects {
 shadowJar {
     classifier ''
 }
-dependencies {
-    implementation project(":bukkit")
-}
 publishing {
     publications {
         maven(MavenPublication) {
@@ -139,6 +139,8 @@ allprojects {
     java.sourceCompatibility = JavaVersion.VERSION_1_8
     java.targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+
 
 
 

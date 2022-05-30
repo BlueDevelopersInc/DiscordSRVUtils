@@ -24,67 +24,49 @@ package tk.bluetree242.discordsrvutils.systems.tickets.listeners;
 
 
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.systems.tickets.Ticket;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class TicketCloseListener extends ListenerAdapter {
 
     private final DiscordSRVUtils core;
 
-    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent e) {
+    public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
-        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
-            if (ticket != null) {
-                if (e.getUser().isBot()) return;
-                if (e.getReactionEmote().getName().equals("\uD83D\uDD12")) {
-                    e.getReaction().removeReaction(e.getUser()).queue();
-                    if (!ticket.isClosed())
-                        ticket.close(e.getUser());
-                } else if (e.getReactionEmote().getName().equals("\uD83D\uDDD1️")) {
-                    e.getReaction().removeReaction(e.getUser()).queue();
-                    if (ticket.isClosed()) {
-                        ticket.delete();
+        core.getAsyncManager().executeAsync(() -> {
+            try (Connection conn = core.getDatabaseManager().getConnection()) {
+                DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                Ticket ticket = core.getTicketManager().getTicketByMessageId(e.getMessageIdLong(), jooq);
+                if (ticket != null) {
+                    if (e.getUser().isBot()) return;
+                    if (e.getButton().getId().equals("close_ticket")) {
+                        e.deferEdit().queue();
+                        if (!ticket.isClosed())
+                            ticket.close(e.getUser(), jooq);
+                    } else if (e.getButton().getId().equals("delete_ticket")) {
+                        e.deferEdit().queue();
+                        if (ticket.isClosed()) {
+                            ticket.delete();
+                        }
+                    }
+                    if (e.getButton().getId().equals("reopen_ticket")) {
+                        e.deferEdit().queue();
+                        if (ticket.isClosed()) {
+                            ticket.reopen(e.getUser(), jooq);
+                        }
                     }
                 }
-                if (e.getReactionEmote().getName().equals("\uD83D\uDD13")) {
-                    e.getReaction().removeReaction(e.getUser()).queue();
-                    if (ticket.isClosed()) {
-                        core.getAsyncManager().handleCF(ticket.reopen(e.getUser()), null, ex -> {
-                            core.getErrorHandler().defaultHandle(ex);
-                        });
-                    }
-                }
+            } catch (SQLException ex) {
+                core.getErrorHandler().defaultHandle(ex, e.getChannel());
             }
-        }, null);
-    }
-
-    public void onButtonClick(ButtonClickEvent e) {
-        if (core.getMainConfig().bungee_mode()) return;
-        core.getAsyncManager().handleCF(core.getTicketManager().getTicketByMessageId(e.getMessageIdLong()), ticket -> {
-            if (ticket != null) {
-                if (e.getUser().isBot()) return;
-                if (e.getButton().getId().equals("close_ticket")) {
-                    e.deferEdit().queue();
-                    if (!ticket.isClosed())
-                        ticket.close(e.getUser());
-                } else if (e.getButton().getId().equals("delete_ticket")) {
-                    e.deferEdit().queue();
-                    if (ticket.isClosed()) {
-                        ticket.delete();
-                    }
-                }
-                if (e.getButton().getId().equals("reopen_ticket")) {
-                    e.deferEdit().queue();
-                    if (ticket.isClosed()) {
-                        core.getAsyncManager().handleCF(ticket.reopen(e.getUser()), null, ex -> {
-                            core.getErrorHandler().defaultHandle(ex);
-                        });
-                    }
-                } else return;
-            }
-        }, null);
+        });
     }
 }

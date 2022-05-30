@@ -9,18 +9,20 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 Put these into your pom.xml
 
 ```xml
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
+
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
 ```
 
 ```xml
-    <dependency>
-        <groupId>com.github.BlueTree242</groupId>
-        <artifactId>DiscordSRVUtils</artifactId>
-        <version>VERSION</version>
-    </dependency>
+
+<dependency>
+    <groupId>com.github.BlueTree242</groupId>
+    <artifactId>DiscordSRVUtils</artifactId>
+    <version>VERSION</version>
+</dependency>
 ```
 
 For gradle

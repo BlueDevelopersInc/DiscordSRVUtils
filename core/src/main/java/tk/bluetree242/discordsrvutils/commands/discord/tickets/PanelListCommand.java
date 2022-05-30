@@ -51,16 +51,13 @@ public class PanelListCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        core.getAsyncManager().handleCF(core.getTicketManager().getPanels(), panels -> {
-            if (panels.isEmpty()) {
-                e.replyErr("There are no panels to show").queue();
-                return;
-            }
-            e.reply("Loading Pages...").setEphemeral(true).queue();
-            new PaginationWaiter(core, e.getChannel(), getEmbeds(panels), e.getAuthor());
-        }, failure -> {
-            core.getErrorHandler().defaultHandle(failure, e.getChannel());
-        });
+        Set<Panel> panels = core.getTicketManager().getPanels(e.getConnection());
+        if (panels.isEmpty()) {
+            e.replyErr("There are no panels to show").queue();
+            return;
+        }
+        e.reply("Loading Pages...").setEphemeral(true).queue();
+        new PaginationWaiter(core, e.getChannel(), getEmbeds(panels), e.getAuthor());
     }
 
     public List<MessageEmbed> getEmbeds(Set<Panel> panels) {

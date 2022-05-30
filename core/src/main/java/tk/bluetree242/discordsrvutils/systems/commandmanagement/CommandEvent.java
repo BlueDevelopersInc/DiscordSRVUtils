@@ -32,8 +32,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.Optio
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedRateLimitedException;
@@ -45,7 +46,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommandEvent {
     private final DiscordSRVUtils core;
     private final Member member;
@@ -54,12 +55,11 @@ public class CommandEvent {
     private final JDA jda;
     @Getter
     private final SlashCommandEvent event;
-
+    private DSLContext connection;
 
     public Member getMember() {
         return member;
     }
-
 
     public User getAuthor() {
         return author;
@@ -123,56 +123,13 @@ public class CommandEvent {
         return getEvent().getOption(name);
     }
 
-    public CompletableFuture handleCF(CompletableFuture cf, String success, String failure) {
-        return handleCF(cf, false, success, failure);
+    public DSLContext getConnection() {
+        if (!isConnOpen()) return connection = core.getDatabaseManager().newJooqConnection();
+        return connection;
     }
 
-    public CompletableFuture handleCF(CompletableFuture cf, boolean ephermal, String success, String failure) {
-        Checks.notNull(cf, "CompletableFuture");
-        Checks.notNull(success, "Success Message");
-        Checks.notNull(failure, "Failure Message");
-        cf.thenRunAsync(() -> {
-            reply(Embed.success(success)).setEphemeral(ephermal).queue();
-        }).handleAsync((e, x) -> {
-            Exception ex = (Exception) ((Throwable) x).getCause();
-            while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            if (ex instanceof UnCheckedRateLimitedException) {
-                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ex.getCause()).getRetryAfter()))).setEphemeral(ephermal).queue();
-            } else if (!(ex instanceof InsufficientPermissionException)) {
-                reply(Embed.error(failure)).queue();
-                core.getErrorHandler().defaultHandle(ex);
-            } else {
-                InsufficientPermissionException exc = (InsufficientPermissionException) ex;
-                GuildChannel chnl = core.getJDA().getShardManager().getGuildChannelById(exc.getChannelId());
-                reply(Embed.error(failure, "Missing " + exc.getPermission().getName() + " Permission" + (chnl == null ? "" : " In #" + chnl.getName()))).setEphemeral(ephermal).queue();
-            }
-            return x;
-        });
-        return cf;
-    }
-
-
-    public <H> CompletableFuture<H> handleCF(CompletableFuture<H> cf, String failure) {
-        Checks.notNull(cf, "CompletableFuture");
-        Checks.notNull(failure, "Failure Message");
-        cf.handleAsync((e, x) -> {
-            Exception ex = (Exception) ((Throwable) x).getCause();
-            while (ex instanceof ExecutionException) ex = (Exception) ex.getCause();
-            if (ex instanceof UnCheckedRateLimitedException) {
-                reply(Embed.error(failure, "Rate limited. Try again in: " + Utils.getDuration(((RateLimitedException) ((UnCheckedRateLimitedException) ex).getCause()).getRetryAfter()))).queue();
-            } else if (!(ex instanceof InsufficientPermissionException)) {
-                reply(Embed.error(failure)).queue();
-                core.getErrorHandler().defaultHandle(ex);
-            } else {
-                InsufficientPermissionException exc = (InsufficientPermissionException) ex;
-                GuildChannel chnl = core.getJDA().getGuildChannelById(exc.getChannelId());
-                exc.getPermission();
-                assert chnl != null;
-                reply(Embed.error(failure, " In #" + chnl.getName())).queue();
-            }
-            return x;
-        });
-        return cf;
+    public boolean isConnOpen() {
+        return connection != null;
     }
 
 }

@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
 import lombok.RequiredArgsConstructor;
-import me.leoko.advancedban.utils.PunishmentType;
 import org.bukkit.Bukkit;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
@@ -74,7 +73,8 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public PunishmentType getPunishmentType() {
-        if (punishment.getType().getBasic() == me.leoko.advancedban.utils.PunishmentType.WARNING) return PunishmentType.WARN;
+        if (punishment.getType().getBasic() == me.leoko.advancedban.utils.PunishmentType.WARNING)
+            return PunishmentType.WARN;
         return PunishmentType.get(punishment.getType().getBasic().name());
     }
 

@@ -56,7 +56,6 @@ import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
@@ -246,14 +245,14 @@ public class DiscordSRVUtils {
     }
 
 
-    public void onDisable() throws ExecutionException, InterruptedException {
+    public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
         messageFilter.remove();
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
             statusManager.unregisterTimer();
-            statusManager.editMessage(false).get();
+            statusManager.editMessage(false);
         }
         asyncManager.stop();
         if (waiterManager != null) waiterManager.timer.cancel();

@@ -30,6 +30,7 @@ import tk.bluetree242.discordsrvutils.embeds.Embed;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 public class EditPanelCommand extends Command {
@@ -43,29 +44,18 @@ public class EditPanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         String id = e.getOption("id").getAsString();
-        core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), panel -> {
-            if (panel == null) {
-                e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-            } else {
-                core.getAsyncManager().handleCF(core.getTicketManager().getPanelById(id), s -> {
-                    if (panel == null) {
-                        e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
-                    } else {
-                        e.reply("Loading Editor Menu...").setEphemeral(true).queue();
-                        e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
-                            new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
-                            EditPanelWaiter.addReactions(msg);
+        Panel panel = core.getTicketManager().getPanelById(id, e.getConnection());
+        if (panel == null) {
+            e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
+        } else {
+            e.reply("Loading Editor Menu...").setEphemeral(true).queue();
+            e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
+                new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
+                EditPanelWaiter.addReactions(msg);
 
-                        }, error -> {
-                            core.getErrorHandler().defaultHandle(error, e.getChannel());
-                        });
-                    }
-                }, error -> {
-                    core.getErrorHandler().defaultHandle(error, e.getChannel());
-                });
-            }
-        }, error -> {
-            core.getErrorHandler().defaultHandle(error, e.getChannel());
-        });
+            }, error -> {
+                core.getErrorHandler().defaultHandle(error, e.getChannel());
+            });
+        }
     }
 }

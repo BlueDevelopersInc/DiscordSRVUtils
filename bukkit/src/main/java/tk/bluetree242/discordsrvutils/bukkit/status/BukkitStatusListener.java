@@ -55,7 +55,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLater((Plugin) core.getPlatform().getOriginal(), () -> core.getStatusManager().editMessage(true), 1);
+        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously((Plugin) core.getPlatform().getOriginal(), () -> core.getStatusManager().editMessage(true), 1);
     }
 
     public void unregister() {
