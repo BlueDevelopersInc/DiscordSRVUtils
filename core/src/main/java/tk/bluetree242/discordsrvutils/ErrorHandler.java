@@ -56,10 +56,10 @@ public class ErrorHandler {
     public void defaultHandle(Throwable ex) {
         //handle error on thread pool
         if (!core.getMainConfig().minimize_errors()) {
-            core.getLogger().warning("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
+            core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
 
             ex.printStackTrace();
-            core.getLogger().warning("Read the note above the error Please.");
+            core.getLogger().severe("Read the note above the error Please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
                 for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
