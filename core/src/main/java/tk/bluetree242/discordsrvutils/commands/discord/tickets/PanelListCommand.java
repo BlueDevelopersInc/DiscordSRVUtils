@@ -56,8 +56,11 @@ public class PanelListCommand extends Command {
             e.replyErr("There are no panels to show").queue();
             return;
         }
-        e.reply("Loading Pages...").setEphemeral(true).queue();
-        new PaginationWaiter(core, e.getChannel(), getEmbeds(panels), e.getAuthor());
+        List<MessageEmbed> embeds = getEmbeds(panels);
+        PaginationWaiter.setupMessage(e.reply(embeds.get(0)), embeds.size()).queue(m -> {
+
+            new PaginationWaiter(core, e.getChannel(), embeds, e.getAuthor(), m.getInteraction());
+        });
     }
 
     public List<MessageEmbed> getEmbeds(Set<Panel> panels) {

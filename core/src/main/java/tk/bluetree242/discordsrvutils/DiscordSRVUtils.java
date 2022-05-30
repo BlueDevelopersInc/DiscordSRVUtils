@@ -255,7 +255,8 @@ public class DiscordSRVUtils {
             statusManager.editMessage(false);
         }
         asyncManager.stop();
-        if (waiterManager != null) waiterManager.timer.cancel();
+        waiterManager.timer.cancel();
+        waiterManager.getWaiters().forEach(w -> w.expire(true));
         databaseManager.close();
         instance = null;
     }
