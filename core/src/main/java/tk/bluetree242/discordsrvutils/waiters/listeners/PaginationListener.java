@@ -46,8 +46,10 @@ public class PaginationListener extends ListenerAdapter {
     }
 
     public void onButtonClick(ButtonClickEvent e) {
+        if (e.getMessage().getInteraction() == null) return;
         core.getAsyncManager().executeAsync(() -> {
             boolean backward = e.getButton().getId().equals("backward");
+
             PaginationWaiter waiter = getWaiter(e.getMessage().getInteraction().getIdLong());
             if (waiter != null) {
                 if (waiter.getUser().getIdLong() != e.getUser().getIdLong()) {
