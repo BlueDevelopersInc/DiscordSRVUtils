@@ -217,7 +217,7 @@ public class DiscordSRVUtils {
                     "[]================================[]");
             try {
                 Class.forName("github.scarsz.discordsrv.dependencies.jda.api.entities.Message").getDeclaredMethod("getInteraction");
-            } catch (ClassNotFoundException |  NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
                 main.disable();
