@@ -20,9 +20,9 @@
  *  END
  */
 
-CREATE TABLE suggestions_votes
+CREATE TABLE "suggestions_votes"
 (
-    UserID           BIGINT,
-    SuggestionNumber BIGINT,
-    Agree            varchar(5)
+    "UserID"           BIGINT,
+    "SuggestionNumber" BIGINT,
+    "Agree"            varchar(5)
 )

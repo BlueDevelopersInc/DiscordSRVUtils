@@ -20,8 +20,8 @@
  *  END
  */
 
-CREATE TABLE panel_allowed_roles
+CREATE TABLE "panel_allowed_roles"
 (
-    RoleID  Bigint,
-    PanelID varchar(10)
+    "RoleID"  Bigint,
+    "PanelID" varchar(10)
 )
