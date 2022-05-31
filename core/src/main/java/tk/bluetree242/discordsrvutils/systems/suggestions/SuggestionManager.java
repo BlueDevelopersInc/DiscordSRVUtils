@@ -166,6 +166,7 @@ public class SuggestionManager {
                 .set(SuggestionsTable.SUGGESTIONS.MESSAGEID, msg.getIdLong())
                 .set(SuggestionsTable.SUGGESTIONS.CHANNELID, channelId)
                 .set(SuggestionsTable.SUGGESTIONS.CREATIONTIME, System.currentTimeMillis())
+                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, core.voteMode.name())
                 .execute();
         if (core.voteMode == SuggestionVoteMode.REACTIONS) {
             msg.addReaction(getYesEmoji().getNameInReaction()).queue();
@@ -182,6 +183,8 @@ public class SuggestionManager {
             DSLContext jooq = core.getDatabaseManager().jooq(conn);
             List<SuggestionsRecord> records = jooq
                     .selectFrom(SuggestionsTable.SUGGESTIONS)
+                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(core.voteMode.name()))
+                    .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
                     .fetch();
             for (SuggestionsRecord record : records) {
                 Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
@@ -214,8 +217,12 @@ public class SuggestionManager {
                                 msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                             }
                         }
+                        jooq.update(SuggestionsTable.SUGGESTIONS)
+                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, core.voteMode.name())
+                                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
+                                .execute();
                     }
-                } catch (ErrorResponseException ex) {
+                } catch (ErrorResponseException ignored) {
 
                 }
             }
