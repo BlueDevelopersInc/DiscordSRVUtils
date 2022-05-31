@@ -28,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.RenderQuotedNames;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
@@ -41,6 +43,7 @@ public class DatabaseManager {
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
+    private Settings settings;
 
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
@@ -80,6 +83,8 @@ public class DatabaseManager {
             }
         }
         migrate();
+        this.settings = new Settings();
+        this.settings.setRenderQuotedNames(RenderQuotedNames.NEVER);
         core.getLogger().info("MySQL/HsqlDB Connected & Setup");
     }
 
@@ -100,8 +105,10 @@ public class DatabaseManager {
         return sql.getConnection();
     }
 
+
+
     public DSLContext jooq(Connection conn) {
-        return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL);
+        return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
     }
 
     public DSLContext newJooqConnection() {
