@@ -48,14 +48,7 @@ public class EditPanelCommand extends Command {
         if (panel == null) {
             e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
         } else {
-            e.reply("Loading Editor Menu...").setEphemeral(true).queue();
-            e.getChannel().sendMessageEmbeds(EditPanelWaiter.getEmbed()).queue(msg -> {
-                new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), msg);
-                EditPanelWaiter.addReactions(msg);
-
-            }, error -> {
-                core.getErrorHandler().defaultHandle(error, e.getChannel());
-            });
+            e.reply(EditPanelWaiter.getEmbed(true)).addActionRows(EditPanelWaiter.getActionRows()).queue(i -> new EditPanelWaiter((TextChannel) e.getChannel(), e.getAuthor(), panel.getEditor(), i.getInteraction()));
         }
     }
 }

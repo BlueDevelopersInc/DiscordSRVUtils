@@ -57,10 +57,7 @@ public class PanelListCommand extends Command {
             return;
         }
         List<MessageEmbed> embeds = getEmbeds(panels);
-        PaginationWaiter.setupMessage(e.reply(embeds.get(0)), embeds.size()).queue(m -> {
-
-            new PaginationWaiter(core, e.getChannel(), embeds, e.getAuthor(), m.getInteraction());
-        });
+        PaginationWaiter.setupMessage(e.reply(embeds.get(0)), embeds.size()).queue(m -> new PaginationWaiter(core, e.getChannel(), embeds, e.getAuthor(), m.getInteraction()));
     }
 
     public List<MessageEmbed> getEmbeds(Set<Panel> panels) {
