@@ -156,6 +156,7 @@ public class EditPanelListener extends ListenerAdapter {
             if (waiter.getUser().getIdLong() != e.getUser().getIdLong()) return;
             String name = e.getButton().getId();
             if (name.equals("apply")) {
+                e.deferEdit().queue();
                 waiter.expire(false);
                 try (Connection conn = core.getDatabaseManager().getConnection()) {
                     Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq(conn));
@@ -168,6 +169,7 @@ public class EditPanelListener extends ListenerAdapter {
                     core.getErrorHandler().defaultHandle(ex, e.getChannel());
                 }
             } else if (name.equals("cancel")) {
+                e.deferEdit().queue();
                 waiter.expire(false);
                 e.getChannel().sendMessageEmbeds(Embed.error("Ok, Cancelled")).queue();
             } else if (waiter.getStep() != 0) {
