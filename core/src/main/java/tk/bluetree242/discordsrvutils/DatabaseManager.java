@@ -106,7 +106,6 @@ public class DatabaseManager {
     }
 
 
-
     public DSLContext jooq(Connection conn) {
         return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
     }
