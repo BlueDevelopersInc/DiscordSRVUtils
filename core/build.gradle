@@ -77,9 +77,10 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 
     //related to jooq
-    testImplementation 'org.hsqldb:hsqldb:2.4.1'
-    jooqGenerator 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.jooq:jooq:3.16.6'
+    //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
+    testImplementation 'com.h2database:h2:2.1.210'
+    jooqGenerator 'com.h2database:h2:2.1.210'
 
 }
 
@@ -95,7 +96,7 @@ afterEvaluate { evaluated ->
     }
 }
 flyway {
-    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;shutdown=true;sql.syntax_mys=true"
+    url = "jdbc:h2:file:${project.buildDir}/migration;MODE=Mysql;DATABASE_TO_UPPER=false;DATABASE_TO_LOWER=false"
     user = 'SA'
     password = ''
     validateMigrationNaming = true
@@ -112,8 +113,8 @@ jooq {
             generateSchemaSourceOnCompilation = true  // default (can be omitted)
             generationTool {
                 jdbc {
-                    driver = 'org.hsqldb.jdbc.JDBCDriver'
-                    url = "jdbc:hsqldb:file:${project.buildDir}/migration/hsqldb;hsqldb.lock_file=false;sql.syntax_mys=true"
+                    driver = 'org.h2.Driver'
+                    url = "jdbc:h2:file:${project.buildDir}/migration"
                     user = 'SA'
                     password = ''
                     properties {
@@ -126,7 +127,7 @@ jooq {
                 generator {
                     name = 'org.jooq.codegen.JavaGenerator'
                     database {
-                        name = 'org.jooq.meta.hsqldb.HSQLDBDatabase'
+                        name = 'org.jooq.meta.h2.H2Database'
                         inputSchema = 'PUBLIC'
                         outputSchemaToDefault = true
                     }

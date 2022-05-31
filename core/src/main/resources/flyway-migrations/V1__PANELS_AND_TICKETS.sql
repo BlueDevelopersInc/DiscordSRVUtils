@@ -20,19 +20,19 @@
  *  END
  */
 
-CREATE TABLE "ticket_panels"
+CREATE TABLE ticket_panels
 (
-    "Name"           varchar(32),
-    "ID"             varchar(10),
-    "Channel"        BIGINT,
-    "MessageID"      BIGINT,
-    "OpenedCategory" Bigint,
-    "ClosedCategory" Bigint
+    Name           varchar(32),
+    ID             varchar(10),
+    Channel        BIGINT,
+    MessageID      BIGINT,
+    OpenedCategory Bigint,
+    ClosedCategory Bigint
 );
-CREATE TABLE "tickets"
+CREATE TABLE tickets
 (
-    "ID"        varchar(10),
-    "Channel"   Bigint,
-    "MessageID" Bigint,
-    "Closed"    varchar(4)
+    ID        varchar(10),
+    Channel   Bigint,
+    MessageID Bigint,
+    Closed    varchar(4)
 );

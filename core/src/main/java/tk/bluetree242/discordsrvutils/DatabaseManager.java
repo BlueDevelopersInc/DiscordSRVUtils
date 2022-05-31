@@ -43,8 +43,8 @@ public class DatabaseManager {
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
-    private Settings settings;
-
+    private final Settings settings = new Settings()
+            .withRenderQuotedNames(RenderQuotedNames.NEVER);
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
         try {
@@ -60,13 +60,13 @@ public class DatabaseManager {
         if (core.getSqlconfig().isEnabled()) {
             jdbcurl = "jdbc:mysql://" +
                     core.getSqlconfig().Host() +
-                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName() + "?useSSL=false";
+                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName() + "?sessionVariables=&&sql_mode='ANSI_QUOTES'";
             user = core.getSqlconfig().UserName();
             pass = core.getSqlconfig().Password();
         } else {
             core.logger.info("MySQL is disabled, using hsqldb");
             hsqldb = true;
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true";
+            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
             user = "SA";
             pass = "";
         }
@@ -74,17 +74,7 @@ public class DatabaseManager {
         settings.setUsername(user);
         settings.setPassword(pass);
         sql = new HikariDataSource(settings);
-        if (!core.getSqlconfig().isEnabled()) {
-            try (Connection conn = sql.getConnection()) {
-                //This Prevents Errors when syntax of hsqldb and mysql dismatch
-                //language=hsqldb
-                String query = "SET DATABASE SQL SYNTAX MYS TRUE;";
-                conn.prepareStatement(query).execute();
-            }
-        }
         migrate();
-        this.settings = new Settings();
-        this.settings.setRenderQuotedNames(RenderQuotedNames.NEVER);
         core.getLogger().info("MySQL/HsqlDB Connected & Setup");
     }
 
