@@ -32,7 +32,7 @@ CREATE TABLE "suggestions"
     "Approver"         BIGINT
 );
 
-CREATE TABLE suggestion_notes
+CREATE TABLE "suggestion_notes"
 (
     "StaffID"          BIGINT,
     "NoteText"         LONGTEXT,
