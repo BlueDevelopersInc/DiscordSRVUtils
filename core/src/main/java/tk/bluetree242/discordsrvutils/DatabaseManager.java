@@ -60,7 +60,7 @@ public class DatabaseManager {
         if (core.getSqlconfig().isEnabled()) {
             jdbcurl = "jdbc:mysql://" +
                     core.getSqlconfig().Host() +
-                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName() + "?sessionVariables=&&sql_mode='ANSI_QUOTES'";
+                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
             user = core.getSqlconfig().UserName();
             pass = core.getSqlconfig().Password();
         } else {
