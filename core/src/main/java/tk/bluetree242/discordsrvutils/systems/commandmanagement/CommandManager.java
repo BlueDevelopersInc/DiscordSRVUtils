@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.CommandListUpdateAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.admin.EchoCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
@@ -58,6 +59,7 @@ public class CommandManager {
     }
 
     public void registerCommands() {
+        registerCommand(new EchoCommand(core));
         registerCommand(new TestMessageCommand(core));
         registerCommand(new HelpCommand(core));
         registerCommand(new CreatePanelCommand(core));
