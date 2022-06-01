@@ -94,6 +94,7 @@ test {
 //related to jooq
 afterEvaluate { evaluated ->
     evaluated.tasks.findByName("generateJooq").doFirst {
+        evaluated.tasks.findByName("flywayRepair").runTask()
         evaluated.tasks.findByName("flywayMigrate").runTask()
     }
 }
