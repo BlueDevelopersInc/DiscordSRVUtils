@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -56,6 +57,10 @@ public class SuggestionManager {
 
     private final DiscordSRVUtils core;
     public boolean loading = false;
+
+    //Mode for suggestions voting
+    @Getter
+    public SuggestionVoteMode voteMode;
 
 
     public static Emoji getYesEmoji() {
@@ -97,7 +102,7 @@ public class SuggestionManager {
             notesr = conn.selectFrom(SuggestionNotesTable.SUGGESTION_NOTES)
                     .where(SuggestionNotesTable.SUGGESTION_NOTES.SUGGESTIONNUMBER.eq(r.getSuggestionnumber())).fetch();
         }
-        if (core.voteMode != SuggestionVoteMode.REACTIONS)
+        if (voteMode != SuggestionVoteMode.REACTIONS)
             if (votesr == null) {
                 votesr = conn.selectFrom(SuggestionsVotesTable.SUGGESTIONS_VOTES)
                         .where(SuggestionsVotesTable.SUGGESTIONS_VOTES.SUGGESTIONNUMBER.eq(r.getSuggestionnumber().longValue()))
@@ -119,7 +124,7 @@ public class SuggestionManager {
                 r.getSubmitter(),
                 r.getChannelid(), r.getCreationtime(), notes, r.getMessageid(),
                 r.getApproved() == null ? null : Utils.getDBoolean(r.getApproved()), r.getApprover(), votes);
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (voteMode == SuggestionVoteMode.BUTTONS) {
             for (SuggestionsVotesRecord record : votesr) {
                 votes.add(new SuggestionVote(record.getUserid(), record.getSuggestionnumber().intValue(), Utils.getDBoolean(record.getAgree())));
             }
@@ -155,7 +160,7 @@ public class SuggestionManager {
         MessageBuilder builder = core.getMessageManager().getMessage(core.getSuggestionsConfig().suggestions_message(),
                 PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, suggestion, "suggestion"), new PlaceholdObject(core, submitter, "submitter"))
                 , null);
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (voteMode == SuggestionVoteMode.BUTTONS) {
             builder.setActionRows(getActionRow(0, 0));
         }
         Message msg = core.queueMsg(builder.build(), channel).complete();
@@ -166,9 +171,9 @@ public class SuggestionManager {
                 .set(SuggestionsTable.SUGGESTIONS.MESSAGEID, msg.getIdLong())
                 .set(SuggestionsTable.SUGGESTIONS.CHANNELID, channelId)
                 .set(SuggestionsTable.SUGGESTIONS.CREATIONTIME, System.currentTimeMillis())
-                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, core.voteMode.name())
+                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
                 .execute();
-        if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+        if (voteMode == SuggestionVoteMode.REACTIONS) {
             msg.addReaction(getYesEmoji().getNameInReaction()).queue();
             msg.addReaction(getNoEmoji().getNameInReaction()).queue();
         }
@@ -176,6 +181,7 @@ public class SuggestionManager {
     }
 
     public void migrateSuggestions() {
+        voteMode = SuggestionVoteMode.valueOf(core.getSuggestionsConfig().suggestions_vote_mode().toUpperCase());
         String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
         boolean sent = false;
         loading = true;
@@ -183,7 +189,7 @@ public class SuggestionManager {
             DSLContext jooq = core.getDatabaseManager().jooq(conn);
             List<SuggestionsRecord> records = jooq
                     .selectFrom(SuggestionsTable.SUGGESTIONS)
-                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(core.voteMode.name()))
+                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
                     .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
                     .fetch();
             for (SuggestionsRecord record : records) {
@@ -192,7 +198,7 @@ public class SuggestionManager {
                     Message msg = suggestion.getMessage();
                     if (msg != null) {
                         if (msg.getButtons().isEmpty()) {
-                            if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
                             } else {
                                 if (!sent) {
                                     core.logger.info(warnmsg);
@@ -206,7 +212,7 @@ public class SuggestionManager {
                                         Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
                             }
                         } else {
-                            if (core.voteMode == SuggestionVoteMode.REACTIONS) {
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
                                 if (!sent) {
                                     core.getSuggestionManager().loading = true;
                                     core.logger.info(warnmsg);
@@ -218,7 +224,7 @@ public class SuggestionManager {
                             }
                         }
                         jooq.update(SuggestionsTable.SUGGESTIONS)
-                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, core.voteMode.name())
+                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
                                 .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
                                 .execute();
                     }

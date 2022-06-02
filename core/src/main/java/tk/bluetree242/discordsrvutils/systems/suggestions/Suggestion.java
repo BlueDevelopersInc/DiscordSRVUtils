@@ -122,7 +122,7 @@ public class Suggestion {
                 .execute();
         SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
         notes.add(suggestionNote);
-        getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
         return suggestionNote;
     }
 
@@ -134,7 +134,7 @@ public class Suggestion {
                 .execute();
         this.Approved = approved;
         this.approver = staffID;
-        getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
     }
 
     public Message getMessage() {
@@ -143,7 +143,7 @@ public class Suggestion {
     }
 
     public int getYesCount() {
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
             return votes.size();
         } else
@@ -151,7 +151,7 @@ public class Suggestion {
     }
 
     public int getNoCount() {
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
             return votes.size();
         } else

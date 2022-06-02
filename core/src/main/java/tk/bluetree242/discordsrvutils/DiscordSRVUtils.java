@@ -49,7 +49,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.listeners.game.GameLeveli
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
@@ -93,8 +92,6 @@ public class DiscordSRVUtils {
     private final UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
     private final DatabaseManager databaseManager = new DatabaseManager(this);
-    //Mode for suggestions voting
-    public SuggestionVoteMode voteMode;
     //latest error that occurred on our thread pool
     //Plugins we hooked into
     // faster getter for the logger
@@ -310,7 +307,6 @@ public class DiscordSRVUtils {
             }
             //fix issues with any ticket or panel
             ticketManager.fixTickets();
-            voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
             suggestionManager.migrateSuggestions();
             statusManager.editMessage(true);
