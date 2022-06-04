@@ -45,7 +45,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
     }
 
     public String apply(String s, PlatformPlayer placehold) {
-        final String[] val = {s};
+        String val = s;
         Map<String, Object> variables = new HashMap<>();
         variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
         variables.put("jda", core.getJDA());
@@ -56,25 +56,12 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         variables.put("CommandManager", core.getCommandManager());
         for (PlaceholdObject holder : this) {
             variables.put(holder.display, holder.getObject());
-            Map<String, Method> map = holder.getholdersMap();
-            map.forEach((key, result) -> {
-                try {
-                    if (val[0].contains("[" + holder.display + "." + key + "]")) {
-                        Object invoked = result.invoke(holder.getObject());
-                        String value = null;
-                        if (invoked != null) {
-                            value = invoked.toString();
-                        }
-                        val[0] = val[0].replace("[" + holder.display + "." + key + "]", value == null ? "null" : value);
-                    }
-                } catch (Exception e) {
-                }
-            });
+            val = holder.apply(val, placehold, false);
         }
 
-        val[0] = core.getPlatform().placehold(placehold, val[0]);
-        val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
-        return val[0];
+        val = core.getPlatform().placehold(placehold, val);
+        val = NamedValueFormatter.formatExpressions(val, core, variables);
+        return val;
     }
 
     public String apply(String s) {
