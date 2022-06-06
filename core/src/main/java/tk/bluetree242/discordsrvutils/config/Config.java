@@ -58,19 +58,19 @@ public interface Config {
     @ConfDefault.DefaultLong(0)
     long linkaccount_channel();
 
-    @AnnotationBasedSorter.Order(32)
+    @AnnotationBasedSorter.Order(33)
     @ConfKey("linkaccount-channel-delete-messages")
     @ConfComments("#Should we delete messages sent in the linkaccount channel?")
     @ConfDefault.DefaultBoolean(true)
     boolean linkaccount_channel_delete_messages();
 
-    @AnnotationBasedSorter.Order(33)
+    @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
     @ConfDefault.DefaultStrings({})
     List<String> disabled_commands();
 
-    @AnnotationBasedSorter.Order(34)
+    @AnnotationBasedSorter.Order(35)
     @ConfKey("register-slash-commands")
     @ConfComments("# Should We register slash commands into your discord server?\n# This will not remove the currently registered commands, to remove them use /dsu removeslash")
     @ConfDefault.DefaultBoolean(true)
