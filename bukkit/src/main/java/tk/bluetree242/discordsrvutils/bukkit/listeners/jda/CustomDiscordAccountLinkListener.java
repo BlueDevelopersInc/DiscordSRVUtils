@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class CustomDiscordAccountLinkListener extends ListenerAdapter {
@@ -43,8 +44,9 @@ public class CustomDiscordAccountLinkListener extends ListenerAdapter {
 
     // Original From DiscordAccountLinkListener DiscordSRV Class
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
         if (event.getChannel().getIdLong() != core.getMainConfig().linkaccount_channel()) return;
+        event.getMessage().delete().queueAfter(10L, TimeUnit.SECONDS);
+        if (event.getAuthor().isBot()) return;
         String response = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (response != null) event.getMessage().reply(response).queue();
     }

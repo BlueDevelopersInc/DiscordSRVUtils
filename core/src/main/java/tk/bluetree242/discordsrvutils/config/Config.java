@@ -58,6 +58,12 @@ public interface Config {
     @ConfDefault.DefaultLong(0)
     long linkaccount_channel();
 
+    @AnnotationBasedSorter.Order(32)
+    @ConfKey("linkaccount-channel-delete-messages")
+    @ConfComments("#Should we delete messages sent in the linkaccount channel?")
+    @ConfDefault.DefaultBoolean(true)
+    boolean linkaccount_channel_delete_messages();
+
     @AnnotationBasedSorter.Order(33)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
