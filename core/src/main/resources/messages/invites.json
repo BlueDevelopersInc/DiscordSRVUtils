@@ -4,7 +4,7 @@
       "url": "[user.effectiveAvatarUrl]"
     },
     "color": "cyan",
-    "description": "**Total:** [invites.totalInvites]\n**Stayed:** [invites.stayedInvites]\n**Left:** #[invites.leftInvites]",
+    "description": "**Total:** [invites.totalInvites]\n**Stayed:** [invites.stayedInvites]\n**Left:** [invites.leftInvites]",
     "title": "[user.name]'s Invites"
   }
 }
