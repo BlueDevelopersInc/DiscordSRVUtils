@@ -44,6 +44,7 @@ import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
+import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.listeners.game.GameLevelingListener;
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
@@ -95,6 +96,9 @@ public class DiscordSRVUtils {
     //latest error that occurred on our thread pool
     //Plugins we hooked into
     // faster getter for the logger
+
+    @Getter
+    private final InviteTrackingManager inviteTrackingManager = new InviteTrackingManager(this);
     @Getter
     public Logger logger;
     //Configurations
@@ -175,6 +179,7 @@ public class DiscordSRVUtils {
                 return;
             }
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_INVITES);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
         }
     }

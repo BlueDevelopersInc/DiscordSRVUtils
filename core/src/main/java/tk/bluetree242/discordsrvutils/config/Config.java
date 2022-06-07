@@ -118,6 +118,12 @@ public interface Config {
     @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
     String goodbye_message();
 
+    @AnnotationBasedSorter.Order(101)
+    @ConfKey("invite-tracking")
+    @ConfComments("#Should we track invites? This enables a whole invite tracking system")
+    @ConfDefault.DefaultBoolean(true)
+    boolean track_invites();
+
 
     @AnnotationBasedSorter.Order(110)
     @ConfKey("afk.enabled")
