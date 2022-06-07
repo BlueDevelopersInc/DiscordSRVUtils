@@ -40,7 +40,7 @@ public class UserInvites {
         return invites.size();
     }
 
-    public int getCurrentInvites() {
+    public int getStayedInvites() {
         return (int) invites.stream().filter(i -> !i.isLeft()).count();
     }
 

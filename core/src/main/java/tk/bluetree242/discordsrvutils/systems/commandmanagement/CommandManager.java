@@ -33,6 +33,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.EchoCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
+import tk.bluetree242.discordsrvutils.commands.discord.invitetracking.InvitesCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.other.LinkAccountCommand;
@@ -76,6 +77,7 @@ public class CommandManager {
         registerCommand(new DenySuggestionCommand(core));
         registerCommand(new StatusCommand(core));
         registerCommand(new LinkAccountCommand(core));
+        registerCommand(new InvitesCommand(core));
     }
 
 
