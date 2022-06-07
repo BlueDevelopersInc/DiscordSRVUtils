@@ -74,7 +74,7 @@ public class PlaceholdObject {
             }
         });
 
-        val[0] = core.getPlatform().placehold(placehold, s);
+        val[0] = core.getPlatform().placehold(placehold, val[0]);
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
