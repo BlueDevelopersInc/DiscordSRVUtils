@@ -163,7 +163,7 @@ public interface Config {
     @AnnotationBasedSorter.Order(170)
     @ConfKey("pool-size")
     @ConfComments("# Thread Pool Size. Simply, how many tasks the plugin can do as the same time, increase if needed, may use more CPU.")
-    @ConfDefault.DefaultInteger(1)
+    @ConfDefault.DefaultInteger(2)
     int pool_size();
 
     @AnnotationBasedSorter.Order(180)
