@@ -47,6 +47,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
 
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
+            //get the inviter
             List<Invite> invs = e.getGuild().retrieveInvites().complete();
             InviteTrackingManager.CachedInvite invite = null;
             User inviter = null;
@@ -61,6 +62,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     }
                 }
             }
+            //store in db
             if (core.getMainConfig().track_invites() && invite != null) {
                 try (Connection conn = core.getDatabaseManager().getConnection()) {
                     core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
@@ -68,7 +70,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     core.getErrorHandler().defaultHandle(ex);
                 }
             }
-
+            //welcomer
             if (!e.getUser().isBot()) {
                 if (core.getMainConfig().welcomer_enabled()) {
                     MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(core.getMainConfig().welcomer_channel());
