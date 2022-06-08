@@ -4,6 +4,6 @@
       "url": "[user.effectiveAvatarUrl]"
     },
     "color": "cyan",
-    "description": "🔸 **Welcome [user.name] To The server!**\n\n\n🔸 **Server ip** | play.example.com\n\n\n🔸 **Store** | store.example.com"
+    "description": "🔸 **Welcome [user.name] To The server!**\n\n\n🔸 **Server ip** | play.example.com\n\n\n🔸 **Store** | store.example.com\n\nInvited by **${#inviter == null ? \"Unknown\" : #inviter.getAsTag()}**"
   }
 }
