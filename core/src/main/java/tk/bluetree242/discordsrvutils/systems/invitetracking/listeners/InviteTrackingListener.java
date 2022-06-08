@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.systems.invitetracking.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
-import github.scarsz.discordsrv.dependencies.jda.api.events.guild.GuildReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +34,6 @@ import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManag
 public class InviteTrackingListener extends ListenerAdapter {
 
     private final DiscordSRVUtils core;
-
-    public void onGuildReady(GuildReadyEvent e) {
-        e.getGuild().retrieveInvites().queue(is ->
-                is.forEach(i -> core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), e.getGuild().getIdLong(), i.getUses()))));
-    }
 
     public void onGuildInviteCreate(GuildInviteCreateEvent e) {
         Invite i = e.getInvite();

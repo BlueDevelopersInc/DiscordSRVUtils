@@ -51,7 +51,9 @@ public class LevelingManager {
     public final Map<UUID, Long> antispamMap = new HashMap<>();
     private final DiscordSRVUtils core;
     private boolean adding = false;
-    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+    //leveling roles jsonobject, Initialized on startup
+    @Getter
+    private JSONObject levelingRolesRaw;    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
             .refreshAfterWrite(Duration.ofSeconds(30))
@@ -61,10 +63,6 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
-    //leveling roles jsonobject, Initialized on startup
-    @Getter
-    private JSONObject levelingRolesRaw;
-
 
     public void reloadLevelingRoles() {
         try {
@@ -125,7 +123,6 @@ public class LevelingManager {
     public PlayerStats getPlayerStats(String name, DSLContext conn) {
         return getPlayerStats(conn, name);
     }
-
 
     public PlayerStats getPlayerStats(UUID uuid, DSLContext conn) {
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
@@ -210,4 +207,6 @@ public class LevelingManager {
             roles.remove(getRoleForLevel(level));
         return roles;
     }
+
+
 }

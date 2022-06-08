@@ -59,6 +59,11 @@ public class InviteTrackingManager {
         return getInvites(records, userId);
     }
 
+    public void cacheInvites() {
+        core.getDiscordSRV().getMainGuild().retrieveInvites().queue(is ->
+                is.forEach(i -> core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), i.getGuild().getIdLong(), i.getUses()))));
+    }
+
     public void addInvite(DSLContext conn, long userId, long inviterId, long guildId) {
         //check if it's already there but previous time, to prevent duplicates
         InviteTrackingRecord record = conn.selectFrom(InviteTrackingTable.INVITE_TRACKING)
@@ -105,7 +110,8 @@ public class InviteTrackingManager {
         private final long userId;
         @Getter
         private final long guildId;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int uses;
     }
 }

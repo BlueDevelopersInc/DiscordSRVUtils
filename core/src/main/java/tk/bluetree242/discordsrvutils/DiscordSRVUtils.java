@@ -310,6 +310,7 @@ public class DiscordSRVUtils {
                     }
                 }
             }
+            inviteTrackingManager.cacheInvites();
             //fix issues with any ticket or panel
             ticketManager.fixTickets();
             //migrate suggestion buttons/reactions if needed

@@ -23,7 +23,6 @@
 import nu.studer.gradle.jooq.JooqEdition
 
 
-
 plugins {
     id 'java'
     id 'maven-publish'

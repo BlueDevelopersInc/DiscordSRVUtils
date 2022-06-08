@@ -40,11 +40,12 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 public class DatabaseManager {
     private final DiscordSRVUtils core;
+    private final Settings settings = new Settings()
+            .withRenderQuotedNames(RenderQuotedNames.NEVER);
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
-    private final Settings settings = new Settings()
-            .withRenderQuotedNames(RenderQuotedNames.NEVER);
+
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
         try {
