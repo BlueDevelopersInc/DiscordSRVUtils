@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.listeners.jda;
 
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
@@ -52,14 +53,16 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                 List<Invite> invs = e.getGuild().retrieveInvites().complete();
                 InviteTrackingManager.CachedInvite invite = null;
                 User inviter = null;
-                Iterator<InviteTrackingManager.CachedInvite> invites = core.getInviteTrackingManager().getCachedInvites().iterator();
-                while (invites.hasNext()) {
-                    InviteTrackingManager.CachedInvite currentInvite = invites.next();
-                    for (Invite inv : invs) {
-                        if (inv.getCode().equals(currentInvite.getCode()) && inv.getUses() == (currentInvite.getUses() + 1)) {
-                            invite = currentInvite;
-                            currentInvite.setUses(currentInvite.getUses() + 1);
-                            inviter = inv.getInviter();
+                if (e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER)) {
+                    Iterator<InviteTrackingManager.CachedInvite> invites = core.getInviteTrackingManager().getCachedInvites().iterator();
+                    while (invites.hasNext()) {
+                        InviteTrackingManager.CachedInvite currentInvite = invites.next();
+                        for (Invite inv : invs) {
+                            if (inv.getCode().equals(currentInvite.getCode()) && inv.getUses() == (currentInvite.getUses() + 1)) {
+                                invite = currentInvite;
+                                currentInvite.setUses(currentInvite.getUses() + 1);
+                                inviter = inv.getInviter();
+                            }
                         }
                     }
                 }

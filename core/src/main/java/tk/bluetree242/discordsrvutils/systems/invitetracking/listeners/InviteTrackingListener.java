@@ -24,6 +24,8 @@ package tk.bluetree242.discordsrvutils.systems.invitetracking.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRoleAddEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
@@ -42,5 +44,13 @@ public class InviteTrackingListener extends ListenerAdapter {
 
     public void onGuildInviteDelete(GuildInviteDeleteEvent e) {
         core.getInviteTrackingManager().getCachedInvites().removeIf(i -> i.getCode().equals(e.getCode()));
+    }
+
+    public void onRoleUpdatePermissions(RoleUpdatePermissionsEvent e) {
+        core.getInviteTrackingManager().cacheInvites();
+    }
+
+    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
+        if (e.getUser().getIdLong() == core.getJDA().getSelfUser().getIdLong()) core.getInviteTrackingManager().cacheInvites();
     }
 }

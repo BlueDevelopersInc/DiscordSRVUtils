@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.systems.invitetracking;
 
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -59,9 +60,14 @@ public class InviteTrackingManager {
         return getInvites(records, userId);
     }
 
-    public void cacheInvites() {
-        core.getDiscordSRV().getMainGuild().retrieveInvites().queue(is ->
-                is.forEach(i -> core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), i.getGuild().getIdLong(), i.getUses()))));
+    public boolean cacheInvites() {
+        if (core.getDiscordSRV().getMainGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER))
+            core.getDiscordSRV().getMainGuild().retrieveInvites().queue(is -> {
+                cachedInvites.clear();
+                is.forEach(i -> cachedInvites.add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), i.getGuild().getIdLong(), i.getUses())));
+            });
+        else return false;
+        return true;
     }
 
     public void addInvite(DSLContext conn, long userId, long inviterId, long guildId) {
