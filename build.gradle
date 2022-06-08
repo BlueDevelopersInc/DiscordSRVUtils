@@ -27,6 +27,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 compileJava.options.encoding 'UTF-8'
+build.finalizedBy shadowJar
 allprojects {
     repositories {
         mavenLocal()
