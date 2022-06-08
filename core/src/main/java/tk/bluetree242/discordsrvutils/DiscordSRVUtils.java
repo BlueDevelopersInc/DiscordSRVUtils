@@ -310,7 +310,8 @@ public class DiscordSRVUtils {
                     }
                 }
             }
-            if (!inviteTrackingManager.cacheInvites()) errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
+            if (!inviteTrackingManager.cacheInvites())
+                errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
             //fix issues with any ticket or panel
             ticketManager.fixTickets();
             //migrate suggestion buttons/reactions if needed

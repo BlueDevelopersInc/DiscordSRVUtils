@@ -51,6 +51,7 @@ public class InviteTrackingListener extends ListenerAdapter {
     }
 
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
-        if (e.getUser().getIdLong() == core.getJDA().getSelfUser().getIdLong()) core.getInviteTrackingManager().cacheInvites();
+        if (e.getUser().getIdLong() == core.getJDA().getSelfUser().getIdLong())
+            core.getInviteTrackingManager().cacheInvites();
     }
 }

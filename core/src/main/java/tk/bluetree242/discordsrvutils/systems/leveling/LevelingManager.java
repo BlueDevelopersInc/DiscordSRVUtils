@@ -53,16 +53,7 @@ public class LevelingManager {
     private boolean adding = false;
     //leveling roles jsonobject, Initialized on startup
     @Getter
-    private JSONObject levelingRolesRaw;    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
-            .maximumSize(120)
-            .expireAfterWrite(Duration.ofMinutes(1))
-            .refreshAfterWrite(Duration.ofSeconds(30))
-            .build(key -> {
-                adding = true;
-                PlayerStats stats = getPlayerStats(key, DiscordSRVUtils.get().getDatabaseManager().newJooqConnection());
-                adding = false;
-                return stats;
-            });
+    private JSONObject levelingRolesRaw;
 
     public void reloadLevelingRoles() {
         try {
@@ -84,7 +75,16 @@ public class LevelingManager {
         } catch (JSONException e) {
             core.getLogger().severe("Error loading leveling-roles.json: " + e.getMessage());
         }
-    }
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                adding = true;
+                PlayerStats stats = getPlayerStats(key, DiscordSRVUtils.get().getDatabaseManager().newJooqConnection());
+                adding = false;
+                return stats;
+            });
 
     public PlayerStats getCachedStats(UUID uuid) {
         return cachedUUIDS.get(uuid);
@@ -207,6 +207,8 @@ public class LevelingManager {
             roles.remove(getRoleForLevel(level));
         return roles;
     }
+
+
 
 
 }
