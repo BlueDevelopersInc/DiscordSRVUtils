@@ -50,10 +50,10 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
                 //get the inviter
-                List<Invite> invs = e.getGuild().retrieveInvites().complete();
                 InviteTrackingManager.CachedInvite invite = null;
                 User inviter = null;
                 if (e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER)) {
+                    List<Invite> invs = e.getGuild().retrieveInvites().complete();
                     Iterator<InviteTrackingManager.CachedInvite> invites = core.getInviteTrackingManager().getCachedInvites().iterator();
                     while (invites.hasNext()) {
                         InviteTrackingManager.CachedInvite currentInvite = invites.next();
