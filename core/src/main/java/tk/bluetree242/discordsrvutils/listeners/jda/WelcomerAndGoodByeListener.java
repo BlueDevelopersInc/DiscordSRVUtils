@@ -47,31 +47,31 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
 
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
-            //get the inviter
-            List<Invite> invs = e.getGuild().retrieveInvites().complete();
-            InviteTrackingManager.CachedInvite invite = null;
-            User inviter = null;
-            Iterator<InviteTrackingManager.CachedInvite> invites = core.getInviteTrackingManager().getCachedInvites().iterator();
-            while (invites.hasNext()) {
-                InviteTrackingManager.CachedInvite currentInvite = invites.next();
-                for (Invite inv : invs) {
-                    if (inv.getCode().equals(currentInvite.getCode()) && inv.getUses() == (currentInvite.getUses() + 1)) {
-                        invite = currentInvite;
-                        currentInvite.setUses(currentInvite.getUses() + 1);
-                        inviter = inv.getInviter();
+            if (!e.getUser().isBot()) {
+                //get the inviter
+                List<Invite> invs = e.getGuild().retrieveInvites().complete();
+                InviteTrackingManager.CachedInvite invite = null;
+                User inviter = null;
+                Iterator<InviteTrackingManager.CachedInvite> invites = core.getInviteTrackingManager().getCachedInvites().iterator();
+                while (invites.hasNext()) {
+                    InviteTrackingManager.CachedInvite currentInvite = invites.next();
+                    for (Invite inv : invs) {
+                        if (inv.getCode().equals(currentInvite.getCode()) && inv.getUses() == (currentInvite.getUses() + 1)) {
+                            invite = currentInvite;
+                            currentInvite.setUses(currentInvite.getUses() + 1);
+                            inviter = inv.getInviter();
+                        }
                     }
                 }
-            }
-            //store in db
-            if (core.getMainConfig().track_invites() && invite != null) {
-                try (Connection conn = core.getDatabaseManager().getConnection()) {
-                    core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
-                } catch (SQLException ex) {
-                    core.getErrorHandler().defaultHandle(ex);
+                //store in db
+                if (core.getMainConfig().track_invites() && invite != null) {
+                    try (Connection conn = core.getDatabaseManager().getConnection()) {
+                        core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
+                    } catch (SQLException ex) {
+                        core.getErrorHandler().defaultHandle(ex);
+                    }
                 }
-            }
-            //welcomer
-            if (!e.getUser().isBot()) {
+                //welcomer
                 if (core.getMainConfig().welcomer_enabled()) {
                     MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(core.getMainConfig().welcomer_channel());
                     if (channel == null) {
