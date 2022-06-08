@@ -126,7 +126,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(101)
     @ConfKey("invite-tracking")
-    @ConfComments("#Should we track invites? This enables a whole invite tracking system")
+    @ConfComments("#Should we track invites? This enables a whole invite tracking system. https://wiki.discordsrvutils.xyz/invite-tracking")
     @ConfDefault.DefaultBoolean(true)
     boolean track_invites();
 
