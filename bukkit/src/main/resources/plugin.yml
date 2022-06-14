@@ -5,7 +5,7 @@ softdepend:
   - Essentials
   - AdvancedBan
   - PlaceholderAPI
-  - Litebans
+  - LiteBans
   - LibertyBans
   - CMI
   - SuperVanish
