@@ -64,7 +64,7 @@ public class InviteTrackingManager {
         if (core.getDiscordSRV().getMainGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER))
             core.getDiscordSRV().getMainGuild().retrieveInvites().queue(is -> {
                 cachedInvites.clear();
-                is.forEach(i -> cachedInvites.add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), i.getGuild().getIdLong(), i.getUses())));
+                is.stream().filter(i -> i.getInviter() != null).forEach(i -> cachedInvites.add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), i.getGuild().getIdLong(), i.getUses())));
             });
         else return false;
         return true;

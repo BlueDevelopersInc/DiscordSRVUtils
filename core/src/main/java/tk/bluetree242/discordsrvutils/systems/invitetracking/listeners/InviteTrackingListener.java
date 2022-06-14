@@ -39,6 +39,7 @@ public class InviteTrackingListener extends ListenerAdapter {
 
     public void onGuildInviteCreate(GuildInviteCreateEvent e) {
         Invite i = e.getInvite();
+        if (i.getInviter() == null) return;
         core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), e.getGuild().getIdLong(), i.getUses()));
     }
 
