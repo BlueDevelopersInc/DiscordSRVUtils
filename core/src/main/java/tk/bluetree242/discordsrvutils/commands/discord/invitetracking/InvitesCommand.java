@@ -35,7 +35,7 @@ import tk.bluetree242.discordsrvutils.systems.invitetracking.UserInvites;
 
 public class InvitesCommand extends Command {
     public InvitesCommand(DiscordSRVUtils core) {
-        super(core, "invites", "Get leveling info about a user or yourself", "[P]invites [user]", null, CommandCategory.LEVELING,
+        super(core, "invites", "Get leveling info about a user or yourself", "[P]invites [user]", null, CommandCategory.INVITE_TRACKING,
                 new OptionData(OptionType.USER, "user_mention", "User to get invites of", false));
     }
 

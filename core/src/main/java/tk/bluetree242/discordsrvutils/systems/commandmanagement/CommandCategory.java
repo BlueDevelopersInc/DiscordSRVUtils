@@ -32,6 +32,8 @@ public class CommandCategory {
     public static final CommandCategory LEVELING = new CommandCategory("Leveling", "\uD83C\uDFC5");
     public static final CommandCategory SUGGESTIONS = new CommandCategory("Suggestions", "\uD83D\uDCA1");
     public static final CommandCategory SUGGESTIONS_ADMIN = new CommandCategory("Suggestions Admin", "\uD83D\uDCA1");
+    public static final CommandCategory INVITE_TRACKING = new CommandCategory("Invite Tracking", "\uD83C\uDFC3");
+
     private static final Set<CommandCategory> externals = new HashSet<>();
     private final List<Command> commands = new ArrayList<>();
     private final String name;
@@ -44,7 +46,7 @@ public class CommandCategory {
     }
 
     public static CommandCategory[] values() {
-        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS, SUGGESTIONS_ADMIN}));
+        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS, SUGGESTIONS_ADMIN, INVITE_TRACKING));
         for (CommandCategory external : externals) {
             list.add(external);
         }
