@@ -20,7 +20,7 @@
  * END
  */
 
-package tk.bluetree242.discordsrvutils;
+package tk.bluetree242.discordsrvutils.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -31,6 +31,7 @@ import org.jooq.SQLDialect;
 import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
+import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.nio.file.Paths;
@@ -71,6 +72,8 @@ public class DatabaseManager {
             user = "SA";
             pass = "";
         }
+        //load jooq classes
+        new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
         settings.setJdbcUrl(jdbcurl);
         settings.setUsername(user);
         settings.setPassword(pass);
@@ -107,6 +110,10 @@ public class DatabaseManager {
         } catch (SQLException ex) {
             throw new UnCheckedSQLException(ex);
         }
+    }
+
+    public DSLContext newRenderOnlyJooq() {
+        return DSL.using(hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
     }
 
     public void close() {

@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.config.*;
+import tk.bluetree242.discordsrvutils.database.DatabaseManager;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
