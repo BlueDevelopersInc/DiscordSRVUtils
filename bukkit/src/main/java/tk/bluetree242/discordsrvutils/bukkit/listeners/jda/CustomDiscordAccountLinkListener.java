@@ -45,7 +45,8 @@ public class CustomDiscordAccountLinkListener extends ListenerAdapter {
     // Original From DiscordAccountLinkListener DiscordSRV Class
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getChannel().getIdLong() != core.getMainConfig().linkaccount_channel()) return;
-        event.getMessage().delete().queueAfter(10L, TimeUnit.SECONDS);
+        if (core.getMainConfig().linkaccount_channel_delete_messages_delay() != 0L)
+        event.getMessage().delete().queueAfter(core.getMainConfig().linkaccount_channel_delete_messages_delay(), TimeUnit.SECONDS);
         if (event.getAuthor().isBot()) return;
         String response = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (response != null) event.getMessage().reply(response).queue();

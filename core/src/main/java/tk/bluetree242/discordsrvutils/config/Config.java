@@ -59,10 +59,10 @@ public interface Config {
     long linkaccount_channel();
 
     @AnnotationBasedSorter.Order(33)
-    @ConfKey("linkaccount-channel-delete-messages")
-    @ConfComments("#Should we delete messages sent in the linkaccount channel?")
-    @ConfDefault.DefaultBoolean(true)
-    boolean linkaccount_channel_delete_messages();
+    @ConfKey("linkaccount-channel-delete-messages-delay")
+    @ConfComments("#Amount of time in seconds to delete messages sent in the link account channel, set 0 to not delete at all")
+    @ConfDefault.DefaultLong(10)
+    long linkaccount_channel_delete_messages_delay();
 
     @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
