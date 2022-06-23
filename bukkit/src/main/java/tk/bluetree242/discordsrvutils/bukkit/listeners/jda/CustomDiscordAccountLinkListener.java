@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.bukkit.listeners.jda;
@@ -32,9 +32,11 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class CustomDiscordAccountLinkListener extends ListenerAdapter {
@@ -42,14 +44,16 @@ public class CustomDiscordAccountLinkListener extends ListenerAdapter {
 
     // Original From DiscordAccountLinkListener DiscordSRV Class
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
         if (event.getChannel().getIdLong() != core.getMainConfig().linkaccount_channel()) return;
+        if (core.getMainConfig().linkaccount_channel_delete_messages_delay() != 0L)
+        event.getMessage().delete().queueAfter(core.getMainConfig().linkaccount_channel_delete_messages_delay(), TimeUnit.SECONDS);
+        if (event.getAuthor().isBot()) return;
         String response = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (response != null) event.getMessage().reply(response).queue();
     }
 
 
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         if (!core.isRemovedDiscordSRVAccountLinkListener()) return;
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());

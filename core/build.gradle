@@ -1,28 +1,33 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
+
+import nu.studer.gradle.jooq.JooqEdition
+
 
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'nu.studer.jooq' version '7.1.1'
+    id "org.flywaydb.flyway" version "8.5.3"
 }
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -52,6 +57,7 @@ rootProject.allprojects {
         relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
         relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
         relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
+        relocate 'org.jooq', 'tk.bluetree242.discordsrvutils.dependencies.jooq'
     }
 }
 
@@ -64,17 +70,102 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.hsqldb:hsqldb:2.4.1'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
-    compileOnly('com.discordsrv:discordsrv:1.24.0') {
-        exclude group: 'net.kyori'
-    }
+    compileOnly('com.discordsrv:discordsrv:1.25.0')
     implementation "org.flywaydb:flyway-core:7.5.3"
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
     implementation 'commons-io:commons-io:2.6'
+
+    //related to jooq
+    implementation 'org.jooq:jooq:3.16.6'
+    //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
+    testImplementation 'com.h2database:h2:2.1.210'
+    jooqGenerator 'com.h2database:h2:2.1.210'
+
 }
 
 
 test {
     useJUnitPlatform()
 }
+
+//related to jooq
+afterEvaluate { evaluated ->
+    evaluated.tasks.findByName("generateJooq").doFirst {
+        evaluated.tasks.findByName("flywayRepair").runTask()
+        evaluated.tasks.findByName("flywayMigrate").runTask()
+    }
+}
+flyway {
+    url = "jdbc:h2:file:${project.buildDir}/migration;MODE=Mysql;DATABASE_TO_UPPER=false;DATABASE_TO_LOWER=false"
+    user = 'SA'
+    password = ''
+    validateMigrationNaming = true
+    locations = ["filesystem:src/main/resources/flyway-migrations"]
+    group = true
+}
+
+jooq {
+    version = '3.16.6'  // default (can be omitted)
+    edition = JooqEdition.OSS  // default (can be omitted)
+
+    configurations {
+        main {  // name of the jOOQ configuration
+            generateSchemaSourceOnCompilation = true  // default (can be omitted)
+            generationTool {
+                jdbc {
+                    driver = 'org.h2.Driver'
+                    url = "jdbc:h2:file:${project.buildDir}/migration"
+                    user = 'SA'
+                    password = ''
+                    properties {
+                        property {
+                            key = 'ssl'
+                            value = 'false'
+                        }
+                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.JavaGenerator'
+                    database {
+                        name = 'org.jooq.meta.h2.H2Database'
+                        inputSchema = 'PUBLIC'
+                        outputSchemaToDefault = true
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'tk.bluetree242.discordsrvutils.jooq'
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                    strategy {
+                        matchers {
+                            tables {
+                                table {
+                                    tableClass {
+                                        transform = "PASCAL"
+                                        expression = "\$0_TABLE"
+                                    }
+                                }
+                            }
+                            enums {
+                                "enum" {
+                                    enumClass {
+                                        transform = "PASCAL"
+                                        expression = "\$0_ENUM"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

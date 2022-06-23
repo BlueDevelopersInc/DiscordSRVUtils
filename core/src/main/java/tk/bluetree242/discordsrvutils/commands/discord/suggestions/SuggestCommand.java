@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.commands.discord.suggestions;
@@ -26,17 +26,15 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SuggestCommand extends Command {
+public class SuggestCommand extends SuggestionCommand {
 
-    public final Long ANTISPAM_EXPIRATION = Duration.ofSeconds(120L).toNanos();
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand(DiscordSRVUtils core) {
@@ -67,20 +65,15 @@ public class SuggestCommand extends Command {
         }
 
         Long val = antispamMap.get(e.getAuthor().getIdLong());
-        if (val == null) {
-        } else {
+        if (val != null) {
             if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) {
                 e.replyErr("Slow down.. you need to wait 2 minutes before every new suggestion").queue();
                 return;
             }
         }
 
-
         String suggestionText = e.getOption("suggestion").getAsString();
-        e.handleCF(core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong()), "Error creating suggestion").thenAcceptAsync(suggestion -> {
-            antispamMap.put(e.getAuthor().getIdLong(), System.nanoTime());
-            e.replySuccess("Successfully created suggestion").queue();
-
-        });
+        Suggestion suggestion = core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong(), e.getConnection());
+        e.replySuccess("Successfully created suggestion").queue();
     }
 }

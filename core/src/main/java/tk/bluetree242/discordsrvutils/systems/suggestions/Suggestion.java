@@ -1,40 +1,38 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.systems.suggestions;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
+import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Suggestion {
@@ -115,41 +113,28 @@ public class Suggestion {
         return ChannelID;
     }
 
-    public CompletableFuture<SuggestionNote> addNote(Long staff, String note) {
-        return core.getAsyncManager().completableFuture(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("INSERT INTO suggestion_notes(staffid, notetext, suggestionnumber, creationtime) VALUES (?,?,?,?)");
-                p1.setLong(1, staff);
-                p1.setString(2, Utils.b64Encode(note));
-                p1.setInt(3, number);
-                p1.setLong(4, System.currentTimeMillis());
-                p1.execute();
-                SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
-                notes.add(suggestionNote);
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
-                return suggestionNote;
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
-        });
+    public SuggestionNote addNote(Long staff, String note, DSLContext conn) {
+        conn.insertInto(SuggestionNotesTable.SUGGESTION_NOTES)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.STAFFID, staff)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.NOTETEXT, Utils.b64Encode(note))
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.SUGGESTIONNUMBER, number)
+                .set(SuggestionNotesTable.SUGGESTION_NOTES.CREATIONTIME, System.currentTimeMillis())
+                .execute();
+        SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
+        notes.add(suggestionNote);
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        return suggestionNote;
     }
 
-    public CompletableFuture<Void> setApproved(boolean approved, Long staffID) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                PreparedStatement p1 = conn.prepareStatement("UPDATE suggestions SET Approved=?, Approver=? WHERE SuggestionNumber=?");
-                p1.setString(1, Utils.getDBoolean(approved));
-                p1.setLong(2, staffID);
-                p1.setInt(3, number);
-                p1.execute();
-                this.Approved = approved;
-                this.approver = staffID;
-                getMessage().editMessage(getCurrentMsg()).setActionRows(core.voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
-
-            } catch (SQLException e) {
-                throw new UnCheckedSQLException(e);
-            }
-        });
+    public void setApproved(boolean approved, Long staffID, DSLContext conn) {
+        conn.update(SuggestionsTable.SUGGESTIONS)
+                .set(SuggestionsTable.SUGGESTIONS.APPROVED, Utils.getDBoolean(approved))
+                .set(SuggestionsTable.SUGGESTIONS.APPROVER, staffID)
+                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number))
+                .execute();
+        this.Approved = approved;
+        this.approver = staffID;
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
     }
 
     public Message getMessage() {
@@ -158,7 +143,7 @@ public class Suggestion {
     }
 
     public int getYesCount() {
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
             return votes.size();
         } else
@@ -166,7 +151,7 @@ public class Suggestion {
     }
 
     public int getNoCount() {
-        if (core.voteMode == SuggestionVoteMode.BUTTONS) {
+        if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
             return votes.size();
         } else
@@ -205,12 +190,7 @@ public class Suggestion {
 
     public SuggestionNote getLatestNote() {
         List<SuggestionNote> noteList = new ArrayList<>(notes);
-        Collections.sort(noteList, new Comparator<SuggestionNote>() {
-            @Override
-            public int compare(SuggestionNote o1, SuggestionNote o2) {
-                return new Date(o2.getCreationTime()).compareTo(new Date(o1.getCreationTime()));
-            }
-        });
+        noteList.sort((o1, o2) -> new Date(o2.getCreationTime()).compareTo(new Date(o1.getCreationTime())));
         return noteList.get(0);
     }
 }

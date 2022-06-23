@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils;
@@ -32,10 +32,10 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import lombok.Getter;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 import tk.bluetree242.discordsrvutils.config.*;
+import tk.bluetree242.discordsrvutils.database.DatabaseManager;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import tk.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
@@ -45,19 +45,18 @@ import tk.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import tk.bluetree242.discordsrvutils.platform.PlatformServer;
 import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
+import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.listeners.game.GameLevelingListener;
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionVoteMode;
 import tk.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import tk.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
 import tk.bluetree242.discordsrvutils.waiter.WaiterManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
@@ -67,6 +66,7 @@ public class DiscordSRVUtils {
     private static DiscordSRVUtils instance;
     //file separator string
     public final String fileseparator = System.getProperty("file.separator");
+    private final MessageFilter messageFilter = new MessageFilter(this);
     private final PluginPlatform main;
     @Getter
     private final MessageManager messageManager = new MessageManager(this);
@@ -84,11 +84,22 @@ public class DiscordSRVUtils {
     private final StatusManager statusManager = new StatusManager(this);
     @Getter
     private final PluginHookManager pluginHookManager = new PluginHookManager(this);
-    //Mode for suggestions voting
-    public SuggestionVoteMode voteMode;
+    @Getter
+    private final AsyncManager asyncManager = new AsyncManager(this);
+    @Getter
+    private final JdaManager jdaManager = new JdaManager(this);
+    @Getter
+    private final ErrorHandler errorHandler = new ErrorHandler(this);
+    @Getter
+    private final UpdateChecker updateChecker = new UpdateChecker(this);
+    @Getter
+    private final DatabaseManager databaseManager = new DatabaseManager(this);
     //latest error that occurred on our thread pool
     //Plugins we hooked into
     // faster getter for the logger
+
+    @Getter
+    private final InviteTrackingManager inviteTrackingManager = new InviteTrackingManager(this);
     @Getter
     public Logger logger;
     //Configurations
@@ -117,16 +128,6 @@ public class DiscordSRVUtils {
     private StatusConfig statusConfig;
     //Our DiscordSRV Listener
     private DiscordSRVListener dsrvlistener;
-    @Getter
-    private AsyncManager asyncManager = new AsyncManager(this);
-    @Getter
-    private JdaManager jdaManager = new JdaManager(this);
-    @Getter
-    private ErrorHandler errorHandler = new ErrorHandler(this);
-    @Getter
-    private UpdateChecker updateChecker = new UpdateChecker(this);
-    @Getter
-    private DatabaseManager databaseManager = new DatabaseManager(this);
 
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
@@ -179,6 +180,7 @@ public class DiscordSRVUtils {
                 return;
             }
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_INVITES);
             DiscordSRV.api.requireCacheFlag(CacheFlag.EMOTE);
         }
     }
@@ -192,7 +194,7 @@ public class DiscordSRVUtils {
                 main.disable();
                 return;
             }
-            addMessageFilter();
+            messageFilter.add();
             try {
                 //Reload Configurations
                 reloadConfigs();
@@ -217,10 +219,10 @@ public class DiscordSRVUtils {
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             try {
-                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent");
-            } catch (ClassNotFoundException e) {
+                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.entities.Message").getDeclaredMethod("getInteraction");
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 //DiscordSRV is out of date
-                severe("Plugin could not enable because DiscordSRV is missing an important feature (buttons). This means your DiscordSRV is out of date please update it for DSU to work");
+                severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
                 main.disable();
                 return;
             }
@@ -246,16 +248,18 @@ public class DiscordSRVUtils {
     }
 
 
-    public void onDisable() throws ExecutionException, InterruptedException {
+    public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
+        messageFilter.remove();
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
             statusManager.unregisterTimer();
-            statusManager.editMessage(false).get();
+            statusManager.editMessage(false);
         }
         asyncManager.stop();
-        if (waiterManager != null) waiterManager.timer.cancel();
+        waiterManager.timer.cancel();
+        waiterManager.getWaiters().forEach(w -> w.expire(true));
         databaseManager.close();
         instance = null;
     }
@@ -292,16 +296,6 @@ public class DiscordSRVUtils {
         setSettings();
     }
 
-    private void addMessageFilter() {
-        try {
-            MessageFilter filter = new MessageFilter(this);
-            ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(filter);
-        } catch (Exception e) {
-            severe("Failed to add Message Filter");
-            e.printStackTrace();
-        }
-    }
-
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         asyncManager.executeAsync(() -> {
@@ -317,9 +311,10 @@ public class DiscordSRVUtils {
                     }
                 }
             }
+            if (!inviteTrackingManager.cacheInvites())
+                errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
             //fix issues with any ticket or panel
             ticketManager.fixTickets();
-            voteMode = SuggestionVoteMode.valueOf(suggestionsConfig.suggestions_vote_mode().toUpperCase());
             //migrate suggestion buttons/reactions if needed
             suggestionManager.migrateSuggestions();
             statusManager.editMessage(true);
@@ -331,7 +326,8 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
-        commandManager.addSlashCommands();
+        if (config.register_slash())
+            commandManager.addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.invalidateAll();

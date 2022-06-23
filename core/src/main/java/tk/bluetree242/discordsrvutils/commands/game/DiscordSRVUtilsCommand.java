@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.commands.game;
@@ -81,6 +81,17 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     }
                     return;
                 }
+            } else if (args[0].equalsIgnoreCase("removeslash")) {
+                if (sender.hasPermission("discordsrvutils.removeslash")) {
+                    if (!core.isReady()) {
+                        sender.sendMessage("&cSorry but plugin isn't ready yet to do this action");
+                    } else {
+                        core.getPlatform().getDiscordSRV().getMainGuild().updateCommands().queue(
+                                s -> sender.sendMessage("&aSuccessfully Removed Slash Commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()),
+                                f -> sender.sendMessage("&cCould not remove slash commands from &e" + core.getPlatform().getDiscordSRV().getMainGuild().getName()));
+                    }
+                    return;
+                }
             }
         }
         sender.sendMessage("&cSubCommand not found");
@@ -94,9 +105,11 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 values.add("reload");
             if (sender.hasPermission("discordsrvutils.debug"))
                 values.add("debug");
-
             if (sender.hasPermission("discordsrvutils.updatecheck"))
                 values.add("updatecheck");
+            if (sender.hasPermission("discordsrvutils.removeslash"))
+                values.add("removeslash");
+
         }
 
         List<String> result = new ArrayList<>();

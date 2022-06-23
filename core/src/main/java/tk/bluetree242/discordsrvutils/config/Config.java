@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.config;
@@ -59,10 +59,22 @@ public interface Config {
     long linkaccount_channel();
 
     @AnnotationBasedSorter.Order(33)
+    @ConfKey("linkaccount-channel-delete-messages-delay")
+    @ConfComments("#Amount of time in seconds to delete messages sent in the link account channel, set 0 to not delete at all")
+    @ConfDefault.DefaultLong(10)
+    long linkaccount_channel_delete_messages_delay();
+
+    @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
     @ConfDefault.DefaultStrings({})
     List<String> disabled_commands();
+
+    @AnnotationBasedSorter.Order(35)
+    @ConfKey("register-slash-commands")
+    @ConfComments("# Should We register slash commands into your discord server?\n# This will not remove the currently registered commands, to remove them use /dsu removeslash")
+    @ConfDefault.DefaultBoolean(true)
+    boolean register_slash();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
@@ -112,6 +124,12 @@ public interface Config {
     @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
     String goodbye_message();
 
+    @AnnotationBasedSorter.Order(101)
+    @ConfKey("invite-tracking")
+    @ConfComments("#Should we track invites? This enables a whole invite tracking system. https://wiki.discordsrvutils.xyz/invite-tracking")
+    @ConfDefault.DefaultBoolean(true)
+    boolean track_invites();
+
 
     @AnnotationBasedSorter.Order(110)
     @ConfKey("afk.enabled")
@@ -150,8 +168,8 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(170)
     @ConfKey("pool-size")
-    @ConfComments("# Thread Pool Size. The more it increase the more it gets better. But will use more CPU.")
-    @ConfDefault.DefaultInteger(5)
+    @ConfComments("# Thread Pool Size. Simply, how many tasks the plugin can do as the same time, increase if needed, may use more CPU.")
+    @ConfDefault.DefaultInteger(2)
     int pool_size();
 
     @AnnotationBasedSorter.Order(180)

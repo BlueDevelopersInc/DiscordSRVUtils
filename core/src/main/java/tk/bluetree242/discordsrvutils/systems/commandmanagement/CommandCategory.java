@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
@@ -32,6 +32,8 @@ public class CommandCategory {
     public static final CommandCategory LEVELING = new CommandCategory("Leveling", "\uD83C\uDFC5");
     public static final CommandCategory SUGGESTIONS = new CommandCategory("Suggestions", "\uD83D\uDCA1");
     public static final CommandCategory SUGGESTIONS_ADMIN = new CommandCategory("Suggestions Admin", "\uD83D\uDCA1");
+    public static final CommandCategory INVITE_TRACKING = new CommandCategory("Invite Tracking", "\uD83C\uDFC3");
+
     private static final Set<CommandCategory> externals = new HashSet<>();
     private final List<Command> commands = new ArrayList<>();
     private final String name;
@@ -44,7 +46,7 @@ public class CommandCategory {
     }
 
     public static CommandCategory[] values() {
-        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(new CommandCategory[]{TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS, SUGGESTIONS_ADMIN}));
+        ArrayList<CommandCategory> list = new ArrayList(Arrays.asList(TICKETS, TICKETS_ADMIN, ADMIN, LEVELING, SUGGESTIONS, SUGGESTIONS_ADMIN, INVITE_TRACKING));
         for (CommandCategory external : externals) {
             list.add(external);
         }

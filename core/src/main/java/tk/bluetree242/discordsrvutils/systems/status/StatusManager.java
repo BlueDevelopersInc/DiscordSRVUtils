@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.systems.status;
@@ -40,7 +40,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class StatusManager {
@@ -59,29 +58,27 @@ public class StatusManager {
         return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
-    public CompletableFuture<Message> newMessage(TextChannel channel) {
-        return core.getAsyncManager().completableFuture(() -> {
-            //path for some temp storage which should not be stored in database
-            File file = getDataPath().toFile();
-            JSONObject json = new JSONObject();
-            json.put("channel", channel.getIdLong());
-            //Its already async, complete() should be fine
-            Message msg = channel.sendMessage(getStatusMessage(true)).complete();
-            json.put("message", msg.getIdLong());
-            try {
-                if (!file.exists()) {
-                    getDataPath().getParent().toFile().mkdirs();
-                    file.createNewFile();
-                }
-                FileWriter writer = new FileWriter(file);
-                writer.write(json.toString());
-                writer.close();
-                //Should be written successfully
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+    public Message newMessage(TextChannel channel) {
+        //path for some temp storage which should not be stored in database
+        File file = getDataPath().toFile();
+        JSONObject json = new JSONObject();
+        json.put("channel", channel.getIdLong());
+        //Its already async, complete() should be fine
+        Message msg = channel.sendMessage(getStatusMessage(true)).complete();
+        json.put("message", msg.getIdLong());
+        try {
+            if (!file.exists()) {
+                getDataPath().getParent().toFile().mkdirs();
+                file.createNewFile();
             }
+            FileWriter writer = new FileWriter(file);
+            writer.write(json.toString());
+            writer.close();
+            //Should be written successfully
             return msg;
-        });
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public Long getMessageId() throws IOException {
@@ -98,25 +95,22 @@ public class StatusManager {
         return json.getLong("channel");
     }
 
-    public CompletableFuture<Void> editMessage(boolean online) {
-        return core.getAsyncManager().completableFutureRun(() -> {
-            Message toSend = getStatusMessage(online);
-            try {
-                Long messageId = getMessageId();
-                Long channelId = getChannelId();
-                if (messageId == null || channelId == null) return;
-                Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
-                if (msg == null) return;
-                //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
-                msg.editMessage(toSend).complete();
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-                //Ignore the error for now
-            } catch (ErrorResponseException ex) {
-                //message does not exist, ok that is fine
-            }
-
-        });
+    public void editMessage(boolean online) {
+        Message toSend = getStatusMessage(online);
+        try {
+            Long messageId = getMessageId();
+            Long channelId = getChannelId();
+            if (messageId == null || channelId == null) return;
+            Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
+            if (msg == null) return;
+            //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
+            msg.editMessage(toSend).complete();
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+            //Ignore the error for now
+        } catch (ErrorResponseException ex) {
+            //message does not exist, ok that is fine
+        }
     }
 
     public void registerTimer() {

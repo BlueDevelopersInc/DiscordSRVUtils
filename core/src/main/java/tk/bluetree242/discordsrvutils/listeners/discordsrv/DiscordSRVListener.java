@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.listeners.discordsrv;
@@ -34,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.StartupException;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,13 +57,14 @@ public class DiscordSRVListener {
     @Subscribe
     public void onLink(AccountLinkedEvent e) {
         if (!core.isReady()) return;
-        LevelingManager manager = core.getLevelingManager();
-        manager.getPlayerStats(e.getUser().getIdLong()).thenAcceptAsync(stats -> {
+        core.getAsyncManager().executeAsync(() -> {
+            LevelingManager manager = core.getLevelingManager();
+            PlayerStats stats = manager.getPlayerStats(e.getUser().getIdLong());
             int level = stats.getLevel();
             if (stats == null) return;
             String id = e.getUser().getId();
             if (id == null) return;
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+            Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
             if (member == null) return;
             Collection actions = new ArrayList<>();
             for (Role role : manager.getRolesToRemove(stats.getLevel())) {
@@ -74,7 +77,6 @@ public class DiscordSRVListener {
             }
             RestAction.allOf(actions).queue();
         });
-
     }
 
     @Subscribe
@@ -83,7 +85,7 @@ public class DiscordSRVListener {
 
         LevelingManager manager = core.getLevelingManager();
         core.getAsyncManager().executeAsync(() -> {
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(e.getDiscordId()).complete();
+            Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getDiscordUser().getIdLong());
             if (member != null) {
                 for (Role role : manager.getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))

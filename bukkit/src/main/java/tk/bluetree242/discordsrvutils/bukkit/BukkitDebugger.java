@@ -1,3 +1,25 @@
+/*
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
+ */
+
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -9,7 +31,6 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.exception.ExceptionUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
-import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.SkriptHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -20,6 +41,7 @@ import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.hooks.PluginHook;
 import tk.bluetree242.discordsrvutils.platform.Debugger;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -55,6 +77,7 @@ public class BukkitDebugger implements Debugger {
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getPlatform().getDescription().getVersion());
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
+        information.put("DSU Hooked Plugins", core.getPluginHookManager().getHooks().stream().filter(PluginHook::isHooked).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("DiscordSRV Version", DiscordSRV.getPlugin() + "");
         information.put("DiscordSRV Config Version", DiscordSRV.config().getString("ConfigVersion"));
         information.put("DSU Status", core.isEnabled() ? "Enabled" : "Disabled");
@@ -69,12 +92,11 @@ public class BukkitDebugger implements Debugger {
         information.put("/discord command executor", (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() + "" : ""));
         information.put("threads",
                 "\n    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()) +
-                        "\n    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()) +
                         "\n    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()) +
                         "\n    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive())
         );
         information.put("ExecutorService Status", core.getAsyncManager().getPool() == null ? "null" : (core.getAsyncManager().getPool().isShutdown() ? "Shutdown" : "Q:" + core.getAsyncManager().getPool().getQueue().size() + ", R:" + core.getAsyncManager().getPool().getActiveCount() + ", AV:" + core.getAsyncManager().getPool().getPoolSize()));
-        information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
+        information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(github.scarsz.discordsrv.hooks.PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
         Map<String, String> versionConfig = new HashMap<>();
@@ -275,7 +297,7 @@ public class BukkitDebugger implements Debugger {
     private String getRelevantLinesFromServerLog() {
         List<String> output = new LinkedList<>();
         try {
-            FileReader fr = new FileReader(new File("logs/latest.log"));
+            FileReader fr = new FileReader("logs/latest.log");
             BufferedReader br = new BufferedReader(fr);
             boolean done = false;
             while (!done) {
@@ -303,7 +325,7 @@ public class BukkitDebugger implements Debugger {
         }
     }
 
-    public byte[] encrypt(byte[] key, byte[] data) throws Exception {
+    public byte[] encrypt(byte[] key, byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             byte[] iv = new byte[cipher.getBlockSize()];

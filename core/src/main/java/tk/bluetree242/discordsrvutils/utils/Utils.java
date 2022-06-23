@@ -1,29 +1,32 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.utils;
 
 import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -44,15 +47,13 @@ public class Utils {
     public static String readFile(String path)
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
-        String fileContents = new String(encoded, StandardCharsets.UTF_8);
-        return fileContents;
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     public static String readFile(File file)
             throws IOException {
         byte[] encoded = Files.readAllBytes(file.getAbsoluteFile().toPath());
-        String fileContents = new String(encoded, StandardCharsets.UTF_8);
-        return fileContents;
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     public static boolean isLong(String s) {
@@ -75,8 +76,7 @@ public class Utils {
 
 
     public static boolean getDBoolean(String s) {
-        if (s.equalsIgnoreCase("true")) return true;
-        return false;
+        return s.equalsIgnoreCase("true");
     }
 
     public static String getDBoolean(Boolean s) {
@@ -94,13 +94,13 @@ public class Utils {
     public static String getDuration(Long ms) {
         String val = "";
         Long remaining = ms;
-        Long days = TimeUnit.MILLISECONDS.toDays(ms);
+        long days = TimeUnit.MILLISECONDS.toDays(ms);
         remaining = remaining - TimeUnit.DAYS.toMillis(days);
-        Long hours = TimeUnit.MILLISECONDS.toHours(remaining);
+        long hours = TimeUnit.MILLISECONDS.toHours(remaining);
         remaining = remaining - TimeUnit.HOURS.toMillis(hours);
-        Long minutes = TimeUnit.MILLISECONDS.toMinutes(remaining);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(remaining);
         remaining = remaining - TimeUnit.MINUTES.toMillis(minutes);
-        Long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
         if (days != 0) {
             val = days + " Day" + (days <= 1 ? "" : "s");
         }
@@ -137,7 +137,7 @@ public class Utils {
             String returnvalue = "";
             for (String l : s.split("")) {
                 len++;
-                if (len >= 97 && len <= 100 && len <= 100) {
+                if (len >= 97 && len <= 100) {
                     returnvalue = returnvalue + ".";
                 } else {
                     if (len <= 100)
@@ -152,23 +152,23 @@ public class Utils {
     public static String trim(String s, int limit) {
         if (s.length() >= 100) {
             int len = 0;
-            String returnvalue = "";
+            StringBuilder returnvalue = new StringBuilder();
             for (String l : s.split("")) {
                 len++;
                 if (len >= (limit - 3) && len <= limit && len <= limit) {
-                    returnvalue = returnvalue + ".";
+                    returnvalue.append(".");
                 } else {
                     if (len <= limit)
-                        returnvalue = returnvalue + l;
+                        returnvalue.append(l);
                 }
             }
-            return returnvalue;
+            return returnvalue.toString();
         }
         return s;
     }
 
     public static String b64Encode(@NotNull String text) {
-        return Base64.getEncoder().encodeToString(text.getBytes());
+        return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String b64Encode(@NotNull byte[] bytes) {
@@ -176,12 +176,14 @@ public class Utils {
     }
 
     @Contract("_ -> new")
-    public static @NotNull String b64Decode(String text) {
+    public static @NotNull
+    String b64Decode(String text) {
         return new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8);
     }
 
 
-    public static @NotNull String parseArgs(String[] args, int start, int end) {
+    public static @NotNull
+    String parseArgs(String[] args, int start, int end) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             if (i <= end) {
@@ -191,7 +193,8 @@ public class Utils {
         return argss.replaceAll("\\s+$", "");
     }
 
-    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
+    public static @NotNull
+    String parseArgs(String @NotNull [] args, int start) {
         String argss = "";
         for (int i = start; i < args.length; i++) {
             argss = argss + args[i] + " ";
@@ -223,5 +226,13 @@ public class Utils {
 
     public static String colors(String s) {
         return DiscordSRVUtils.get().getServer().colors(s);
+    }
+
+    public static Member retrieveMember(Guild guild, long id) {
+        try {
+            return guild.retrieveMemberById(id).complete();
+        } catch (ErrorResponseException e) {
+            return null;
+        }
     }
 }

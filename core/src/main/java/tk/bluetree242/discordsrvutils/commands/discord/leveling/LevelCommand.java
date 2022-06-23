@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package tk.bluetree242.discordsrvutils.commands.discord.leveling;
@@ -47,20 +47,20 @@ public class LevelCommand extends Command {
 
         if (e.getOption("user_mention") != null) {
             User user = e.getOption("user_mention").getAsUser();
-            target = core.getLevelingManager().getPlayerStats(user.getIdLong()).get();
+            target = core.getLevelingManager().getPlayerStats(user.getIdLong());
             if (target == null) {
                 e.replyErr(new PlaceholdObject(core, user, "user").apply(core.getLevelingConfig().level_command_other_not_linked()));
                 return;
             }
         } else if (e.getOption("player_name") != null) {
             String name = e.getOption("player_name").getAsString();
-            target = core.getLevelingManager().getPlayerStats(name).get();
+            target = core.getLevelingManager().getPlayerStats(name, e.getConnection());
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_invalid_player()).queue();
                 return;
             }
         } else {
-            target = core.getLevelingManager().getPlayerStats(e.getAuthor().getIdLong()).get();
+            target = core.getLevelingManager().getPlayerStats(e.getAuthor().getIdLong());
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_not_linked()).queue();
                 return;
@@ -68,5 +68,9 @@ public class LevelCommand extends Command {
         }
 
         e.replyMessage(core.getLevelingConfig().level_command_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, target, "stats")), core.getServer().getOfflinePlayer(target.getUuid())).queue();
+    }
+
+    public boolean isEnabled() {
+        return core.getLevelingConfig().enabled() && super.isEnabled();
     }
 }

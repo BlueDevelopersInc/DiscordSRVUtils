@@ -1,23 +1,23 @@
 /*
- *  LICENSE
- *  DiscordSRVUtils
- *  -------------
- *  Copyright (C) 2020 - 2021 BlueTree242
- *  -------------
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2022 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public
- *  License along with this program.  If not, see
- *  <http://www.gnu.org/licenses/gpl-3.0.html>.
- *  END
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 import org.apache.tools.ant.filters.ReplaceTokens
 
@@ -27,11 +27,11 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 compileJava.options.encoding 'UTF-8'
+build.finalizedBy shadowJar
 allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         maven {
             url = uri('https://repo.citizensnpcs.co')
         }
@@ -98,6 +98,9 @@ allprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
     }
 }
+dependencies {
+    implementation project(":bukkit")
+}
 def buildNumber = project.properties['buildNumber'] == null ? "NONE" : project.properties['buildNumber']
 System.out.println("Build Number is " + buildNumber)
 def commit = project.properties['commit'] == null ? "NONE" : project.properties['commit']
@@ -125,9 +128,6 @@ subprojects {
 shadowJar {
     classifier ''
 }
-dependencies {
-    implementation project(":bukkit")
-}
 publishing {
     publications {
         maven(MavenPublication) {
@@ -140,6 +140,8 @@ allprojects {
     java.sourceCompatibility = JavaVersion.VERSION_1_8
     java.targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+
 
 
 
