@@ -75,7 +75,7 @@ public class DiscordSRVListener {
             if (toAdd != null && !member.getRoles().contains(toAdd)) {
                 actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
             }
-            RestAction.allOf(actions).queue();
+            if (!actions.isEmpty()) RestAction.allOf(actions).queue();
         });
     }
 
