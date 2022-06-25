@@ -255,7 +255,7 @@ public class Panel {
                     .set(TicketPanelsTable.TICKET_PANELS.ID, panel.id)
                     .set(TicketPanelsTable.TICKET_PANELS.CHANNEL, channelId)
                     .set(TicketPanelsTable.TICKET_PANELS.MESSAGEID, msg.getIdLong())
-                    .set(TicketPanelsTable.TICKET_PANELS.OPENEDCATEGORY, closedCategory)
+                    .set(TicketPanelsTable.TICKET_PANELS.OPENEDCATEGORY, openedCategory)
                     .set(TicketPanelsTable.TICKET_PANELS.CLOSEDCATEGORY, closedCategory)
                     .execute();
             addAllowedRoles(conn, allowedRoles, panel);
@@ -328,7 +328,7 @@ public class Panel {
                     .set(TicketPanelsTable.TICKET_PANELS.NAME, name)
                     .set(TicketPanelsTable.TICKET_PANELS.CHANNEL, channelId)
                     .set(TicketPanelsTable.TICKET_PANELS.MESSAGEID, msg.getIdLong())
-                    .set(TicketPanelsTable.TICKET_PANELS.OPENEDCATEGORY, closedCategory)
+                    .set(TicketPanelsTable.TICKET_PANELS.OPENEDCATEGORY, openedCategory)
                     .set(TicketPanelsTable.TICKET_PANELS.CLOSEDCATEGORY, closedCategory)
                     .where(TicketPanelsTable.TICKET_PANELS.ID.eq(panel.id))
                     .execute();
