@@ -26,7 +26,7 @@ import nu.studer.gradle.jooq.JooqEdition
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'nu.studer.jooq' version '7.1.1'
+    id 'nu.studer.jooq' version '5.2.2'
     id "org.flywaydb.flyway" version "8.5.3"
 }
 apply plugin: 'maven-publish'
@@ -79,8 +79,8 @@ dependencies {
     //related to jooq
     implementation 'org.jooq:jooq:3.16.6'
     //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
-    testImplementation 'com.h2database:h2:2.1.210'
-    jooqGenerator 'com.h2database:h2:2.1.210'
+    testImplementation 'com.h2database:h2:1.4.197'
+    jooqGenerator 'com.h2database:h2:1.4.197'
 
 }
 
@@ -97,7 +97,7 @@ afterEvaluate { evaluated ->
     }
 }
 flyway {
-    url = "jdbc:h2:file:${project.buildDir}/migration;MODE=Mysql;DATABASE_TO_UPPER=false;DATABASE_TO_LOWER=false"
+    url = "jdbc:h2:file:${project.buildDir}/migration;MODE=Mysql;DATABASE_TO_UPPER=false"
     user = 'SA'
     password = ''
     validateMigrationNaming = true
@@ -106,7 +106,7 @@ flyway {
 }
 
 jooq {
-    version = '3.16.6'  // default (can be omitted)
+    version = '3.14.12'  // default (can be omitted)
     edition = JooqEdition.OSS  // default (can be omitted)
 
     configurations {
@@ -166,5 +166,9 @@ jooq {
             }
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
