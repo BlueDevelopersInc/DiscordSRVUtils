@@ -81,6 +81,7 @@ public class LevelingManager {
             .expireAfterWrite(Duration.ofMinutes(1))
             .refreshAfterWrite(Duration.ofSeconds(30))
             .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
                 adding = true;
                 PlayerStats stats = null;
                 try (Connection conn = core.getDatabaseManager().getConnection()) {
