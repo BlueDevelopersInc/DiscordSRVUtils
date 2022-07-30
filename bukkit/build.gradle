@@ -24,7 +24,6 @@ plugins {
     id 'java'
     id 'maven-publish'
 }
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 publishing {
     publications {

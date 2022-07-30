@@ -24,7 +24,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 compileJava.options.encoding 'UTF-8'
 build.finalizedBy shadowJar
@@ -39,7 +39,7 @@ allprojects {
             url = uri('https://nexus.vankka.dev/repository/maven-public/')
         }
         maven {
-            url = uri('http://repo.extendedclip.com/content/repositories/placeholderapi/')
+            url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
         }
 
         maven {
@@ -107,7 +107,6 @@ def commit = project.properties['commit'] == null ? "NONE" : project.properties[
 System.out.println("Commit Hash is " + commit)
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     project.jar {
         archivesBaseName = 'DiscordSRVUtils-' + project.name
@@ -123,7 +122,7 @@ subprojects {
         }
 
     }
-
+    tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
 }
 shadowJar {
     classifier ''
