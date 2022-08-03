@@ -67,7 +67,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                     }
                 }
                 //store in db
-                if (core.getMainConfig().track_invites() && invite != null) {
+                if (!core.getMainConfig().bungee_mode() && core.getMainConfig().track_invites() && invite != null) {
                     try (Connection conn = core.getDatabaseManager().getConnection()) {
                         core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
                     } catch (SQLException ex) {
