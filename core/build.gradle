@@ -77,7 +77,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 
     //related to jooq
-    implementation 'org.jooq:jooq:3.16.6'
+    implementation 'org.jooq:jooq:3.14.16'
     //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
     testImplementation 'com.h2database:h2:1.4.197'
     jooqGenerator 'com.h2database:h2:1.4.197'
@@ -106,7 +106,7 @@ flyway {
 }
 
 jooq {
-    version = '3.14.12'  // default (can be omitted)
+    version = '3.14.16'  // default (can be omitted)
     edition = JooqEdition.OSS  // default (can be omitted)
 
     configurations {
