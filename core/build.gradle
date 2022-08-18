@@ -82,7 +82,9 @@ dependencies {
     testImplementation 'com.h2database:h2:1.4.197'
     jooqGenerator 'com.h2database:h2:1.4.197'
     implementation 'org.slf4j:slf4j-api:1.7.30'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.18.0'
+    implementation('org.apache.logging.log4j:log4j-slf4j-impl:2.18.0') {
+        exclude group: 'org.apache.logging.log4j'
+    }
 }
 
 
