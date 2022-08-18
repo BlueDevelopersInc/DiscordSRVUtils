@@ -81,6 +81,7 @@ dependencies {
     //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
     testImplementation 'com.h2database:h2:1.4.197'
     jooqGenerator 'com.h2database:h2:1.4.197'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
 
 }
 
