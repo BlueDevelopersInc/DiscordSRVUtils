@@ -23,17 +23,20 @@
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.discordsrv.SlashCommandProvider;
 import tk.bluetree242.discordsrvutils.bukkit.listeners.jda.CustomDiscordAccountLinkListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
+    @Getter
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
@@ -69,6 +72,9 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         }));
         metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
         metrics.addCustomChart(new SimplePie("admins", () -> core.getJdaManager().getAdminIds().size() + ""));
+
+        //discordsrv slash commands api
+        DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
     }
 
     public void onDisable() {

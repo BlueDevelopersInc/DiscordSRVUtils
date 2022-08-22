@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -219,7 +220,7 @@ public class DiscordSRVUtils {
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             try {
-                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.entities.Message").getDeclaredMethod("getInteraction");
+                Class.forName("github.scarsz.discordsrv.api.ApiManager").getDeclaredMethod("addSlashCommandProvider", SlashCommandProvider.class);
             } catch (ClassNotFoundException | NoSuchMethodException e) {
                 //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
@@ -326,8 +327,6 @@ public class DiscordSRVUtils {
 
     public void setSettings() {
         if (!isReady()) return;
-        if (config.register_slash())
-            commandManager.addSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.invalidateAll();
@@ -338,6 +337,7 @@ public class DiscordSRVUtils {
             main.getStatusListener().register();
             statusManager.reloadTimer();
         }
+        DiscordSRV.api.updateSlashCommands();
     }
 
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {

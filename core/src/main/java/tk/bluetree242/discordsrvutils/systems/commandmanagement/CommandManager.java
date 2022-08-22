@@ -23,12 +23,6 @@
 package tk.bluetree242.discordsrvutils.systems.commandmanagement;
 
 
-import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.RateLimitedException;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.CommandListUpdateAction;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.commands.discord.HelpCommand;
 import tk.bluetree242.discordsrvutils.commands.discord.admin.EchoCommand;
@@ -121,49 +115,4 @@ public class CommandManager {
     public List<Command> getCommandsWithoutAliases() {
         return commandswithoutaliases;
     }
-
-    public void addSlashCommands() {
-        if (core.getPlatform().getDiscordSRV().getMainGuild() == null) {
-            core.severe("Default Guild not found (is the bot in a guild?)");
-            return;
-        }
-        if (core.getJDA().getGuilds().size() >= 2) {
-            core.getLogger().warning("Found " + core.getJDA().getGuilds().size() + " Servers! Slash Commands will be added in " + core.getPlatform().getDiscordSRV().getMainGuild().getName());
-            core.getLogger().warning("If you don't want this kick the bot from the servers and leave it on one server only.");
-        }
-        CommandListUpdateAction commands = core.getPlatform().getDiscordSRV().getMainGuild().updateCommands();
-        for (Command command : this.commands) {
-            if (!command.isEnabled()) continue;
-            addCmd(command.getCmd(), command, commands);
-            for (String alias : command.getAliases()) {
-                addCmd(alias, command, commands);
-            }
-        }
-        commands.queue(null, r -> {
-            if (!(r instanceof ErrorResponseException)) {
-                if (r instanceof RateLimitedException) {
-                    core.severe("Could not add slash commands due to rate limits.");
-                    return;
-                }
-                core.severe("Could not add slash commands to discord server.");
-                r.printStackTrace();
-            } else {
-                ErrorResponseException err = (ErrorResponseException) r;
-                if (err.getErrorResponse() == ErrorResponse.MISSING_ACCESS) {
-                    core.getJDA().setRequiredScopes("applications.commands");
-                    String link = core.getJDA().getInviteUrl(Permission.ADMINISTRATOR);
-                    core.severe("Could Not Add Slash Command to Server Because your bot is missing some scopes! Please use this invite " + link);
-                } else {
-                    core.severe("Could not add slash commands to discord server.");
-                    r.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void addCmd(String alias, Command cmd, CommandListUpdateAction action) {
-        action.addCommands(new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()));
-    }
-
-
 }
