@@ -72,7 +72,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(35)
     @ConfKey("register-slash-commands")
-    @ConfComments("# Should We register slash commands into your discord server?\n# This will not remove the currently registered commands, to remove them use /dsu removeslash")
+    @ConfComments("# Should We register slash commands into your discord server?")
     @ConfDefault.DefaultBoolean(true)
     boolean register_slash();
 
