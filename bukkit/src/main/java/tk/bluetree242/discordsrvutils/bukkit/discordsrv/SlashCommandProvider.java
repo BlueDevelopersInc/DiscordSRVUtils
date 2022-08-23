@@ -53,6 +53,6 @@ public class SlashCommandProvider implements github.scarsz.discordsrv.api.comman
 
 
     private PluginSlashCommand getCmd(String alias, Command cmd) {
-        return new PluginSlashCommand(core, new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()), DiscordSRV.getPlugin().getMainGuild() + "");
+        return new PluginSlashCommand(core, new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()), DiscordSRV.getPlugin().getMainGuild().getId());
     }
 }

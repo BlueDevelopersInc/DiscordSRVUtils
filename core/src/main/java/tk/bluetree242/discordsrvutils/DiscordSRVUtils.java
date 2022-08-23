@@ -294,14 +294,14 @@ public class DiscordSRVUtils {
         statusConfigConfManager.reloadConfig();
         statusConfig = statusConfigConfManager.reloadConfigData();
         levelingManager.reloadLevelingRoles();
-        setSettings();
+        setSettings(false);
     }
 
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         asyncManager.executeAsync(() -> {
             registerListeners();
-            setSettings();
+            setSettings(true);
             pluginHookManager.hookAll();
             //remove the discordsrv LinkAccount listener via reflections
             if (getMainConfig().remove_discordsrv_link_listener()) {
@@ -325,8 +325,9 @@ public class DiscordSRVUtils {
 
     }
 
-    public void setSettings() {
+    public void setSettings(boolean first) {
         if (!isReady()) return;
+        if (!first) DiscordSRV.api.updateSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.invalidateAll();
@@ -337,7 +338,6 @@ public class DiscordSRVUtils {
             main.getStatusListener().register();
             statusManager.reloadTimer();
         }
-        DiscordSRV.api.updateSlashCommands();
     }
 
     public RestAction<Message> queueMsg(Message msg, MessageChannel channel) {
