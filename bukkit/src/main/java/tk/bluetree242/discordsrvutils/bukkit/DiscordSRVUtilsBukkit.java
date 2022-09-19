@@ -52,6 +52,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
         }
         core.onEnable();
+        if (!isEnabled()) return;
         //bstats stuff
         Metrics metrics = new Metrics(this, 9456);
         metrics.addCustomChart(new AdvancedPie("features", () -> {

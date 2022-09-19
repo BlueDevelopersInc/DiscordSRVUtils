@@ -30,7 +30,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.Getter;
 import tk.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
-import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandListener;
 import tk.bluetree242.discordsrvutils.systems.invitetracking.listeners.InviteTrackingListener;
 import tk.bluetree242.discordsrvutils.systems.leveling.listeners.jda.DiscordLevelingListener;
 import tk.bluetree242.discordsrvutils.systems.suggestions.listeners.SuggestionListener;
@@ -53,7 +52,6 @@ public class JdaManager {
     public JdaManager(DiscordSRVUtils core) {
         this.core = core;
         //Add The JDA Listeners to the List
-        listeners.add(new CommandListener(core));
         listeners.add(new WelcomerAndGoodByeListener(core));
         listeners.add(new CreatePanelListener(core));
         listeners.add(new PaginationListener(core));

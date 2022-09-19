@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionMapping;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -38,7 +37,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor()
 public class CommandEvent {
     private final DiscordSRVUtils core;
     private final Member member;
