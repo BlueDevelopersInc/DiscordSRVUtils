@@ -172,7 +172,7 @@ public class LevelingManager {
         int num = 0;
         for (LevelingRecord record : records) {
             num++;
-            leaderboard.add(getPlayerStats(record, 1));
+            leaderboard.add(getPlayerStats(record, num));
         }
         return leaderboard;
     }
