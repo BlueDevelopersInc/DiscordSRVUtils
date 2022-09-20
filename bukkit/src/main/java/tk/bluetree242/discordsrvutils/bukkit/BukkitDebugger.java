@@ -128,7 +128,7 @@ public class BukkitDebugger implements Debugger {
         int aesBits = 256;
         String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(encrypt(key.getBytes(), data.toString()))).build();
-        Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.tk/api/v1/createDebug").build();
+        Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.ml/api/v1/createDebug").build();
         Response response = client.newCall(request).execute();
 
         JSONObject bdy = new JSONObject(response.body().string());
@@ -136,7 +136,7 @@ public class BukkitDebugger implements Debugger {
         if (response.code() != 200) {
             return "ERROR: INVALID RESPONSE CODE " + response.code();
         }
-        return "https://mcdebug.bluetree242.tk" + "/" + bdy.getString("id") + "#" + key;
+        return "https://mcdebug.bluetree242.ml" + "/" + bdy.getString("id") + "#" + key;
 
 
     }
@@ -236,7 +236,7 @@ public class BukkitDebugger implements Debugger {
             Iterator<Dynamic> iterator = activeConfig.allChildren().iterator();
             while (iterator.hasNext()) {
                 Dynamic child = iterator.next();
-                if (child.allChildren().count() == 0) {
+                if (!child.allChildren().findAny().isPresent()) {
                     stringBuilder.append(child.key().asObject()).append(": ").append(child.asObject());
                 } else {
                     StringJoiner childJoiner = new StringJoiner(", ");

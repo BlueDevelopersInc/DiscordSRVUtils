@@ -23,6 +23,7 @@
 package tk.bluetree242.discordsrvutils;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -119,8 +120,6 @@ public class DiscordSRVUtils {
     @Getter
     private LevelingConfig levelingConfig;
     //was the DiscordSRV AccountLink Listener Removed?
-    @Getter
-    private boolean removedDiscordSRVAccountLinkListener = false;
     @Getter
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlconfigmanager;
@@ -219,7 +218,7 @@ public class DiscordSRVUtils {
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             try {
-                Class.forName("github.scarsz.discordsrv.dependencies.jda.api.entities.Message").getDeclaredMethod("getInteraction");
+                Class.forName("github.scarsz.discordsrv.api.ApiManager").getDeclaredMethod("addSlashCommandProvider", SlashCommandProvider.class);
             } catch (ClassNotFoundException | NoSuchMethodException e) {
                 //DiscordSRV is out of date
                 severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
@@ -293,24 +292,15 @@ public class DiscordSRVUtils {
         statusConfigConfManager.reloadConfig();
         statusConfig = statusConfigConfManager.reloadConfigData();
         levelingManager.reloadLevelingRoles();
-        setSettings();
+        setSettings(false);
     }
 
     public void whenReady() {
         //do it async, fixing tickets and suggestions can take long time
         asyncManager.executeAsync(() -> {
             registerListeners();
-            setSettings();
+            setSettings(true);
             pluginHookManager.hookAll();
-            //remove the discordsrv LinkAccount listener via reflections
-            if (getMainConfig().remove_discordsrv_link_listener()) {
-                for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
-                    if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
-                        getJDA().removeEventListener(listener);
-                        removedDiscordSRVAccountLinkListener = true;
-                    }
-                }
-            }
             if (!inviteTrackingManager.cacheInvites())
                 errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
             //fix issues with any ticket or panel
@@ -324,10 +314,9 @@ public class DiscordSRVUtils {
 
     }
 
-    public void setSettings() {
+    public void setSettings(boolean first) {
         if (!isReady()) return;
-        if (config.register_slash())
-            commandManager.addSlashCommands();
+        if (!first) DiscordSRV.api.updateSlashCommands();
         OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
         getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.invalidateAll();

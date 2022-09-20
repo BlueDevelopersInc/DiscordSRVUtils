@@ -46,24 +46,6 @@ public interface Config {
     @ConfDefault.DefaultString("ONLINE")
     String onlinestatus();
 
-    @AnnotationBasedSorter.Order(31)
-    @ConfKey("remove-discordsrv-link-listener")
-    @ConfComments("#Should we remove DiscordSRV's account link listener?? bot won't respond to dm link codes\n#NOTE: Plugin uses reflection to do this. Which is like hacking into DiscordSRV")
-    @ConfDefault.DefaultBoolean(false)
-    boolean remove_discordsrv_link_listener();
-
-    @AnnotationBasedSorter.Order(32)
-    @ConfKey("linkaccount-channel")
-    @ConfComments("#Custom LinkAccount Channel. ")
-    @ConfDefault.DefaultLong(0)
-    long linkaccount_channel();
-
-    @AnnotationBasedSorter.Order(33)
-    @ConfKey("linkaccount-channel-delete-messages-delay")
-    @ConfComments("#Amount of time in seconds to delete messages sent in the link account channel, set 0 to not delete at all")
-    @ConfDefault.DefaultLong(10)
-    long linkaccount_channel_delete_messages_delay();
-
     @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
@@ -72,7 +54,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(35)
     @ConfKey("register-slash-commands")
-    @ConfComments("# Should We register slash commands into your discord server?\n# This will not remove the currently registered commands, to remove them use /dsu removeslash")
+    @ConfComments("# Should We register slash commands into your discord server?")
     @ConfDefault.DefaultBoolean(true)
     boolean register_slash();
 

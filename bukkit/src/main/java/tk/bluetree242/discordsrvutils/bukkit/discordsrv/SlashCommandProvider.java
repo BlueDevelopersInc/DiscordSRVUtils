@@ -20,27 +20,54 @@
  * END
  */
 
-package tk.bluetree242.discordsrvutils.systems.commandmanagement;
+package tk.bluetree242.discordsrvutils.bukkit.discordsrv;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
+import github.scarsz.discordsrv.api.commands.SlashCommand;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
-import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 import tk.bluetree242.discordsrvutils.embeds.Embed;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequiredArgsConstructor
-public class CommandListener extends ListenerAdapter {
-    private final DiscordSRVUtils core;
+public class SlashCommandProvider implements github.scarsz.discordsrv.api.commands.SlashCommandProvider {
+    private final DiscordSRVUtilsBukkit core;
+    @Override
+    public Set<PluginSlashCommand> getSlashCommands() {
+        Set<PluginSlashCommand> commands = new HashSet<>();
+        if (core.getCore() == null || !core.getCore().isEnabled() || !core.getCore().getMainConfig().register_slash()) return commands;
+        CommandManager manager = core.getCore().getCommandManager();
+        for (Command command : manager.getCommands()) {
+            if (!command.isEnabled()) continue;
+            commands.add(getCmd(command.getCmd(), command));
+            for (String alias : command.getAliases()) {
+                commands.add(getCmd(alias, command));
+            }
+        }
+        return commands;
+    }
 
 
-    public void onSlashCommand(@NotNull SlashCommandEvent e) {
+    private PluginSlashCommand getCmd(String alias, Command cmd) {
+        return new PluginSlashCommand(core, new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()), DiscordSRV.getPlugin().getMainGuild().getId());
+    }
+
+    @SlashCommand(path = "*")
+    public void onCommand(SlashCommandEvent e) {
+        DiscordSRVUtils core = this.core.getCore();
         if (core.getMainConfig().bungee_mode()) return;
-        core.getAsyncManager().executeAsync(() -> {
             String cmd = e.getName();
             Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
             if (executor == null || !executor.isEnabled()) return;
@@ -49,7 +76,7 @@ public class CommandListener extends ListenerAdapter {
                 if (executor.getRequiredPermission() != null) {
                     if (e.getChannel() instanceof TextChannel) {
                         if (!e.getMember().hasPermission(executor.getRequiredPermission())) {
-                            e.replyEmbeds(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission().toString())).queue();
+                            e.replyEmbeds(Embed.error("You don't have permission to use this command.", "Required: " + executor.getRequiredPermission())).queue();
                             return;
                         }
                     }
@@ -84,7 +111,6 @@ public class CommandListener extends ListenerAdapter {
                     core.getErrorHandler().defaultHandle(throwables);
                 }
             }
-        });
 
     }
 }

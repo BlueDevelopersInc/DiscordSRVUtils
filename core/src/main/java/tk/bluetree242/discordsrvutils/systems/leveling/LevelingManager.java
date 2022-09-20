@@ -40,6 +40,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
@@ -80,8 +81,12 @@ public class LevelingManager {
             .expireAfterWrite(Duration.ofMinutes(1))
             .refreshAfterWrite(Duration.ofSeconds(30))
             .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
                 adding = true;
-                PlayerStats stats = getPlayerStats(key, DiscordSRVUtils.get().getDatabaseManager().newJooqConnection());
+                PlayerStats stats = null;
+                try (Connection conn = core.getDatabaseManager().getConnection()) {
+                    stats = getPlayerStats(key, core.getDatabaseManager().jooq(conn));
+                } catch (SQLException ignored) {} //not print trillion messages in console if something goes wrong
                 adding = false;
                 return stats;
             });
@@ -167,7 +172,7 @@ public class LevelingManager {
         int num = 0;
         for (LevelingRecord record : records) {
             num++;
-            leaderboard.add(getPlayerStats(record, 1));
+            leaderboard.add(getPlayerStats(record, num));
         }
         return leaderboard;
     }

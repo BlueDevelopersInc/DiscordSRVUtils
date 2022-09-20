@@ -23,17 +23,19 @@
 package tk.bluetree242.discordsrvutils.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.bukkit.listeners.jda.CustomDiscordAccountLinkListener;
+import tk.bluetree242.discordsrvutils.bukkit.discordsrv.SlashCommandProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
+    @Getter
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
@@ -49,6 +51,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
         }
         core.onEnable();
+        if (!isEnabled()) return;
         //bstats stuff
         Metrics metrics = new Metrics(this, 9456);
         metrics.addCustomChart(new AdvancedPie("features", () -> {
@@ -69,6 +72,9 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         }));
         metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
         metrics.addCustomChart(new SimplePie("admins", () -> core.getJdaManager().getAdminIds().size() + ""));
+
+        //discordsrv slash commands api
+        DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
     }
 
     public void onDisable() {
@@ -85,7 +91,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
-            core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener(core));
         }
     }
 
