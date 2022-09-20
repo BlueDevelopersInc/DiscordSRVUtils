@@ -30,7 +30,6 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.discordsrv.SlashCommandProvider;
-import tk.bluetree242.discordsrvutils.bukkit.listeners.jda.CustomDiscordAccountLinkListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +91,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
-            core.getJdaManager().getListeners().add(new CustomDiscordAccountLinkListener(core));
         }
     }
 

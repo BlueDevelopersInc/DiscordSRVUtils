@@ -121,8 +121,6 @@ public class DiscordSRVUtils {
     private LevelingConfig levelingConfig;
     //was the DiscordSRV AccountLink Listener Removed?
     @Getter
-    private boolean removedDiscordSRVAccountLinkListener = false;
-    @Getter
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlconfigmanager;
     @Getter
@@ -303,15 +301,6 @@ public class DiscordSRVUtils {
             registerListeners();
             setSettings(true);
             pluginHookManager.hookAll();
-            //remove the discordsrv LinkAccount listener via reflections
-            if (getMainConfig().remove_discordsrv_link_listener()) {
-                for (Object listener : getJDA().getEventManager().getRegisteredListeners()) {
-                    if (listener.getClass().getName().equals("github.scarsz.discordsrv.listeners.DiscordAccountLinkListener")) {
-                        getJDA().removeEventListener(listener);
-                        removedDiscordSRVAccountLinkListener = true;
-                    }
-                }
-            }
             if (!inviteTrackingManager.cacheInvites())
                 errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
             //fix issues with any ticket or panel
