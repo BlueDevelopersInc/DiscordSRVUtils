@@ -68,7 +68,6 @@ public class SlashCommandProvider implements github.scarsz.discordsrv.api.comman
     public void onCommand(SlashCommandEvent e) {
         DiscordSRVUtils core = this.core.getCore();
         if (core.getMainConfig().bungee_mode()) return;
-        core.getAsyncManager().executeAsync(() -> {
             String cmd = e.getName();
             Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
             if (executor == null || !executor.isEnabled()) return;
@@ -112,7 +111,6 @@ public class SlashCommandProvider implements github.scarsz.discordsrv.api.comman
                     core.getErrorHandler().defaultHandle(throwables);
                 }
             }
-        });
 
     }
 }
