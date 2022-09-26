@@ -23,16 +23,22 @@
 package tk.bluetree242.discordsrvutils.commands.game;
 
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.PlatformCommand;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class DiscordSRVUtilsCommand implements PlatformCommand {
@@ -79,6 +85,33 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     }
                     return;
                 }
+            } else if (args[0].equalsIgnoreCase("resetlevel")) {
+                if (sender.hasPermission("discordsrvutils.resetlevel")) {
+                    String name = args.length >= 2 ? args[1] : null;
+                    if (name == null) {
+                        sender.sendMessage("&cPlease provide player name or all for all players.");
+                        return;
+                    }
+                    try (Connection conn = core.getDatabaseManager().getConnection()) {
+                        DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                        if (name.equalsIgnoreCase("all")) {
+                            core.getLevelingManager().resetLeveling(jooq);
+                            core.getLevelingManager().cachedUUIDS.invalidateAll();
+                            sender.sendMessage("&eEveryone's level has been reset");
+                        } else {
+                            PlayerStats stats = core.getLevelingManager().getPlayerStats(name, jooq);
+                            if (stats == null) {
+                                sender.sendMessage("&cPlayer not found");
+                            } else {
+                                stats.setLevel(0, jooq);
+                                stats.setXP(0, jooq);
+                                sender.sendMessage("&ePlayer's level has been reset.");
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        throw new UnCheckedSQLException(ex);
+                    }
+                }
             }
         }
         sender.sendMessage("&cSubCommand not found");
@@ -96,7 +129,12 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 values.add("updatecheck");
             if (sender.hasPermission("discordsrvutils.removeslash"))
                 values.add("removeslash");
-
+            if (sender.hasPermission("discordsrvutils.resetlevel"))
+                values.add("resetlevel");
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("resetlevel") && sender.hasPermission("discordsrvutils.resetlevel")) {
+            List<String> result = core.getPlatform().getServer().getOnlinePlayers().stream().map(PlatformPlayer::getName).collect(Collectors.toList());
+            result.add("all");
+            return result;
         }
 
         List<String> result = new ArrayList<>();

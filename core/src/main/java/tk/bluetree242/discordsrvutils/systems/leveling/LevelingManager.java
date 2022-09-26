@@ -177,6 +177,10 @@ public class LevelingManager {
         return leaderboard;
     }
 
+    public void resetLeveling(DSLContext conn) {
+        conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
+    }
+
     public Role getRoleForLevel(int level) {
         Map<String, Object> map = levelingRolesRaw.toMap();
         List<String> keys = new ArrayList<>(map.keySet());

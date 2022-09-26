@@ -42,5 +42,8 @@ permissions:
   discordsrvutils.removeslash:
     default: op
     description: Allows use of /dsu removeslash
+  discordsrvutils.resetlevel:
+    default: op
+    description: Allows use of /dsu resetlevel
 
 

@@ -89,10 +89,6 @@ public class PlayerStats {
      * @return true if player leveled up, false if not
      */
     public boolean setXP(int xp, LevelupEvent event, DSLContext conn) {
-        if (event == null) {
-            event = new LevelupEvent(this, uuid);
-        }
-        LevelupEvent finalEvent = event;
         if (xp >= 300) {
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level + 1)
@@ -117,7 +113,8 @@ public class PlayerStats {
             }
             if (!actions.isEmpty())
                 RestAction.allOf(actions).queue();
-            DiscordSRV.api.callEvent(finalEvent);
+            if (event != null)
+            DiscordSRV.api.callEvent(event);
             return true;
         }
         conn.update(LevelingTable.LEVELING)
