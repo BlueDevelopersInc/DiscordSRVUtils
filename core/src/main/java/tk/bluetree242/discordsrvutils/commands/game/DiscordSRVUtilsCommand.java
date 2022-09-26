@@ -43,9 +43,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
         if (args.length == 0) {
             sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getPlatform().getDescription().getVersion());
             String build = core.getVersionConfig().getString("buildNumber");
-            if (!build.equals("NONE")) {
-                sender.sendMessage("&eBuild #" + build);
-            }
+            sender.sendMessage("&eBuild #" + (build.equalsIgnoreCase("NONE") ? "None/Unknown" : build));
             sender.sendMessage("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running"));
             return;
         }
