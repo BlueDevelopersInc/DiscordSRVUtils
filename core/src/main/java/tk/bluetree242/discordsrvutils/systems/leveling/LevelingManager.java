@@ -76,6 +76,10 @@ public class LevelingManager {
         } catch (JSONException e) {
             core.getLogger().severe("Error loading leveling-roles.json: " + e.getMessage());
         }
+    }
+
+    public PlayerStats getCachedStats(UUID uuid) {
+        return cachedUUIDS.get(uuid);
     }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
@@ -86,14 +90,11 @@ public class LevelingManager {
                 PlayerStats stats = null;
                 try (Connection conn = core.getDatabaseManager().getConnection()) {
                     stats = getPlayerStats(key, core.getDatabaseManager().jooq(conn));
-                } catch (SQLException ignored) {} //not print trillion messages in console if something goes wrong
+                } catch (SQLException ignored) {
+                } //not print trillion messages in console if something goes wrong
                 adding = false;
                 return stats;
             });
-
-    public PlayerStats getCachedStats(UUID uuid) {
-        return cachedUUIDS.get(uuid);
-    }
 
     public PlayerStats getCachedStats(long discordID) {
         UUID uuid = core.getDiscordSRV().getUuid(discordID + "");

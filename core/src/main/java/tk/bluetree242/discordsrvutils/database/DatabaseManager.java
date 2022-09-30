@@ -37,10 +37,6 @@ import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Filter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class DatabaseManager {

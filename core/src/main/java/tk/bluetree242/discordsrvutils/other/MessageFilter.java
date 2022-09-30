@@ -53,7 +53,7 @@ public class MessageFilter {
         if (loggerName.startsWith("tk.bluetree242.discordsrvutils.dependencies.jooq")) return false;
         return true;
     }
-    
+
     //1 method so i can easily reformat the messages
     public void log(Level level, String msg, String prefix) {
         if (Level.INFO.equals(level)) {
@@ -64,6 +64,6 @@ public class MessageFilter {
             core.getLogger().warning("[" + prefix + "] " + msg);
         }
     }
-    
+
 
 }

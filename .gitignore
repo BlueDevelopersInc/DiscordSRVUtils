@@ -26,6 +26,6 @@ hs_err_pid*
 
 
 # Custom files
-build/
+*/build/*
 .idea/
 .gradle/

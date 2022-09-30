@@ -114,7 +114,7 @@ public class PlayerStats {
             if (!actions.isEmpty())
                 RestAction.allOf(actions).queue();
             if (event != null)
-            DiscordSRV.api.callEvent(event);
+                DiscordSRV.api.callEvent(event);
             return true;
         }
         conn.update(LevelingTable.LEVELING)

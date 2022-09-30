@@ -43,6 +43,7 @@ public class BukkitLogger extends LegacyAbstractLogger {
     private DiscordSRVUtilsBukkit getMain() {
         return (DiscordSRVUtilsBukkit) Bukkit.getPluginManager().getPlugin("DiscordSRVUtils");
     }
+
     @Override
     protected String getFullyQualifiedCallerName() {
         return BukkitLogger.class.getName();
