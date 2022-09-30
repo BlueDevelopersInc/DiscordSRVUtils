@@ -81,7 +81,7 @@ public class PlayerStats {
     }
 
     public boolean setXP(int xp, DSLContext conn) {
-        return setXP(xp, null);
+        return setXP(xp, null, conn);
     }
 
     /**
