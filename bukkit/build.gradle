@@ -56,6 +56,7 @@ dependencies {
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
     compileOnly 'net.lapismc:AFKPlus:3.3.15'
     implementation project(":core")
+    implementation('org.slf4j:slf4j-api:2.0.1')
     compileOnly('com.discordsrv:discordsrv:1.26.0')
     implementation 'org.jooq:jooq:3.14.16'
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'

@@ -37,6 +37,10 @@ import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Filter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 public class DatabaseManager {
@@ -59,27 +63,36 @@ public class DatabaseManager {
         String jdbcurl = null;
         String user = null;
         String pass = null;
-        if (core.getSqlconfig().isEnabled()) {
-            jdbcurl = "jdbc:mysql://" +
-                    core.getSqlconfig().Host() +
-                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
-            user = core.getSqlconfig().UserName();
-            pass = core.getSqlconfig().Password();
-        } else {
-            core.logger.info("MySQL is disabled, using hsqldb");
-            hsqldb = true;
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
-            user = "SA";
-            pass = "";
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
+        try {
+            if (core.getSqlconfig().isEnabled()) {
+                jdbcurl = "jdbc:mysql://" +
+                        core.getSqlconfig().Host() +
+                        ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
+                user = core.getSqlconfig().UserName();
+                pass = core.getSqlconfig().Password();
+            } else {
+                core.logger.info("MySQL is disabled, using hsqldb");
+                hsqldb = true;
+                jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
+                user = "SA";
+                pass = "";
+            }
+            //load jooq classes
+            new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
+            settings.setDriverClassName(hsqldb ? "tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver" : "tk.bluetree242.discordsrvutils.dependencies.mariadb.Driver");
+            settings.setJdbcUrl(jdbcurl);
+            settings.setUsername(user);
+            settings.setPassword(pass);
+            sql = new HikariDataSource(settings);
+            migrate();
+            core.getLogger().info("MySQL/HsqlDB Connected & Setup");
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
-        //load jooq classes
-        new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
-        settings.setJdbcUrl(jdbcurl);
-        settings.setUsername(user);
-        settings.setPassword(pass);
-        sql = new HikariDataSource(settings);
-        migrate();
-        core.getLogger().info("MySQL/HsqlDB Connected & Setup");
     }
 
     public void migrate() {

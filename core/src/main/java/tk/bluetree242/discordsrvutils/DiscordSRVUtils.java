@@ -67,6 +67,7 @@ public class DiscordSRVUtils {
     private static DiscordSRVUtils instance;
     //file separator string
     public final String fileseparator = System.getProperty("file.separator");
+    @Getter
     private final MessageFilter messageFilter = new MessageFilter(this);
     private final PluginPlatform main;
     @Getter
@@ -193,7 +194,6 @@ public class DiscordSRVUtils {
                 main.disable();
                 return;
             }
-            messageFilter.add();
             try {
                 //Reload Configurations
                 reloadConfigs();
@@ -249,7 +249,6 @@ public class DiscordSRVUtils {
 
     public void onDisable() {
         if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
-        messageFilter.remove();
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
