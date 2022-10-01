@@ -26,15 +26,12 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.PlatformCommand;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -92,8 +89,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         sender.sendMessage("&cPlease provide player name or all for all players.");
                         return;
                     }
-                    try (Connection conn = core.getDatabaseManager().getConnection()) {
-                        DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                        DSLContext jooq = core.getDatabaseManager().jooq();
                         if (name.equalsIgnoreCase("all")) {
                             core.getLevelingManager().resetLeveling(jooq);
                             core.getLevelingManager().cachedUUIDS.invalidateAll();
@@ -108,9 +104,6 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                                 sender.sendMessage("&ePlayer's level has been reset.");
                             }
                         }
-                    } catch (SQLException ex) {
-                        throw new UnCheckedSQLException(ex);
-                    }
                 }
             }
         }

@@ -37,8 +37,6 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -148,12 +146,8 @@ public class CreatePanelListener extends ListenerAdapter {
                         waiter.getBuilder().setAllowedRoles(rls);
                     }
                     waiter.expire(false);
-                    try (Connection conn = core.getDatabaseManager().getConnection()) {
-                        Panel panel = waiter.getBuilder().create(core.getDatabaseManager().jooq(conn));
+                        Panel panel = waiter.getBuilder().create(core.getDatabaseManager().jooq());
                         e.getChannel().sendMessageEmbeds(Embed.success("Panel created with id " + panel.getId())).queue();
-                    } catch (SQLException ex) {
-                        core.getErrorHandler().defaultHandle(ex, e.getChannel());
-                    }
                 }
             }
         });

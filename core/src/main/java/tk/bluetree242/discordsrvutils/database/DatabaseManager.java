@@ -32,7 +32,6 @@ import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -46,7 +45,7 @@ public class DatabaseManager {
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
-
+    private DSLContext jooq;
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.reconfig_logging", "false");
         try {
@@ -82,6 +81,7 @@ public class DatabaseManager {
             settings.setUsername(user);
             settings.setPassword(pass);
             sql = new HikariDataSource(settings);
+            jooq = DSL.using(sql, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, this.settings);
             migrate();
             core.getLogger().info("MySQL/HsqlDB Connected & Setup");
         } catch (Exception ex) {
@@ -108,17 +108,8 @@ public class DatabaseManager {
         return sql.getConnection();
     }
 
-
-    public DSLContext jooq(Connection conn) {
-        return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
-    }
-
-    public DSLContext newJooqConnection() {
-        try {
-            return jooq(getConnection());
-        } catch (SQLException ex) {
-            throw new UnCheckedSQLException(ex);
-        }
+    public DSLContext jooq() {
+        return jooq;
     }
 
     public DSLContext newRenderOnlyJooq() {

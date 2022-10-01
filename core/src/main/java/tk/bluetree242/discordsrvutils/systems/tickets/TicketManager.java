@@ -31,7 +31,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.But
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.PanelAllowedRolesTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketPanelsTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
@@ -40,8 +39,6 @@ import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketPanelsRecord;
 import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketsRecord;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,11 +133,10 @@ public class TicketManager {
     }
 
     public void fixTickets() {
-        try (Connection conn = core.getDatabaseManager().getConnection()) {
-            DSLContext jooq = core.getDatabaseManager().jooq(conn);
-            List<TicketsRecord> tickets = jooq
-                    .selectFrom(TicketsTable.TICKETS)
-                    .fetch();
+            DSLContext jooq = core.getDatabaseManager().jooq();
+        List<TicketsRecord> tickets = jooq
+                .selectFrom(TicketsTable.TICKETS)
+                .fetch();
             for (TicketsRecord record : tickets) {
                 TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
                 if (channel == null) {
@@ -168,9 +164,6 @@ public class TicketManager {
                     panel.getEditor().apply(jooq);
                 }
             }
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
     }
 
 }

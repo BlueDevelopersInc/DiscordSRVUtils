@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -38,8 +37,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class GameLevelingListener extends PlatformListener {
@@ -47,12 +44,11 @@ public class GameLevelingListener extends PlatformListener {
 
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                LevelingRecord record = jooq
-                        .selectFrom(LevelingTable.LEVELING)
-                        .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
-                        .fetchOne();
+                DSLContext jooq = core.getDatabaseManager().jooq();
+            LevelingRecord record = jooq
+                    .selectFrom(LevelingTable.LEVELING)
+                    .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
+                    .fetchOne();
                 if (record == null) {
                     jooq.insertInto(LevelingTable.LEVELING)
                             .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
@@ -68,9 +64,6 @@ public class GameLevelingListener extends PlatformListener {
                                 .execute();
                     }
                 }
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
         });
     }
 
@@ -78,9 +71,8 @@ public class GameLevelingListener extends PlatformListener {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
                 if (stats == null) {
                     return;
                 }
@@ -100,9 +92,6 @@ public class GameLevelingListener extends PlatformListener {
                 if (leveledUp) {
                     e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
                 }
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
-            }
         });
 
     }

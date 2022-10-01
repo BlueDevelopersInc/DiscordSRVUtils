@@ -32,16 +32,12 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
 import tk.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
 import tk.bluetree242.discordsrvutils.systems.suggestions.SuggestionVote;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class SuggestionListener extends ListenerAdapter {
@@ -53,9 +49,8 @@ public class SuggestionListener extends ListenerAdapter {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+                DSLContext jooq = core.getDatabaseManager().jooq();
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
                 if (suggestion == null) return;
                 Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
                 Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
@@ -77,26 +72,19 @@ public class SuggestionListener extends ListenerAdapter {
                     msg.removeReaction(yes.getNameInReaction(), e.getUser()).queue();
                 }
                 msg.editMessage(suggestion.getCurrentMsg()).queue();
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex);
-            }
         });
     }
 
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
                 if (suggestion == null) return;
                 Message msg = suggestion.getMessage();
                 if (!msg.isEdited() || (System.currentTimeMillis() - msg.getTimeEdited().toEpochSecond()) > 1000) {
                     msg.editMessage(suggestion.getCurrentMsg()).queue();
                 }
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex);
-            }
         });
     }
 
@@ -105,9 +93,8 @@ public class SuggestionListener extends ListenerAdapter {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
                 if (suggestion == null) return;
                 Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
                 Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
@@ -153,9 +140,6 @@ public class SuggestionListener extends ListenerAdapter {
                         break;
                 }
                 msg.editMessage(suggestion.getCurrentMsg()).setActionRows(SuggestionManager.getActionRow(suggestion.getYesCount(), suggestion.getNoCount())).queue();
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex);
-            }
         });
     }
 
@@ -167,12 +151,8 @@ public class SuggestionListener extends ListenerAdapter {
             if (e.getChannel().getIdLong() == core.getSuggestionsConfig().suggestions_channel()) {
                 if (core.getSuggestionsConfig().set_suggestion_from_channel()) {
                     e.getMessage().delete().queue();
-                    try (Connection conn = core.getDatabaseManager().getConnection()) {
-                        DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                    DSLContext jooq = core.getDatabaseManager().jooq();
                         core.getSuggestionManager().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong(), jooq);
-                    } catch (SQLException ex) {
-                        throw new UnCheckedSQLException(ex);
-                    }
                 }
             }
         });

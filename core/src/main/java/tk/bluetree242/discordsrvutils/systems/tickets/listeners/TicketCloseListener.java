@@ -31,9 +31,6 @@ import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 @RequiredArgsConstructor
 public class TicketCloseListener extends ListenerAdapter {
 
@@ -42,9 +39,8 @@ public class TicketCloseListener extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                Ticket ticket = core.getTicketManager().getTicketByMessageId(e.getMessageIdLong(), jooq);
+                DSLContext jooq = core.getDatabaseManager().jooq();
+            Ticket ticket = core.getTicketManager().getTicketByMessageId(e.getMessageIdLong(), jooq);
                 if (ticket != null) {
                     if (e.getUser().isBot()) return;
                     if (e.getButton().getId().equals("close_ticket")) {
@@ -64,9 +60,6 @@ public class TicketCloseListener extends ListenerAdapter {
                         }
                     }
                 }
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex, e.getChannel());
-            }
         });
     }
 }

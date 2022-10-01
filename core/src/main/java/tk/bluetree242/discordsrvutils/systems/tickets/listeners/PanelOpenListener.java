@@ -35,9 +35,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.tickets.Panel;
 import tk.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 @RequiredArgsConstructor
 public class PanelOpenListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
@@ -45,9 +42,8 @@ public class PanelOpenListener extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                Panel panel = core.getTicketManager().getPanelByMessageId(e.getMessageIdLong(), jooq);
+                DSLContext jooq = core.getDatabaseManager().jooq();
+            Panel panel = core.getTicketManager().getPanelByMessageId(e.getMessageIdLong(), jooq);
                 if (panel != null) {
                     if (e.getUser().isBot()) return;
                     if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
@@ -64,9 +60,6 @@ public class PanelOpenListener extends ListenerAdapter {
                     );
                     core.getMessageManager().messageToReplyAction(action, core.getMessageManager().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
                 }
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex, e.getChannel());
-            }
         });
     }
 

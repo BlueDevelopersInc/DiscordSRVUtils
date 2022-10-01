@@ -40,7 +40,6 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
@@ -80,18 +79,25 @@ public class LevelingManager {
 
     public PlayerStats getCachedStats(UUID uuid) {
         return cachedUUIDS.get(uuid);
-    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+    }        public PlayerStats getPlayerStats(long discordID) {
+        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        if (uuid == null) return null;
+        DSLContext conn = core.getDatabaseManager().jooq();
+        PlayerStats result = getPlayerStats(uuid, conn);
+        try {
+            conn.configuration().connectionProvider().acquire().close();
+        } catch (SQLException throwables) {
+            throw new UnCheckedSQLException(throwables);
+        }
+        return result;
+    }public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
             .refreshAfterWrite(Duration.ofSeconds(30))
             .build(key -> {
                 DiscordSRVUtils core = DiscordSRVUtils.get();
                 adding = true;
-                PlayerStats stats = null;
-                try (Connection conn = core.getDatabaseManager().getConnection()) {
-                    stats = getPlayerStats(key, core.getDatabaseManager().jooq(conn));
-                } catch (SQLException ignored) {
-                } //not print trillion messages in console if something goes wrong
+                PlayerStats stats = getPlayerStats(key, core.getDatabaseManager().jooq());
                 adding = false;
                 return stats;
             });
@@ -113,18 +119,7 @@ public class LevelingManager {
         return getPlayerStats(uuid, conn);
     }
 
-    public PlayerStats getPlayerStats(long discordID) {
-        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
-        if (uuid == null) return null;
-        DSLContext conn = core.getDatabaseManager().newJooqConnection();
-        PlayerStats result = getPlayerStats(uuid, conn);
-        try {
-            conn.configuration().connectionProvider().acquire().close();
-        } catch (SQLException throwables) {
-            throw new UnCheckedSQLException(throwables);
-        }
-        return result;
-    }
+
 
     public PlayerStats getPlayerStats(String name, DSLContext conn) {
         return getPlayerStats(conn, name);

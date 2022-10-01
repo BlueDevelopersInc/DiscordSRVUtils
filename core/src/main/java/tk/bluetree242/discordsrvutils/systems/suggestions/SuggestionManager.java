@@ -33,7 +33,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
@@ -45,7 +44,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -85,14 +83,14 @@ public class SuggestionManager {
         return getSuggestion(record);
     }
 
-    public Suggestion getSuggestionByMessageID(Long MessageID, DSLContext conn) throws SQLException {
+    public Suggestion getSuggestionByMessageID(Long MessageID, DSLContext conn) {
         SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
                 .where(SuggestionsTable.SUGGESTIONS.MESSAGEID.eq(MessageID)).fetchOne();
         if (record == null) return null;
         return getSuggestion(record);
     }
 
-    public Suggestion getSuggestion(SuggestionsRecord r) throws SQLException {
+    public Suggestion getSuggestion(SuggestionsRecord r) {
         return getSuggestion(r, null, null);
     }
 
@@ -185,13 +183,12 @@ public class SuggestionManager {
         String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
         boolean sent = false;
         loading = true;
-        try (Connection conn = core.getDatabaseManager().getConnection()) {
-            DSLContext jooq = core.getDatabaseManager().jooq(conn);
-            List<SuggestionsRecord> records = jooq
-                    .selectFrom(SuggestionsTable.SUGGESTIONS)
-                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
-                    .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
-                    .fetch();
+        DSLContext jooq = core.getDatabaseManager().jooq();
+        List<SuggestionsRecord> records = jooq
+                .selectFrom(SuggestionsTable.SUGGESTIONS)
+                .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
+                .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
+                .fetch();
             for (SuggestionsRecord record : records) {
                 Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
                 try {
@@ -236,9 +233,6 @@ public class SuggestionManager {
                 core.logger.info("Suggestions Migration has finished.");
             }
             core.getSuggestionManager().loading = false;
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
-        }
     }
 
 

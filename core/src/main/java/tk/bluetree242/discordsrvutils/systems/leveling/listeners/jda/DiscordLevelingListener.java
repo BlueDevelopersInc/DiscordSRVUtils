@@ -38,8 +38,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class DiscordLevelingListener extends ListenerAdapter {
@@ -51,8 +49,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
             if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() == core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
-                try (Connection conn = core.getDatabaseManager().getConnection()) {
-                    DSLContext jooq = core.getDatabaseManager().jooq(conn);
+                    DSLContext jooq = core.getDatabaseManager().jooq();
                     if (core.getLevelingConfig().enabled()) {
                         PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getMember().getIdLong());
                         if (stats == null) {
@@ -81,9 +78,6 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
                         }
                     }
-                } catch (SQLException ex) {
-                    core.getErrorHandler().defaultHandle(ex, e.getChannel());
-                }
             }
         });
     }
