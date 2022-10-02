@@ -139,6 +139,7 @@ public class LevelingRewardsManager {
         if (commands.isEmpty()) return;
         core.getPlatform().getServer().executeConsoleCommands(commands.stream().toArray(i -> new String[commands.size()]));
         rewardCache.put(stats.getUuid().toString(), stats.getLevel());
+        saveRewardCache();
     }
 
     public void saveRewardCache() {
@@ -169,7 +170,7 @@ public class LevelingRewardsManager {
         JSONObject result = new JSONObject();
         for (String key : roles.toMap().keySet()) {
             Object value = roles.get(key);
-            if (value instanceof Long) result.put("roles", new JSONArray().put(value));
+            if (value instanceof Long) result.put(key + "", new JSONObject().put("roles", new JSONArray().put(value)));
             else result.put(key, value);
         }
         return result;
