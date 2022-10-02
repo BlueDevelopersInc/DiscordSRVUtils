@@ -46,7 +46,8 @@ public class LevelingRewardsManager {
     private final DiscordSRVUtils core;
     @Getter
     private JSONObject levelingRewardsRaw;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JSONObject rewardCache;
     private File rewardCacheFile;
 
@@ -109,7 +110,7 @@ public class LevelingRewardsManager {
 
     private List<String> getCommands(int level, int lastLevel, PlayerStats stats) {
         List<String> result = new ArrayList<>();
-        for (int num = lastLevel;num <= level;num++) {
+        for (int num = lastLevel; num <= level; num++) {
             Object o = getLevelObject(num);
             if (o instanceof JSONObject) {
                 JSONObject json = (JSONObject) o;
@@ -149,6 +150,7 @@ public class LevelingRewardsManager {
             throw new RuntimeException(e);
         }
     }
+
     private boolean needCache() {
         for (String key : levelingRewardsRaw.toMap().keySet()) {
             try {

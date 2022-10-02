@@ -38,10 +38,10 @@ public class TicketDeleteListener extends ListenerAdapter {
     public void onTextChannelDelete(@NotNull TextChannelDeleteEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-                DSLContext jooq = core.getDatabaseManager().jooq();
-                jooq.deleteFrom(TicketsTable.TICKETS)
-                        .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
-                        .execute();
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            jooq.deleteFrom(TicketsTable.TICKETS)
+                    .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
+                    .execute();
         });
     }
 }

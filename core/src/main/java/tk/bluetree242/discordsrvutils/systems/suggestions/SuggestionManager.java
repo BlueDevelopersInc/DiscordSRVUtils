@@ -189,50 +189,50 @@ public class SuggestionManager {
                 .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
                 .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
                 .fetch();
-            for (SuggestionsRecord record : records) {
-                Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
-                try {
-                    Message msg = suggestion.getMessage();
-                    if (msg != null) {
-                        if (msg.getButtons().isEmpty()) {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            } else {
-                                if (!sent) {
-                                    core.logger.info(warnmsg);
-                                    sent = true;
-                                    core.getSuggestionManager().loading = true;
-                                }
-                                msg.clearReactions().queue();
-                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                        Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
-                            }
+        for (SuggestionsRecord record : records) {
+            Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
+            try {
+                Message msg = suggestion.getMessage();
+                if (msg != null) {
+                    if (msg.getButtons().isEmpty()) {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
                         } else {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                                if (!sent) {
-                                    core.getSuggestionManager().loading = true;
-                                    core.logger.info(warnmsg);
-                                    sent = true;
-                                }
-                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                            if (!sent) {
+                                core.logger.info(warnmsg);
+                                sent = true;
+                                core.getSuggestionManager().loading = true;
                             }
+                            msg.clearReactions().queue();
+                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                    Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
                         }
-                        jooq.update(SuggestionsTable.SUGGESTIONS)
-                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
-                                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
-                                .execute();
+                    } else {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            if (!sent) {
+                                core.getSuggestionManager().loading = true;
+                                core.logger.info(warnmsg);
+                                sent = true;
+                            }
+                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                        }
                     }
-                } catch (ErrorResponseException ignored) {
-
+                    jooq.update(SuggestionsTable.SUGGESTIONS)
+                            .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
+                            .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
+                            .execute();
                 }
+            } catch (ErrorResponseException ignored) {
+
             }
-            if (sent) {
-                core.logger.info("Suggestions Migration has finished.");
-            }
-            core.getSuggestionManager().loading = false;
+        }
+        if (sent) {
+            core.logger.info("Suggestions Migration has finished.");
+        }
+        core.getSuggestionManager().loading = false;
     }
 
 

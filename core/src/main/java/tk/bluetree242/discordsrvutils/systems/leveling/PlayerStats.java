@@ -41,11 +41,11 @@ import java.util.UUID;
 public class PlayerStats {
     private final DiscordSRVUtils core;
     private final UUID uuid;
-    @Setter
-    private String name;
     private final int minecraftMessages;
     private final int discordMessages;
     private final int rank;
+    @Setter
+    private String name;
     private int level;
     private int xp;
 

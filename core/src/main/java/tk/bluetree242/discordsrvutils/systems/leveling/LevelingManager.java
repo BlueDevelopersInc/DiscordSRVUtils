@@ -47,7 +47,9 @@ public class LevelingManager {
 
     public PlayerStats getCachedStats(UUID uuid) {
         return cachedUUIDS.get(uuid);
-    }        public PlayerStats getPlayerStats(long discordID) {
+    }
+
+    public PlayerStats getPlayerStats(long discordID) {
         UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
         if (uuid == null) return null;
         DSLContext conn = core.getDatabaseManager().jooq();
@@ -58,7 +60,13 @@ public class LevelingManager {
             throw new UnCheckedSQLException(throwables);
         }
         return result;
-    }public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+    }
+
+    public PlayerStats getCachedStats(long discordID) {
+        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        if (uuid == null) return null;
+        return cachedUUIDS.get(uuid);
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
             .refreshAfterWrite(Duration.ofSeconds(30))
@@ -70,12 +78,6 @@ public class LevelingManager {
                 return stats;
             });
 
-    public PlayerStats getCachedStats(long discordID) {
-        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
-        if (uuid == null) return null;
-        return cachedUUIDS.get(uuid);
-    }
-
     public boolean isLinked(UUID uuid) {
         String discord = core.getDiscordSRV().getDiscordId(uuid);
         return discord != null;
@@ -86,8 +88,6 @@ public class LevelingManager {
         if (uuid == null) return null;
         return getPlayerStats(uuid, conn);
     }
-
-
 
     public PlayerStats getPlayerStats(String name, DSLContext conn) {
         return getPlayerStats(conn, name);
@@ -144,6 +144,7 @@ public class LevelingManager {
     public void resetLeveling(DSLContext conn) {
         conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
     }
+
 
 
 

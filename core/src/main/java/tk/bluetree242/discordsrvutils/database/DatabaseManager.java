@@ -46,6 +46,7 @@ public class DatabaseManager {
     private HikariDataSource sql;
     private boolean hsqldb = false;
     private DSLContext jooq;
+
     public void setupDatabase() throws SQLException {
         HikariConfig settings = new HikariConfig();
         String jdbcurl = null;

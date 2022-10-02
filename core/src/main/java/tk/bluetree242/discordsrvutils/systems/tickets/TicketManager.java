@@ -133,37 +133,37 @@ public class TicketManager {
     }
 
     public void fixTickets() {
-            DSLContext jooq = core.getDatabaseManager().jooq();
+        DSLContext jooq = core.getDatabaseManager().jooq();
         List<TicketsRecord> tickets = jooq
                 .selectFrom(TicketsTable.TICKETS)
                 .fetch();
-            for (TicketsRecord record : tickets) {
-                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
-                if (channel == null) {
-                    jooq.deleteFrom(TicketsTable.TICKETS)
-                            .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
-                            .execute();
-                }
+        for (TicketsRecord record : tickets) {
+            TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
+            if (channel == null) {
+                jooq.deleteFrom(TicketsTable.TICKETS)
+                        .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
+                        .execute();
             }
+        }
 
-            //work with panels
-            List<TicketPanelsRecord> panels = jooq
-                    .selectFrom(TicketPanelsTable.TICKET_PANELS)
-                    .fetch();
-            for (TicketPanelsRecord record : panels) {
-                Panel panel = getPanel(record);
-                try {
-                    Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                    if (msg.getButtons().isEmpty()) {
-                        msg.clearReactions().queue();
-                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
-                    } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
-                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
-                    }
-                } catch (ErrorResponseException ex) {
-                    panel.getEditor().apply(jooq);
+        //work with panels
+        List<TicketPanelsRecord> panels = jooq
+                .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                .fetch();
+        for (TicketPanelsRecord record : panels) {
+            Panel panel = getPanel(record);
+            try {
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                if (msg.getButtons().isEmpty()) {
+                    msg.clearReactions().queue();
+                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
+                } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
+                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
                 }
+            } catch (ErrorResponseException ex) {
+                panel.getEditor().apply(jooq);
             }
+        }
     }
 
 }

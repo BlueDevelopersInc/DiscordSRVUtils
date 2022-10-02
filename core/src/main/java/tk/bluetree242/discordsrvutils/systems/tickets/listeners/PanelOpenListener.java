@@ -42,24 +42,24 @@ public class PanelOpenListener extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-                DSLContext jooq = core.getDatabaseManager().jooq();
+            DSLContext jooq = core.getDatabaseManager().jooq();
             Panel panel = core.getTicketManager().getPanelByMessageId(e.getMessageIdLong(), jooq);
-                if (panel != null) {
-                    if (e.getUser().isBot()) return;
-                    if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
-                        e.deferReply(true).setContent("You are Ticket Muted").queue();
-                        return;
-                    }
-                    Ticket t = panel.openTicket(e.getUser(), jooq);
-                    ReplyAction action = e.deferReply(true);
-                    PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core,
-                            new PlaceholdObject(core, core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
-                            new PlaceholdObject(core, e.getUser(), "user"),
-                            new PlaceholdObject(core, t, "ticket"),
-                            new PlaceholdObject(core, panel, "panel")
-                    );
-                    core.getMessageManager().messageToReplyAction(action, core.getMessageManager().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
+            if (panel != null) {
+                if (e.getUser().isBot()) return;
+                if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
+                    e.deferReply(true).setContent("You are Ticket Muted").queue();
+                    return;
                 }
+                Ticket t = panel.openTicket(e.getUser(), jooq);
+                ReplyAction action = e.deferReply(true);
+                PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core,
+                        new PlaceholdObject(core, core.getJDA().getTextChannelById(t.getChannelID()), "channel"),
+                        new PlaceholdObject(core, e.getUser(), "user"),
+                        new PlaceholdObject(core, t, "ticket"),
+                        new PlaceholdObject(core, panel, "panel")
+                );
+                core.getMessageManager().messageToReplyAction(action, core.getMessageManager().getMessage(core.getTicketsConfig().ticket_open_ephemeral_msg(), holders, null).build()).queue();
+            }
         });
     }
 

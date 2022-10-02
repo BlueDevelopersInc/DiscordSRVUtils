@@ -44,6 +44,7 @@ public class BukkitPlatformServer extends PlatformServer {
     @Getter
     private final Debugger debugger;
     private final DiscordSRVUtilsBukkit bcore;
+
     public BukkitPlatformServer(DiscordSRVUtils core, DiscordSRVUtilsBukkit bcore) {
         this.core = core;
         debugger = new BukkitDebugger(core);

@@ -156,12 +156,12 @@ public class EditPanelListener extends ListenerAdapter {
             if (name.equals("apply")) {
                 e.deferEdit().queue();
                 waiter.expire(false);
-                    Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq());
-                    if (panel == null) {
-                        e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
-                    } else {
-                        e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
-                    }
+                Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq());
+                if (panel == null) {
+                    e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
+                } else {
+                    e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
+                }
             } else if (name.equals("cancel")) {
                 e.deferEdit().queue();
                 waiter.expire(false);

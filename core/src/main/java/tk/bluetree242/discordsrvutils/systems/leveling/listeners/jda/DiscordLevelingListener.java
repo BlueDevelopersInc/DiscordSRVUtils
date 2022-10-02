@@ -53,36 +53,36 @@ public class DiscordLevelingListener extends ListenerAdapter {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
             if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() == core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
-                    DSLContext jooq = core.getDatabaseManager().jooq();
-                    if (core.getLevelingConfig().enabled()) {
-                        PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getMember().getIdLong());
-                        if (stats == null) {
-                            return;
-                        }
-                        if (core.getLevelingConfig().antispam_messages()) {
-                            Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
-                            if (val == null) {
-                                core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
-                            } else {
-                                if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS))
-                                    return;
-                                core.getLevelingManager().antispamMap.remove(stats.getUuid());
-                                core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
-                            }
-                        }
-                        int toAdd = new SecureRandom().nextInt(50);
-                        boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()), jooq);
-                        stats.addMessage(MessageType.DISCORD, jooq);
-                        if (leveledUp) {
-                            core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core,
-                                    new PlaceholdObject(core, stats, "stats"),
-                                    new PlaceholdObject(core, e.getAuthor(), "user"),
-                                    new PlaceholdObject(core, e.getMember(), "member"),
-                                    new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
-                            ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
-                            core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
+                DSLContext jooq = core.getDatabaseManager().jooq();
+                if (core.getLevelingConfig().enabled()) {
+                    PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getMember().getIdLong());
+                    if (stats == null) {
+                        return;
+                    }
+                    if (core.getLevelingConfig().antispam_messages()) {
+                        Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
+                        if (val == null) {
+                            core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
+                        } else {
+                            if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS))
+                                return;
+                            core.getLevelingManager().antispamMap.remove(stats.getUuid());
+                            core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                         }
                     }
+                    int toAdd = new SecureRandom().nextInt(50);
+                    boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()), jooq);
+                    stats.addMessage(MessageType.DISCORD, jooq);
+                    if (leveledUp) {
+                        core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core,
+                                new PlaceholdObject(core, stats, "stats"),
+                                new PlaceholdObject(core, e.getAuthor(), "user"),
+                                new PlaceholdObject(core, e.getMember(), "member"),
+                                new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
+                        ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
+                        core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
+                    }
+                }
             }
         });
     }

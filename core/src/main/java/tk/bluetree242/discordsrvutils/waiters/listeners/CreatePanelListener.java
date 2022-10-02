@@ -140,14 +140,12 @@ public class CreatePanelListener extends ListenerAdapter {
                             }
                         }
                         Set<Long> rls = new HashSet<>();
-                        roles.forEach(r -> {
-                            rls.add(r.getIdLong());
-                        });
+                        roles.forEach(r -> rls.add(r.getIdLong()));
                         waiter.getBuilder().setAllowedRoles(rls);
                     }
                     waiter.expire(false);
-                        Panel panel = waiter.getBuilder().create(core.getDatabaseManager().jooq());
-                        e.getChannel().sendMessageEmbeds(Embed.success("Panel created with id " + panel.getId())).queue();
+                    Panel panel = waiter.getBuilder().create(core.getDatabaseManager().jooq());
+                    e.getChannel().sendMessageEmbeds(Embed.success("Panel created with id " + panel.getId())).queue();
                 }
             }
         });
