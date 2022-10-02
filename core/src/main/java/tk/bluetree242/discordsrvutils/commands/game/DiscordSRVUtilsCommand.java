@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.commands.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
@@ -93,6 +94,8 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         if (name.equalsIgnoreCase("all")) {
                             core.getLevelingManager().resetLeveling(jooq);
                             core.getLevelingManager().cachedUUIDS.invalidateAll();
+                            core.getLevelingManager().getLevelingRewardsManager().setRewardCache(new JSONObject());
+                            core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
                             sender.sendMessage("&eEveryone's level has been reset");
                         } else {
                             PlayerStats stats = core.getLevelingManager().getPlayerStats(name, jooq);
@@ -101,6 +104,8 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                             } else {
                                 stats.setLevel(0, jooq);
                                 stats.setXP(0, jooq);
+                                core.getLevelingManager().getLevelingRewardsManager().getRewardCache().remove(stats.getUuid().toString());
+                                core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
                                 sender.sendMessage("&ePlayer's level has been reset.");
                             }
                         }

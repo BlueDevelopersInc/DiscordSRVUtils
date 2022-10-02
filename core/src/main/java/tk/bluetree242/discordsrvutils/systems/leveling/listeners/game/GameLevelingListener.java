@@ -27,7 +27,6 @@ import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
-import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
@@ -45,11 +44,8 @@ public class GameLevelingListener extends PlatformListener {
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
                 DSLContext jooq = core.getDatabaseManager().jooq();
-            LevelingRecord record = jooq
-                    .selectFrom(LevelingTable.LEVELING)
-                    .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
-                    .fetchOne();
-                if (record == null) {
+                PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
+                if (stats == null) {
                     jooq.insertInto(LevelingTable.LEVELING)
                             .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
                             .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
@@ -57,12 +53,14 @@ public class GameLevelingListener extends PlatformListener {
                             .set(LevelingTable.LEVELING.XP, 0)
                             .execute();
                 } else {
-                    if (!record.getName().equals(e.getPlayer().getName())) {
+                    if (!stats.getName().equals(e.getPlayer().getName())) {
                         jooq.update(LevelingTable.LEVELING)
                                 .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
                                 .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
                                 .execute();
                     }
+                    stats.setName(e.getPlayer().getName());
+                    core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                 }
         });
     }
@@ -91,6 +89,7 @@ public class GameLevelingListener extends PlatformListener {
                 stats.addMessage(MessageType.MINECRAFT, jooq);
                 if (leveledUp) {
                     e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
+                    core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                 }
         });
 

@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import lombok.Setter;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -34,12 +35,14 @@ import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerStats {
     private final DiscordSRVUtils core;
     private final UUID uuid;
-    private final String name;
+    @Setter
+    private String name;
     private final int minecraftMessages;
     private final int discordMessages;
     private final int rank;
@@ -97,22 +100,7 @@ public class PlayerStats {
                     .execute();
             this.level = level + 1;
             this.xp = 0;
-            String id = core.getDiscordSRV().getDiscordId(uuid);
-            if (id == null) return true;
-            LevelingManager manager = core.getLevelingManager();
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
-            if (member == null) return true;
-            Collection actions = new ArrayList<>();
-            for (Role role : manager.getRolesToRemove(level)) {
-                if (member.getRoles().contains(role))
-                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
-            }
-            Role toAdd = manager.getRoleForLevel(level);
-            if (toAdd != null) {
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
-            }
-            if (!actions.isEmpty())
-                RestAction.allOf(actions).queue();
+            handleRewards();
             if (event != null)
                 DiscordSRV.api.callEvent(event);
             return true;
@@ -122,6 +110,25 @@ public class PlayerStats {
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString())).execute();
         this.xp = xp;
         return false;
+    }
+
+    private void handleRewards() {
+        LevelingManager manager = core.getLevelingManager();
+        String id = core.getDiscordSRV().getDiscordId(uuid);
+        if (id == null) return;
+        Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+        if (member == null) return;
+        Collection actions = new ArrayList<>();
+        for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(level)) {
+            if (member.getRoles().contains(role))
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
+        }
+        List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
+        for (Role role : toAdd) {
+            core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked");
+        }
+        if (!actions.isEmpty())
+            RestAction.allOf(actions).queue();
     }
 
     public int getMinecraftMessages() {

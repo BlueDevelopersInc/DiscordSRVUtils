@@ -47,13 +47,6 @@ public class DatabaseManager {
     private boolean hsqldb = false;
     private DSLContext jooq;
     public void setupDatabase() throws SQLException {
-        System.setProperty("hsqldb.reconfig_logging", "false");
-        try {
-            Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
-        } catch (ClassNotFoundException e) {
-            core.getLogger().severe("Could not set JDBCDriver");
-            return;
-        }
         HikariConfig settings = new HikariConfig();
         String jdbcurl = null;
         String user = null;
@@ -112,7 +105,7 @@ public class DatabaseManager {
         return jooq;
     }
 
-    public DSLContext newRenderOnlyJooq() {
+    protected DSLContext newRenderOnlyJooq() {
         return DSL.using(hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
     }
 

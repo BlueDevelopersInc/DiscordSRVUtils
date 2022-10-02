@@ -39,6 +39,7 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class DiscordSRVListener {
@@ -67,13 +68,13 @@ public class DiscordSRVListener {
             Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
             if (member == null) return;
             Collection actions = new ArrayList<>();
-            for (Role role : manager.getRolesToRemove(stats.getLevel())) {
+            for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(stats.getLevel())) {
                 if (member.getRoles().contains(role))
                     actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User should not have this role"));
             }
-            Role toAdd = manager.getRoleForLevel(level);
-            if (toAdd != null && !member.getRoles().contains(toAdd)) {
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("Account Linked"));
+            List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
+            for (Role role : toAdd) {
+                core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked");
             }
             if (!actions.isEmpty()) RestAction.allOf(actions).queue();
         });
@@ -87,7 +88,7 @@ public class DiscordSRVListener {
         core.getAsyncManager().executeAsync(() -> {
             Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getDiscordUser().getIdLong());
             if (member != null) {
-                for (Role role : manager.getRolesToRemove(null)) {
+                for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
                         core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("Account Unlinked").queue();
                 }

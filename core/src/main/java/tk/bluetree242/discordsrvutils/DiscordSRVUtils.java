@@ -48,6 +48,7 @@ import tk.bluetree242.discordsrvutils.platform.PluginPlatform;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import tk.bluetree242.discordsrvutils.systems.leveling.LevelingRewardsManager;
 import tk.bluetree242.discordsrvutils.systems.leveling.listeners.game.GameLevelingListener;
 import tk.bluetree242.discordsrvutils.systems.messages.MessageManager;
 import tk.bluetree242.discordsrvutils.systems.status.StatusManager;
@@ -79,7 +80,7 @@ public class DiscordSRVUtils {
     @Getter
     private final WaiterManager waiterManager = new WaiterManager(this);
     @Getter
-    private final LevelingManager levelingManager = new LevelingManager(this);
+    private final LevelingManager levelingManager = new LevelingManager(this, new LevelingRewardsManager(this));
     @Getter
     private final SuggestionManager suggestionManager = new SuggestionManager(this);
     @Getter
@@ -290,7 +291,8 @@ public class DiscordSRVUtils {
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
         statusConfigConfManager.reloadConfig();
         statusConfig = statusConfigConfManager.reloadConfigData();
-        levelingManager.reloadLevelingRoles();
+        levelingManager.getLevelingRewardsManager().reloadLevelingRewards();
+        levelingManager.getLevelingRewardsManager().reloadRewardCache();
         setSettings(false);
     }
 

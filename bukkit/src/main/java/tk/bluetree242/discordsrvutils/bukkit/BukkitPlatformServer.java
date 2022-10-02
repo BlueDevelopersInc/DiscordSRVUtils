@@ -43,10 +43,11 @@ public class BukkitPlatformServer extends PlatformServer {
     private final DiscordSRVUtils core;
     @Getter
     private final Debugger debugger;
-
-    public BukkitPlatformServer(DiscordSRVUtils core) {
+    private final DiscordSRVUtilsBukkit bcore;
+    public BukkitPlatformServer(DiscordSRVUtils core, DiscordSRVUtilsBukkit bcore) {
         this.core = core;
         debugger = new BukkitDebugger(core);
+        this.bcore = bcore;
     }
 
     @Override
@@ -94,6 +95,24 @@ public class BukkitPlatformServer extends PlatformServer {
     @Override
     public PlatformPlayer getOfflinePlayer(UUID uuid) {
         return new BukkitOfflinePlayer(Bukkit.getOfflinePlayer(uuid), core);
+    }
+
+    @Override
+    public PlatformPlayer getPlayer(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return null;
+        return new BukkitPlayer(core, player);
+    }
+
+    @Override
+    public void executeConsoleCommands(String... cmds) {
+        Runnable runnable = () -> {
+            for (String cmd : cmds) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            }
+        };
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Bukkit.getScheduler().runTask(bcore, runnable);
     }
 
 

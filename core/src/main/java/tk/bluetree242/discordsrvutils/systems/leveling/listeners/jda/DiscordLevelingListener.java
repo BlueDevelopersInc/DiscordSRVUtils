@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -38,6 +39,9 @@ import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class DiscordLevelingListener extends ListenerAdapter {
@@ -76,6 +80,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                                     new PlaceholdObject(core, e.getMember(), "member"),
                                     new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild")
                             ), null).build(), core.getJdaManager().getChannel(core.getLevelingConfig().discord_channel(), e.getChannel())).queue();
+                            core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                         }
                     }
             }
@@ -89,10 +94,12 @@ public class DiscordLevelingListener extends ListenerAdapter {
             if (core.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
                 PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getUser().getIdLong());
                 if (stats == null) return;
-                Role role = core.getLevelingManager().getRoleForLevel(stats.getLevel());
-                if (role != null) {
-                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).reason("User ReJoined").queue();
+                List<Role> toAdd = core.getLevelingManager().getLevelingRewardsManager().getRolesForLevel(stats.getLevel());
+                Collection actions = new ArrayList<>();
+                for (Role role : toAdd) {
+                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).reason("Account Linked");
                 }
+                if (!actions.isEmpty()) RestAction.allOf(actions).queue();
             }
         });
     }
