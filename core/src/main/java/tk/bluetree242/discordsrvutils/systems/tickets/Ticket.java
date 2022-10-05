@@ -85,7 +85,7 @@ public class Ticket {
         User user = core.getJDA().retrieveUserById(userID).complete();
         Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
         }
