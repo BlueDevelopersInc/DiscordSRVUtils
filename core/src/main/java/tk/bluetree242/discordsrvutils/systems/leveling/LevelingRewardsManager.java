@@ -112,6 +112,7 @@ public class LevelingRewardsManager {
         List<String> result = new ArrayList<>();
         for (int num = lastLevel; num <= level; num++) {
             Object o = getLevelObject(num);
+            if (o == null) continue;
             if (o instanceof JSONObject) {
                 JSONObject json = (JSONObject) o;
                 List<String> resultLevel = getCommands(json, stats);
@@ -178,6 +179,7 @@ public class LevelingRewardsManager {
 
     public List<Role> getRolesForLevel(int level) {
         Object value = getLevelObject(level);
+        if (value == null) return new ArrayList<>();
         if (!(value instanceof JSONObject)) return Collections.emptyList();
         return new ArrayList<>(getRoleIds((JSONObject) value));
     }
