@@ -22,6 +22,7 @@
 
 package tk.bluetree242.discordsrvutils.systems.leveling;
 
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class LevelingRewardsManager {
                 }
             }
             FileWriter writer = new FileWriter(filer);
-            writer.write(json.toString(1));
+            writer.write(new ObjectMapper().readTree(json.toString()).toPrettyString());
             writer.close();
             levelingRewardsRaw = json;
         } catch (IOException | JSONException e) {
