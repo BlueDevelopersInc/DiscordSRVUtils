@@ -179,10 +179,25 @@ public class LevelingRewardsManager {
     }
 
     public List<Role> getRolesForLevel(int level) {
-        Object value = getLevelObject(level);
-        if (value == null) return new ArrayList<>();
-        if (!(value instanceof JSONObject)) return Collections.emptyList();
-        return new ArrayList<>(getRoleIds((JSONObject) value));
+        List<Role> result = new ArrayList<>();
+        boolean found;
+        int num = getLastLevelWithRoles(level);
+        if (num == -1) return result;
+        JSONObject json = levelingRewardsRaw.getJSONObject(num + "");
+        result.addAll(getRoleIds(json));
+        return result;
+    }
+
+    private int getLastLevelWithRoles(int level) {
+        int result = -1;
+        int num = level;
+        while (num >= 0 && result != -1) {
+            Object o = getLevelObject(num);
+            num--;
+            if (!(o instanceof JSONObject) && !((JSONObject) o).has("roles")) continue;
+            result = num + 1;
+        }
+        return result;
     }
 
     private Object getLevelObject(int level) {
@@ -194,13 +209,14 @@ public class LevelingRewardsManager {
 
         List<Role> roles = new ArrayList<>();
         Map<String, Object> map = levelingRewardsRaw.toMap();
-        List<Object> values = new ArrayList<>(map.values());
-        for (Object value : values) {
-            if (!(value instanceof Map)) continue;
-            roles.addAll(getRoleIds(new JSONObject((Map) value)));
+        List<String> keys = new ArrayList<>(map.keySet());
+        int num = level == null ? -1 : getLastLevelWithRoles(level);
+        for (String key : keys) {
+            if (key.equals(num + "")) continue;
+            Object value = levelingRewardsRaw.get(key);
+            if (!(value instanceof JSONObject)) continue;
+            roles.addAll(getRoleIds((JSONObject) value));
         }
-        if (level != null)
-            roles.removeAll(getRolesForLevel(level));
         return roles;
     }
 
