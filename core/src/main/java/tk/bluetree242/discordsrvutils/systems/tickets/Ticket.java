@@ -30,6 +30,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class Ticket {
     private final DiscordSRVUtils core;
@@ -83,7 +84,7 @@ public class Ticket {
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
         PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
@@ -115,9 +116,9 @@ public class Ticket {
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
         } else {
