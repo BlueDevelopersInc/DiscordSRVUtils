@@ -111,7 +111,7 @@ public class LevelingRewardsManager {
 
     private List<String> getCommands(int level, int lastLevel, PlayerStats stats) {
         List<String> result = new ArrayList<>();
-        for (int num = lastLevel; num <= level; num++) {
+        for (int num = (lastLevel + 1); num <= level; num++) {
             Object o = getLevelObject(num);
             if (o == null) continue;
             if (o instanceof JSONObject) {
@@ -133,7 +133,6 @@ public class LevelingRewardsManager {
         if (lastLevel > stats.getLevel()) {
             rewardCache.remove(stats.getUuid().toString());
             saveRewardCache();
-            return;
         }
         PlatformPlayer player = core.getPlatform().getServer().getPlayer(stats.getUuid());
         if (player == null) return;
@@ -185,17 +184,17 @@ public class LevelingRewardsManager {
         if (num == -1) return result;
         JSONObject json = levelingRewardsRaw.getJSONObject(num + "");
         result.addAll(getRoleIds(json));
+        System.out.println(result.stream().map(Role::getName).collect(Collectors.toList()) + " TO ADD");
         return result;
     }
 
     private int getLastLevelWithRoles(int level) {
         int result = -1;
         int num = level;
-        while (num >= 0 && result != -1) {
+        while (num >= 0 && result == -1) {
             Object o = getLevelObject(num);
             num--;
-            if (!(o instanceof JSONObject) && !((JSONObject) o).has("roles")) continue;
-            result = num + 1;
+            if (o instanceof JSONObject && ((JSONObject) o).has("roles")) result = num + 1;
         }
         return result;
     }
@@ -217,6 +216,7 @@ public class LevelingRewardsManager {
             if (!(value instanceof JSONObject)) continue;
             roles.addAll(getRoleIds((JSONObject) value));
         }
+        System.out.println(roles.stream().map(Role::getName).collect(Collectors.toList()) + " TO REMOVE");
         return roles;
     }
 
