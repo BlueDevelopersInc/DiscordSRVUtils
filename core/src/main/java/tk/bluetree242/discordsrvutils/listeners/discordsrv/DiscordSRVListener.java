@@ -61,8 +61,8 @@ public class DiscordSRVListener {
         core.getAsyncManager().executeAsync(() -> {
             LevelingManager manager = core.getLevelingManager();
             PlayerStats stats = manager.getPlayerStats(e.getUser().getIdLong());
-            int level = stats.getLevel();
             if (stats == null) return;
+            int level = stats.getLevel();
             String id = e.getUser().getId();
             if (id == null) return;
             Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), e.getUser().getIdLong());
