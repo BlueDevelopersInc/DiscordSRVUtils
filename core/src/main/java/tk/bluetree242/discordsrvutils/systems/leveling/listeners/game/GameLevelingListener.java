@@ -43,8 +43,8 @@ public class GameLevelingListener extends PlatformListener {
 
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
+            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId());
             DSLContext jooq = core.getDatabaseManager().jooq();
-            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
             if (stats == null) {
                 jooq.insertInto(LevelingTable.LEVELING)
                         .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
@@ -69,8 +69,7 @@ public class GameLevelingListener extends PlatformListener {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
         core.getAsyncManager().executeAsync(() -> {
-            DSLContext jooq = core.getDatabaseManager().jooq();
-            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
+            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId());
             if (stats == null) {
                 return;
             }
@@ -85,8 +84,8 @@ public class GameLevelingListener extends PlatformListener {
                 }
             }
             int toAdd = new SecureRandom().nextInt(50);
-            boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()), jooq);
-            stats.addMessage(MessageType.MINECRAFT, jooq);
+            boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()));
+            stats.addMessage(MessageType.MINECRAFT);
             if (leveledUp) {
                 e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
                 core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);

@@ -76,22 +76,25 @@ public class PlayerStats {
         return xp;
     }
 
-    public void setLevel(int level, DSLContext conn) {
+    public void setLevel(int level) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, level)
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                 .execute();
         this.level = level;
     }
 
-    public boolean setXP(int xp, DSLContext conn) {
-        return setXP(xp, null, conn);
+    public boolean setXP(int xp) {
+        DSLContext conn = core.getDatabaseManager().jooq();
+        return setXP(xp, null);
     }
 
     /**
      * @param xp XP to add
      * @return true if player leveled up, false if not
      */
-    public boolean setXP(int xp, LevelupEvent event, DSLContext conn) {
+    public boolean setXP(int xp, LevelupEvent event) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (xp >= 300) {
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level + 1)
@@ -139,7 +142,8 @@ public class PlayerStats {
         return discordMessages;
     }
 
-    public void addMessage(MessageType type, DSLContext conn) {
+    public void addMessage(MessageType type) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TableField toUpdate = null;
         int value = 0;
         switch (type) {

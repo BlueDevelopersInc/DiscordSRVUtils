@@ -27,7 +27,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonCl
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
@@ -39,14 +38,13 @@ public class TicketCloseListener extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            DSLContext jooq = core.getDatabaseManager().jooq();
-            Ticket ticket = core.getTicketManager().getTicketByMessageId(e.getMessageIdLong(), jooq);
+            Ticket ticket = core.getTicketManager().getTicketByMessageId(e.getMessageIdLong());
             if (ticket != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getButton().getId().equals("close_ticket")) {
                     e.deferEdit().queue();
                     if (!ticket.isClosed())
-                        ticket.close(e.getUser(), jooq);
+                        ticket.close(e.getUser());
                 } else if (e.getButton().getId().equals("delete_ticket")) {
                     e.deferEdit().queue();
                     if (ticket.isClosed()) {
@@ -56,7 +54,7 @@ public class TicketCloseListener extends ListenerAdapter {
                 if (e.getButton().getId().equals("reopen_ticket")) {
                     e.deferEdit().queue();
                     if (ticket.isClosed()) {
-                        ticket.reopen(e.getUser(), jooq);
+                        ticket.reopen(e.getUser());
                     }
                 }
             }

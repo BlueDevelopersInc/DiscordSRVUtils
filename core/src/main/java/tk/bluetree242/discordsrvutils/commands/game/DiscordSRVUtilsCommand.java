@@ -90,20 +90,19 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         sender.sendMessage("&cPlease provide player name or all for all players.");
                         return;
                     }
-                    DSLContext jooq = core.getDatabaseManager().jooq();
                     if (name.equalsIgnoreCase("all")) {
-                        core.getLevelingManager().resetLeveling(jooq);
+                        core.getLevelingManager().resetLeveling();
                         core.getLevelingManager().cachedUUIDS.invalidateAll();
                         core.getLevelingManager().getLevelingRewardsManager().setRewardCache(new JSONObject());
                         core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
                         sender.sendMessage("&eEveryone's level has been reset");
                     } else {
-                        PlayerStats stats = core.getLevelingManager().getPlayerStats(name, jooq);
+                        PlayerStats stats = core.getLevelingManager().getPlayerStats(name);
                         if (stats == null) {
                             sender.sendMessage("&cPlayer not found");
                         } else {
-                            stats.setLevel(0, jooq);
-                            stats.setXP(0, jooq);
+                            stats.setLevel(0);
+                            stats.setXP(0);
                             core.getLevelingManager().getLevelingRewardsManager().getRewardCache().remove(stats.getUuid().toString());
                             core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
                             sender.sendMessage("&ePlayer's level has been reset.");

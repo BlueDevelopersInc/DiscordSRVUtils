@@ -49,8 +49,7 @@ public class SuggestionListener extends ListenerAdapter {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
         core.getAsyncManager().executeAsync(() -> {
-            DSLContext jooq = core.getDatabaseManager().jooq();
-            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong());
             if (suggestion == null) return;
             Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
             Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
@@ -78,8 +77,7 @@ public class SuggestionListener extends ListenerAdapter {
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            DSLContext jooq = core.getDatabaseManager().jooq();
-            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong());
             if (suggestion == null) return;
             Message msg = suggestion.getMessage();
             if (!msg.isEdited() || (System.currentTimeMillis() - msg.getTimeEdited().toEpochSecond()) > 1000) {
@@ -94,7 +92,7 @@ public class SuggestionListener extends ListenerAdapter {
         if (e.getUser().isBot()) return;
         core.getAsyncManager().executeAsync(() -> {
             DSLContext jooq = core.getDatabaseManager().jooq();
-            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong(), jooq);
+            Suggestion suggestion = core.getSuggestionManager().getSuggestionByMessageID(e.getMessageIdLong());
             if (suggestion == null) return;
             Message msg = e.getChannel().retrieveMessageById(e.getMessageIdLong()).complete();
             Emoji yes = Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅"));
@@ -152,7 +150,7 @@ public class SuggestionListener extends ListenerAdapter {
                 if (core.getSuggestionsConfig().set_suggestion_from_channel()) {
                     e.getMessage().delete().queue();
                     DSLContext jooq = core.getDatabaseManager().jooq();
-                    core.getSuggestionManager().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong(), jooq);
+                    core.getSuggestionManager().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong());
                 }
             }
         });

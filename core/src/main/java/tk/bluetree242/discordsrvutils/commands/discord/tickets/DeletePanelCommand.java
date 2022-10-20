@@ -42,7 +42,7 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        Panel panel = core.getTicketManager().getPanelById(e.getOption("id").getAsString(), e.getConnection());
+        Panel panel = core.getTicketManager().getPanelById(e.getOption("id").getAsString());
         if (panel == null) {
             e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
         } else {

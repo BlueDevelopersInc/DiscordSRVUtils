@@ -76,14 +76,16 @@ public class SuggestionManager {
     }
 
 
-    public Suggestion getSuggestionByNumber(int number, DSLContext conn) throws SQLException {
+    public Suggestion getSuggestionByNumber(int number) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
                 .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number)).fetchOne();
         if (record == null) return null;
         return getSuggestion(record);
     }
 
-    public Suggestion getSuggestionByMessageID(Long MessageID, DSLContext conn) {
+    public Suggestion getSuggestionByMessageID(Long MessageID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
                 .where(SuggestionsTable.SUGGESTIONS.MESSAGEID.eq(MessageID)).fetchOne();
         if (record == null) return null;
@@ -131,7 +133,8 @@ public class SuggestionManager {
         return suggestion;
     }
 
-    public Suggestion makeSuggestion(String text, Long SubmitterID, DSLContext conn) {
+    public Suggestion makeSuggestion(String text, Long SubmitterID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (!core.getSuggestionsConfig().enabled()) {
             throw new IllegalStateException("Suggestions are not enabled");
         }

@@ -76,7 +76,8 @@ public class Ticket {
     }
 
 
-    public void close(User userWhoClosed, DSLContext conn) {
+    public void close(User userWhoClosed) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (closed) return;
         //set it without the message id
         conn.update(TicketsTable.TICKETS)
@@ -109,7 +110,8 @@ public class Ticket {
                 .execute();
     }
 
-    public void reopen(User userWhoOpened, DSLContext conn) {
+    public void reopen(User userWhoOpened) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (!closed) return;
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "false")

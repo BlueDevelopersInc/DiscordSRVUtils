@@ -30,7 +30,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -53,7 +52,6 @@ public class DiscordLevelingListener extends ListenerAdapter {
             if (e.getMessage().isWebhookMessage()) return;
             if (e.getAuthor().isBot()) return;
             if (core.getPlatform().getDiscordSRV().getMainGuild().getIdLong() == core.getPlatform().getDiscordSRV().getMainGuild().getIdLong()) {
-                DSLContext jooq = core.getDatabaseManager().jooq();
                 if (core.getLevelingConfig().enabled()) {
                     PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getMember().getIdLong());
                     if (stats == null) {
@@ -71,8 +69,8 @@ public class DiscordLevelingListener extends ListenerAdapter {
                         }
                     }
                     int toAdd = new SecureRandom().nextInt(50);
-                    boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()), jooq);
-                    stats.addMessage(MessageType.DISCORD, jooq);
+                    boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
+                    stats.addMessage(MessageType.DISCORD);
                     if (leveledUp) {
                         core.queueMsg(core.getMessageManager().getMessage(core.getLevelingConfig().discord_message(), PlaceholdObjectList.ofArray(core,
                                 new PlaceholdObject(core, stats, "stats"),

@@ -48,7 +48,8 @@ public class TicketManager {
     private final DiscordSRVUtils core;
 
 
-    public Panel getPanelById(String id, DSLContext conn) {
+    public Panel getPanelById(String id) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketPanelsRecord record = conn
                 .selectFrom(TicketPanelsTable.TICKET_PANELS)
                 .where(TicketPanelsTable.TICKET_PANELS.ID.eq(id))
@@ -87,7 +88,8 @@ public class TicketManager {
                 allowedRoles);
     }
 
-    public Panel getPanelByMessageId(long messageId, DSLContext conn) {
+    public Panel getPanelByMessageId(long messageId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketPanelsRecord record = conn
                 .selectFrom(TicketPanelsTable.TICKET_PANELS)
                 .where(TicketPanelsTable.TICKET_PANELS.MESSAGEID.eq(messageId))
@@ -96,7 +98,8 @@ public class TicketManager {
         return getPanel(record);
     }
 
-    public Ticket getTicketByMessageId(long messageId, DSLContext conn) {
+    public Ticket getTicketByMessageId(long messageId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketsRecord record = conn
                 .selectFrom(TicketsTable.TICKETS)
                 .where(TicketsTable.TICKETS.MESSAGEID.eq(messageId))
@@ -105,7 +108,8 @@ public class TicketManager {
         return getTicket(record);
     }
 
-    public Ticket getTicketByChannel(long channelId, DSLContext conn) {
+    public Ticket getTicketByChannel(long channelId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketsRecord record = conn
                 .selectFrom(TicketsTable.TICKETS)
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelId))
@@ -117,7 +121,7 @@ public class TicketManager {
     protected Ticket getTicket(TicketsRecord r, Panel panel) {
         if (panel == null) {
             DSLContext conn = r.configuration().dsl();
-            panel = getPanelById(r.getId(), conn);
+            panel = getPanelById(r.getId());
         }
         return new Ticket(core,
                 r.getId(),

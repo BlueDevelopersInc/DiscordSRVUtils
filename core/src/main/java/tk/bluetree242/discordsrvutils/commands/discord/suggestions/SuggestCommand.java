@@ -73,7 +73,7 @@ public class SuggestCommand extends SuggestionCommand {
         }
 
         String suggestionText = e.getOption("suggestion").getAsString();
-        Suggestion suggestion = core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong(), e.getConnection());
+        Suggestion suggestion = core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong());
         e.replySuccess("Successfully created suggestion").queue();
     }
 }

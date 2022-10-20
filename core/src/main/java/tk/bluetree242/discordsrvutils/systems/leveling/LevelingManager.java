@@ -28,11 +28,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
 
@@ -49,19 +47,6 @@ public class LevelingManager {
         return cachedUUIDS.get(uuid);
     }
 
-    public PlayerStats getPlayerStats(long discordID) {
-        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
-        if (uuid == null) return null;
-        DSLContext conn = core.getDatabaseManager().jooq();
-        PlayerStats result = getPlayerStats(uuid, conn);
-        try {
-            conn.configuration().connectionProvider().acquire().close();
-        } catch (SQLException throwables) {
-            throw new UnCheckedSQLException(throwables);
-        }
-        return result;
-    }
-
     public PlayerStats getCachedStats(long discordID) {
         UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
         if (uuid == null) return null;
@@ -73,7 +58,7 @@ public class LevelingManager {
             .build(key -> {
                 DiscordSRVUtils core = DiscordSRVUtils.get();
                 adding = true;
-                PlayerStats stats = getPlayerStats(key, core.getDatabaseManager().jooq());
+                PlayerStats stats = getPlayerStats(key);
                 adding = false;
                 return stats;
             });
@@ -83,17 +68,20 @@ public class LevelingManager {
         return discord != null;
     }
 
-    public PlayerStats getPlayerStats(long discordID, DSLContext conn) {
+    public PlayerStats getPlayerStats(long discordID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
         if (uuid == null) return null;
-        return getPlayerStats(uuid, conn);
+        return getPlayerStats(uuid);
     }
 
-    public PlayerStats getPlayerStats(String name, DSLContext conn) {
+    public PlayerStats getPlayerStats(String name) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         return getPlayerStats(conn, name);
     }
 
-    public PlayerStats getPlayerStats(UUID uuid, DSLContext conn) {
+    public PlayerStats getPlayerStats(UUID uuid) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
         int num = 0;
         for (LevelingRecord record : records) {
@@ -130,7 +118,8 @@ public class LevelingManager {
         return stats;
     }
 
-    public List<PlayerStats> getLeaderboard(int max, DSLContext conn) {
+    public List<PlayerStats> getLeaderboard(int max) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).limit(max).fetch();
         List<PlayerStats> leaderboard = new ArrayList<>();
         int num = 0;
@@ -141,8 +130,8 @@ public class LevelingManager {
         return leaderboard;
     }
 
-    public void resetLeveling(DSLContext conn) {
-        conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
+    public void resetLeveling() {
+        core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
     }
 
 

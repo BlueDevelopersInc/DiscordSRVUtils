@@ -126,7 +126,8 @@ public class Panel {
         getTickets(conn).forEach(Ticket::delete);
     }
 
-    public Set<Ticket> getTicketsForUser(User user, boolean includeClosed, DSLContext conn) {
+    public Set<Ticket> getTicketsForUser(User user, boolean includeClosed) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         Set<Ticket> result = new HashSet<>();
         List<TicketsRecord> records = conn
                 .selectFrom(TicketsTable.TICKETS)
@@ -144,7 +145,8 @@ public class Panel {
         return result;
     }
 
-    public @Nullable Ticket openTicket(User user, DSLContext conn) {
+    public @Nullable Ticket openTicket(User user) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (user.isBot()) return null;
         TicketsRecord check = conn
                 .selectFrom(TicketsTable.TICKETS)

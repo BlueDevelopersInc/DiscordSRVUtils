@@ -42,15 +42,14 @@ public class PanelOpenListener extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            DSLContext jooq = core.getDatabaseManager().jooq();
-            Panel panel = core.getTicketManager().getPanelByMessageId(e.getMessageIdLong(), jooq);
+            Panel panel = core.getTicketManager().getPanelByMessageId(e.getMessageIdLong());
             if (panel != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
                     e.deferReply(true).setContent("You are Ticket Muted").queue();
                     return;
                 }
-                Ticket t = panel.openTicket(e.getUser(), jooq);
+                Ticket t = panel.openTicket(e.getUser());
                 ReplyAction action = e.deferReply(true);
                 PlaceholdObjectList holders = PlaceholdObjectList.ofArray(core,
                         new PlaceholdObject(core, core.getJDA().getTextChannelById(t.getChannelID()), "channel"),

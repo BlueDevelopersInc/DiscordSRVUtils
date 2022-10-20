@@ -35,7 +35,7 @@ public class ReopenCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong(), e.getConnection());
+        Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong());
         if (ticket == null) {
             e.replyErr("You are not in a ticket").queue();
             return;
@@ -44,7 +44,7 @@ public class ReopenCommand extends Command {
             e.replyErr("Ticket is already opened").queue();
         } else {
             e.reply("Reopening Ticket...").setEphemeral(true).queue();
-            ticket.reopen(e.getAuthor(), e.getConnection());
+            ticket.reopen(e.getAuthor());
         }
     }
 }
