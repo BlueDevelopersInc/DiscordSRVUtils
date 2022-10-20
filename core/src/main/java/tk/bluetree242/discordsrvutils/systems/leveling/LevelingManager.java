@@ -51,6 +51,11 @@ public class LevelingManager {
         UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
         if (uuid == null) return null;
         return cachedUUIDS.get(uuid);
+    }
+
+    public boolean isLinked(UUID uuid) {
+        String discord = core.getDiscordSRV().getDiscordId(uuid);
+        return discord != null;
     }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
@@ -62,11 +67,6 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
-
-    public boolean isLinked(UUID uuid) {
-        String discord = core.getDiscordSRV().getDiscordId(uuid);
-        return discord != null;
-    }
 
     public PlayerStats getPlayerStats(long discordID) {
         DSLContext conn = core.getDatabaseManager().jooq();

@@ -72,16 +72,16 @@ public class PlayerStats {
         return level;
     }
 
-    public int getXp() {
-        return xp;
-    }
-
     public void setLevel(int level) {
         DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, level)
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                 .execute();
         this.level = level;
+    }
+
+    public int getXp() {
+        return xp;
     }
 
     public boolean setXP(int xp) {

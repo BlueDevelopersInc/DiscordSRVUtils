@@ -23,7 +23,6 @@
 package tk.bluetree242.discordsrvutils.commands.game;
 
 import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;

@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;

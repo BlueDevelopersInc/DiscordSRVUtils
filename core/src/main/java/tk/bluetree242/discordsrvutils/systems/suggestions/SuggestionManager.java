@@ -44,7 +44,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
