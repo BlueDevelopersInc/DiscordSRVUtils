@@ -136,6 +136,12 @@ public interface Config {
     @ConfDefault.DefaultString("message:no-longer-afk")
     String no_longer_afk_message();
 
+    @AnnotationBasedSorter.Order(141)
+    @ConfKey("help-response")
+    @ConfComments("# Response of /help command, leave blank to generate. You can use message:msgfile where msgfile is the name of the message file in your messages folder (without json, and you can make a new file)")
+    @ConfDefault.DefaultString("")
+    String help_response();
+
     @AnnotationBasedSorter.Order(150)
     @ConfKey("bungee-mode")
     @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee")
