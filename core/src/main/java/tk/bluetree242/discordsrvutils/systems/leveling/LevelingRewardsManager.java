@@ -187,7 +187,6 @@ public class LevelingRewardsManager {
         if (num == -1) return result;
         JSONObject json = levelingRewardsRaw.getJSONObject(num + "");
         result.addAll(getRoleIds(json));
-        System.out.println(result.stream().map(Role::getName).collect(Collectors.toList()) + " TO ADD");
         return result;
     }
 
@@ -219,7 +218,6 @@ public class LevelingRewardsManager {
             if (!(value instanceof JSONObject)) continue;
             roles.addAll(getRoleIds((JSONObject) value));
         }
-        System.out.println(roles.stream().map(Role::getName).collect(Collectors.toList()) + " TO REMOVE");
         return roles;
     }
 
