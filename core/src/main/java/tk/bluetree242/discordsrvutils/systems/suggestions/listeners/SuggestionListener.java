@@ -149,7 +149,6 @@ public class SuggestionListener extends ListenerAdapter {
             if (e.getChannel().getIdLong() == core.getSuggestionsConfig().suggestions_channel()) {
                 if (core.getSuggestionsConfig().set_suggestion_from_channel()) {
                     e.getMessage().delete().queue();
-                    DSLContext jooq = core.getDatabaseManager().jooq();
                     core.getSuggestionManager().makeSuggestion(e.getMessage().getContentDisplay(), e.getMessage().getAuthor().getIdLong());
                 }
             }

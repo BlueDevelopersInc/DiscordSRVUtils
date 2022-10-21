@@ -165,4 +165,8 @@ public class PlayerStats {
     public int getRank() {
         return rank;
     }
+
+    public List<Role> getRoles() {
+        return core.getLevelingManager().getLevelingRewardsManager().getRolesForLevel(level);
+    }
 }
