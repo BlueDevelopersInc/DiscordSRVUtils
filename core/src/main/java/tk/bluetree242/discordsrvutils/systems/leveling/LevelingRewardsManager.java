@@ -62,8 +62,15 @@ public class LevelingRewardsManager {
             File filer = new File(core.getPlatform().getDataFolder(), core.fileseparator + "leveling-rewards.json");
             JSONObject json;
             if (file.exists()) {
+                if (filer.exists()) {
+                    core.getLogger().warning("Found leveling-roles.json, and leveling-rewards.json. Not converting, using new leveling-rewards.json");
+                    levelingRewardsRaw = new JSONObject(Utils.readFile(filer));
+                    return;
+                }
                 json = new JSONObject(Utils.readFile(file));
                 file.renameTo(filer);
+                filer = file;
+                levelingRewardsRaw = new JSONObject();
                 if (json.isEmpty() || (json.length() == 1 && json.has("_wiki"))) return;
                 json = convertToRewards(json);
             } else {

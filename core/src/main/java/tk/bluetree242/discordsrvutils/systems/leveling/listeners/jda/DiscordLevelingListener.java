@@ -68,7 +68,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                         }
                     }
-                    int toAdd = new SecureRandom().nextInt(50);
+                    int toAdd = new SecureRandom().nextInt(15, 25);
                     boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
                     stats.addMessage(MessageType.DISCORD);
                     if (leveledUp) {

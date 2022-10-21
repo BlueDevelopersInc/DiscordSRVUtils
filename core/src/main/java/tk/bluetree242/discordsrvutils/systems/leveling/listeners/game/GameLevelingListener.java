@@ -83,7 +83,7 @@ public class GameLevelingListener extends PlatformListener {
                     core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                 }
             }
-            int toAdd = new SecureRandom().nextInt(50);
+            int toAdd = new SecureRandom().nextInt(15, 25);
             boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()));
             stats.addMessage(MessageType.MINECRAFT);
             if (leveledUp) {

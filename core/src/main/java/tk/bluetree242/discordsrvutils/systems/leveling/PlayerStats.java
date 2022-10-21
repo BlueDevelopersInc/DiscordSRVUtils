@@ -89,13 +89,17 @@ public class PlayerStats {
         return setXP(xp, null);
     }
 
+    public int getTotalXpRequired() {
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
+    }
+
     /**
      * @param xp XP to add
      * @return true if player leveled up, false if not
      */
     public boolean setXP(int xp, LevelupEvent event) {
         DSLContext conn = core.getDatabaseManager().jooq();
-        if (xp >= 300) {
+        if (xp >= getTotalXpRequired()) {
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level + 1)
                     .set(LevelingTable.LEVELING.XP, 0)
@@ -113,6 +117,10 @@ public class PlayerStats {
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString())).execute();
         this.xp = xp;
         return false;
+    }
+
+    public int getXpPercentage() {
+        return (int) (((double) xp) * 100 / (double) getTotalXpRequired());
     }
 
     private void handleRewards() {
