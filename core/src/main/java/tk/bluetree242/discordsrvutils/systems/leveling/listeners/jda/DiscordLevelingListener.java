@@ -36,6 +36,7 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                             core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                         }
                     }
-                    int toAdd = new SecureRandom().nextInt(15, 25);
+                    int toAdd = Utils.nextInt(15, 25);
                     boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new DiscordLevelupEvent(stats, e.getChannel(), e.getAuthor()));
                     stats.addMessage(MessageType.DISCORD);
                     if (leveledUp) {

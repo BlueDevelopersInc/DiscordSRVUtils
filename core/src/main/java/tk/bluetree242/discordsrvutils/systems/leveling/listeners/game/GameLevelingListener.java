@@ -34,6 +34,7 @@ import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.security.SecureRandom;
 
@@ -83,7 +84,7 @@ public class GameLevelingListener extends PlatformListener {
                     core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                 }
             }
-            int toAdd = new SecureRandom().nextInt(15, 25);
+            int toAdd = Utils.nextInt(15, 25);
             boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()));
             stats.addMessage(MessageType.MINECRAFT);
             if (leveledUp) {
