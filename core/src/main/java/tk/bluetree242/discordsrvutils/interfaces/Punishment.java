@@ -63,7 +63,7 @@ public interface Punishment<O> {
                         if (punishment.isIp())
                             msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
                         else
-                            msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
+                            msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder); //there is no temp ip mute message for now
                     }
                     break;
                 case WARN:
