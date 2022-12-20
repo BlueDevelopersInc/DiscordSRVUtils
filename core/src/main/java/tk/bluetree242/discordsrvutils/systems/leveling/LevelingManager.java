@@ -27,6 +27,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Result;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
@@ -134,7 +135,34 @@ public class LevelingManager {
         core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
     }
 
+    public void convertToMee6() {
+        DSLContext conn = core.getDatabaseManager().jooq();
+        Result<LevelingRecord> results = conn.selectFrom(LevelingTable.LEVELING).fetch();
 
+        for (LevelingRecord result : results) {
+            if (cachedUUIDS.getIfPresent(UUID.fromString(result.getUuid())) != null) cachedUUIDS.invalidate(cachedUUIDS.get(UUID.fromString(result.getUuid())));
+            int totalXP = (result.getLevel() * 300) + result.getXp();
+            int level = 0;
+            Integer xp = null;
+            while (xp == null) {
+                totalXP = totalXP - getRequiredXP(level);
+                if (totalXP > 0) level++;
+                else if (totalXP == 0) {
+                    xp = 0;
+                    level++;
+                }
+                else xp = getRequiredXP(level) - Math.abs(totalXP);
+            }
+            conn.update(LevelingTable.LEVELING)
+                    .set(LevelingTable.LEVELING.LEVEL, level)
+                    .set(LevelingTable.LEVELING.XP, xp)
+                    .where(LevelingTable.LEVELING.UUID.eq(result.getUuid())).execute();
+        }
+    }
+
+    private int getRequiredXP(int level) {
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100);
+    }
 
 
 }
