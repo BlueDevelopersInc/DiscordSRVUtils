@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DiscordSRVUtilsCommand implements PlatformCommand {
     private final DiscordSRVUtils core;
-
+    private boolean migrated = false;
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
@@ -111,6 +111,11 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 }
             } else if (args[0].equalsIgnoreCase("migrateLeveling")) {
                 if (sender instanceof ConsoleCommandUser) { //only console
+                    if (migrated) {
+                        sender.sendMessage("&cAlready migrated.");
+                        return;
+                    }
+                    migrated = true;
                     sender.sendMessage("&cMigrating leveling to new mee6 leveling, please wait....");
                     core.getLevelingManager().convertToMee6();
                     sender.sendMessage("&eSuccessfully migrated, If you used leveling roles before, please reconfigure according to the new leveling system, keep in mind that leveling roles was upgraded to leveling-&lrewards&e.json");
