@@ -92,7 +92,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public PlatformServer getServer() {
-        return new BukkitPlatformServer(core);
+        return new BukkitPlatformServer(core, main);
     }
 
     @Override

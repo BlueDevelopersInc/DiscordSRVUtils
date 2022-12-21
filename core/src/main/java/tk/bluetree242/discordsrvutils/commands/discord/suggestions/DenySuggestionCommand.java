@@ -45,12 +45,12 @@ public class DenySuggestionCommand extends SuggestionCommand {
         }
 
         int number = (int) e.getOption("number").getAsLong();
-        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number, e.getConnection());
+        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number);
         if (suggestion == null) {
             e.replyErr("Suggestion not found").queue();
             return;
         }
-        suggestion.setApproved(false, e.getAuthor().getIdLong(), e.getConnection());
+        suggestion.setApproved(false, e.getAuthor().getIdLong());
         e.replySuccess("Successfully denied suggestion").queue();
     }
 }

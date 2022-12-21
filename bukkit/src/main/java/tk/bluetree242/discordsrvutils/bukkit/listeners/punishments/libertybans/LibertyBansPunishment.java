@@ -23,21 +23,22 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import space.arim.libertybans.api.Operator;
-import space.arim.libertybans.api.PlayerOperator;
-import space.arim.libertybans.api.PlayerVictim;
-import space.arim.libertybans.api.Victim;
+import space.arim.libertybans.api.*;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 public class LibertyBansPunishment implements Punishment<space.arim.libertybans.api.punish.Punishment> {
     private final space.arim.libertybans.api.punish.Punishment punishment;
     private final Operator operator;
     private final boolean revoke;
+    private final LibertyBans plugin;
+
+    private String operatorName = null;
+    private String targetName = null;
 
     @Override
     public String getDuration() {
@@ -50,8 +51,7 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
         if (operator.getType() == Operator.OperatorType.CONSOLE) {
             return "CONSOLE";
         } else {
-            PlayerOperator operatorplayer = (PlayerOperator) operator;
-            String name = Bukkit.getOfflinePlayer(operatorplayer.getUUID()).getName();
+            String name = retrieveName(true);
             return name == null ? "Unknown" : name;
         }
     }
@@ -61,8 +61,7 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
         if (punishment.getVictim().getType() == Victim.VictimType.ADDRESS) {
             return "Unknown";
         } else {
-            PlayerVictim victim = (PlayerVictim) punishment.getVictim();
-            String name = Bukkit.getOfflinePlayer(victim.getUUID()).getName();
+            String name = retrieveName(false);
             return name == null ? "Unknown" : name;
         }
     }
@@ -111,5 +110,29 @@ public class LibertyBansPunishment implements Punishment<space.arim.libertybans.
             PlayerVictim victim = (PlayerVictim) punishment.getVictim();
             return victim.getUUID();
         }
+    }
+
+    private String retrieveName(boolean operator) {
+        String saved = operator ? operatorName : targetName;
+        if (saved != null) return saved.equals("NONE@*") ? null : saved;
+        String result = null;
+        try {
+            result = plugin.getUserResolver().lookupName(operator ? getOperatorUUID() : getTargetUUID()).get().orElse(null);
+        } catch (InterruptedException | ExecutionException e) {
+            //nothing
+        }
+        if (result != null) {
+            if (operator) operatorName = result;
+            else targetName = result;
+        } else {
+            if (operator) operatorName = "NONE@*";
+            else targetName = "NONE@*";
+        }
+        return result;
+    }
+
+    private UUID getOperatorUUID() {
+        if (operator.getType() != Operator.OperatorType.PLAYER) return null;
+        return ((PlayerOperator) operator).getUUID();
     }
 }

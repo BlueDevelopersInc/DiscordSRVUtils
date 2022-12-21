@@ -127,7 +127,7 @@ public class MessageManager {
         }
         if (!json.isNull("footer")) {
             JSONObject footer = json.getJSONObject("footer");
-            embed.setFooter(getStringFromJson(footer, "text", holders, placehold), getStringFromJson(footer, "icon_url"));
+            embed.setFooter(getStringFromJson(footer, "text", holders, placehold), getStringFromJson(footer, "icon_url", holders, placehold));
         }
         if (!json.isNull("thumbnail")) {
             JSONObject thumbnail = json.getJSONObject("thumbnail");

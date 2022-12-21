@@ -38,6 +38,7 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -234,5 +235,9 @@ public class Utils {
         } catch (ErrorResponseException e) {
             return null;
         }
+    }
+
+    public static int nextInt(int min, int max) {
+        return new SecureRandom().nextInt(max - min) + min;
     }
 }

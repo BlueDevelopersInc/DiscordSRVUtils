@@ -23,29 +23,30 @@
 package tk.bluetree242.discordsrvutils.commands.game;
 
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.PlatformCommand;
+import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class DiscordSRVUtilsCommand implements PlatformCommand {
     private final DiscordSRVUtils core;
-
+    private boolean migrated = false;
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
             sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getPlatform().getDescription().getVersion());
             String build = core.getVersionConfig().getString("buildNumber");
-            if (!build.equals("NONE")) {
-                sender.sendMessage("&eBuild #" + build);
-            }
+            sender.sendMessage("&eBuild " + (build.equalsIgnoreCase("NONE") ? "&aNone/Unknown" : "&a#" + build));
             sender.sendMessage("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running"));
             return;
         }
@@ -81,6 +82,45 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     }
                     return;
                 }
+            } else if (args[0].equalsIgnoreCase("resetlevel")) {
+                if (sender.hasPermission("discordsrvutils.resetlevel")) {
+                    String name = args.length >= 2 ? args[1] : null;
+                    if (name == null) {
+                        sender.sendMessage("&cPlease provide player name or all for all players.");
+                        return;
+                    }
+                    if (name.equalsIgnoreCase("all")) {
+                        core.getLevelingManager().resetLeveling();
+                        core.getLevelingManager().cachedUUIDS.invalidateAll();
+                        core.getLevelingManager().getLevelingRewardsManager().setRewardCache(new JSONObject());
+                        core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
+                        sender.sendMessage("&eEveryone's level has been reset");
+                    } else {
+                        PlayerStats stats = core.getLevelingManager().getPlayerStats(name);
+                        if (stats == null) {
+                            sender.sendMessage("&cPlayer not found");
+                        } else {
+                            stats.setLevel(0);
+                            stats.setXP(0);
+                            core.getLevelingManager().getLevelingRewardsManager().getRewardCache().remove(stats.getUuid().toString());
+                            core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
+                            sender.sendMessage("&ePlayer's level has been reset.");
+                        }
+                    }
+                    return;
+                }
+            } else if (args[0].equalsIgnoreCase("migrateLeveling")) {
+                if (sender instanceof ConsoleCommandUser) { //only console
+                    if (migrated) {
+                        sender.sendMessage("&cAlready migrated.");
+                        return;
+                    }
+                    migrated = true;
+                    sender.sendMessage("&cMigrating leveling to new mee6 leveling, please wait....");
+                    core.getLevelingManager().convertToMee6();
+                    sender.sendMessage("&eSuccessfully migrated, If you used leveling roles before, please reconfigure according to the new leveling system, keep in mind that leveling roles was upgraded to leveling-&lrewards&e.json (https://wiki.discordsrvutils.xyz/leveling-conversion)");
+                    return;
+                }
             }
         }
         sender.sendMessage("&cSubCommand not found");
@@ -98,7 +138,12 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 values.add("updatecheck");
             if (sender.hasPermission("discordsrvutils.removeslash"))
                 values.add("removeslash");
-
+            if (sender.hasPermission("discordsrvutils.resetlevel"))
+                values.add("resetlevel");
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("resetlevel") && sender.hasPermission("discordsrvutils.resetlevel")) {
+            List<String> result = core.getPlatform().getServer().getOnlinePlayers().stream().map(PlatformPlayer::getName).collect(Collectors.toList());
+            result.add("all");
+            return result;
         }
 
         List<String> result = new ArrayList<>();

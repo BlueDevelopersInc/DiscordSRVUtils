@@ -61,7 +61,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPunishEvent e) {
             core.getAsyncManager().executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), false);
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), false, plugin);
                 tk.bluetree242.discordsrvutils.interfaces.Punishment.handlePunishment(punishment, core);
             });
         }
@@ -72,7 +72,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPardonEvent e) {
             core.getAsyncManager().executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), true);
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), true, plugin);
                 tk.bluetree242.discordsrvutils.interfaces.Punishment.handlePunishment(punishment, core);
             });
         }

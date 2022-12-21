@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import lombok.Setter;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -34,15 +35,17 @@ import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerStats {
     private final DiscordSRVUtils core;
     private final UUID uuid;
-    private final String name;
     private final int minecraftMessages;
     private final int discordMessages;
     private final int rank;
+    @Setter
+    private String name;
     private int level;
     private int xp;
 
@@ -69,31 +72,34 @@ public class PlayerStats {
         return level;
     }
 
-    public int getXp() {
-        return xp;
-    }
-
-    public void setLevel(int level, DSLContext conn) {
+    public void setLevel(int level) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, level)
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                 .execute();
         this.level = level;
     }
 
-    public boolean setXP(int xp, DSLContext conn) {
+    public int getXp() {
+        return xp;
+    }
+
+    public boolean setXP(int xp) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         return setXP(xp, null);
+    }
+
+    public int getTotalXpRequired() {
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
     }
 
     /**
      * @param xp XP to add
      * @return true if player leveled up, false if not
      */
-    public boolean setXP(int xp, LevelupEvent event, DSLContext conn) {
-        if (event == null) {
-            event = new LevelupEvent(this, uuid);
-        }
-        LevelupEvent finalEvent = event;
-        if (xp >= 300) {
+    public boolean setXP(int xp, LevelupEvent event) {
+        DSLContext conn = core.getDatabaseManager().jooq();
+        if (xp >= getTotalXpRequired()) {
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level + 1)
                     .set(LevelingTable.LEVELING.XP, 0)
@@ -101,23 +107,9 @@ public class PlayerStats {
                     .execute();
             this.level = level + 1;
             this.xp = 0;
-            String id = core.getDiscordSRV().getDiscordId(uuid);
-            if (id == null) return true;
-            LevelingManager manager = core.getLevelingManager();
-            Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
-            if (member == null) return true;
-            Collection actions = new ArrayList<>();
-            for (Role role : manager.getRolesToRemove(level)) {
-                if (member.getRoles().contains(role))
-                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
-            }
-            Role toAdd = manager.getRoleForLevel(level);
-            if (toAdd != null) {
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, toAdd).reason("User Leveled Up"));
-            }
-            if (!actions.isEmpty())
-                RestAction.allOf(actions).queue();
-            DiscordSRV.api.callEvent(finalEvent);
+            handleRewards();
+            if (event != null)
+                DiscordSRV.api.callEvent(event);
             return true;
         }
         conn.update(LevelingTable.LEVELING)
@@ -125,6 +117,29 @@ public class PlayerStats {
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString())).execute();
         this.xp = xp;
         return false;
+    }
+
+    public int getXpPercentage() {
+        return (int) (((double) xp) * 100 / (double) getTotalXpRequired());
+    }
+
+    private void handleRewards() {
+        LevelingManager manager = core.getLevelingManager();
+        String id = core.getDiscordSRV().getDiscordId(uuid);
+        if (id == null) return;
+        Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+        if (member == null) return;
+        Collection actions = new ArrayList<>();
+        for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(level)) {
+            if (member.getRoles().contains(role))
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
+        }
+        List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
+        for (Role role : toAdd) {
+            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked"));
+        }
+        if (!actions.isEmpty())
+            RestAction.allOf(actions).queue();
     }
 
     public int getMinecraftMessages() {
@@ -135,7 +150,8 @@ public class PlayerStats {
         return discordMessages;
     }
 
-    public void addMessage(MessageType type, DSLContext conn) {
+    public void addMessage(MessageType type) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TableField toUpdate = null;
         int value = 0;
         switch (type) {
@@ -156,5 +172,9 @@ public class PlayerStats {
 
     public int getRank() {
         return rank;
+    }
+
+    public List<Role> getRoles() {
+        return core.getLevelingManager().getLevelingRewardsManager().getRolesForLevel(level);
     }
 }

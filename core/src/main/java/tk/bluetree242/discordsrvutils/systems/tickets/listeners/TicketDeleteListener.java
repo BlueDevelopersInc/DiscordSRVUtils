@@ -31,9 +31,6 @@ import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 @RequiredArgsConstructor
 public class TicketDeleteListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
@@ -41,14 +38,10 @@ public class TicketDeleteListener extends ListenerAdapter {
     public void onTextChannelDelete(@NotNull TextChannelDeleteEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                jooq.deleteFrom(TicketsTable.TICKETS)
-                        .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
-                        .execute();
-            } catch (SQLException ex) {
-                core.getErrorHandler().defaultHandle(ex, e.getChannel());
-            }
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            jooq.deleteFrom(TicketsTable.TICKETS)
+                    .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))
+                    .execute();
         });
     }
 }

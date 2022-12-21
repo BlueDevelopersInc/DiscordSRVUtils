@@ -115,7 +115,7 @@ public class CommandEvent {
     }
 
     public DSLContext getConnection() {
-        if (!isConnOpen()) return connection = core.getDatabaseManager().newJooqConnection();
+        if (!isConnOpen()) return connection = core.getDatabaseManager().jooq();
         return connection;
     }
 

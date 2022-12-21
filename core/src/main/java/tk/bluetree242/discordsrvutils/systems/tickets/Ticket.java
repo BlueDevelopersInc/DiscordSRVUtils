@@ -30,6 +30,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class Ticket {
     private final DiscordSRVUtils core;
@@ -75,7 +76,8 @@ public class Ticket {
     }
 
 
-    public void close(User userWhoClosed, DSLContext conn) {
+    public void close(User userWhoClosed) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (closed) return;
         //set it without the message id
         conn.update(TicketsTable.TICKETS)
@@ -83,9 +85,9 @@ public class Ticket {
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
         }
@@ -108,16 +110,17 @@ public class Ticket {
                 .execute();
     }
 
-    public void reopen(User userWhoOpened, DSLContext conn) {
+    public void reopen(User userWhoOpened) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (!closed) return;
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "false")
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
         } else {

@@ -54,7 +54,7 @@ public class LevelCommand extends Command {
             }
         } else if (e.getOption("player_name") != null) {
             String name = e.getOption("player_name").getAsString();
-            target = core.getLevelingManager().getPlayerStats(name, e.getConnection());
+            target = core.getLevelingManager().getPlayerStats(name);
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_invalid_player()).queue();
                 return;

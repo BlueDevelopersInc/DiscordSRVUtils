@@ -113,7 +113,8 @@ public class Suggestion {
         return ChannelID;
     }
 
-    public SuggestionNote addNote(Long staff, String note, DSLContext conn) {
+    public SuggestionNote addNote(Long staff, String note) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.insertInto(SuggestionNotesTable.SUGGESTION_NOTES)
                 .set(SuggestionNotesTable.SUGGESTION_NOTES.STAFFID, staff)
                 .set(SuggestionNotesTable.SUGGESTION_NOTES.NOTETEXT, Utils.b64Encode(note))
@@ -126,7 +127,8 @@ public class Suggestion {
         return suggestionNote;
     }
 
-    public void setApproved(boolean approved, Long staffID, DSLContext conn) {
+    public void setApproved(boolean approved, Long staffID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(SuggestionsTable.SUGGESTIONS)
                 .set(SuggestionsTable.SUGGESTIONS.APPROVED, Utils.getDBoolean(approved))
                 .set(SuggestionsTable.SUGGESTIONS.APPROVER, staffID)

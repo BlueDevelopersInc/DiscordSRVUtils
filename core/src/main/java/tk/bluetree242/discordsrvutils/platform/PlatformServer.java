@@ -47,4 +47,8 @@ public abstract class PlatformServer {
 
     public abstract PlatformPlayer getOfflinePlayer(UUID uuid);
 
+    public abstract PlatformPlayer getPlayer(UUID uuid);
+
+    public abstract void executeConsoleCommands(String... cmds);
+
 }
