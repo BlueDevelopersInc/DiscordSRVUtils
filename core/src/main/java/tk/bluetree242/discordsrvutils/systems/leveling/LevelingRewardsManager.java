@@ -155,6 +155,8 @@ public class LevelingRewardsManager {
 
     public void saveRewardCache() {
         try {
+            if (!rewardCacheFile.exists() && !needCache()) return;
+            else if (!rewardCacheFile.exists()) rewardCacheFile.createNewFile();
             FileWriter writer = new FileWriter(rewardCacheFile);
             writer.write(rewardCache.toString());
             writer.close();
