@@ -118,7 +118,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     migrated = true;
                     sender.sendMessage("&cMigrating leveling to new mee6 leveling, please wait....");
                     core.getLevelingManager().convertToMee6();
-                    sender.sendMessage("&eSuccessfully migrated, If you used leveling roles before, please reconfigure according to the new leveling system, keep in mind that leveling roles was upgraded to leveling-&lrewards&e.json (https://wiki.discordsrvutils.xyz/leveling-conversion");
+                    sender.sendMessage("&eSuccessfully migrated, If you used leveling roles before, please reconfigure according to the new leveling system, keep in mind that leveling roles was upgraded to leveling-&lrewards&e.json (https://wiki.discordsrvutils.xyz/leveling-conversion)");
                     return;
                 }
             }
