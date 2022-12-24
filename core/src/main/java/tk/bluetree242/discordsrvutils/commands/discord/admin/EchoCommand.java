@@ -23,10 +23,13 @@
 package tk.bluetree242.discordsrvutils.commands.discord.admin;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
@@ -41,13 +44,14 @@ public class EchoCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        String message = e.getOption("text").getAsString();
+        String text = e.getOption("text").getAsString();
+        Message msg = core.getMessageManager().getMessage(text, new PlaceholdObjectList(core), null).build();
         GuildChannel channel = e.getOption("channel") == null ? (GuildChannel) e.getChannel() : e.getOption("channel").getAsGuildChannel();
         if (channel != e.getChannel() && !(channel instanceof TextChannel)) {
             e.replyErr("We can only send in a text channel.").setEphemeral(true).queue();
         } else {
             e.reply("**Sending Message..**").setEphemeral(true).queue();
-            ((TextChannel) channel).sendMessage(message).queue();
+            ((TextChannel) channel).sendMessage(msg).queue();
         }
     }
 }
