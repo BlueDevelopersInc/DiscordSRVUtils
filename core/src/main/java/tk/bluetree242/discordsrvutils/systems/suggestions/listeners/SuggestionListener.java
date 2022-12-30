@@ -102,7 +102,7 @@ public class SuggestionListener extends ListenerAdapter {
             }
             if (!core.getSuggestionsConfig().allow_submitter_vote()) {
                 if (e.getUser().getIdLong() == suggestion.getSubmitter()) {
-                    e.deferReply(true).setContent("You may not vote your own suggestion").queue();
+                    e.deferReply(true).setContent(core.getSuggestionsConfig().vote_own_suggestion_message()).queue();
                     return;
                 }
             }
