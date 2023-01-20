@@ -145,14 +145,16 @@ public class Suggestion {
     }
 
     public int getYesCount() {
+        if (MessageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
-            List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
+            List<SuggestionVote> votes = getVotes().stream().filter(SuggestionVote::isAgree).collect(Collectors.toList());
             return votes.size();
         } else
             return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() - 1;
     }
 
     public int getNoCount() {
+        if (MessageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
             return votes.size();
