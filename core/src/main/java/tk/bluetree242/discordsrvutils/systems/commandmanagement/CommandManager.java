@@ -40,6 +40,7 @@ import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager {
@@ -97,19 +98,12 @@ public class CommandManager {
         List<Command> result = new ArrayList<>();
         if (onlyConfig)
             for (String command : core.getMainConfig().disabled_commands()) {
-                result.add(getCommandByName(command));
+                result.add(getCommandHashMap().get(command.toLowerCase(Locale.ROOT)));
             }
         else for (Command cmd : commandswithoutaliases) {
             if (!cmd.isEnabled()) result.add(cmd);
         }
         return result;
-    }
-
-    public Command getCommandByName(String name) {
-        for (Command command : commands) {
-            if (command.getCmd().equalsIgnoreCase(name)) return command;
-        }
-        return null;
     }
 
     public List<Command> getCommandsWithoutAliases() {
