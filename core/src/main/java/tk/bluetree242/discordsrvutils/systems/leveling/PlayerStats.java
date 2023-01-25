@@ -100,13 +100,14 @@ public class PlayerStats {
     public boolean setXP(int xp, LevelupEvent event) {
         DSLContext conn = core.getDatabaseManager().jooq();
         if (xp >= getTotalXpRequired()) {
+            int newXP = xp - getTotalXpRequired();
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level + 1)
-                    .set(LevelingTable.LEVELING.XP, 0)
+                    .set(LevelingTable.LEVELING.XP, newXP)
                     .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                     .execute();
             this.level = level + 1;
-            this.xp = 0;
+            this.xp = newXP;
             handleRewards();
             if (event != null)
                 DiscordSRV.api.callEvent(event);
