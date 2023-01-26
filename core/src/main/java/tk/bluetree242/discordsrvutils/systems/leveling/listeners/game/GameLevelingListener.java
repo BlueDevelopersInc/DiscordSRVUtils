@@ -36,8 +36,6 @@ import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.security.SecureRandom;
-
 @RequiredArgsConstructor
 public class GameLevelingListener extends PlatformListener {
     private final DiscordSRVUtils core;

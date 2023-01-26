@@ -57,6 +57,13 @@ public class LevelingManager {
     public boolean isLinked(UUID uuid) {
         String discord = core.getDiscordSRV().getDiscordId(uuid);
         return discord != null;
+    }
+
+    public PlayerStats getPlayerStats(long discordID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
+        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
+        if (uuid == null) return null;
+        return getPlayerStats(uuid);
     }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
@@ -68,13 +75,6 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
-
-    public PlayerStats getPlayerStats(long discordID) {
-        DSLContext conn = core.getDatabaseManager().jooq();
-        UUID uuid = core.getDiscordSRV().getUuid(discordID + "");
-        if (uuid == null) return null;
-        return getPlayerStats(uuid);
-    }
 
     public PlayerStats getPlayerStats(String name) {
         DSLContext conn = core.getDatabaseManager().jooq();
@@ -140,7 +140,8 @@ public class LevelingManager {
         Result<LevelingRecord> results = conn.selectFrom(LevelingTable.LEVELING).fetch();
 
         for (LevelingRecord result : results) {
-            if (cachedUUIDS.getIfPresent(UUID.fromString(result.getUuid())) != null) cachedUUIDS.invalidate(cachedUUIDS.get(UUID.fromString(result.getUuid())));
+            if (cachedUUIDS.getIfPresent(UUID.fromString(result.getUuid())) != null)
+                cachedUUIDS.invalidate(cachedUUIDS.get(UUID.fromString(result.getUuid())));
             int totalXP = (result.getLevel() * 300) + result.getXp();
             int level = 0;
             Integer xp = null;
@@ -150,8 +151,7 @@ public class LevelingManager {
                 else if (totalXP == 0) {
                     xp = 0;
                     level++;
-                }
-                else xp = getRequiredXP(level) - Math.abs(totalXP);
+                } else xp = getRequiredXP(level) - Math.abs(totalXP);
             }
             conn.update(LevelingTable.LEVELING)
                     .set(LevelingTable.LEVELING.LEVEL, level)
@@ -163,6 +163,8 @@ public class LevelingManager {
     private int getRequiredXP(int level) {
         return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100);
     }
+
+
 
 
 }

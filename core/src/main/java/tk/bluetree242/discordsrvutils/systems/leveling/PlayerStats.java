@@ -60,6 +60,10 @@ public class PlayerStats {
         this.rank = rank;
     }
 
+    public static int getTotalXpRequired(int level) {
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
+    }
+
     public UUID getUuid() {
         return uuid;
     }
@@ -86,10 +90,6 @@ public class PlayerStats {
 
     public boolean setXP(int xp) {
         return setXP(xp, null);
-    }
-
-    public static int getTotalXpRequired(int level) {
-        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
     }
 
     public int getTotalXpRequired() {

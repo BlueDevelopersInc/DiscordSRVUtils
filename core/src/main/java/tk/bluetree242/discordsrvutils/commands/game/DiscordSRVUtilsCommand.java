@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 public class DiscordSRVUtilsCommand implements PlatformCommand {
     private final DiscordSRVUtils core;
     private boolean migrated = false;
+
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
@@ -140,7 +141,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         sender.sendMessage("&cPlayer not found");
                     } else {
                         int xp = Integer.parseInt(amountString);
-                        stats.setXP(stats.getXp() + xp, new LevelupEvent(stats, stats.getUuid()));
+                        stats.setXP(xp + stats.getXp(), new LevelupEvent(stats, stats.getUuid()));
                         sender.sendMessage("&aAdded &6" + xp + " &axp to &6" + name + "&a. Now they are level &6" + stats.getLevel() + " &aand have &6" + stats.getXp() + "&a xp.");
                         core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                         return;
@@ -168,7 +169,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
             if (sender.hasPermission("discordsrvutils.addxp") && core.getLevelingConfig().enabled())
                 values.add("addxp");
         } else if ((args.length == 2 && args[0].equalsIgnoreCase("resetlevel") && sender.hasPermission("discordsrvutils.resetlevel"))
-        || (args.length == 2 && args[0].equalsIgnoreCase("addxp") && sender.hasPermission("discordsrvutils.addxp") && core.getLevelingConfig().enabled())) {
+                || (args.length == 2 && args[0].equalsIgnoreCase("addxp") && sender.hasPermission("discordsrvutils.addxp") && core.getLevelingConfig().enabled())) {
             List<String> result = core.getPlatform().getServer().getOnlinePlayers().stream().map(PlatformPlayer::getName).collect(Collectors.toList());
             if (args[0].equalsIgnoreCase("resetlevel")) result.add("all");
             return result;
