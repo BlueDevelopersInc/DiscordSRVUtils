@@ -140,7 +140,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         sender.sendMessage("&cPlayer not found");
                     } else {
                         int xp = Integer.parseInt(amountString);
-                        stats.setXP(xp, new LevelupEvent(stats, stats.getUuid()));
+                        stats.setXP(stats.getXp() + xp, new LevelupEvent(stats, stats.getUuid()));
                         sender.sendMessage("&aAdded &6" + xp + " &axp to &6" + name + "&a. Now they are level &6" + stats.getLevel() + " &aand have &6" + stats.getXp() + "&a xp.");
                         core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                         return;
