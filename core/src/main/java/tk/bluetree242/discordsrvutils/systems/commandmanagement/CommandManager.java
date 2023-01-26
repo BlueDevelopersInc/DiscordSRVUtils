@@ -47,7 +47,7 @@ public class CommandManager {
     private final DiscordSRVUtils core;
     private final ConcurrentHashMap<String, Command> cmds = new ConcurrentHashMap<>();
     private final List<Command> commands = new ArrayList<>();
-    private final List<Command> commandswithoutaliases = new ArrayList<>();
+    private final List<Command> commandsWithoutAliases = new ArrayList<>();
 
     public CommandManager(DiscordSRVUtils core) {
         this.core = core;
@@ -80,7 +80,7 @@ public class CommandManager {
         if (getCommandHashMap().get(cmd.getCmd()) != null) return;
         cmds.put(cmd.getCmd().toLowerCase(), cmd);
         commands.add(cmd);
-        commandswithoutaliases.add(cmd);
+        commandsWithoutAliases.add(cmd);
         for (String a : cmd.getAliases()) {
             cmds.put(a.toLowerCase(), cmd);
         }
@@ -100,13 +100,13 @@ public class CommandManager {
             for (String command : core.getMainConfig().disabled_commands()) {
                 result.add(getCommandHashMap().get(command.toLowerCase(Locale.ROOT)));
             }
-        else for (Command cmd : commandswithoutaliases) {
+        else for (Command cmd : commandsWithoutAliases) {
             if (!cmd.isEnabled()) result.add(cmd);
         }
         return result;
     }
 
     public List<Command> getCommandsWithoutAliases() {
-        return commandswithoutaliases;
+        return commandsWithoutAliases;
     }
 }

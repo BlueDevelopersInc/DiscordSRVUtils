@@ -45,5 +45,8 @@ permissions:
   discordsrvutils.resetlevel:
     default: op
     description: Allows use of /dsu resetlevel
+  discordsrvutils.addxp:
+    default: op
+    description: Allows use of /dsu addxp
 
 

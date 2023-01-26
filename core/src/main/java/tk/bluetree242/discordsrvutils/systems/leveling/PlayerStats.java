@@ -85,12 +85,15 @@ public class PlayerStats {
     }
 
     public boolean setXP(int xp) {
-        DSLContext conn = core.getDatabaseManager().jooq();
         return setXP(xp, null);
     }
 
-    public int getTotalXpRequired() {
+    public static int getTotalXpRequired(int level) {
         return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
+    }
+
+    public int getTotalXpRequired() {
+        return getTotalXpRequired(level);
     }
 
     /**
@@ -100,13 +103,15 @@ public class PlayerStats {
     public boolean setXP(int xp, LevelupEvent event) {
         DSLContext conn = core.getDatabaseManager().jooq();
         if (xp >= getTotalXpRequired()) {
-            int newXP = xp - getTotalXpRequired();
+            int[] newResults = getNewLevelAndXP(xp);
+            int newLevel = newResults[0];
+            int newXP = newResults[1];
             conn.update(LevelingTable.LEVELING)
-                    .set(LevelingTable.LEVELING.LEVEL, level + 1)
+                    .set(LevelingTable.LEVELING.LEVEL, newLevel)
                     .set(LevelingTable.LEVELING.XP, newXP)
                     .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                     .execute();
-            this.level = level + 1;
+            this.level = newLevel;
             this.xp = newXP;
             handleRewards();
             if (event != null)
@@ -118,6 +123,22 @@ public class PlayerStats {
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString())).execute();
         this.xp = xp;
         return false;
+    }
+
+    private int[] getNewLevelAndXP(int xp) {
+        int newLevel = level;
+        boolean finished = false;
+        int remainingXP = xp;
+        while (!finished) {
+            int required = getTotalXpRequired(newLevel);
+            if (required > remainingXP) {
+                finished = true;
+            } else {
+                remainingXP = remainingXP - required;
+                newLevel++;
+            }
+        }
+        return new int[]{newLevel, remainingXP};
     }
 
     public int getXpPercentage() {

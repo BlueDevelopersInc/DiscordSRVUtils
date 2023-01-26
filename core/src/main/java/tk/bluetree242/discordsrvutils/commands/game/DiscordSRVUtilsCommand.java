@@ -25,12 +25,14 @@ package tk.bluetree242.discordsrvutils.commands.game;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.PlatformCommand;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,6 +123,29 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     sender.sendMessage("&eSuccessfully migrated, If you used leveling roles before, please reconfigure according to the new leveling system, keep in mind that leveling roles was upgraded to leveling-&lrewards&e.json (https://wiki.discordsrvutils.xyz/leveling-conversion)");
                     return;
                 }
+            } else if (args[0].equalsIgnoreCase("addxp") && core.getLevelingConfig().enabled()) {
+                if (sender.hasPermission("discordsrvutils.addxp")) {
+                    String name = args.length >= 2 ? args[1] : null;
+                    if (name == null) {
+                        sender.sendMessage("&cPlease provide player name.");
+                        return;
+                    }
+                    String amountString = args.length >= 3 ? args[2] : null;
+                    if (amountString == null || !Utils.isInt(amountString)) {
+                        sender.sendMessage("&cPlease provide a valid xp amount.");
+                        return;
+                    }
+                    PlayerStats stats = core.getLevelingManager().getPlayerStats(name);
+                    if (stats == null) {
+                        sender.sendMessage("&cPlayer not found");
+                    } else {
+                        int xp = Integer.parseInt(amountString);
+                        stats.setXP(xp, new LevelupEvent(stats, stats.getUuid()));
+                        sender.sendMessage("&aAdded &6" + xp + " &axp to &6" + name + "&a. Now they are level &6" + stats.getLevel() + " &aand have &6" + stats.getXp() + "&a xp.");
+                        core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
+                        return;
+                    }
+                }
             }
         }
         sender.sendMessage("&cSubCommand not found");
@@ -140,9 +165,12 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 values.add("removeslash");
             if (sender.hasPermission("discordsrvutils.resetlevel"))
                 values.add("resetlevel");
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("resetlevel") && sender.hasPermission("discordsrvutils.resetlevel")) {
+            if (sender.hasPermission("discordsrvutils.addxp") && core.getLevelingConfig().enabled())
+                values.add("addxp");
+        } else if ((args.length == 2 && args[0].equalsIgnoreCase("resetlevel") && sender.hasPermission("discordsrvutils.resetlevel"))
+        || (args.length == 2 && args[0].equalsIgnoreCase("addxp") && sender.hasPermission("discordsrvutils.addxp") && core.getLevelingConfig().enabled())) {
             List<String> result = core.getPlatform().getServer().getOnlinePlayers().stream().map(PlatformPlayer::getName).collect(Collectors.toList());
-            result.add("all");
+            if (args[0].equalsIgnoreCase("resetlevel")) result.add("all");
             return result;
         }
 
