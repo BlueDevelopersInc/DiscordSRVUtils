@@ -129,7 +129,7 @@ public class TicketManager {
                 r.getChannel(),
                 Utils.getDBoolean(r.getClosed()),
                 panel,
-                r.getMessageid());
+                r.getMessageid(), r.getFirstmessage());
     }
 
     protected Ticket getTicket(TicketsRecord r) {

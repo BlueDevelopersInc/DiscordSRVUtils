@@ -89,4 +89,10 @@ public interface TicketsConfig {
     @ConfComments("# Text on the Open Ticket Button")
     @ConfDefault.DefaultString("Open Ticket")
     String open_ticket_button();
+
+    @AnnotationBasedSorter.Order(100)
+    @ConfKey("ticket-first-message-ping-delete-delay")
+    @ConfComments("# Delay for deleting the ping when staff finally reply to someone in a ticket. Set to 0 to disable")
+    @ConfDefault.DefaultInteger(3)
+    int firstmessage_ping_delay();
 }

@@ -181,9 +181,10 @@ public class Panel {
                     .set(TicketsTable.TICKETS.CLOSED, "false")
                     .set(TicketsTable.TICKETS.USERID, user.getIdLong())
                     .set(TicketsTable.TICKETS.OPENTIME, System.currentTimeMillis())
+                    .set(TicketsTable.TICKETS.FIRSTMESSAGE, false)
                     .execute();
             runningProcesses.remove(user.getIdLong());
-            return new Ticket(core, id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());
+            return new Ticket(core, id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong(), false);
         } finally {
             runningProcesses.remove(user.getIdLong());
         }

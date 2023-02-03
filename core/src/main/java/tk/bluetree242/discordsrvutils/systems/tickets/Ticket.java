@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.systems.tickets;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.Getter;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
@@ -40,8 +41,10 @@ public class Ticket {
     private final boolean closed;
     private final Panel panel;
     private Long messageID;
+    @Getter
+    private final boolean firstMessage;
 
-    public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {
+    public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID, boolean firstMessage) {
         this.core = core;
         this.id = id;
         this.userID = userID;
@@ -49,6 +52,7 @@ public class Ticket {
         this.closed = closed;
         this.panel = panel;
         this.messageID = messageID;
+        this.firstMessage = firstMessage;
     }
 
     public String getId() {

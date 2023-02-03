@@ -36,6 +36,7 @@ import tk.bluetree242.discordsrvutils.systems.suggestions.listeners.SuggestionLi
 import tk.bluetree242.discordsrvutils.systems.tickets.listeners.PanelOpenListener;
 import tk.bluetree242.discordsrvutils.systems.tickets.listeners.TicketCloseListener;
 import tk.bluetree242.discordsrvutils.systems.tickets.listeners.TicketDeleteListener;
+import tk.bluetree242.discordsrvutils.systems.tickets.listeners.TicketFirstMessageListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.EditPanelListener;
 import tk.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
@@ -62,6 +63,7 @@ public class JdaManager {
         listeners.add(new DiscordLevelingListener(core));
         listeners.add(new SuggestionListener(core));
         listeners.add(new InviteTrackingListener(core));
+        listeners.add(new TicketFirstMessageListener(core));
     }
 
 
