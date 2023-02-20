@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2023 BlueTree242
+ * Copyright (C) 2020 - 2022 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -36,8 +36,15 @@ public class LinkAccountCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        Integer code = (int) e.getOption("code").getAsLong();
-        String response = core.getPlatform().getDiscordSRV().proccessMessage(code + "", e.getAuthor());
+        StringBuilder code = new StringBuilder(String.valueOf((int) e.getOption("code").getAsLong()));
+        if (code.length() < 4) {
+            int numLeft = 4 - code.length();
+            while (numLeft != 0) {
+                code.insert(0, "0");
+                numLeft--;
+            }
+        }
+        String response = core.getPlatform().getDiscordSRV().proccessMessage(code.toString(), e.getAuthor());
         if (response != null) e.reply(response).setEphemeral(true).queue();
     }
 }
