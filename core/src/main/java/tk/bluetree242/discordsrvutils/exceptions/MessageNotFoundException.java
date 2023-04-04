@@ -22,12 +22,12 @@
 
 package tk.bluetree242.discordsrvutils.exceptions;
 
-public class EmbedNotFoundException extends RuntimeException {
+public class MessageNotFoundException extends RuntimeException {
 
     private final String msg;
 
-    public EmbedNotFoundException(String embed) {
-        this.msg = "Embed \"" + embed + "\" was not found";
+    public MessageNotFoundException(String embed) {
+        this.msg = "Message \"" + embed + "\" was not found";
     }
 
     @Override
