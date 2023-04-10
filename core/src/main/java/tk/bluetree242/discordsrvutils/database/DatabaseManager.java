@@ -91,8 +91,9 @@ public class DatabaseManager {
                 .dataSource(sql)
                 .locations("classpath:flyway-migrations")
                 .validateMigrationNaming(true).group(true)
-                .baselineOnMigrate(false)
+                .baselineOnMigrate(true)
                 .table("discordsrvutils_schema")
+                .baselineVersion("0.0")
                 .load();
         //repair if there is an issue
         flyway.repair();
