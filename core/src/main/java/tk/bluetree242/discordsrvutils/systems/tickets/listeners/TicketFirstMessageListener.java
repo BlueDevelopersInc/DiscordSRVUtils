@@ -43,7 +43,8 @@ public class TicketFirstMessageListener extends ListenerAdapter {
                 || e.getAuthor().isBot() || e.getAuthor().isSystem() || e.getMessage().isWebhookMessage()) return;
         core.getAsyncManager().executeAsync(() -> {
             Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong());
-            if (ticket == null || ticket.getUserID() == e.getAuthor().getIdLong() || ticket.isClosed() || ticket.isFirstMessage()) return;
+            if (ticket == null || ticket.getUserID() == e.getAuthor().getIdLong() || ticket.isClosed() || ticket.isFirstMessage())
+                return;
             //store it
             core.getDatabaseManager().jooq().update(TicketsTable.TICKETS)
                     .set(TicketsTable.TICKETS.FIRSTMESSAGE, true)

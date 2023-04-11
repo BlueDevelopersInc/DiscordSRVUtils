@@ -40,9 +40,9 @@ public class Ticket {
     private final Long channelID;
     private final boolean closed;
     private final Panel panel;
-    private Long messageID;
     @Getter
     private final boolean firstMessage;
+    private Long messageID;
 
     public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID, boolean firstMessage) {
         this.core = core;
