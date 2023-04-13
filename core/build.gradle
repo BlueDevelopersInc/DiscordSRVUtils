@@ -68,14 +68,13 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.hsqldb:hsqldb:2.4.1'
+    implementation 'org.hsqldb:hsqldb:2.6.1'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
-    compileOnly('com.discordsrv:discordsrv:1.26.0')
+    compileOnly("com.discordsrv:discordsrv:${rootProject.discordsrv_version}")
     implementation "org.flywaydb:flyway-core:7.5.3"
-    implementation group: 'org.json', name: 'json', version: '20210307'
+    implementation "org.json:json:${rootProject.org_json_version}"
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
-    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-io:commons-io:2.7'
 
     //related to jooq
     implementation 'org.jooq:jooq:3.14.16'

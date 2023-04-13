@@ -57,9 +57,10 @@ dependencies {
     compileOnly 'net.lapismc:AFKPlus:3.3.15'
     implementation project(":core")
     implementation('org.slf4j:slf4j-api:2.0.1')
-    compileOnly('com.discordsrv:discordsrv:1.26.0')
+    compileOnly("com.discordsrv:discordsrv:${rootProject.discordsrv_version}")
     implementation 'org.jooq:jooq:3.14.16'
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'
+    implementation "org.json:json:${rootProject.org_json_version}"
 }
 
 
