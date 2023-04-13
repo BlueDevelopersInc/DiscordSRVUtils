@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -28,13 +28,31 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.LoggerFactory;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.bukkit.discordsrv.SlashCommandProvider;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
+
+    static {
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(DiscordSRVUtilsBukkit.class.getClassLoader());
+        try {
+            Method method = LoggerFactory.class.getDeclaredMethod("bind");
+            method.setAccessible(true);
+            method.invoke(null);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
+        }
+    }
+
     @Getter
     private DiscordSRVUtils core = null;
 

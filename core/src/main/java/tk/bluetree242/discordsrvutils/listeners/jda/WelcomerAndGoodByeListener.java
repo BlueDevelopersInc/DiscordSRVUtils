@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -37,8 +37,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,11 +66,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                 }
                 //store in db
                 if (!core.getMainConfig().bungee_mode() && core.getMainConfig().track_invites() && invite != null) {
-                    try (Connection conn = core.getDatabaseManager().getConnection()) {
-                        core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
-                    } catch (SQLException ex) {
-                        core.getErrorHandler().defaultHandle(ex);
-                    }
+                    core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
                 }
                 //welcomer
                 if (core.getMainConfig().welcomer_enabled()) {
@@ -103,11 +97,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
     public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
-                try (Connection conn = core.getDatabaseManager().getConnection()) {
-                    core.getInviteTrackingManager().leftServer(core.getDatabaseManager().jooq(conn), e.getUser().getIdLong());
-                } catch (SQLException ex) {
-                    core.getErrorHandler().defaultHandle(ex);
-                }
+                core.getInviteTrackingManager().leftServer(core.getDatabaseManager().jooq(), e.getUser().getIdLong());
                 if (core.getMainConfig().goodbye_enabled()) {
                     MessageChannel channel = core.getJdaManager().getChannel(core.getMainConfig().goodbye_channel());
                     if (channel == null) {

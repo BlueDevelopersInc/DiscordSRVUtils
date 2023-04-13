@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -45,12 +45,12 @@ public class ApproveSuggestionCommand extends SuggestionCommand {
         }
 
         int number = (int) e.getOption("number").getAsLong();
-        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number, e.getConnection());
+        Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number);
         if (suggestion == null) {
             e.replyErr("Suggestion not found").queue();
             return;
         }
-        suggestion.setApproved(true, e.getAuthor().getIdLong(), e.getConnection());
+        suggestion.setApproved(true, e.getAuthor().getIdLong());
         e.replySuccess("Successfully approved suggestion").queue();
     }
 }

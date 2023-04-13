@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -126,7 +126,8 @@ public class Panel {
         getTickets(conn).forEach(Ticket::delete);
     }
 
-    public Set<Ticket> getTicketsForUser(User user, boolean includeClosed, DSLContext conn) {
+    public Set<Ticket> getTicketsForUser(User user, boolean includeClosed) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         Set<Ticket> result = new HashSet<>();
         List<TicketsRecord> records = conn
                 .selectFrom(TicketsTable.TICKETS)
@@ -144,7 +145,8 @@ public class Panel {
         return result;
     }
 
-    public @Nullable Ticket openTicket(User user, DSLContext conn) {
+    public @Nullable Ticket openTicket(User user) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (user.isBot()) return null;
         TicketsRecord check = conn
                 .selectFrom(TicketsTable.TICKETS)
@@ -179,9 +181,10 @@ public class Panel {
                     .set(TicketsTable.TICKETS.CLOSED, "false")
                     .set(TicketsTable.TICKETS.USERID, user.getIdLong())
                     .set(TicketsTable.TICKETS.OPENTIME, System.currentTimeMillis())
+                    .set(TicketsTable.TICKETS.FIRSTMESSAGE, false)
                     .execute();
             runningProcesses.remove(user.getIdLong());
-            return new Ticket(core, id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong());
+            return new Ticket(core, id, user.getIdLong(), channel.getIdLong(), false, this, msg.getIdLong(), false);
         } finally {
             runningProcesses.remove(user.getIdLong());
         }

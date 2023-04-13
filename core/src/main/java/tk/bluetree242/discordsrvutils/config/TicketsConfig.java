@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -89,4 +89,10 @@ public interface TicketsConfig {
     @ConfComments("# Text on the Open Ticket Button")
     @ConfDefault.DefaultString("Open Ticket")
     String open_ticket_button();
+
+    @AnnotationBasedSorter.Order(100)
+    @ConfKey("ticket-first-message-ping-delete-delay")
+    @ConfComments("# Delay for deleting the ping when staff finally reply to someone in a ticket. Set to 0 to disable")
+    @ConfDefault.DefaultInteger(3)
+    int firstmessage_ping_delay();
 }

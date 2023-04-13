@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -20,18 +20,14 @@
  * END
  */
 
-package tk.bluetree242.discordsrvutils.exceptions;
+package tk.bluetree242.discordsrvutils.bukkit.logging;
 
-public class EmbedNotFoundException extends RuntimeException {
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
 
-    private final String msg;
-
-    public EmbedNotFoundException(String embed) {
-        this.msg = "Embed \"" + embed + "\" was not found";
-    }
-
+public class LoggerFactory implements ILoggerFactory {
     @Override
-    public String getMessage() {
-        return msg;
+    public Logger getLogger(String s) {
+        return new BukkitLogger(s);
     }
 }

@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -115,4 +115,9 @@ public interface SuggestionsConfig {
     @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n#Another note is that your votes will be reset by changing this")
     @ConfDefault.DefaultString("REACTIONS")
     String suggestions_vote_mode();
+
+    @AnnotationBasedSorter.Order(140)
+    @ConfComments("# Message when User tries to vote their own suggestion. This message is only sent on BUTTONS mode.")
+    @ConfDefault.DefaultString("You may not vote your own suggestion.")
+    String vote_own_suggestion_message();
 }

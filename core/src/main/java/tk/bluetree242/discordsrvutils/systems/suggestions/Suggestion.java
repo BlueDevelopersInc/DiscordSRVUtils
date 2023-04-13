@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -113,7 +113,8 @@ public class Suggestion {
         return ChannelID;
     }
 
-    public SuggestionNote addNote(Long staff, String note, DSLContext conn) {
+    public SuggestionNote addNote(Long staff, String note) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.insertInto(SuggestionNotesTable.SUGGESTION_NOTES)
                 .set(SuggestionNotesTable.SUGGESTION_NOTES.STAFFID, staff)
                 .set(SuggestionNotesTable.SUGGESTION_NOTES.NOTETEXT, Utils.b64Encode(note))
@@ -126,7 +127,8 @@ public class Suggestion {
         return suggestionNote;
     }
 
-    public void setApproved(boolean approved, Long staffID, DSLContext conn) {
+    public void setApproved(boolean approved, Long staffID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(SuggestionsTable.SUGGESTIONS)
                 .set(SuggestionsTable.SUGGESTIONS.APPROVED, Utils.getDBoolean(approved))
                 .set(SuggestionsTable.SUGGESTIONS.APPROVER, staffID)
@@ -143,14 +145,16 @@ public class Suggestion {
     }
 
     public int getYesCount() {
+        if (MessageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
-            List<SuggestionVote> votes = getVotes().stream().filter(v -> v.isAgree()).collect(Collectors.toList());
+            List<SuggestionVote> votes = getVotes().stream().filter(SuggestionVote::isAgree).collect(Collectors.toList());
             return votes.size();
         } else
             return getMessage().getReactions().stream().filter(reaction -> reaction.getReactionEmote().getName().equals(Utils.getEmoji(core.getSuggestionsConfig().yes_reaction(), new Emoji("✅")).getName())).collect(Collectors.toList()).get(0).getCount() - 1;
     }
 
     public int getNoCount() {
+        if (MessageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
             return votes.size();

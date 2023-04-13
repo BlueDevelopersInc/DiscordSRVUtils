@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -157,8 +157,7 @@ public class BukkitDebugger implements Debugger {
         files.add(fileMap("leveling.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling.yml")));
         files.add(fileMap("status.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "status.yml")));
         files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));
-        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
-        files.add(fileMap("leveling-roles.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-roles.json")));
+        files.add(fileMap("leveling-rewards.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-rewards.json")));
         return files;
     }
 

@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -31,7 +31,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.But
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.PanelAllowedRolesTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketPanelsTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
@@ -40,8 +39,6 @@ import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketPanelsRecord;
 import tk.bluetree242.discordsrvutils.jooq.tables.records.TicketsRecord;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +48,8 @@ public class TicketManager {
     private final DiscordSRVUtils core;
 
 
-    public Panel getPanelById(String id, DSLContext conn) {
+    public Panel getPanelById(String id) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketPanelsRecord record = conn
                 .selectFrom(TicketPanelsTable.TICKET_PANELS)
                 .where(TicketPanelsTable.TICKET_PANELS.ID.eq(id))
@@ -90,7 +88,8 @@ public class TicketManager {
                 allowedRoles);
     }
 
-    public Panel getPanelByMessageId(long messageId, DSLContext conn) {
+    public Panel getPanelByMessageId(long messageId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketPanelsRecord record = conn
                 .selectFrom(TicketPanelsTable.TICKET_PANELS)
                 .where(TicketPanelsTable.TICKET_PANELS.MESSAGEID.eq(messageId))
@@ -99,7 +98,8 @@ public class TicketManager {
         return getPanel(record);
     }
 
-    public Ticket getTicketByMessageId(long messageId, DSLContext conn) {
+    public Ticket getTicketByMessageId(long messageId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketsRecord record = conn
                 .selectFrom(TicketsTable.TICKETS)
                 .where(TicketsTable.TICKETS.MESSAGEID.eq(messageId))
@@ -108,7 +108,8 @@ public class TicketManager {
         return getTicket(record);
     }
 
-    public Ticket getTicketByChannel(long channelId, DSLContext conn) {
+    public Ticket getTicketByChannel(long channelId) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         TicketsRecord record = conn
                 .selectFrom(TicketsTable.TICKETS)
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelId))
@@ -120,7 +121,7 @@ public class TicketManager {
     protected Ticket getTicket(TicketsRecord r, Panel panel) {
         if (panel == null) {
             DSLContext conn = r.configuration().dsl();
-            panel = getPanelById(r.getId(), conn);
+            panel = getPanelById(r.getId());
         }
         return new Ticket(core,
                 r.getId(),
@@ -128,7 +129,7 @@ public class TicketManager {
                 r.getChannel(),
                 Utils.getDBoolean(r.getClosed()),
                 panel,
-                r.getMessageid());
+                r.getMessageid(), r.getFirstmessage());
     }
 
     protected Ticket getTicket(TicketsRecord r) {
@@ -136,40 +137,36 @@ public class TicketManager {
     }
 
     public void fixTickets() {
-        try (Connection conn = core.getDatabaseManager().getConnection()) {
-            DSLContext jooq = core.getDatabaseManager().jooq(conn);
-            List<TicketsRecord> tickets = jooq
-                    .selectFrom(TicketsTable.TICKETS)
-                    .fetch();
-            for (TicketsRecord record : tickets) {
-                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
-                if (channel == null) {
-                    jooq.deleteFrom(TicketsTable.TICKETS)
-                            .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
-                            .execute();
-                }
+        DSLContext jooq = core.getDatabaseManager().jooq();
+        List<TicketsRecord> tickets = jooq
+                .selectFrom(TicketsTable.TICKETS)
+                .fetch();
+        for (TicketsRecord record : tickets) {
+            TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
+            if (channel == null) {
+                jooq.deleteFrom(TicketsTable.TICKETS)
+                        .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
+                        .execute();
             }
+        }
 
-            //work with panels
-            List<TicketPanelsRecord> panels = jooq
-                    .selectFrom(TicketPanelsTable.TICKET_PANELS)
-                    .fetch();
-            for (TicketPanelsRecord record : panels) {
-                Panel panel = getPanel(record);
-                try {
-                    Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
-                    if (msg.getButtons().isEmpty()) {
-                        msg.clearReactions().queue();
-                        msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
-                    } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
-                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
-                    }
-                } catch (ErrorResponseException ex) {
-                    panel.getEditor().apply(jooq);
+        //work with panels
+        List<TicketPanelsRecord> panels = jooq
+                .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                .fetch();
+        for (TicketPanelsRecord record : panels) {
+            Panel panel = getPanel(record);
+            try {
+                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                if (msg.getButtons().isEmpty()) {
+                    msg.clearReactions().queue();
+                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
+                } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
+                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
                 }
+            } catch (ErrorResponseException ex) {
+                panel.getEditor().apply(jooq);
             }
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
         }
     }
 

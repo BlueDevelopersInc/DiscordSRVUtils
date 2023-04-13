@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -42,7 +42,7 @@ public class DeletePanelCommand extends Command {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        Panel panel = core.getTicketManager().getPanelById(e.getOption("id").getAsString(), e.getConnection());
+        Panel panel = core.getTicketManager().getPanelById(e.getOption("id").getAsString());
         if (panel == null) {
             e.reply(Embed.error("Panel not found, use /panelist for list of panels")).queue();
         } else {

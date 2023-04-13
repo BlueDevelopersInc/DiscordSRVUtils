@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -57,6 +57,7 @@ rootProject.allprojects {
         relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
         relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
         relocate 'org.jooq', 'tk.bluetree242.discordsrvutils.dependencies.jooq'
+        relocate 'org.slf4j', 'tk.bluetree242.discordsrvutils.dependencies.slf4j'
     }
 }
 
@@ -67,20 +68,21 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.hsqldb:hsqldb:2.4.1'
+    implementation 'org.hsqldb:hsqldb:2.6.1'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
-    compileOnly('com.discordsrv:discordsrv:1.26.0')
+    compileOnly("com.discordsrv:discordsrv:${rootProject.discordsrv_version}")
     implementation "org.flywaydb:flyway-core:7.5.3"
-    implementation group: 'org.json', name: 'json', version: '20210307'
+    implementation "org.json:json:${rootProject.org_json_version}"
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
-    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-io:commons-io:2.7'
 
     //related to jooq
     implementation 'org.jooq:jooq:3.14.16'
     //using h2 database for code generation as it doesnt uppercase the table/column names, without it, we get into unfixable issues
     testImplementation 'com.h2database:h2:1.4.197'
     jooqGenerator 'com.h2database:h2:1.4.197'
+
+    implementation('org.slf4j:slf4j-api:2.0.1')
 }
 
 

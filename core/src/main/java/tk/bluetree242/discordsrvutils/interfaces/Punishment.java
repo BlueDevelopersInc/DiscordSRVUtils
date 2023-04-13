@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -60,10 +60,8 @@ public interface Punishment<O> {
                     if (punishment.isPermanent()) {
                         msg = punishmentMsg(core, core.getBansConfig().MutedMessage(), placeholder);
                     } else {
-                        if (punishment.isIp())
-                            msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
-                        else
-                            msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
+                        //there is no temp ip mute message for now
+                        msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
                     }
                     break;
                 case WARN:

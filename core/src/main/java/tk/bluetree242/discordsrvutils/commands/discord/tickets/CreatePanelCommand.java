@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,7 +35,7 @@ import java.awt.*;
 
 public class CreatePanelCommand extends Command {
     public CreatePanelCommand(DiscordSRVUtils core) {
-        super(core, "createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS, "cp");
+        super(core, "createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS_ADMIN, "cp");
         setAdminOnly(true);
     }
 

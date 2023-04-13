@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -38,8 +38,6 @@ import tk.bluetree242.discordsrvutils.utils.Utils;
 import tk.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -158,15 +156,11 @@ public class EditPanelListener extends ListenerAdapter {
             if (name.equals("apply")) {
                 e.deferEdit().queue();
                 waiter.expire(false);
-                try (Connection conn = core.getDatabaseManager().getConnection()) {
-                    Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq(conn));
-                    if (panel == null) {
-                        e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
-                    } else {
-                        e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
-                    }
-                } catch (SQLException ex) {
-                    core.getErrorHandler().defaultHandle(ex, e.getChannel());
+                Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq());
+                if (panel == null) {
+                    e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
+                } else {
+                    e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
                 }
             } else if (name.equals("cancel")) {
                 e.deferEdit().queue();

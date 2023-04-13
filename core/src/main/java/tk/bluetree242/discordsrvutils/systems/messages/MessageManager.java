@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
+import tk.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.FileWriter;
@@ -56,7 +56,7 @@ public class MessageManager {
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
     private final DiscordSRVUtils core;
-    //messages folder path
+    //messages folder path[https://discordsrvutils.xyz/support]
 
 
     public Path getMessagesDirectory() {
@@ -127,7 +127,7 @@ public class MessageManager {
         }
         if (!json.isNull("footer")) {
             JSONObject footer = json.getJSONObject("footer");
-            embed.setFooter(getStringFromJson(footer, "text", holders, placehold), getStringFromJson(footer, "icon_url"));
+            embed.setFooter(getStringFromJson(footer, "text", holders, placehold), getStringFromJson(footer, "icon_url", holders, placehold));
         }
         if (!json.isNull("thumbnail")) {
             JSONObject thumbnail = json.getJSONObject("thumbnail");
@@ -214,10 +214,10 @@ public class MessageManager {
                     writer.close();
                     return getMessageJSONByName(name);
                 } catch (Exception ex) {
-                    throw new EmbedNotFoundException(name);
+                    throw new MessageNotFoundException(name);
                 }
             }
-            throw new EmbedNotFoundException(name);
+            throw new MessageNotFoundException(name);
         }
         try {
             return new JSONObject(Utils.readFile(file.getPath()));

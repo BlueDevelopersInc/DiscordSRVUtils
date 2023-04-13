@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,7 +26,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.Optio
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import org.json.JSONException;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.EmbedNotFoundException;
+import tk.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
@@ -44,7 +44,7 @@ public class TestMessageCommand extends Command {
         String name = e.getOption("name").getAsString();
         try {
             e.replyMessage("message:" + name).setEphemeral(true).queue();
-        } catch (EmbedNotFoundException ex) {
+        } catch (MessageNotFoundException ex) {
             e.replyErr("Embed does not exist").setEphemeral(true).queue();
         } catch (JSONException ex) {
             e.replyErr("Embed is invalid").setEphemeral(true).queue();

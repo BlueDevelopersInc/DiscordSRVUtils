@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,11 +25,13 @@ package tk.bluetree242.discordsrvutils.systems.tickets;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.Getter;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 public class Ticket {
     private final DiscordSRVUtils core;
@@ -38,9 +40,11 @@ public class Ticket {
     private final Long channelID;
     private final boolean closed;
     private final Panel panel;
+    @Getter
+    private final boolean firstMessage;
     private Long messageID;
 
-    public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID) {
+    public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID, boolean firstMessage) {
         this.core = core;
         this.id = id;
         this.userID = userID;
@@ -48,6 +52,7 @@ public class Ticket {
         this.closed = closed;
         this.panel = panel;
         this.messageID = messageID;
+        this.firstMessage = firstMessage;
     }
 
     public String getId() {
@@ -75,7 +80,8 @@ public class Ticket {
     }
 
 
-    public void close(User userWhoClosed, DSLContext conn) {
+    public void close(User userWhoClosed) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (closed) return;
         //set it without the message id
         conn.update(TicketsTable.TICKETS)
@@ -83,9 +89,9 @@ public class Ticket {
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getClosedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().deny(Permission.VIEW_CHANNEL).deny(Permission.MESSAGE_WRITE).queue();
         }
@@ -108,16 +114,17 @@ public class Ticket {
                 .execute();
     }
 
-    public void reopen(User userWhoOpened, DSLContext conn) {
+    public void reopen(User userWhoOpened) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (!closed) return;
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "false")
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
                 .execute();
         User user = core.getJDA().retrieveUserById(userID).complete();
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().getMember(user);
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), userID);
         core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getManager().setParent(core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(panel.getOpenedCategory())).setName("ticket-" + user.getName()).queue();
-        PermissionOverride override = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
+        PermissionOverride override = member == null ? null : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelID).getPermissionOverride(member);
         if (override != null) {
             override.getManager().setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE).queue();
         } else {

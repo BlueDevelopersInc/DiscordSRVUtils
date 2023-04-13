@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -26,9 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
-import tk.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
@@ -36,10 +34,7 @@ import tk.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import tk.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import tk.bluetree242.discordsrvutils.systems.leveling.MessageType;
 import tk.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
-
-import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.SQLException;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 @RequiredArgsConstructor
 public class GameLevelingListener extends PlatformListener {
@@ -47,29 +42,24 @@ public class GameLevelingListener extends PlatformListener {
 
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                LevelingRecord record = jooq
-                        .selectFrom(LevelingTable.LEVELING)
-                        .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
-                        .fetchOne();
-                if (record == null) {
-                    jooq.insertInto(LevelingTable.LEVELING)
-                            .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
+            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId());
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            if (stats == null) {
+                jooq.insertInto(LevelingTable.LEVELING)
+                        .set(LevelingTable.LEVELING.UUID, e.getPlayer().getUniqueId().toString())
+                        .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
+                        .set(LevelingTable.LEVELING.LEVEL, 0)
+                        .set(LevelingTable.LEVELING.XP, 0)
+                        .execute();
+            } else {
+                if (!stats.getName().equals(e.getPlayer().getName())) {
+                    jooq.update(LevelingTable.LEVELING)
                             .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
-                            .set(LevelingTable.LEVELING.LEVEL, 0)
-                            .set(LevelingTable.LEVELING.XP, 0)
+                            .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
                             .execute();
-                } else {
-                    if (!record.getName().equals(e.getPlayer().getName())) {
-                        jooq.update(LevelingTable.LEVELING)
-                                .set(LevelingTable.LEVELING.NAME, e.getPlayer().getName())
-                                .where(LevelingTable.LEVELING.UUID.eq(e.getPlayer().getUniqueId().toString()))
-                                .execute();
-                    }
                 }
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
+                stats.setName(e.getPlayer().getName());
+                core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
             }
         });
     }
@@ -78,30 +68,26 @@ public class GameLevelingListener extends PlatformListener {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;
         core.getAsyncManager().executeAsync(() -> {
-            try (Connection conn = core.getDatabaseManager().getConnection()) {
-                DSLContext jooq = core.getDatabaseManager().jooq(conn);
-                PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId(), jooq);
-                if (stats == null) {
-                    return;
+            PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId());
+            if (stats == null) {
+                return;
+            }
+            if (core.getLevelingConfig().antispam_messages()) {
+                Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
+                if (val == null) {
+                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
+                } else {
+                    if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
+                    core.getLevelingManager().antispamMap.remove(stats.getUuid());
+                    core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
                 }
-                if (core.getLevelingConfig().antispam_messages()) {
-                    Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
-                    if (val == null) {
-                        core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
-                    } else {
-                        if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) return;
-                        core.getLevelingManager().antispamMap.remove(stats.getUuid());
-                        core.getLevelingManager().antispamMap.put(stats.getUuid(), System.nanoTime());
-                    }
-                }
-                int toAdd = new SecureRandom().nextInt(50);
-                boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()), jooq);
-                stats.addMessage(MessageType.MINECRAFT, jooq);
-                if (leveledUp) {
-                    e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
-                }
-            } catch (SQLException ex) {
-                throw new UnCheckedSQLException(ex);
+            }
+            int toAdd = Utils.nextInt(15, 25);
+            boolean leveledUp = stats.setXP(stats.getXp() + toAdd, new MinecraftLevelupEvent(stats, e.getPlayer()));
+            stats.addMessage(MessageType.MINECRAFT);
+            if (leveledUp) {
+                e.getPlayer().sendMessage(PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats"), new PlaceholdObject(core, e.getPlayer(), "player")).apply(String.join("\n", core.getLevelingConfig().minecraft_levelup_message()), e.getPlayer()));
+                core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
             }
         });
 

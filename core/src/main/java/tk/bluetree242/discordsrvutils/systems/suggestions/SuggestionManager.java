@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -33,7 +33,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
 import tk.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
@@ -45,8 +44,6 @@ import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.utils.Emoji;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -78,21 +75,23 @@ public class SuggestionManager {
     }
 
 
-    public Suggestion getSuggestionByNumber(int number, DSLContext conn) throws SQLException {
+    public Suggestion getSuggestionByNumber(int number) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
                 .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number)).fetchOne();
         if (record == null) return null;
         return getSuggestion(record);
     }
 
-    public Suggestion getSuggestionByMessageID(Long MessageID, DSLContext conn) throws SQLException {
+    public Suggestion getSuggestionByMessageID(Long MessageID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         SuggestionsRecord record = conn.selectFrom(SuggestionsTable.SUGGESTIONS)
                 .where(SuggestionsTable.SUGGESTIONS.MESSAGEID.eq(MessageID)).fetchOne();
         if (record == null) return null;
         return getSuggestion(record);
     }
 
-    public Suggestion getSuggestion(SuggestionsRecord r) throws SQLException {
+    public Suggestion getSuggestion(SuggestionsRecord r) {
         return getSuggestion(r, null, null);
     }
 
@@ -133,7 +132,8 @@ public class SuggestionManager {
         return suggestion;
     }
 
-    public Suggestion makeSuggestion(String text, Long SubmitterID, DSLContext conn) {
+    public Suggestion makeSuggestion(String text, Long SubmitterID) {
+        DSLContext conn = core.getDatabaseManager().jooq();
         if (!core.getSuggestionsConfig().enabled()) {
             throw new IllegalStateException("Suggestions are not enabled");
         }
@@ -185,60 +185,56 @@ public class SuggestionManager {
         String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
         boolean sent = false;
         loading = true;
-        try (Connection conn = core.getDatabaseManager().getConnection()) {
-            DSLContext jooq = core.getDatabaseManager().jooq(conn);
-            List<SuggestionsRecord> records = jooq
-                    .selectFrom(SuggestionsTable.SUGGESTIONS)
-                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
-                    .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
-                    .fetch();
-            for (SuggestionsRecord record : records) {
-                Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
-                try {
-                    Message msg = suggestion.getMessage();
-                    if (msg != null) {
-                        if (msg.getButtons().isEmpty()) {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            } else {
-                                if (!sent) {
-                                    core.logger.info(warnmsg);
-                                    sent = true;
-                                    core.getSuggestionManager().loading = true;
-                                }
-                                msg.clearReactions().queue();
-                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                        Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
-                            }
+        DSLContext jooq = core.getDatabaseManager().jooq();
+        List<SuggestionsRecord> records = jooq
+                .selectFrom(SuggestionsTable.SUGGESTIONS)
+                .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
+                .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
+                .fetch();
+        for (SuggestionsRecord record : records) {
+            Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
+            try {
+                Message msg = suggestion.getMessage();
+                if (msg != null) {
+                    if (msg.getButtons().isEmpty()) {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
                         } else {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                                if (!sent) {
-                                    core.getSuggestionManager().loading = true;
-                                    core.logger.info(warnmsg);
-                                    sent = true;
-                                }
-                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                            if (!sent) {
+                                core.logger.info(warnmsg);
+                                sent = true;
+                                core.getSuggestionManager().loading = true;
                             }
+                            msg.clearReactions().queue();
+                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                    Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
                         }
-                        jooq.update(SuggestionsTable.SUGGESTIONS)
-                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
-                                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
-                                .execute();
+                    } else {
+                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            if (!sent) {
+                                core.getSuggestionManager().loading = true;
+                                core.logger.info(warnmsg);
+                                sent = true;
+                            }
+                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
+                        }
                     }
-                } catch (ErrorResponseException ignored) {
-
+                    jooq.update(SuggestionsTable.SUGGESTIONS)
+                            .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
+                            .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
+                            .execute();
                 }
+            } catch (ErrorResponseException ignored) {
+
             }
-            if (sent) {
-                core.logger.info("Suggestions Migration has finished.");
-            }
-            core.getSuggestionManager().loading = false;
-        } catch (SQLException e) {
-            throw new UnCheckedSQLException(e);
         }
+        if (sent) {
+            core.logger.info("Suggestions Migration has finished.");
+        }
+        core.getSuggestionManager().loading = false;
     }
 
 

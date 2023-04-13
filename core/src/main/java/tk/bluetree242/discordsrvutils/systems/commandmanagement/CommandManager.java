@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -40,13 +40,14 @@ import tk.bluetree242.discordsrvutils.commands.discord.tickets.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager {
     private final DiscordSRVUtils core;
     private final ConcurrentHashMap<String, Command> cmds = new ConcurrentHashMap<>();
     private final List<Command> commands = new ArrayList<>();
-    private final List<Command> commandswithoutaliases = new ArrayList<>();
+    private final List<Command> commandsWithoutAliases = new ArrayList<>();
 
     public CommandManager(DiscordSRVUtils core) {
         this.core = core;
@@ -79,7 +80,7 @@ public class CommandManager {
         if (getCommandHashMap().get(cmd.getCmd()) != null) return;
         cmds.put(cmd.getCmd().toLowerCase(), cmd);
         commands.add(cmd);
-        commandswithoutaliases.add(cmd);
+        commandsWithoutAliases.add(cmd);
         for (String a : cmd.getAliases()) {
             cmds.put(a.toLowerCase(), cmd);
         }
@@ -97,22 +98,15 @@ public class CommandManager {
         List<Command> result = new ArrayList<>();
         if (onlyConfig)
             for (String command : core.getMainConfig().disabled_commands()) {
-                result.add(getCommandByName(command));
+                result.add(getCommandHashMap().get(command.toLowerCase(Locale.ROOT)));
             }
-        else for (Command cmd : commandswithoutaliases) {
+        else for (Command cmd : commandsWithoutAliases) {
             if (!cmd.isEnabled()) result.add(cmd);
         }
         return result;
     }
 
-    public Command getCommandByName(String name) {
-        for (Command command : commands) {
-            if (command.getCmd().equalsIgnoreCase(name)) return command;
-        }
-        return null;
-    }
-
     public List<Command> getCommandsWithoutAliases() {
-        return commandswithoutaliases;
+        return commandsWithoutAliases;
     }
 }

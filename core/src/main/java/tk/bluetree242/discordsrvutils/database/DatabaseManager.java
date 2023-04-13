@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -32,7 +32,6 @@ import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
-import tk.bluetree242.discordsrvutils.exceptions.UnCheckedSQLException;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -46,40 +45,44 @@ public class DatabaseManager {
     //database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
+    private DSLContext jooq;
 
     public void setupDatabase() throws SQLException {
-        System.setProperty("hsqldb.reconfig_logging", "false");
-        try {
-            Class.forName("tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver");
-        } catch (ClassNotFoundException e) {
-            core.getLogger().severe("Could not set JDBCDriver");
-            return;
-        }
         HikariConfig settings = new HikariConfig();
         String jdbcurl = null;
         String user = null;
         String pass = null;
-        if (core.getSqlconfig().isEnabled()) {
-            jdbcurl = "jdbc:mysql://" +
-                    core.getSqlconfig().Host() +
-                    ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
-            user = core.getSqlconfig().UserName();
-            pass = core.getSqlconfig().Password();
-        } else {
-            core.logger.info("MySQL is disabled, using hsqldb");
-            hsqldb = true;
-            jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
-            user = "SA";
-            pass = "";
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
+        try {
+            if (core.getSqlconfig().isEnabled()) {
+                jdbcurl = "jdbc:mysql://" +
+                        core.getSqlconfig().Host() +
+                        ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
+                user = core.getSqlconfig().UserName();
+                pass = core.getSqlconfig().Password();
+            } else {
+                core.logger.info("MySQL is disabled, using hsqldb");
+                hsqldb = true;
+                jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
+                user = "SA";
+                pass = "";
+            }
+            //load jooq classes
+            new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
+            settings.setDriverClassName(hsqldb ? "tk.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver" : "tk.bluetree242.discordsrvutils.dependencies.mariadb.Driver");
+            settings.setJdbcUrl(jdbcurl);
+            settings.setUsername(user);
+            settings.setPassword(pass);
+            sql = new HikariDataSource(settings);
+            jooq = DSL.using(sql, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, this.settings);
+            migrate();
+            core.getLogger().info("MySQL/HsqlDB Connected & Setup");
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
-        //load jooq classes
-        new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
-        settings.setJdbcUrl(jdbcurl);
-        settings.setUsername(user);
-        settings.setPassword(pass);
-        sql = new HikariDataSource(settings);
-        migrate();
-        core.getLogger().info("MySQL/HsqlDB Connected & Setup");
     }
 
     public void migrate() {
@@ -88,7 +91,9 @@ public class DatabaseManager {
                 .dataSource(sql)
                 .locations("classpath:flyway-migrations")
                 .validateMigrationNaming(true).group(true)
+                .baselineOnMigrate(true)
                 .table("discordsrvutils_schema")
+                .baselineVersion("0.0")
                 .load();
         //repair if there is an issue
         flyway.repair();
@@ -99,20 +104,11 @@ public class DatabaseManager {
         return sql.getConnection();
     }
 
-
-    public DSLContext jooq(Connection conn) {
-        return DSL.using(conn, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
+    public DSLContext jooq() {
+        return jooq;
     }
 
-    public DSLContext newJooqConnection() {
-        try {
-            return jooq(getConnection());
-        } catch (SQLException ex) {
-            throw new UnCheckedSQLException(ex);
-        }
-    }
-
-    public DSLContext newRenderOnlyJooq() {
+    protected DSLContext newRenderOnlyJooq() {
         return DSL.using(hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, settings);
     }
 

@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -61,7 +61,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPunishEvent e) {
             core.getAsyncManager().executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), false);
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), false, plugin);
                 tk.bluetree242.discordsrvutils.interfaces.Punishment.handlePunishment(punishment, core);
             });
         }
@@ -72,7 +72,7 @@ public class LibertybansListener {
         @Override
         public void accept(PostPardonEvent e) {
             core.getAsyncManager().executeAsync(() -> {
-                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), true);
+                LibertyBansPunishment punishment = new LibertyBansPunishment(e.getPunishment(), e.getPunishment().getOperator(), true, plugin);
                 tk.bluetree242.discordsrvutils.interfaces.Punishment.handlePunishment(punishment, core);
             });
         }

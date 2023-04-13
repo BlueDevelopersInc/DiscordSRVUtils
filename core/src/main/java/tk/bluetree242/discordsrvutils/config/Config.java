@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -135,6 +135,12 @@ public interface Config {
     @ConfKey("afk.no-longer-afk-message")
     @ConfDefault.DefaultString("message:no-longer-afk")
     String no_longer_afk_message();
+
+    @AnnotationBasedSorter.Order(141)
+    @ConfKey("help-response")
+    @ConfComments("# Response of /help command, leave blank to generate. You can use message:msgfile where msgfile is the name of the message file in your messages folder (without json, and you can make a new file)")
+    @ConfDefault.DefaultString("")
+    String help_response();
 
     @AnnotationBasedSorter.Order(150)
     @ConfKey("bungee-mode")

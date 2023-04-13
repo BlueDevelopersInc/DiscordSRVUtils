@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -54,7 +54,7 @@ public class LevelCommand extends Command {
             }
         } else if (e.getOption("player_name") != null) {
             String name = e.getOption("player_name").getAsString();
-            target = core.getLevelingManager().getPlayerStats(name, e.getConnection());
+            target = core.getLevelingManager().getPlayerStats(name);
             if (target == null) {
                 e.replyErr(core.getLevelingConfig().level_command_invalid_player()).queue();
                 return;

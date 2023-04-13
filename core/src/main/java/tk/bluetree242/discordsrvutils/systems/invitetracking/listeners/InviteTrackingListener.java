@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2022 BlueTree242
+ * Copyright (C) 2020 - 2023 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -24,11 +24,12 @@ package tk.bluetree242.discordsrvutils.systems.invitetracking.listeners;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
+import org.jetbrains.annotations.NotNull;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 
@@ -43,11 +44,11 @@ public class InviteTrackingListener extends ListenerAdapter {
         core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), e.getGuild().getIdLong(), i.getUses()));
     }
 
-    public void onGuildInviteDelete(GuildInviteDeleteEvent e) {
+    public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent e) {
         core.getInviteTrackingManager().getCachedInvites().removeIf(i -> i.getCode().equals(e.getCode()));
     }
 
-    public void onRoleUpdatePermissions(RoleUpdatePermissionsEvent e) {
+    public void onRoleUpdatePermissions(@NotNull RoleUpdatePermissionsEvent e) {
         core.getInviteTrackingManager().cacheInvites();
     }
 
