@@ -85,7 +85,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             if (core.getMainConfig().track_invites()) valueMap.put("Invite Tracking", 1);
             if (core.getBansConfig().isSendPunishmentMsgsToDiscord() && isAnyPunishmentsPluginInstalled())
                 valueMap.put("Punishment Messages", 1);
-            if (getServer().getPluginManager().isPluginEnabled("Essentials") && core.getMainConfig().afk_message_enabled())
+            if (core.getPluginHookManager().isHooked("Essentials") && core.getMainConfig().afk_message_enabled())
                 valueMap.put("AFK Messages", 1);
             return valueMap;
         }));
@@ -119,9 +119,9 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
 
     private boolean isAnyPunishmentsPluginInstalled() {
-        if (getServer().getPluginManager().isPluginEnabled("AdvancedBan")) return true;
-        if (getServer().getPluginManager().isPluginEnabled("Litebans")) return true;
-        if (getServer().getPluginManager().isPluginEnabled("Libertybans")) return true;
+        if (core.getPluginHookManager().isHooked("AdvancedBan")) return true;
+        if (core.getPluginHookManager().isHooked("Litebans")) return true;
+        if (core.getPluginHookManager().isHooked("Libertybans")) return true;
         return false;
     }
 }

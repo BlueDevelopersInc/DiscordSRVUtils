@@ -46,11 +46,15 @@ public class PluginHookManager {
                         hook.hook();
                         core.getLogger().info("Successfully hooked into " + hook.getRequiredPlugin());
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     core.getLogger().severe("Failed to hook into " + hook.getRequiredPlugin());
                 }
             }
         }
+    }
+
+    public boolean isHooked(String name) {
+        return hooks.stream().anyMatch(h -> h.isHooked() && h.getRequiredPlugin().equals(name));
     }
 
     public void removeHookAll() {
