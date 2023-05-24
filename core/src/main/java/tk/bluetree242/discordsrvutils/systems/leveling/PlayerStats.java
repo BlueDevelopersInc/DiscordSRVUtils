@@ -158,7 +158,7 @@ public class PlayerStats {
         }
         List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
         for (Role role : toAdd) {
-            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked"));
+            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("User Leveled Up"));
         }
         if (!actions.isEmpty())
             RestAction.allOf(actions).queue();
