@@ -84,13 +84,26 @@ public class PAPIExpansion extends PlaceholderExpansion {
         identifier = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("level")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p).getLevel() + "";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getLevel());
         } else if (identifier.equalsIgnoreCase("xp")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p).getXp() + "";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getXp());
         } else if (identifier.equalsIgnoreCase("rank")) {
             if (p == null) return "Unknown";
-            return core.getLevelingManager().getCachedStats(p).getRank() + "";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getRank());
+        } else if (identifier.equalsIgnoreCase("xp_total_required")) {
+            if (p == null) return "Unknown";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getTotalXpRequired());
+        } else if (identifier.equalsIgnoreCase("xp_percentage")) {
+            if (p == null) return "Unknown";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getXpPercentage()) + "%";
+        } else if (identifier.equalsIgnoreCase("xp_left")) {
+            if (p == null) return "Unknown";
+            return String.valueOf(core.getLevelingManager().getCachedStats(p).getTotalXpRequired() -
+                    core.getLevelingManager().getCachedStats(p).getXp());
+        } else if (identifier.equalsIgnoreCase("xp_percentage_left")) {
+            if (p == null) return "Unknown";
+            return String.valueOf(100 - core.getLevelingManager().getCachedStats(p).getXpPercentage()) + "%";
         }
         return null;
     }
