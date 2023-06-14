@@ -68,6 +68,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
         }
+        DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
         core.onEnable();
         if (!isEnabled()) return;
         //bstats stuff
@@ -91,9 +92,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         }));
         metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
         metrics.addCustomChart(new SimplePie("admins", () -> core.getJdaManager().getAdminIds().size() + ""));
-
-        //discordsrv slash commands api
-        DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
     }
 
     public void onDisable() {
