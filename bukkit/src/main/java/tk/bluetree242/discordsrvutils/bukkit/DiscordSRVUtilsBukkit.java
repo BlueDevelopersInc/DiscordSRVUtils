@@ -91,7 +91,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             return valueMap;
         }));
         metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
-        metrics.addCustomChart(new SimplePie("admins", () -> core.getJdaManager().getAdminIds().size() + ""));
+        metrics.addCustomChart(new SimplePie("admins", () -> String.valueOf(core.getJdaManager().getAdminIds().size())));
     }
 
     public void onDisable() {
@@ -119,7 +119,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
     private boolean isAnyPunishmentsPluginInstalled() {
         if (core.getPluginHookManager().isHooked("AdvancedBan")) return true;
         if (core.getPluginHookManager().isHooked("Litebans")) return true;
-        if (core.getPluginHookManager().isHooked("Libertybans")) return true;
-        return false;
+        return core.getPluginHookManager().isHooked("Libertybans");
     }
 }
