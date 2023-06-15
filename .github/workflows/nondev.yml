@@ -1,0 +1,33 @@
+# This workflow is for anything not on develop branch, because jenkins already try to build that.
+
+name: Gradle Build
+
+on:
+  push:
+    branches:
+      - "*"
+      - "!develop"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: "17"
+          distribution: "zulu"
+          java-package: jdk
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
