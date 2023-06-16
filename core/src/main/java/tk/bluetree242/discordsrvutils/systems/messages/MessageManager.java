@@ -121,7 +121,7 @@ public class MessageManager {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
         if (!json.isNull("color")) {
-            Integer color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
+            int color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
 
             embed.setColor(color);
         }
@@ -146,7 +146,7 @@ public class MessageManager {
             JSONArray fields = json.getJSONArray("fields");
             for (Object o : fields) {
                 JSONObject field = (JSONObject) o;
-                embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), field.isNull("inline") ? false : field.getBoolean("inline"));
+                embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), !field.isNull("inline") && field.getBoolean("inline"));
             }
         }
 
@@ -204,7 +204,19 @@ public class MessageManager {
     }
 
     public JSONObject getMessageJSONByName(String name) {
-        File file = new File(getMessagesDirectory() + core.fileseparator + name + ".json");
+        String[] split = name.split("/");
+        Path path = getMessagesDirectory();
+        File file = null;
+        if (split.length == 1) file = path.resolve(name + ".json").toFile();
+        else {
+            int index = 0;
+            for (String s : split) {
+                index++;
+                if (index < split.length)
+                path = path.resolve(s);
+                else file = path.resolve(s + ".json").toFile();
+            }
+        }
         if (!file.exists()) {
             if (defaultMessages.containsKey(name)) {
                 try {
