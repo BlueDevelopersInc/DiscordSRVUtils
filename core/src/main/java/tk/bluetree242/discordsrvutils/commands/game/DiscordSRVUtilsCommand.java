@@ -22,11 +22,15 @@
 
 package tk.bluetree242.discordsrvutils.commands.game;
 
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import tk.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 import tk.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
@@ -146,6 +150,29 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                         core.getLevelingManager().getLevelingRewardsManager().rewardIfOnline(stats);
                         return;
                     }
+                }
+            } else if ((args[0].equalsIgnoreCase("sendAfk") || args[0].equalsIgnoreCase("sendUnAfk")) && sender instanceof ConsoleCommandUser) {
+                String name = args.length >= 2 ? args[1] : null;
+                if (name == null) {
+                    sender.sendMessage("&cPlease provide player name.");
+                    return;
+                }
+                PlatformPlayer player = core.getServer().getPlayer(name);
+                if (player == null) {
+                    sender.sendMessage("&cPlayer not found.");
+                    return;
+                }
+                if (!player.shouldSendAfk()) return;
+                if (core.getMainConfig().afk_message_enabled()) {
+                    PlaceholdObjectList holders = new PlaceholdObjectList(core);
+                    holders.add(new PlaceholdObject(core, player, "player"));
+                    TextChannel channel = core.getJdaManager().getChannel(core.getMainConfig().afk_channel());
+                    if (channel == null) {
+                        core.severe("No Channel was found with ID " + core.getMainConfig().afk_channel() + ". Afk/NoLonger message was not sent for " + player.getName());
+                        return;
+                    }
+                    Message msg = core.getMessageManager().getMessage(args[0].equalsIgnoreCase("sendAfk") ? core.getMainConfig().afk_message() : core.getMainConfig().no_longer_afk_message(), holders, player).build();
+                    core.queueMsg(msg, channel).queue();
                 }
             }
         }

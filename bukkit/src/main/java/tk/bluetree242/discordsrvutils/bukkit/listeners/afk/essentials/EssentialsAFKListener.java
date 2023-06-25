@@ -45,7 +45,7 @@ public class EssentialsAFKListener implements Listener {
 
     private final DiscordSRVUtils core;
 
-    public static boolean shouldSend(Player p) {
+    public static boolean  shouldSend(Player p) {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
             Essentials plugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
             if (plugin.getUser(p.getUniqueId()).isHidden()) return false;
@@ -55,7 +55,7 @@ public class EssentialsAFKListener implements Listener {
             if (user.isVanished()) return false;
         }
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getServer().getPluginManager().isPluginEnabled("PremiumVanish")) {
-            if (VanishAPI.isInvisible(p)) return false;
+            return !VanishAPI.isInvisible(p);
         }
         return true;
     }

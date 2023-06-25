@@ -25,43 +25,49 @@ package tk.bluetree242.discordsrvutils.bukkit;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
+import tk.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.UUID;
 
-public class BukkitPlayer extends PlatformPlayer {
+public class BukkitPlayer extends PlatformPlayer<Player> {
     private final DiscordSRVUtils core;
     @Getter
-    private final Player player;
+    private final Player original;
 
-    public BukkitPlayer(DiscordSRVUtils core, Player player) {
-        this.player = player;
+    public BukkitPlayer(DiscordSRVUtils core, Player original) {
+        this.original = original;
         this.core = core;
     }
 
     @Override
     public String getName() {
-        return player.getName();
+        return original.getName();
     }
 
     @Override
     public void sendMessage(String msg) {
-        player.sendMessage(Utils.colors(msg));
+        original.sendMessage(Utils.colors(msg));
     }
 
     @Override
     public boolean hasPermission(String node) {
-        return player.hasPermission(node);
+        return original.hasPermission(node);
     }
 
     @Override
     public UUID getUniqueId() {
-        return player.getUniqueId();
+        return original.getUniqueId();
     }
 
     @Override
     public String placeholders(String s) {
         return core.getPlatform().placehold(this, s);
+    }
+
+    @Override
+    public boolean shouldSendAfk() {
+        return EssentialsAFKListener.shouldSend(original);
     }
 }
