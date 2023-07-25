@@ -197,7 +197,7 @@ public class DiscordSRVUtils {
             }
             try {
                 //Reload Configurations
-                reloadConfigs();
+                reloadConfigs(true);
             } catch (ConfigurationLoadException ex) {
                 logger.severe(ex.getMessage());
                 main.disable();
@@ -277,6 +277,10 @@ public class DiscordSRVUtils {
     }
 
     public void reloadConfigs() throws IOException, InvalidConfigException {
+        reloadConfigs(false);
+    }
+
+    public void reloadConfigs(boolean first) throws IOException, InvalidConfigException {
         configManager.reloadConfig();
         config = configManager.reloadConfigData();
         sqlconfigmanager.reloadConfig();
@@ -293,7 +297,7 @@ public class DiscordSRVUtils {
         statusConfig = statusConfigConfManager.reloadConfigData();
         levelingManager.getLevelingRewardsManager().reloadLevelingRewards();
         levelingManager.getLevelingRewardsManager().reloadRewardCache();
-        setSettings(false);
+        setSettings(first);
     }
 
     public void whenReady() {
