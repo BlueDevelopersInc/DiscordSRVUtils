@@ -24,6 +24,7 @@ package tk.bluetree242.discordsrvutils.commands.discord.status;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionMapping;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -33,14 +34,25 @@ import tk.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 public class StatusCommand extends Command {
     public StatusCommand(DiscordSRVUtils core) {
         super(core, "status", "Set the status message", "[P]status <ping channel>", null,
-                new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", true));
+                new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", false));
         setAdminOnly(true);
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
-
-        GuildChannel channel = e.getOption("channel").getAsGuildChannel();
+        OptionMapping channelOption = e.getOption("channel");
+        if (channelOption == null) {
+            Long messageId = core.getStatusManager().getMessageId();
+            Long channelId = core.getStatusManager().getChannelId();
+            if (messageId == null || channelId == null) {
+                e.replyErr("Please provide a channel.");
+                return;
+            }
+            core.getStatusManager().getDataPath().toFile().delete();
+            e.replySuccess("Status message disabled successfully.");
+            return;
+        }
+        GuildChannel channel = channelOption.getAsGuildChannel();
         if (!(channel instanceof TextChannel)) {
             e.replyErr("Sorry this can only be a text channel").queue();
             return;

@@ -96,14 +96,14 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return String.valueOf(core.getLevelingManager().getCachedStats(p).getTotalXpRequired());
         } else if (identifier.equalsIgnoreCase("xp_percentage")) {
             if (p == null) return "Unknown";
-            return String.valueOf(core.getLevelingManager().getCachedStats(p).getXpPercentage()) + "%";
+            return core.getLevelingManager().getCachedStats(p).getXpPercentage() + "%";
         } else if (identifier.equalsIgnoreCase("xp_left")) {
             if (p == null) return "Unknown";
             return String.valueOf(core.getLevelingManager().getCachedStats(p).getTotalXpRequired() -
                     core.getLevelingManager().getCachedStats(p).getXp());
         } else if (identifier.equalsIgnoreCase("xp_percentage_left")) {
             if (p == null) return "Unknown";
-            return String.valueOf(100 - core.getLevelingManager().getCachedStats(p).getXpPercentage()) + "%";
+            return 100 - core.getLevelingManager().getCachedStats(p).getXpPercentage() + "%";
         }
         return null;
     }
@@ -125,9 +125,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         @Override
         public void hook() {
             //on next tick because of those bukkit sync errors when PAPI fires the registration event
-            Bukkit.getScheduler().runTask((Plugin) core.getPlatform().getOriginal(), () -> {
-                (expansion = new PAPIExpansion(core)).register();
-            });
+            Bukkit.getScheduler().runTask((Plugin) core.getPlatform().getOriginal(), () -> (expansion = new PAPIExpansion(core)).register());
         }
 
         @Override

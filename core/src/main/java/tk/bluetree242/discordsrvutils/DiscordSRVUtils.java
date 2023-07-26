@@ -206,8 +206,7 @@ public class DiscordSRVUtils {
             //set storage string to use later
             String storage = getSqlconfig().isEnabled() ? "MySQL" : "HsqlDB";
             //print startup message
-            getServer().getConsoleSender().sendMessage("" +
-                    "\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
+            getServer().getConsoleSender().sendMessage("\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
                     "|   &cName: &rDiscordSRVUtils\n&r" +
                     "|   &cDevelopers: &rBlueTree242\n&r" +
@@ -216,6 +215,7 @@ public class DiscordSRVUtils {
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
+                    "|   &Wiki: &rhttps://wiki.discordsrvutils.xyz\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             try {

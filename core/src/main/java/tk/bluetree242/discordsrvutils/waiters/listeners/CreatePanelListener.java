@@ -69,7 +69,7 @@ public class CreatePanelListener extends ListenerAdapter {
                     e.getChannel().sendMessageEmbeds(embed.build()).queue();
                 } else if (waiter.getStep() == 2) {
                     if (e.getMessage().getMentionedChannels().isEmpty()) {
-                        e.getChannel().sendMessageEmbeds(Embed.error("You did not mention a channel. Please try again")).queue();
+                        e.getChannel().sendMessageEmbeds(Embed.error("You did not mention a channel. Please try again", "Please make sure Message Content Intent is enable in developer portal, if not, enable and restart.")).queue();
                         return;
                     }
                     TextChannel channel = e.getMessage().getMentionedChannels().get(0);

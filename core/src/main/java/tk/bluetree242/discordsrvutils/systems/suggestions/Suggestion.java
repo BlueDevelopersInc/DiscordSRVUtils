@@ -40,7 +40,7 @@ public class Suggestion {
     protected final String text;
     protected final int number;
     protected final Long submitter;
-    protected final Long ChannelID;
+    protected final Long channelID;
     protected final Long creationTime;
     protected final Set<SuggestionNote> notes;
     protected final Long MessageID;
@@ -55,7 +55,7 @@ public class Suggestion {
         this.text = text;
         this.number = number;
         this.submitter = submitter;
-        ChannelID = channelID;
+        this.channelID = channelID;
         this.creationTime = creationTime;
         this.notes = notes;
         this.MessageID = MessageID;
@@ -110,7 +110,7 @@ public class Suggestion {
     }
 
     public Long getChannelID() {
-        return ChannelID;
+        return channelID;
     }
 
     public SuggestionNote addNote(Long staff, String note) {
@@ -123,7 +123,7 @@ public class Suggestion {
                 .execute();
         SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
         notes.add(suggestionNote);
-        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? Arrays.asList(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
         return suggestionNote;
     }
 
@@ -136,12 +136,12 @@ public class Suggestion {
                 .execute();
         this.Approved = approved;
         this.approver = staffID;
-        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? List.of(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? Collections.singletonList(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
     }
 
     public Message getMessage() {
-        if (core.getJDA().getTextChannelById(ChannelID) == null) return null;
-        return msg == null ? msg = core.getJDA().getTextChannelById(ChannelID).retrieveMessageById(MessageID).complete() : msg;
+        if (core.getJDA().getTextChannelById(channelID) == null) return null;
+        return msg == null ? msg = core.getJDA().getTextChannelById(channelID).retrieveMessageById(MessageID).complete() : msg;
     }
 
     public int getYesCount() {
