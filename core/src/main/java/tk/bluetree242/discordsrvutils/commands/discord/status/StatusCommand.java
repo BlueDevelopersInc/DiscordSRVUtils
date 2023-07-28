@@ -45,11 +45,11 @@ public class StatusCommand extends Command {
             Long messageId = core.getStatusManager().getMessageId();
             Long channelId = core.getStatusManager().getChannelId();
             if (messageId == null || channelId == null) {
-                e.replyErr("Please provide a channel.");
+                e.replyErr("Please provide a channel.").queue();
                 return;
             }
             core.getStatusManager().getDataPath().toFile().delete();
-            e.replySuccess("Status message disabled successfully.");
+            e.replySuccess("Status message disabled successfully.").queue();
             return;
         }
         GuildChannel channel = channelOption.getAsGuildChannel();
