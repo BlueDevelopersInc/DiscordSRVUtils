@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.systems.status;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -111,7 +112,7 @@ public class StatusManager {
             throw new UncheckedIOException(ex);
             //Ignore the error for now
         } catch (ErrorResponseException ex) {
-            core.getLogger().severe("Failed to update status message because the message does not exist anymore. To fix this. run /status <channel> or /status only to disable.");
+            if (ex.getErrorResponse() == ErrorResponse.UNKNOWN_MESSAGE) core.getLogger().severe("Failed to update status message because the message does not exist anymore. To fix this. run /status <channel> or /status only to disable.");
         } catch (IllegalStateException e) {
             if (e.getMessage().startsWith("Attempted to update message that was not sent by this account.")) core.getLogger().severe("Failed to update status message because the message was sent by another bot. To fix this. run /status <channel> or /status only to disable. Or return to the old bot.");
             else throw e;
