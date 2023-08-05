@@ -106,6 +106,13 @@ public class BukkitPlatformServer extends PlatformServer {
     }
 
     @Override
+    public PlatformPlayer getPlayer(String name) {
+        Player player = Bukkit.getPlayer(name);
+        if (player == null) return null;
+        return new BukkitPlayer(core, player);
+    }
+
+    @Override
     public void executeConsoleCommands(String... cmds) {
         Runnable runnable = () -> {
             for (String cmd : cmds) {

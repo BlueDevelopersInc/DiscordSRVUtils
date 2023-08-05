@@ -49,6 +49,8 @@ public abstract class PlatformServer {
 
     public abstract PlatformPlayer getPlayer(UUID uuid);
 
+    public abstract PlatformPlayer getPlayer(String name);
+
     public abstract void executeConsoleCommands(String... cmds);
 
 }

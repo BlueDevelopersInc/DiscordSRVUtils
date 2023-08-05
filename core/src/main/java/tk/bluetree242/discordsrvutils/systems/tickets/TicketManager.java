@@ -157,7 +157,12 @@ public class TicketManager {
         for (TicketPanelsRecord record : panels) {
             Panel panel = getPanel(record);
             try {
-                Message msg = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId()).retrieveMessageById(panel.getMessageId()).complete();
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId());
+                if (channel == null) {
+                    core.getLogger().severe("Ticket panel with ID " + panel.getId() + " (" + panel.getName() + ") channel was deleted. To fix this issue, change the channel or delete this ticket using /editpanel command.");
+                    return;
+                }
+                Message msg = channel.retrieveMessageById(panel.getMessageId()).complete();
                 if (msg.getButtons().isEmpty()) {
                     msg.clearReactions().queue();
                     msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();

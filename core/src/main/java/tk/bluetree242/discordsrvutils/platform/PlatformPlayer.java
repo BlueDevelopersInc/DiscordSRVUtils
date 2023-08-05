@@ -26,7 +26,7 @@ import tk.bluetree242.discordsrvutils.platform.command.CommandUser;
 
 import java.util.UUID;
 
-public abstract class PlatformPlayer extends CommandUser {
+public abstract class PlatformPlayer<T> extends CommandUser {
 
     public abstract String getName();
 
@@ -37,4 +37,8 @@ public abstract class PlatformPlayer extends CommandUser {
     public abstract UUID getUniqueId();
 
     public abstract String placeholders(String s);
+
+    public abstract T getOriginal();
+
+    public abstract boolean shouldSendAfk();
 }

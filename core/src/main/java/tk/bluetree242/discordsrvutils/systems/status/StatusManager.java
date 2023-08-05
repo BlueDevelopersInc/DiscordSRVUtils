@@ -25,6 +25,7 @@ package tk.bluetree242.discordsrvutils.systems.status;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -38,7 +39,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Timer;
 
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class StatusManager {
         return core.getMessageManager().parseMessageFromJson(core.getMessageManager().getMessageJSONByName("status-" + (online ? "online" : "offline")), holders, null).build();
     }
 
-    public Message newMessage(TextChannel channel) {
+    public void newMessage(TextChannel channel) {
         //path for some temp storage which should not be stored in database
         File file = getDataPath().toFile();
         JSONObject json = new JSONObject();
@@ -75,7 +75,6 @@ public class StatusManager {
             writer.write(json.toString());
             writer.close();
             //Should be written successfully
-            return msg;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -101,15 +100,22 @@ public class StatusManager {
             Long messageId = getMessageId();
             Long channelId = getChannelId();
             if (messageId == null || channelId == null) return;
-            Message msg = Objects.requireNonNull(core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId)).retrieveMessageById(messageId).complete();
-            if (msg == null) return;
+            TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
+            if (channel == null) {
+                core.getLogger().severe("Failed to update status message because the channel does not exist anymore. To fix this. run /status <new channel> or /status only to disable.");
+                return;
+            }
+            Message msg = channel.retrieveMessageById(messageId).complete();
             //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
             msg.editMessage(toSend).complete();
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
             //Ignore the error for now
         } catch (ErrorResponseException ex) {
-            //message does not exist, ok that is fine
+            if (ex.getErrorResponse() == ErrorResponse.UNKNOWN_MESSAGE) core.getLogger().severe("Failed to update status message because the message does not exist anymore. To fix this. run /status <channel> or /status only to disable.");
+        } catch (IllegalStateException e) {
+            if (e.getMessage().startsWith("Attempted to update message that was not sent by this account.")) core.getLogger().severe("Failed to update status message because the message was sent by another bot. To fix this. run /status <channel> or /status only to disable. Or return to the old bot.");
+            else throw e;
         }
     }
 

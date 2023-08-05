@@ -31,14 +31,14 @@ import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class BukkitOfflinePlayer extends PlatformPlayer {
+public class BukkitOfflinePlayer extends PlatformPlayer<OfflinePlayer> {
     @Getter
-    private final OfflinePlayer player;
+    private final OfflinePlayer original;
     private final DiscordSRVUtils core;
 
     @Override
     public String getName() {
-        return player.getName();
+        return original.getName();
     }
 
     @Override
@@ -53,11 +53,16 @@ public class BukkitOfflinePlayer extends PlatformPlayer {
 
     @Override
     public UUID getUniqueId() {
-        return player.getUniqueId();
+        return original.getUniqueId();
     }
 
     @Override
     public String placeholders(String s) {
         return core.getPlatform().placehold(this, s);
+    }
+
+    @Override
+    public boolean shouldSendAfk() {
+        return false;
     }
 }

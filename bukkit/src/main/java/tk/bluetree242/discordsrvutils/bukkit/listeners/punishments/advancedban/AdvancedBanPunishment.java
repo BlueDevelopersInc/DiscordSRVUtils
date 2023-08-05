@@ -23,7 +23,7 @@
 package tk.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
+import me.leoko.advancedban.manager.UUIDManager;
 import tk.bluetree242.discordsrvutils.interfaces.Punishment;
 import tk.bluetree242.discordsrvutils.utils.Utils;
 
@@ -90,6 +90,6 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public UUID getTargetUUID() {
-        return Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId();
+        return UUID.fromString(UUIDManager.get().getUUID(punishment.getName()));
     }
 }

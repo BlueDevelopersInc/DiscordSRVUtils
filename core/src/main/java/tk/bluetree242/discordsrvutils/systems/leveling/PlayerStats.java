@@ -32,6 +32,7 @@ import org.jooq.TableField;
 import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.events.LevelupEvent;
 import tk.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
+import tk.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -149,7 +150,7 @@ public class PlayerStats {
         LevelingManager manager = core.getLevelingManager();
         String id = core.getDiscordSRV().getDiscordId(uuid);
         if (id == null) return;
-        Member member = core.getPlatform().getDiscordSRV().getMainGuild().retrieveMemberById(id).complete();
+        Member member = Utils.retrieveMember(core.getDiscordSRV().getMainGuild(), Long.parseLong(id));
         if (member == null) return;
         Collection actions = new ArrayList<>();
         for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(level)) {
@@ -158,7 +159,7 @@ public class PlayerStats {
         }
         List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
         for (Role role : toAdd) {
-            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked"));
+            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("User Leveled Up"));
         }
         if (!actions.isEmpty())
             RestAction.allOf(actions).queue();
