@@ -70,7 +70,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.hsqldb:hsqldb:2.6.1'
+    implementation 'org.hsqldb:hsqldb:2.6.1:jdk8'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
     compileOnly("com.discordsrv:discordsrv:${rootProject.discordsrv_version}")
     implementation "org.flywaydb:flyway-core:7.5.3"
