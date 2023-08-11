@@ -58,7 +58,7 @@ public class PlaceholdObject {
 
     public String apply(@NotNull String s, PlatformPlayer placehold, boolean doAllowCode) {
         Map<String, Method> map = getholdersMap();
-        s = core.getPlatform().placehold(placehold, s);
+        if (doAllowCode) s = core.getPlatform().placehold(placehold, s);
         final String[] val = {s};
         map.forEach((key, result) -> {
             try {
@@ -70,7 +70,7 @@ public class PlaceholdObject {
                     }
                     val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
 

@@ -253,7 +253,6 @@ public class MessageManager {
             if (holders != null) {
                 content = holders.apply(content);
             }
-            content = Utils.colors(content);
             msg.setContent(content);
         }
         return msg;
