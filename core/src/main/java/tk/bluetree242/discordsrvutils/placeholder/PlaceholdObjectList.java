@@ -28,6 +28,7 @@ import tk.bluetree242.discordsrvutils.DiscordSRVUtils;
 import tk.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +38,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
 
     public static PlaceholdObjectList ofArray(DiscordSRVUtils core, PlaceholdObject... holders) {
         PlaceholdObjectList list = new PlaceholdObjectList(core);
-        for (PlaceholdObject holder : holders) {
-            list.add(holder);
-        }
+        list.addAll(Arrays.asList(holders));
         return list;
     }
 
