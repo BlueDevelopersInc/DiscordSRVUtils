@@ -90,6 +90,6 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public UUID getTargetUUID() {
-        return UUID.fromString(UUIDManager.get().getUUID(punishment.getName()));
+        return UUID.fromString(punishment.getUuid());
     }
 }
