@@ -24,11 +24,13 @@ package tk.bluetree242.discordsrvutils.config;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.List;
 
+@ConfHeader("# https://wiki.discordsrvutils.xyz/leveling/\n\n")
 public interface LevelingConfig {
 
     @AnnotationBasedSorter.Order(9)
@@ -50,7 +52,13 @@ public interface LevelingConfig {
     @ConfKey("antispam-messages")
     @AnnotationBasedSorter.Order(20)
     @ConfDefault.DefaultBoolean(true)
-    Boolean antispam_messages();
+    boolean antispam_messages();
+
+    @ConfKey("require-link")
+    @AnnotationBasedSorter.Order(25)
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("# Require minecraft player to be linked, to gain xp?")
+    boolean require_link();
 
     @ConfKey("discord-message")
     @ConfComments("#Message when a Discord user levelup")

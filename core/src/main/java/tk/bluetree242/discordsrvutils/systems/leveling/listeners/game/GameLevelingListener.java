@@ -72,6 +72,7 @@ public class GameLevelingListener extends PlatformListener {
             if (stats == null) {
                 return;
             }
+            if (core.getLevelingConfig().require_link() && core.getDiscordSRV().getDiscordId(e.getPlayer().getUniqueId()) == null) return;
             if (core.getLevelingConfig().antispam_messages()) {
                 Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
                 if (val == null) {
