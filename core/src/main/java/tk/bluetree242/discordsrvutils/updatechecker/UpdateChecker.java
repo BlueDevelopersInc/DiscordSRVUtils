@@ -116,8 +116,7 @@ public class UpdateChecker {
                 } else {
                     p.sendMessage("&7[&eDSU&7] &c" + res.getString("message"));
                 }
-            } catch (Exception ex) {
-                core.getLogger().severe("Could not check for updates: " + ex.getMessage());
+            } catch (Exception ignored) {
             }
 
         });
