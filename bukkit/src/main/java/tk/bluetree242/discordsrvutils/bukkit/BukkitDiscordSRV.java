@@ -49,6 +49,11 @@ public class BukkitDiscordSRV extends PlatformDiscordSRV {
     }
 
     @Override
+    public void unlink(UUID uuid) {
+        getDiscordSRV().getAccountLinkManager().unlink(uuid);
+    }
+
+    @Override
     public JDA getJDA() {
         return getDiscordSRV().getJda();
     }

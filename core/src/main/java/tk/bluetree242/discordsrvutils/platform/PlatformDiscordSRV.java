@@ -38,6 +38,8 @@ public abstract class PlatformDiscordSRV {
 
     public abstract UUID getUuid(String id);
 
+    public abstract void unlink(UUID uuid);
+
     public abstract JDA getJDA();
 
     public abstract Guild getMainGuild();
