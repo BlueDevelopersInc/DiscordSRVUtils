@@ -13,16 +13,16 @@ Put these into your pom.xml
 ```xml
 
 <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
+    <id>bluetree242-repo</id>
+    <url>https://repo.bluetree242.dev/</url>
 </repository>
 ```
 
 ```xml
 
 <dependency>
-    <groupId>com.github.BlueTree242</groupId>
-    <artifactId>DiscordSRVUtils</artifactId>
+    <groupId>dev.bluetree242.discordsrvutils</groupId>
+    <artifactId>core</artifactId>
     <version>VERSION</version>
 </dependency>
 ```
@@ -32,13 +32,13 @@ For gradle
 ```gradle
     repositories {
         // Any other repository...
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.bluetree242.dev/' }
     }
 ```
 
 ```gradle
     dependencies {
-        implementation 'com.github.BlueTree242:DiscordSRVUtils:VERSION'
+        implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
     }
 ```
 

@@ -175,3 +175,36 @@ repositories {
     mavenCentral()
 }
 
+tasks.register('packageJavadoc', Jar) {
+    dependsOn 'javadoc'
+    dependsOn(javadoc)
+    from javadoc.destinationDir
+    archiveClassifier = 'javadoc'
+}
+tasks.register('packageSources', Jar) {
+    dependsOn 'classes'
+    from sourceSets.main.allSource
+    archiveClassifier = 'sources'
+}
+publishing {
+    publications {
+        "$project.name"(MavenPublication) {
+            groupId rootProject.group
+            artifactId project.name
+            version project.version
+            from components.java
+            artifact(packageSources)
+            artifact(packageJavadoc)
+            repositories {
+                maven {
+                    credentials {
+                        username = System.getenv('REPO_USERNAME')
+                        password = System.getenv('REPO_PASSWORD')
+                    }
+                    url = "https://repo.bluetree242.dev/maven-${!(version as String).endsWith("-DEV") ? "releases" : "snapshots"}/"
+                }
+            }
+        }
+    }
+}
+
