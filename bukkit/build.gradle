@@ -51,7 +51,7 @@ dependencies {
     compileOnly 'com.gitlab.ruany:LiteBansAPI:0.3.4'
     compileOnly 'space.arim.libertybans:bans-api:0.8.0'
     compileOnly 'com.github.LeonMangler:SuperVanish:6.2.17'
-    compileOnly 'com.github.DevLeoko:Advanc edBan:b4bbb6a'
+    compileOnly 'com.github.DevLeoko:AdvancedBan:b4bbb6a'
     compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API")
     compileOnly 'net.lapismc:AFKPlus:3.3.15'
