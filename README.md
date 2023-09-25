@@ -14,7 +14,7 @@ Put these into your pom.xml
 
 <repository>
     <id>bluetree242-repo</id>
-    <url>https://repo.bluetree242.dev/</url>
+    <url>https://repo.bluetree242.dev/maven-public</url>
 </repository>
 ```
 
@@ -32,7 +32,7 @@ For gradle
 ```gradle
     repositories {
         // Any other repository...
-        maven { url 'https://repo.bluetree242.dev/' }
+        maven { url 'https://repo.bluetree242.dev/maven-public' }
     }
 ```
 
