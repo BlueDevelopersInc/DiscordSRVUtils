@@ -30,13 +30,7 @@ plugins {
     id "org.flywaydb.flyway" version "8.5.3"
 }
 apply plugin: 'maven-publish'
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
+
 rootProject.allprojects {
     plugins.apply('java')
     plugins.apply("com.github.johnrengelman.shadow")
@@ -186,8 +180,10 @@ publishing {
             groupId rootProject.group
             artifactId project.name
             version project.version
-            from components.java
             artifact(packageSources)
+            artifact(shadowJar) {
+                classifier ''
+            }
             repositories {
                 maven {
                     credentials {
