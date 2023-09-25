@@ -42,24 +42,24 @@ rootProject.allprojects {
     plugins.apply("com.github.johnrengelman.shadow")
     project.shadowJar {
         classifier ''
-        relocate 'com.vdurmont', "tk.bluetree242.discordsrvutils.dependencies.emoji-java"
-        relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
-        relocate 'space.arim.dazzleconf', "tk.bluetree242.discordsrvutils.dependencies.dazzleconf"
-        relocate 'com.zaxxer', "tk.bluetree242.discordsrvutils.dependencies.hikariCP"
-        relocate 'org.hsqldb', "tk.bluetree242.discordsrvutils.dependencies.hsqldb"
-        relocate 'org.mariadb.jdbc', "tk.bluetree242.discordsrvutils.dependencies.mariadb"
-        relocate 'org.yaml', "tk.bluetree242.discordsrvutils.dependencies.yaml"
-        relocate 'com.squareup.okhttp3', "tk.bluetree242.discordsrvutils.dependencies.okhttp"
-        relocate 'org.flywaydb', "tk.bluetree242.discordsrvutils.dependencies.flywaydb"
-        relocate 'org.bstats', "tk.bluetree242.discordsrvutils.dependencies.bstats"
-        relocate 'com.github.benmanes.caffeine', 'tk.bluetree242.discordsrvutils.dependencies.caffeine'
-        relocate 'org.json', 'tk.bluetree242.discordsrvutils.dependencies.json'
-        relocate 'com.google.errorprone', 'tk.bluetree242.discordsrvutils.dependencies.google'
-        relocate 'org.apache.commons', 'tk.bluetree242.discordsrvutils.dependencies.commons'
-        relocate 'org.jooq', 'tk.bluetree242.discordsrvutils.dependencies.jooq'
-        relocate 'org.slf4j', 'tk.bluetree242.discordsrvutils.dependencies.slf4j'
-        relocate 'org.reactivestreams', 'tk.bluetree242.discordsrvutils.dependencies.reactivestreams'
-        relocate 'org.checkerframework', 'tk.bluetree242.discordsrvutils.dependencies.checkerframework'
+        relocate 'com.vdurmont', "dev.bluetree242.discordsrvutils.dependencies.emoji-java"
+        relocate 'org.bstats', "dev.bluetree242.discordsrvutils.dependencies.bstats"
+        relocate 'space.arim.dazzleconf', "dev.bluetree242.discordsrvutils.dependencies.dazzleconf"
+        relocate 'com.zaxxer', "dev.bluetree242.discordsrvutils.dependencies.hikariCP"
+        relocate 'org.hsqldb', "dev.bluetree242.discordsrvutils.dependencies.hsqldb"
+        relocate 'org.mariadb.jdbc', "dev.bluetree242.discordsrvutils.dependencies.mariadb"
+        relocate 'org.yaml', "dev.bluetree242.discordsrvutils.dependencies.yaml"
+        relocate 'com.squareup.okhttp3', "dev.bluetree242.discordsrvutils.dependencies.okhttp"
+        relocate 'org.flywaydb', "dev.bluetree242.discordsrvutils.dependencies.flywaydb"
+        relocate 'org.bstats', "dev.bluetree242.discordsrvutils.dependencies.bstats"
+        relocate 'com.github.benmanes.caffeine', 'dev.bluetree242.discordsrvutils.dependencies.caffeine'
+        relocate 'org.json', 'dev.bluetree242.discordsrvutils.dependencies.json'
+        relocate 'com.google.errorprone', 'dev.bluetree242.discordsrvutils.dependencies.google'
+        relocate 'org.apache.commons', 'dev.bluetree242.discordsrvutils.dependencies.commons'
+        relocate 'org.jooq', 'dev.bluetree242.discordsrvutils.dependencies.jooq'
+        relocate 'org.slf4j', 'dev.bluetree242.discordsrvutils.dependencies.slf4j'
+        relocate 'org.reactivestreams', 'dev.bluetree242.discordsrvutils.dependencies.reactivestreams'
+        relocate 'org.checkerframework', 'dev.bluetree242.discordsrvutils.dependencies.checkerframework'
     }
 }
 
@@ -142,7 +142,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'tk.bluetree242.discordsrvutils.jooq'
+                        packageName = 'dev.bluetree242.discordsrvutils.jooq'
                     }
                     strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
                     strategy {

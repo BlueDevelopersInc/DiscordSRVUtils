@@ -12,7 +12,7 @@ softdepend:
   - PremiumVanish
   - AfkPlus
 version: @version@
-main: tk.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit
+main: dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit
 author: BlueTree242
 #We use api version 1.13 but all versions are supported
 api-version: 1.13
