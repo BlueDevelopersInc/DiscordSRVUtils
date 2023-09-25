@@ -175,12 +175,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.register('packageJavadoc', Jar) {
-    dependsOn 'javadoc'
-    dependsOn(javadoc)
-    from javadoc.destinationDir
-    archiveClassifier = 'javadoc'
-}
 tasks.register('packageSources', Jar) {
     dependsOn 'classes'
     from sourceSets.main.allSource
@@ -194,7 +188,6 @@ publishing {
             version project.version
             from components.java
             artifact(packageSources)
-            artifact(packageJavadoc)
             repositories {
                 maven {
                     credentials {
