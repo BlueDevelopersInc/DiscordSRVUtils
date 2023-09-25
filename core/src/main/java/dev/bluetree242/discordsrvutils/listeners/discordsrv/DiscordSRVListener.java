@@ -22,7 +22,11 @@
 
 package dev.bluetree242.discordsrvutils.listeners.discordsrv;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.exceptions.StartupException;
+import dev.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
+import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
@@ -32,10 +36,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import lombok.RequiredArgsConstructor;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
-import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
-import dev.bluetree242.discordsrvutils.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;

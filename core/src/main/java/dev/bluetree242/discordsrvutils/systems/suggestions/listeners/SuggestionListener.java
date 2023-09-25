@@ -22,6 +22,13 @@
 
 package dev.bluetree242.discordsrvutils.systems.suggestions.listeners;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
+import dev.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
+import dev.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
+import dev.bluetree242.discordsrvutils.systems.suggestions.SuggestionVote;
+import dev.bluetree242.discordsrvutils.utils.Emoji;
+import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.MessageReceivedEvent;
@@ -31,13 +38,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionsVotesTable;
-import dev.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
-import dev.bluetree242.discordsrvutils.systems.suggestions.SuggestionManager;
-import dev.bluetree242.discordsrvutils.systems.suggestions.SuggestionVote;
-import dev.bluetree242.discordsrvutils.utils.Emoji;
-import dev.bluetree242.discordsrvutils.utils.Utils;
 
 @RequiredArgsConstructor
 public class SuggestionListener extends ListenerAdapter {

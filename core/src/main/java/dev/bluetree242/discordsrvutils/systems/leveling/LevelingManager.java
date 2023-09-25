@@ -24,13 +24,13 @@ package dev.bluetree242.discordsrvutils.systems.leveling;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.records.LevelingRecord;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 
 import java.time.Duration;
 import java.util.*;
@@ -69,17 +69,7 @@ public class LevelingManager {
     public PlayerStats getPlayerStats(String name) {
         DSLContext conn = core.getDatabaseManager().jooq();
         return getPlayerStats(conn, name);
-    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
-            .maximumSize(120)
-            .expireAfterWrite(Duration.ofMinutes(1))
-            .refreshAfterWrite(Duration.ofSeconds(30))
-            .build(key -> {
-                DiscordSRVUtils core = DiscordSRVUtils.get();
-                adding = true;
-                PlayerStats stats = getPlayerStats(key);
-                adding = false;
-                return stats;
-            });
+    }
 
     public PlayerStats getPlayerStats(UUID uuid) {
         DSLContext conn = core.getDatabaseManager().jooq();
@@ -92,7 +82,17 @@ public class LevelingManager {
             }
         }
         return null;
-    }
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
+                adding = true;
+                PlayerStats stats = getPlayerStats(key);
+                adding = false;
+                return stats;
+            });
 
     public PlayerStats getPlayerStats(DSLContext conn, String name) {
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();

@@ -22,6 +22,10 @@
 
 package dev.bluetree242.discordsrvutils.listeners.jda;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import dev.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
@@ -32,10 +36,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMe
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import dev.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 
 import java.util.Iterator;
 import java.util.List;

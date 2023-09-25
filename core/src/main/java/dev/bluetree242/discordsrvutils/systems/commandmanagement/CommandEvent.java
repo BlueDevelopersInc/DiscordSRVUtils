@@ -25,6 +25,8 @@ package dev.bluetree242.discordsrvutils.systems.commandmanagement;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
@@ -34,8 +36,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interac
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 @RequiredArgsConstructor()
 public class CommandEvent {

@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.systems.invitetracking.listeners;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Invite;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.invite.GuildInviteDeleteEvent;
@@ -31,7 +32,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.role.update.RoleUpda
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 
 @RequiredArgsConstructor
 public class InviteTrackingListener extends ListenerAdapter {

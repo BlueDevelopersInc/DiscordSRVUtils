@@ -26,9 +26,9 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.jooq.tables.InviteTrackingTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
+import dev.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import dev.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 
 @RequiredArgsConstructor
 public class JooqClassLoading {

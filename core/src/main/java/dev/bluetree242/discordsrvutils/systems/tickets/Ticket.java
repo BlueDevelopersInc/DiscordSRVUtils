@@ -24,14 +24,14 @@ package dev.bluetree242.discordsrvutils.systems.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import lombok.Getter;
 import org.jooq.DSLContext;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 public class Ticket {
     private final DiscordSRVUtils core;

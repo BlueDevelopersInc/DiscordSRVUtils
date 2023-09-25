@@ -23,15 +23,15 @@
 package dev.bluetree242.discordsrvutils.commands.discord.leveling;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public class LevelCommand extends Command {
     public LevelCommand(DiscordSRVUtils core) {

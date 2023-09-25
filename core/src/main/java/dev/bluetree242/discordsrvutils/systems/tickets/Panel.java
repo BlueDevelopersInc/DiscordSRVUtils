@@ -27,6 +27,8 @@ import dev.bluetree242.discordsrvutils.jooq.tables.PanelAllowedRolesTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.TicketPanelsTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.records.TicketsRecord;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.KeyGenerator;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
@@ -42,8 +44,6 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.InsertSetMoreStep;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 import java.util.*;
 

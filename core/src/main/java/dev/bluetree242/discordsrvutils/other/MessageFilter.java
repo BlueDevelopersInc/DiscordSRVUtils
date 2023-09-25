@@ -22,8 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.other;
 
-import lombok.RequiredArgsConstructor;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import lombok.RequiredArgsConstructor;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

@@ -22,8 +22,6 @@
 
 package dev.bluetree242.discordsrvutils.systems.suggestions;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import org.jooq.DSLContext;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
@@ -31,6 +29,8 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Emoji;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import org.jooq.DSLContext;
 
 import java.util.*;
 import java.util.stream.Collectors;

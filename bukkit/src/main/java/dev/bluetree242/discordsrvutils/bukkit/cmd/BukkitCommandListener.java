@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.bukkit.cmd;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 import dev.bluetree242.discordsrvutils.commands.game.DiscordSRVUtilsCommand;
 import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
 import dev.bluetree242.discordsrvutils.utils.Utils;
@@ -30,7 +31,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 
 import java.util.List;
 

@@ -22,6 +22,10 @@
 
 package dev.bluetree242.discordsrvutils.systems.leveling;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
@@ -32,10 +36,6 @@ import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 import java.io.File;
 import java.io.IOException;

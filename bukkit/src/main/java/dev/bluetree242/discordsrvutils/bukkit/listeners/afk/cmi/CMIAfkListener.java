@@ -25,16 +25,16 @@ package dev.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi;
 import com.Zrips.CMI.events.CMIAfkEnterEvent;
 import com.Zrips.CMI.events.CMIAfkLeaveEvent;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
+import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
-import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 @RequiredArgsConstructor
 public class CMIAfkListener implements Listener {

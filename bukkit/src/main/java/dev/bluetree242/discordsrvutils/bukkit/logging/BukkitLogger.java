@@ -22,12 +22,12 @@
 
 package dev.bluetree242.discordsrvutils.bukkit.logging;
 
+import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.slf4j.helpers.LegacyAbstractLogger;
-import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 
 import java.util.logging.LogRecord;
 

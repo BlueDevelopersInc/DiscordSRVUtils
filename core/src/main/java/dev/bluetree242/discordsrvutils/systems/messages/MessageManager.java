@@ -22,7 +22,12 @@
 
 package dev.bluetree242.discordsrvutils.systems.messages;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
+import dev.bluetree242.discordsrvutils.utils.FileWriter;
+import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -32,11 +37,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import dev.bluetree242.discordsrvutils.utils.FileWriter;
-import dev.bluetree242.discordsrvutils.utils.Utils;
 
 import java.awt.*;
 import java.io.File;
@@ -213,7 +213,7 @@ public class MessageManager {
             for (String s : split) {
                 index++;
                 if (index < split.length)
-                path = path.resolve(s);
+                    path = path.resolve(s);
                 else file = path.resolve(s + ".json").toFile();
             }
         }

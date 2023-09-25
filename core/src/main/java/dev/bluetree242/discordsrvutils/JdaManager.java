@@ -23,16 +23,9 @@
 package dev.bluetree242.discordsrvutils;
 
 import dev.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
+import dev.bluetree242.discordsrvutils.systems.invitetracking.listeners.InviteTrackingListener;
 import dev.bluetree242.discordsrvutils.systems.leveling.listeners.jda.DiscordLevelingListener;
 import dev.bluetree242.discordsrvutils.systems.suggestions.listeners.SuggestionListener;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
-import lombok.Getter;
-import dev.bluetree242.discordsrvutils.systems.invitetracking.listeners.InviteTrackingListener;
 import dev.bluetree242.discordsrvutils.systems.tickets.listeners.PanelOpenListener;
 import dev.bluetree242.discordsrvutils.systems.tickets.listeners.TicketCloseListener;
 import dev.bluetree242.discordsrvutils.systems.tickets.listeners.TicketDeleteListener;
@@ -40,6 +33,13 @@ import dev.bluetree242.discordsrvutils.systems.tickets.listeners.TicketFirstMess
 import dev.bluetree242.discordsrvutils.waiters.listeners.CreatePanelListener;
 import dev.bluetree242.discordsrvutils.waiters.listeners.EditPanelListener;
 import dev.bluetree242.discordsrvutils.waiters.listeners.PaginationListener;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;

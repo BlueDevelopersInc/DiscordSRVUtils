@@ -23,7 +23,12 @@
 package dev.bluetree242.discordsrvutils.systems.leveling.listeners.jda;
 
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.events.DiscordLevelupEvent;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import dev.bluetree242.discordsrvutils.systems.leveling.MessageType;
+import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -32,11 +37,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import dev.bluetree242.discordsrvutils.systems.leveling.MessageType;
-import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -24,12 +24,12 @@ package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import dev.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
+import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 
 import java.awt.*;
 

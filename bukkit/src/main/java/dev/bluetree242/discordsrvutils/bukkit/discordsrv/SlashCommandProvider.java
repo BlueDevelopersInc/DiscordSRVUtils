@@ -23,7 +23,11 @@
 package dev.bluetree242.discordsrvutils.bukkit.discordsrv;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
+import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
+import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
 import github.scarsz.discordsrv.api.commands.SlashCommand;
@@ -32,10 +36,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.SlashCom
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.InsufficientPermissionException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.CommandData;
 import lombok.RequiredArgsConstructor;
-import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
 
 import java.sql.SQLException;
 import java.util.HashSet;

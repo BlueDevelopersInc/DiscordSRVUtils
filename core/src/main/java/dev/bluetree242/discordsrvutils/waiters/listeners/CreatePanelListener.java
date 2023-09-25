@@ -27,6 +27,7 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
 import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import dev.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
@@ -34,7 +35,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
 
 import java.awt.*;
 import java.util.ArrayList;

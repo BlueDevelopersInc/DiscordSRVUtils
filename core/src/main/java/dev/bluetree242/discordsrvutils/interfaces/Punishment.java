@@ -22,11 +22,11 @@
 
 package dev.bluetree242.discordsrvutils.interfaces;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 
 import java.util.UUID;
 

@@ -23,12 +23,12 @@
 package dev.bluetree242.discordsrvutils;
 
 import dev.bluetree242.discordsrvutils.embeds.Embed;
+import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 
 @RequiredArgsConstructor

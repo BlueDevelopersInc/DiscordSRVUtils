@@ -23,13 +23,13 @@
 package dev.bluetree242.discordsrvutils.utils;
 
 import com.vdurmont.emoji.EmojiParser;
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 
 import java.io.File;
 import java.io.IOException;

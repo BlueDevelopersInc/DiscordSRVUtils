@@ -25,6 +25,8 @@ package dev.bluetree242.discordsrvutils.systems.leveling.listeners.game;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.events.MinecraftLevelupEvent;
 import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
 import dev.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import dev.bluetree242.discordsrvutils.platform.listener.PlatformListener;
@@ -33,8 +35,6 @@ import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 @RequiredArgsConstructor
 public class GameLevelingListener extends PlatformListener {
@@ -72,7 +72,8 @@ public class GameLevelingListener extends PlatformListener {
             if (stats == null) {
                 return;
             }
-            if (core.getLevelingConfig().require_link() && core.getDiscordSRV().getDiscordId(e.getPlayer().getUniqueId()) == null) return;
+            if (core.getLevelingConfig().require_link() && core.getDiscordSRV().getDiscordId(e.getPlayer().getUniqueId()) == null)
+                return;
             if (core.getLevelingConfig().antispam_messages()) {
                 Long val = core.getLevelingManager().antispamMap.get(stats.getUuid());
                 if (val == null) {

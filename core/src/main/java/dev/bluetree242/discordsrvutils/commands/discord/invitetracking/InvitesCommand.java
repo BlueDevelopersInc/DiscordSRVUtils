@@ -23,15 +23,15 @@
 package dev.bluetree242.discordsrvutils.commands.discord.invitetracking;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.invitetracking.UserInvites;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public class InvitesCommand extends Command {
     public InvitesCommand(DiscordSRVUtils core) {

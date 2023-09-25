@@ -25,6 +25,8 @@ package dev.bluetree242.discordsrvutils.commands.game;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.events.LevelupEvent;
 import dev.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
 import dev.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
@@ -35,8 +37,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 import java.util.ArrayList;
 import java.util.Collections;

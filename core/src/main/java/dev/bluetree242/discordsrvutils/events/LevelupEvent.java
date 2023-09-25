@@ -22,8 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.events;
 
-import github.scarsz.discordsrv.api.events.Event;
 import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import github.scarsz.discordsrv.api.events.Event;
 
 import java.util.UUID;
 

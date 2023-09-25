@@ -24,14 +24,14 @@ package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
 import dev.bluetree242.discordsrvutils.waiters.EditPanelWaiter;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public class EditPanelCommand extends Command {
     public EditPanelCommand(DiscordSRVUtils core) {

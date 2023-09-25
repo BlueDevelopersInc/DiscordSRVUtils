@@ -22,7 +22,9 @@
 
 package dev.bluetree242.discordsrvutils.systems.leveling;
 
+import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.events.LevelupEvent;
+import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
@@ -31,8 +33,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import lombok.Setter;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
-import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.jooq.tables.LevelingTable;
 
 import java.util.ArrayList;
 import java.util.Collection;

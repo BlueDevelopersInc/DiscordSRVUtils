@@ -23,11 +23,11 @@
 package dev.bluetree242.discordsrvutils.commands.discord.suggestions;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.suggestions.Suggestion;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
 
 public class SuggestionNoteCommand extends SuggestionCommand {
     public SuggestionNoteCommand(DiscordSRVUtils core) {

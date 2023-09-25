@@ -25,11 +25,11 @@ package dev.bluetree242.discordsrvutils.waiters.listeners;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
 import dev.bluetree242.discordsrvutils.waiter.Waiter;
+import dev.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
-import dev.bluetree242.discordsrvutils.waiters.PaginationWaiter;
 
 @RequiredArgsConstructor
 public class PaginationListener extends ListenerAdapter {

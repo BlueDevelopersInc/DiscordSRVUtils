@@ -22,16 +22,6 @@
 
 package dev.bluetree242.discordsrvutils.systems.suggestions;
 
-import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionNotesTable;
 import dev.bluetree242.discordsrvutils.jooq.tables.SuggestionsTable;
@@ -43,6 +33,16 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Emoji;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.ActionRow;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 
 import java.util.Collections;
 import java.util.HashSet;

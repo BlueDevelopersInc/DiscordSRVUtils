@@ -24,12 +24,12 @@ package dev.bluetree242.discordsrvutils.commands.discord;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 import java.awt.*;
 import java.time.Instant;

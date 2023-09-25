@@ -27,6 +27,9 @@ import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
 import de.myzelyam.api.vanish.VanishAPI;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import lombok.RequiredArgsConstructor;
@@ -36,16 +39,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 
 @RequiredArgsConstructor
 public class EssentialsAFKListener implements Listener {
 
     private final DiscordSRVUtils core;
 
-    public static boolean  shouldSend(Player p) {
+    public static boolean shouldSend(Player p) {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
             Essentials plugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
             if (plugin.getUser(p.getUniqueId()).isHidden()) return false;

@@ -22,8 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.waiter;
 
-import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 
 public abstract class Waiter extends ListenerAdapter {
     private final long startTime;

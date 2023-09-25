@@ -24,20 +24,19 @@ package dev.bluetree242.discordsrvutils.systems.commandmanagement;
 
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.commands.discord.HelpCommand;
+import dev.bluetree242.discordsrvutils.commands.discord.admin.EchoCommand;
+import dev.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.invitetracking.InvitesCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.leveling.LeaderboardCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.leveling.LevelCommand;
+import dev.bluetree242.discordsrvutils.commands.discord.other.LinkAccountCommand;
+import dev.bluetree242.discordsrvutils.commands.discord.other.UnlinkAccountCommand;
+import dev.bluetree242.discordsrvutils.commands.discord.status.StatusCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.ApproveSuggestionCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggestionCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.HelpCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.admin.EchoCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.admin.TestMessageCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.other.LinkAccountCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.other.UnlinkAccountCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.status.StatusCommand;
-import dev.bluetree242.discordsrvutils.commands.discord.tickets.*;
 import dev.bluetree242.discordsrvutils.commands.discord.tickets.*;
 
 import java.util.ArrayList;

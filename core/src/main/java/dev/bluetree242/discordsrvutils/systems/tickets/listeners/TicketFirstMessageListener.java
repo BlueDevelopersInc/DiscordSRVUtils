@@ -24,12 +24,12 @@ package dev.bluetree242.discordsrvutils.systems.tickets.listeners;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.jooq.tables.TicketsTable;
+import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
 import java.util.concurrent.TimeUnit;
 

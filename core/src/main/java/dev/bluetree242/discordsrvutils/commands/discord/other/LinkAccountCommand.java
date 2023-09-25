@@ -23,10 +23,10 @@
 package dev.bluetree242.discordsrvutils.commands.discord.other;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
-import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
 import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public class LinkAccountCommand extends Command {
     public LinkAccountCommand(DiscordSRVUtils core) {

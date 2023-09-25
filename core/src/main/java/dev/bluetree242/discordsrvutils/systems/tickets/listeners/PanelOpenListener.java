@@ -24,15 +24,15 @@ package dev.bluetree242.discordsrvutils.systems.tickets.listeners;
 
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
+import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
+import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
+import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 import github.scarsz.discordsrv.dependencies.jda.api.events.interaction.ButtonClickEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
-import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
-import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
-import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
 @RequiredArgsConstructor
 public class PanelOpenListener extends ListenerAdapter {

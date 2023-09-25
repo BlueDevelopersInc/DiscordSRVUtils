@@ -22,8 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.waiter;
 
-import lombok.RequiredArgsConstructor;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 import java.util.TimerTask;
