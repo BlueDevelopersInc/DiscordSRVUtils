@@ -57,23 +57,28 @@ public class PlaceholdObject {
     }
 
     public String apply(@NotNull String s, PlatformPlayer placehold, boolean doAllowCode) {
-        Map<String, Method> map = getholdersMap();
-        if (doAllowCode) s = core.getPlatform().placehold(placehold, s);
         final String[] val = {s};
-        map.forEach((key, result) -> {
-            try {
-                if (val[0].contains("[" + this.display + "." + key + "]")) {
-                    Object invoked = result.invoke(this.getObject());
-                    String value = null;
-                    if (invoked != null) {
-                        value = invoked.toString();
-                    }
-                    val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
-                }
-            } catch (Exception ignored) {
+        if (ob instanceof String || ob instanceof Integer || ob instanceof Double || ob instanceof Long || ob instanceof Float) {
+            if (val[0].contains("[" + display + "]")) {
+                val[0] = val[0].replace("[" + display + "]", ob.toString());
             }
-        });
-
+        } else {
+            Map<String, Method> map = getHoldersMap();
+            if (doAllowCode) s = core.getPlatform().placehold(placehold, s);
+            map.forEach((key, result) -> {
+                try {
+                    if (val[0].contains("[" + this.display + "." + key + "]")) {
+                        Object invoked = result.invoke(this.getObject());
+                        String value = null;
+                        if (invoked != null) {
+                            value = invoked.toString();
+                        }
+                        val[0] = val[0].replace("[" + this.display + "." + key + "]", value == null ? "null" : value);
+                    }
+                } catch (Exception ignored) {
+                }
+            });
+        }
         if (doAllowCode) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
@@ -93,7 +98,7 @@ public class PlaceholdObject {
         return apply(s, null);
     }
 
-    public Map<String, Method> getholdersMap() {
+    public Map<String, Method> getHoldersMap() {
         if (map.isEmpty()) {
             for (Method method : ob.getClass().getMethods()) {
                 if (method.getReturnType() != void.class) {
