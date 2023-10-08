@@ -8,7 +8,7 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 
 # API
 
-Put these into your pom.xml
+## Maven
 
 ```xml
 
@@ -27,7 +27,7 @@ Put these into your pom.xml
 </dependency>
 ```
 
-For gradle
+## Gradle (Groovy DSL)
 
 ```gradle
     repositories {
@@ -35,15 +35,26 @@ For gradle
         maven { url 'https://repo.bluetree242.dev/maven-public' }
     }
 ```
-
 ```gradle
     dependencies {
         implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
     }
 ```
+## Gradle (Kotlin DSL)
 
-You also need to add DiscordSRV's dependecy and repository, which you can find here:  
-https://github.com/DiscordSRV/DiscordSRV/wiki#developers
+    repositories {
+        // Any other repository...
+        maven("https://repo.bluetree242.dev/maven-public")
+    }
+```
+```gradle
+    dependencies {
+        // Any other dependency...
+        compileOnly("dev.bluetree242.discordsrvutils:core:VERSION")
+    }
+```
+
+You also need to add DiscordSRV's dependency and repository, which you can find [here](https://docs.discordsrv.com/master/#developers)
 
 # Contributing
 
