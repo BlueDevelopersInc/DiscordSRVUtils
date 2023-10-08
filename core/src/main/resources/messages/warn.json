@@ -5,7 +5,7 @@
       "text": "[punishment.duration]"
     },
     "author": {
-      "icon_url": "https://minotar.net/avatar/[punishment.name]",
+      "icon_url": "https://api.creepernation.net/avatar/[punishment.name]",
       "name": "[punishment.name] was warned by [punishment.operator] For [punishment.reason]"
     }
   }
