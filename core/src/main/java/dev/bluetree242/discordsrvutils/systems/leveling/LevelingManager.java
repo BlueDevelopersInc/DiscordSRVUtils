@@ -82,17 +82,7 @@ public class LevelingManager {
             }
         }
         return null;
-    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
-            .maximumSize(120)
-            .expireAfterWrite(Duration.ofMinutes(1))
-            .refreshAfterWrite(Duration.ofSeconds(30))
-            .build(key -> {
-                DiscordSRVUtils core = DiscordSRVUtils.get();
-                adding = true;
-                PlayerStats stats = getPlayerStats(key);
-                adding = false;
-                return stats;
-            });
+    }
 
     public PlayerStats getPlayerStats(DSLContext conn, String name) {
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
@@ -104,7 +94,17 @@ public class LevelingManager {
             }
         }
         return null;
-    }
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
+                adding = true;
+                PlayerStats stats = getPlayerStats(key);
+                adding = false;
+                return stats;
+            });
 
     public PlayerStats getPlayerStats(LevelingRecord r, int rank) {
         PlayerStats stats = new PlayerStats(core,
