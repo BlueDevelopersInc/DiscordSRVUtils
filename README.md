@@ -11,7 +11,6 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 ## Maven
 
 ```xml
-
 <repository>
     <id>bluetree242-repo</id>
     <url>https://repo.bluetree242.dev/maven-public</url>
@@ -19,7 +18,6 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 ```
 
 ```xml
-
 <dependency>
     <groupId>dev.bluetree242.discordsrvutils</groupId>
     <artifactId>core</artifactId>
@@ -30,28 +28,29 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 ## Gradle (Groovy DSL)
 
 ```gradle
-    repositories {
-        // Any other repository...
-        maven { url 'https://repo.bluetree242.dev/maven-public' }
-    }
+repositories {
+    // Any other repository...
+    maven { url 'https://repo.bluetree242.dev/maven-public' }
+}
 ```
 ```gradle
-    dependencies {
-        implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
-    }
+dependencies {
+    // Any other dependency...
+    implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
+}
 ```
 ## Gradle (Kotlin DSL)
 ```kts
-    repositories {
-        // Any other repository...
-        maven("https://repo.bluetree242.dev/maven-public")
-    }
+repositories {
+    // Any other repository...
+    maven("https://repo.bluetree242.dev/maven-public")
+}
 ```
 ```kts
-    dependencies {
-        // Any other dependency...
-        compileOnly("dev.bluetree242.discordsrvutils:core:VERSION")
-    }
+dependencies {
+    // Any other dependency...
+    compileOnly("dev.bluetree242.discordsrvutils:core:VERSION")
+}
 ```
 
 You also need to add DiscordSRV's dependency and repository, which you can find [here](https://docs.discordsrv.com/master/#developers)
