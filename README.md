@@ -41,13 +41,13 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
     }
 ```
 ## Gradle (Kotlin DSL)
-
+```kts
     repositories {
         // Any other repository...
         maven("https://repo.bluetree242.dev/maven-public")
     }
 ```
-```gradle
+```kts
     dependencies {
         // Any other dependency...
         compileOnly("dev.bluetree242.discordsrvutils:core:VERSION")
