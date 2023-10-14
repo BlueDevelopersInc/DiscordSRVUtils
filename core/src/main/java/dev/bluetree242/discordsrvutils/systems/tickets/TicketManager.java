@@ -165,9 +165,9 @@ public class TicketManager {
                 Message msg = channel.retrieveMessageById(panel.getMessageId()).complete();
                 if (msg.getButtons().isEmpty()) {
                     msg.clearReactions().queue();
-                    msg.editMessage(msg).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
+                    msg.editMessage(msg).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
                 } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
-                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
+                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
                 }
             } catch (ErrorResponseException ex) {
                 panel.getEditor().apply(jooq);

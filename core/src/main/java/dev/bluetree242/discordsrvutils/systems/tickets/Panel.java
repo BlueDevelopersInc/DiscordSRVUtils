@@ -251,7 +251,7 @@ public class Panel {
                 throw new IllegalArgumentException("Channel was not found");
             }
             Panel panel = new Panel(core, name, new KeyGenerator().toString(), null, channelId, openedCategory, closedCategory, allowedRoles);
-            Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+            Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
             panel.messageId = msg.getIdLong();
             conn.insertInto(TicketPanelsTable.TICKET_PANELS)
                     .set(TicketPanelsTable.TICKET_PANELS.NAME, name)
@@ -321,11 +321,11 @@ public class Panel {
             Message msg;
             try {
                 if (!panel.name.equals(name)) {
-                    msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                    msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
                 } else
                     msg = channel.retrieveMessageById(panel.messageId).complete();
             } catch (ErrorResponseException ex) {
-                msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.secondary("open_ticket", Emoji.fromUnicode("\uD83C\uDFAB")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
+                msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().panel_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, panel, "panel")), null).build()).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).complete();
             }
             conn.update(TicketPanelsTable.TICKET_PANELS)
                     .set(TicketPanelsTable.TICKET_PANELS.NAME, name)
