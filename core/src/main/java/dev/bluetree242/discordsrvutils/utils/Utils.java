@@ -103,30 +103,30 @@ public class Utils {
         remaining = remaining - TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining);
         if (days != 0) {
-            val = days + " Day" + (days <= 1 ? "" : "s");
+            val = days + " day" + (days <= 1 ? "" : "s");
         }
         if (hours != 0) {
-            if (val.equals("")) {
+            if (val.isEmpty()) {
                 val = hours + " hour" + (hours <= 1 ? "" : "s");
             } else {
                 val = val + ", " + hours + " hour" + (hours <= 1 ? "" : "s");
             }
         }
         if (minutes != 0) {
-            if (val.equals("")) {
+            if (val.isEmpty()) {
                 val = minutes + " minute" + (minutes <= 1 ? "" : "s");
             } else {
                 val = val + ", " + minutes + " minute" + (minutes <= 1 ? "" : "s");
             }
         }
         if (seconds != 0) {
-            if (val.equals("")) {
+            if (val.isEmpty()) {
                 val = seconds + " second" + (seconds <= 1 ? "" : "s");
             } else {
                 val = val + ", " + seconds + " second" + (seconds <= 1 ? "" : "s");
             }
         }
-        if (val.equals("")) {
+        if (val.isEmpty()) {
             return "Less than a second";
         }
         return val;
@@ -135,17 +135,17 @@ public class Utils {
     public static String trim(String s) {
         if (s.length() >= 100) {
             int len = 0;
-            String returnvalue = "";
+            StringBuilder returnValue = new StringBuilder();
             for (String l : s.split("")) {
                 len++;
                 if (len >= 97 && len <= 100) {
-                    returnvalue = returnvalue + ".";
+                    returnValue.append(".");
                 } else {
                     if (len <= 100)
-                        returnvalue = returnvalue + l;
+                        returnValue.append(l);
                 }
             }
-            return returnvalue;
+            return returnValue.toString();
         }
         return s;
     }
@@ -156,7 +156,7 @@ public class Utils {
             StringBuilder returnvalue = new StringBuilder();
             for (String l : s.split("")) {
                 len++;
-                if (len >= (limit - 3) && len <= limit && len <= limit) {
+                if (len >= (limit - 3) && len <= limit) {
                     returnvalue.append(".");
                 } else {
                     if (len <= limit)
@@ -172,7 +172,7 @@ public class Utils {
         return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String b64Encode(@NotNull byte[] bytes) {
+    public static String b64Encode(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
@@ -183,24 +183,22 @@ public class Utils {
     }
 
 
-    public static @NotNull
-    String parseArgs(String[] args, int start, int end) {
-        String argss = "";
+    public static @NotNull String parseArgs(String[] args, int start, int end) {
+        StringBuilder argsResult = new StringBuilder();
         for (int i = start; i < args.length; i++) {
             if (i <= end) {
-                argss = argss + args[i] + " ";
+                argsResult.append(args[i]).append(" ");
             }
         }
-        return argss.replaceAll("\\s+$", "");
+        return argsResult.toString().replaceAll("\\s+$", "");
     }
 
-    public static @NotNull
-    String parseArgs(String @NotNull [] args, int start) {
-        String argss = "";
+    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
+        StringBuilder argsResult = new StringBuilder();
         for (int i = start; i < args.length; i++) {
-            argss = argss + args[i] + " ";
+            argsResult.append(args[i]).append(" ");
         }
-        return argss.replaceAll("\\s+$", "");
+        return argsResult.toString().replaceAll("\\s+$", "");
     }
 
     public static Emoji getEmoji(String val, Emoji def) {
