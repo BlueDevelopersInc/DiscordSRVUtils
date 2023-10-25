@@ -38,6 +38,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +48,9 @@ import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,7 +126,6 @@ public class MessageManager {
         embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
         if (!json.isNull("color")) {
             int color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
-
             embed.setColor(color);
         }
         if (!json.isNull("footer")) {
@@ -141,7 +144,7 @@ public class MessageManager {
             JSONObject author = json.getJSONObject("author");
             embed.setAuthor(getStringFromJson(author, "name", holders, placehold), getStringFromJson(author, "url", holders, placehold), getStringFromJson(author, "icon_url", holders, placehold));
         }
-        embed.setTimestamp(getStringFromJson(json, "timestamp", holders, placehold) != null ? Instant.now() : null);
+        embed.setTimestamp(getTimestamp(json, holders, placehold));
         if (!json.isNull("fields")) {
             JSONArray fields = json.getJSONArray("fields");
             for (Object o : fields) {
@@ -152,6 +155,20 @@ public class MessageManager {
 
         embed.setDescription(getStringFromJson(json, "description", holders, placehold));
         return embed;
+    }
+
+    private @Nullable Instant getTimestamp(JSONObject json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+        if (json.has("timestamp")) {
+            if (json.get("timestamp") instanceof Long) return Instant.ofEpochSecond(json.getLong("timestamp"));
+            else {
+                if (json.getString("timestamp").equalsIgnoreCase("now")) return Instant.now();
+                String timestamp = getStringFromJson(json, "timestamp", holders, placehold);
+                if (timestamp.equalsIgnoreCase("now")) return Instant.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS'Z']");
+                LocalDateTime dateTime = LocalDateTime.parse(timestamp, formatter);
+                return dateTime.toInstant(ZoneOffset.UTC);
+            }
+        } else return null;
     }
 
     private Color colorOf(String color) {
@@ -241,8 +258,8 @@ public class MessageManager {
     public MessageBuilder getMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
         if (content.startsWith("message:")) {
-            String embedname = content.replaceFirst("message:", "");
-            JSONObject json = getMessageJSONByName(embedname);
+            String embedName = content.replaceFirst("message:", "");
+            JSONObject json = getMessageJSONByName(embedName);
             if (!json.isNull("content")) {
                 msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
