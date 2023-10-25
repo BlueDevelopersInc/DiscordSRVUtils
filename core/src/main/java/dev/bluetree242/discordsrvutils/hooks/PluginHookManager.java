@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.hooks;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -32,11 +33,8 @@ import java.util.List;
 public class PluginHookManager {
 
     private final DiscordSRVUtils core;
+    @Getter
     private final List<PluginHook> hooks = new ArrayList<>();
-
-    public List<PluginHook> getHooks() {
-        return hooks;
-    }
 
     public void hookAll() {
         for (PluginHook hook : new ArrayList<>(hooks)) {

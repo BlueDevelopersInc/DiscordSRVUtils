@@ -25,6 +25,7 @@ package dev.bluetree242.discordsrvutils.platform;
 
 import dev.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import dev.bluetree242.discordsrvutils.systems.status.StatusListener;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -32,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Getter
 public abstract class PluginPlatform<K> {
+    //platform-event stuff
     private final List<PlatformListener> listeners = new ArrayList<>();
 
     //abstract to allow some constant stuff that depend on some methods
@@ -64,11 +67,6 @@ public abstract class PluginPlatform<K> {
     public abstract String placehold(PlatformPlayer player, String s);
 
     public abstract PlatformDiscordSRV getDiscordSRV();
-
-    //platform-event stuff
-    public List<PlatformListener> getListeners() {
-        return listeners;
-    }
 
     public void addListener(PlatformListener listener) {
         listeners.add(listener);

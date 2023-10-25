@@ -38,6 +38,7 @@ import dev.bluetree242.discordsrvutils.commands.discord.suggestions.DenySuggesti
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.suggestions.SuggestionNoteCommand;
 import dev.bluetree242.discordsrvutils.commands.discord.tickets.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommandManager {
     private final DiscordSRVUtils core;
     private final ConcurrentHashMap<String, Command> cmds = new ConcurrentHashMap<>();
+    @Getter
     private final List<Command> commands = new ArrayList<>();
+    @Getter
     private final List<Command> commandsWithoutAliases = new ArrayList<>();
 
     public CommandManager(DiscordSRVUtils core) {
@@ -92,10 +95,6 @@ public class CommandManager {
         return cmds;
     }
 
-    public List<Command> getCommands() {
-        return commands;
-    }
-
     public List<Command> getDisabledCommands(boolean onlyConfig) {
         List<Command> result = new ArrayList<>();
         if (onlyConfig)
@@ -108,7 +107,4 @@ public class CommandManager {
         return result;
     }
 
-    public List<Command> getCommandsWithoutAliases() {
-        return commandsWithoutAliases;
-    }
 }

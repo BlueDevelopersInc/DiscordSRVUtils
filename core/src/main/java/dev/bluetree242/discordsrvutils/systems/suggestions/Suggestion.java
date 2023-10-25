@@ -30,6 +30,7 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Emoji;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import lombok.Getter;
 import org.jooq.DSLContext;
 
 import java.util.*;
@@ -37,17 +38,27 @@ import java.util.stream.Collectors;
 
 public class Suggestion {
 
+    @Getter
     protected final String text;
+    @Getter
     protected final int number;
+    @Getter
     protected final Long submitter;
+    @Getter
     protected final Long channelID;
+    @Getter
     protected final Long creationTime;
+    @Getter
     protected final Set<SuggestionNote> notes;
+    @Getter
     protected final Long MessageID;
+    @Getter
     protected final DiscordSRVUtils core;
     protected Boolean Approved;
     protected Message msg;
+    @Getter
     protected Long approver;
+    @Getter
     Set<SuggestionVote> votes;
 
     public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
@@ -65,14 +76,6 @@ public class Suggestion {
 
     }
 
-    public Set<SuggestionVote> getVotes() {
-        return votes;
-    }
-
-    public Long getApprover() {
-        return approver;
-    }
-
     /**
      * @return null if not approved or declined yet, true if approved false if declined
      **/
@@ -80,38 +83,6 @@ public class Suggestion {
         return Approved;
     }
 
-
-    public Long getMessageID() {
-        return MessageID;
-    }
-
-    public DiscordSRVUtils getCore() {
-        return core;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Long getCreationTime() {
-        return creationTime;
-    }
-
-    public Set<SuggestionNote> getNotes() {
-        return notes;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public Long getSubmitter() {
-        return submitter;
-    }
-
-    public Long getChannelID() {
-        return channelID;
-    }
 
     public SuggestionNote addNote(Long staff, String note) {
         DSLContext conn = core.getDatabaseManager().jooq();

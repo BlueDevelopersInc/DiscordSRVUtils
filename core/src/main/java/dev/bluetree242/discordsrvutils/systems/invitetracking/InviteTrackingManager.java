@@ -108,15 +108,12 @@ public class InviteTrackingManager {
                 .execute();
     }
 
+    @Getter
     @AllArgsConstructor
     public static class CachedInvite {
-        @Getter
         private final String code;
-        @Getter
         private final long userId;
-        @Getter
         private final long guildId;
-        @Getter
         @Setter
         private int uses;
     }

@@ -40,6 +40,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseExc
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
@@ -51,12 +52,19 @@ public class Panel {
 
     public static Map<Long, String> runningProcesses = new HashMap<>();
     private final DiscordSRVUtils core;
+    @Getter
     private final String id;
+    @Getter
     private String name;
+    @Getter
     private Long messageId;
+    @Getter
     private Long channelId;
+    @Getter
     private Long openedCategory;
+    @Getter
     private Long closedCategory;
+    @Getter
     private Set<Long> allowedRoles;
 
     public Panel(DiscordSRVUtils core, String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
@@ -82,34 +90,6 @@ public class Panel {
                     .set(PanelAllowedRolesTable.PANEL_ALLOWED_ROLES.ROLEID, r);
         }
         query.execute();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Long getMessageId() {
-        return messageId;
-    }
-
-    public Long getChannelId() {
-        return channelId;
-    }
-
-    public Long getOpenedCategory() {
-        return openedCategory;
-    }
-
-    public Long getClosedCategory() {
-        return closedCategory;
-    }
-
-    public Set<Long> getAllowedRoles() {
-        return allowedRoles;
     }
 
     public void delete(DSLContext conn) {

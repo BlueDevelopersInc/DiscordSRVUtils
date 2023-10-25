@@ -22,6 +22,9 @@
 
 package dev.bluetree242.discordsrvutils.systems.suggestions;
 
+import lombok.Getter;
+
+@Getter
 public class SuggestionVote {
 
     private final Long id;
@@ -34,15 +37,4 @@ public class SuggestionVote {
         this.agree = agree;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public int getSuggestionNumber() {
-        return SuggestionNumber;
-    }
-
-    public boolean isAgree() {
-        return agree;
-    }
 }

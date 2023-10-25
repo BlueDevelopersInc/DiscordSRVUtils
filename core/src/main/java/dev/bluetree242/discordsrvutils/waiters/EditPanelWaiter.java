@@ -40,18 +40,13 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class EditPanelWaiter extends Waiter {
-    @Getter
     private final dev.bluetree242.discordsrvutils.systems.tickets.Panel.Editor editor;
-    @Getter
     private final TextChannel channel;
-    @Getter
     private final User user;
-    @Getter
     private final Interaction interaction;
-    @Getter
     private int step = 0;
-    @Getter
     @Setter
     private Message message;
 

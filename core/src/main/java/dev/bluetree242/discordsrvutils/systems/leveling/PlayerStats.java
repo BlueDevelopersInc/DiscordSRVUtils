@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
+import lombok.Getter;
 import lombok.Setter;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
@@ -41,13 +42,20 @@ import java.util.UUID;
 
 public class PlayerStats {
     private final DiscordSRVUtils core;
+    @Getter
     private final UUID uuid;
+    @Getter
     private final int minecraftMessages;
+    @Getter
     private final int discordMessages;
+    @Getter
     private final int rank;
+    @Getter
     @Setter
     private String name;
+    @Getter
     private int level;
+    @Getter
     private int xp;
 
     public PlayerStats(DiscordSRVUtils core, UUID uuid, String name, int level, int xp, int minecraftMessages, int discordMessages, int rank) {
@@ -65,28 +73,12 @@ public class PlayerStats {
         return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
     public void setLevel(int level) {
         DSLContext conn = core.getDatabaseManager().jooq();
         conn.update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, level)
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                 .execute();
         this.level = level;
-    }
-
-    public int getXp() {
-        return xp;
     }
 
     public boolean setXP(int xp) {
@@ -165,14 +157,6 @@ public class PlayerStats {
             RestAction.allOf(actions).queue();
     }
 
-    public int getMinecraftMessages() {
-        return minecraftMessages;
-    }
-
-    public int getDiscordMessages() {
-        return discordMessages;
-    }
-
     public void addMessage(MessageType type) {
         DSLContext conn = core.getDatabaseManager().jooq();
         TableField toUpdate = null;
@@ -191,10 +175,6 @@ public class PlayerStats {
                 .set(toUpdate, value)
                 .where(LevelingTable.LEVELING.UUID.eq(uuid.toString()))
                 .execute();
-    }
-
-    public int getRank() {
-        return rank;
     }
 
     public List<Role> getRoles() {

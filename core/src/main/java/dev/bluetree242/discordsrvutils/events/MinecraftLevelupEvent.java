@@ -24,7 +24,9 @@ package dev.bluetree242.discordsrvutils.events;
 
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import lombok.Getter;
 
+@Getter
 public class MinecraftLevelupEvent extends LevelupEvent {
     private final PlayerStats stats;
     private final PlatformPlayer player;
@@ -33,14 +35,6 @@ public class MinecraftLevelupEvent extends LevelupEvent {
         super(stats, player.getUniqueId());
         this.stats = stats;
         this.player = player;
-    }
-
-    public PlayerStats getStats() {
-        return stats;
-    }
-
-    public PlatformPlayer getPlayer() {
-        return player;
     }
 
 }

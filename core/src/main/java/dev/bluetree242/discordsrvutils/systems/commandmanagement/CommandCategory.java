@@ -22,8 +22,11 @@
 
 package dev.bluetree242.discordsrvutils.systems.commandmanagement;
 
+import lombok.Getter;
+
 import java.util.*;
 
+@Getter
 public class CommandCategory {
 
     public static final CommandCategory TICKETS = new CommandCategory("Tickets", "📩");
@@ -67,20 +70,8 @@ public class CommandCategory {
         return null;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
     protected void addCommand(Command cmd) {
         commands.add(cmd);
-    }
-
-    public List<Command> getCommands() {
-        return commands;
     }
 
     public List<Command> getEnabledCommands() {

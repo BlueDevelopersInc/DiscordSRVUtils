@@ -40,8 +40,11 @@ import java.util.List;
 
 public class PaginationWaiter extends Waiter {
     private final DiscordSRVUtils core;
+    @Getter
     private final MessageChannel channel;
+    @Getter
     private final List<MessageEmbed> embeds;
+    @Getter
     private final User user;
     @Getter
     private final Interaction interaction;
@@ -74,18 +77,6 @@ public class PaginationWaiter extends Waiter {
         }
         buttons.add(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1️")));
         return ActionRow.of(buttons);
-    }
-
-    public MessageChannel getChannel() {
-        return channel;
-    }
-
-    public List<MessageEmbed> getEmbeds() {
-        return embeds;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public int getPage() {

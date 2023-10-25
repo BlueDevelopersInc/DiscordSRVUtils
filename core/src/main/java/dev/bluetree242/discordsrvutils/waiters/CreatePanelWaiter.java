@@ -27,7 +27,9 @@ import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
 import dev.bluetree242.discordsrvutils.waiter.Waiter;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import lombok.Getter;
 
+@Getter
 public class CreatePanelWaiter extends Waiter {
     private final Panel.Builder builder;
     private final TextChannel channel;
@@ -53,24 +55,8 @@ public class CreatePanelWaiter extends Waiter {
         return null;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public TextChannel getChannel() {
-        return channel;
-    }
-
-    public int getStep() {
-        return step;
-    }
-
     public void setStep(int num) {
         step = num;
-    }
-
-    public Panel.Builder getBuilder() {
-        return builder;
     }
 
     @Override

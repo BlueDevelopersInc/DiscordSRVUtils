@@ -25,7 +25,9 @@ package dev.bluetree242.discordsrvutils.events;
 import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import lombok.Getter;
 
+@Getter
 public class DiscordLevelupEvent extends LevelupEvent {
     private final PlayerStats stats;
     private final TextChannel channel;
@@ -38,15 +40,4 @@ public class DiscordLevelupEvent extends LevelupEvent {
         this.user = user;
     }
 
-    public PlayerStats getStats() {
-        return stats;
-    }
-
-    public TextChannel getChannel() {
-        return channel;
-    }
-
-    public User getUser() {
-        return user;
-    }
 }

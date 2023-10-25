@@ -40,25 +40,16 @@ import org.jooq.DSLContext;
 @RequiredArgsConstructor()
 public class CommandEvent {
     private final DiscordSRVUtils core;
+    @Getter
     private final Member member;
+    @Getter
     private final User author;
+    @Getter
     private final MessageChannel channel;
     private final JDA jda;
     @Getter
     private final SlashCommandEvent event;
     private DSLContext connection;
-
-    public Member getMember() {
-        return member;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public MessageChannel getChannel() {
-        return channel;
-    }
 
     public ReplyAction reply(String content) {
         return event.reply(content);

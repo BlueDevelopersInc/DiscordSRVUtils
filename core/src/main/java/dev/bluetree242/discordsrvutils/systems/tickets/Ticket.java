@@ -35,10 +35,15 @@ import org.jooq.DSLContext;
 
 public class Ticket {
     private final DiscordSRVUtils core;
+    @Getter
     private final String id;
+    @Getter
     private final Long userID;
+    @Getter
     private final Long channelID;
+    @Getter
     private final boolean closed;
+    @Getter
     private final Panel panel;
     @Getter
     private final boolean firstMessage;
@@ -53,26 +58,6 @@ public class Ticket {
         this.panel = panel;
         this.messageID = messageID;
         this.firstMessage = firstMessage;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Long getUserID() {
-        return userID;
-    }
-
-    public Long getChannelID() {
-        return channelID;
-    }
-
-    public boolean isClosed() {
-        return closed;
-    }
-
-    public Panel getPanel() {
-        return panel;
     }
 
     public long getMessageID() {

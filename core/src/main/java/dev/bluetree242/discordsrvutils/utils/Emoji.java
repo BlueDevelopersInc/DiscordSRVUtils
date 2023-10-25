@@ -22,11 +22,16 @@
 
 package dev.bluetree242.discordsrvutils.utils;
 
+import lombok.Getter;
+
 public class Emoji {
 
 
+    @Getter
     private final String nameInText;
+    @Getter
     private final String name;
+    @Getter
     private final String nameInReaction;
     private final boolean emote;
     private Long id;
@@ -51,18 +56,6 @@ public class Emoji {
     @Override
     public String toString() {
         return nameInText;
-    }
-
-    public String getNameInText() {
-        return nameInText;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNameInReaction() {
-        return nameInReaction;
     }
 
     public github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji toJDAEmoji() {

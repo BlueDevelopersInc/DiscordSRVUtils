@@ -28,8 +28,8 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
+@Getter
 public class BukkitConsoleCommandUser extends ConsoleCommandUser {
-    @Getter
     private final CommandSender sender = Bukkit.getConsoleSender();
 
     @Override

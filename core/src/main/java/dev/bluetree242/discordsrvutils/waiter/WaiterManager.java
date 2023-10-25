@@ -24,6 +24,7 @@ package dev.bluetree242.discordsrvutils.waiter;
 
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class WaiterManager {
 
     private static WaiterManager main;
     private final DiscordSRVUtils core;
+    @Getter
     private final Set<Waiter> waiters = ConcurrentHashMap.newKeySet();
     public Timer timer = new Timer();
 
@@ -42,10 +44,6 @@ public class WaiterManager {
         timer.schedule(new WaiterCanceller(core), 0, 1000);
     }
 
-
-    public Set<Waiter> getWaiters() {
-        return waiters;
-    }
 
     public Set<Waiter> getWaiterByName(String name) {
         Set<Waiter> ret = new HashSet<>();

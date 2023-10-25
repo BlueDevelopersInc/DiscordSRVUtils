@@ -22,11 +22,16 @@
 
 package dev.bluetree242.discordsrvutils.systems.suggestions;
 
+import lombok.Getter;
+
 public class SuggestionNote {
 
+    @Getter
     private final Long staffID;
     private final String NoteText;
+    @Getter
     private final int SuggestionNumber;
+    @Getter
     private final Long CreationTime;
 
     public SuggestionNote(Long staffID, String noteText, int suggestionNumber, Long creationTime) {
@@ -36,20 +41,9 @@ public class SuggestionNote {
         CreationTime = creationTime;
     }
 
-    public Long getStaffID() {
-        return staffID;
-    }
-
     public String getText() {
         return NoteText;
     }
 
 
-    public int getSuggestionNumber() {
-        return SuggestionNumber;
-    }
-
-    public Long getCreationTime() {
-        return CreationTime;
-    }
 }

@@ -27,8 +27,8 @@ import dev.bluetree242.discordsrvutils.utils.Utils;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
+@Getter
 public class BukkitCommandUser extends CommandUser {
-    @Getter
     private final CommandSender sender;
 
     public BukkitCommandUser(CommandSender sender) {

@@ -48,17 +48,13 @@ public class UserInvites {
         return (int) invites.stream().filter(Invite::isLeft).count();
     }
 
+    @Getter
     @RequiredArgsConstructor
     public static class Invite {
-        @Getter
         private final long joinTime;
-        @Getter
         private final long userId;
-        @Getter
         private final long inviterId;
-        @Getter
         private final boolean left;
-        @Getter
         private final long guildId;
     }
 }

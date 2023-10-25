@@ -37,6 +37,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
     static {
@@ -53,7 +54,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         }
     }
 
-    @Getter
     private DiscordSRVUtils core = null;
 
     public void onEnable() {
