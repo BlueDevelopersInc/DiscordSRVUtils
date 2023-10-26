@@ -33,19 +33,23 @@ repositories {
     maven { url 'https://repo.bluetree242.dev/maven-public' }
 }
 ```
+
 ```gradle
 dependencies {
     // Any other dependency...
     implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
 }
 ```
+
 ## Gradle (Kotlin DSL)
+
 ```kts
 repositories {
     // Any other repository...
     maven("https://repo.bluetree242.dev/maven-public")
 }
 ```
+
 ```kts
 dependencies {
     // Any other dependency...
@@ -53,7 +57,8 @@ dependencies {
 }
 ```
 
-You also need to add DiscordSRV's dependency and repository, which you can find [here](https://docs.discordsrv.com/master/#developers)
+You also need to add DiscordSRV's dependency and repository, which you can
+find [here](https://docs.discordsrv.com/master/#developers)
 
 # Contributing
 
