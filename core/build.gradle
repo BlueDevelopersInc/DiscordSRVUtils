@@ -81,11 +81,6 @@ dependencies {
     implementation('org.slf4j:slf4j-api:2.0.1')
 }
 
-
-test {
-    useJUnitPlatform()
-}
-
 //related to jooq
 afterEvaluate { evaluated ->
     evaluated.tasks.findByName("generateJooq").doFirst {
@@ -163,10 +158,6 @@ jooq {
             }
         }
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 tasks.register('packageSources', Jar) {

@@ -107,17 +107,7 @@ public class LevelingManager {
         if (!adding)
             cachedUUIDS.put(stats.getUuid(), stats);
         return stats;
-    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
-            .maximumSize(120)
-            .expireAfterWrite(Duration.ofMinutes(1))
-            .refreshAfterWrite(Duration.ofSeconds(30))
-            .build(key -> {
-                DiscordSRVUtils core = DiscordSRVUtils.get();
-                adding = true;
-                PlayerStats stats = getPlayerStats(key);
-                adding = false;
-                return stats;
-            });
+    }
 
     public List<PlayerStats> getLeaderboard(int max) {
         DSLContext conn = core.getDatabaseManager().jooq();
@@ -129,7 +119,17 @@ public class LevelingManager {
             leaderboard.add(getPlayerStats(record, num));
         }
         return leaderboard;
-    }
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
+                adding = true;
+                PlayerStats stats = getPlayerStats(key);
+                adding = false;
+                return stats;
+            });
 
     public void resetLeveling() {
         core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
