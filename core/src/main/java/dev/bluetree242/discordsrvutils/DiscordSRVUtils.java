@@ -53,8 +53,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import lombok.Getter;
-import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 import space.arim.dazzleconf.error.InvalidConfigException;
 
 import java.io.IOException;
@@ -211,7 +209,7 @@ public class DiscordSRVUtils {
                     "|   &cName: &rDiscordSRVUtils\n&r" +
                     "|   &cDevelopers: &rBlueTree242\n&r" +
                     "|   &cVersion: &r" + main.getDescription().getVersion() + "\n&r" +
-                    (getVersionConfig().getString("buildNumber").equalsIgnoreCase("NONE") ? "" : "|   &cBuild: &r#" + getVersionConfig().getString("buildNumber") + "\n&r") +
+                    (VersionInfo.BUILD_NUMBER.equalsIgnoreCase("NONE") ? "" : "|   &cBuild: &r#" + VersionInfo.BUILD_NUMBER + "\n&r") +
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
@@ -340,11 +338,6 @@ public class DiscordSRVUtils {
 
     public JDA getJDA() {
         return getDiscordSRV().getJDA();
-    }
-
-
-    public JSONObject getVersionConfig() throws IOException {
-        return new JSONObject(new String(IOUtils.toByteArray(getPlatform().getResource("version-config.json"))));
     }
 
     public void severe(String sv) {

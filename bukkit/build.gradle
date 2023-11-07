@@ -63,11 +63,6 @@ dependencies {
     implementation "org.json:json:${rootProject.org_json_version}"
 }
 
-
-test {
-    useJUnitPlatform()
-}
-
 repositories {
     mavenCentral()
 }

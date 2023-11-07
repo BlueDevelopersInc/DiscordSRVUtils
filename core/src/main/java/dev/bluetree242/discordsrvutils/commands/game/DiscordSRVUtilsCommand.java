@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.commands.game;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.VersionInfo;
 import dev.bluetree242.discordsrvutils.events.LevelupEvent;
 import dev.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
@@ -52,8 +53,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
             sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getPlatform().getDescription().getVersion());
-            String build = core.getVersionConfig().getString("buildNumber");
-            sender.sendMessage("&eBuild " + (build.equalsIgnoreCase("NONE") ? "&aNone/Unknown" : "&a#" + build));
+            sender.sendMessage("&eBuild " + (VersionInfo.BUILD_NUMBER.equalsIgnoreCase("NONE") ? "&aNone/Unknown" : "&a#" + VersionInfo.BUILD_NUMBER));
             sender.sendMessage("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running"));
             return;
         }

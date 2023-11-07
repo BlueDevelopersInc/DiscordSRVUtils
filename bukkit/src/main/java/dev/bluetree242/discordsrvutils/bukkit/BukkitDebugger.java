@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.bukkit;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.VersionInfo;
 import dev.bluetree242.discordsrvutils.hooks.PluginHook;
 import dev.bluetree242.discordsrvutils.platform.Debugger;
 import dev.bluetree242.discordsrvutils.utils.Utils;
@@ -100,11 +101,10 @@ public class BukkitDebugger implements Debugger {
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
         data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
         Map<String, String> versionConfig = new HashMap<>();
-        JSONObject config = core.getVersionConfig();
-        versionConfig.put("Version", config.getString("version"));
-        versionConfig.put("Build Number", config.getString("buildNumber"));
-        versionConfig.put("Commit Hash", config.getString("commit"));
-        versionConfig.put("Build Date", new Date(Long.parseLong(config.getString("buildDate"))) + " (" + (Utils.getDuration(System.currentTimeMillis() - Long.parseLong(config.getString("buildDate"))) + " ago)"));
+        versionConfig.put("Version", VersionInfo.VERSION);
+        versionConfig.put("Build Number", VersionInfo.BUILD_NUMBER);
+        versionConfig.put("Commit Hash", VersionInfo.COMMIT);
+        versionConfig.put("Build Date", new Date(Long.parseLong(VersionInfo.BUILD_DATE)) + " (" + (Utils.getDuration(System.currentTimeMillis() - Long.parseLong(VersionInfo.BUILD_DATE)) + " ago)"));
         data.put(new JSONObject().put("type", "key_value").put("name", "Version Config").put("data", MapToKeyValue(versionConfig)));
         JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
                 new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
