@@ -119,6 +119,12 @@ subprojects {
             replaceToken("@commit@", commit, main)
             replaceToken("@buildDate@", System.currentTimeMillis(), main)
         }
+    } else if (project.name == "bukkit") {
+        project.processResources {
+            from(sourceSets.main.resources.srcDirs) {
+                filter ReplaceTokens, tokens: [version: version]
+            }
+        }
     }
     tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
 }
