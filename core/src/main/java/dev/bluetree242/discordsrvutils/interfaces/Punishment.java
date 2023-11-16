@@ -28,6 +28,7 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface Punishment<O> {
@@ -185,6 +186,10 @@ public interface Punishment<O> {
     boolean isIp();
 
     UUID getTargetUUID();
+
+    default @Nullable String getRevoker() {
+        return null;
+    }
 
     enum PunishmentProvider {
         ADVANCEDBAN, LITEBANS, LIBERTYBANS

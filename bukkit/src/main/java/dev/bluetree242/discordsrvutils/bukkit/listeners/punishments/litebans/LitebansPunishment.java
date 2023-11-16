@@ -28,6 +28,7 @@ import litebans.api.Entry;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -98,5 +99,11 @@ public class LitebansPunishment implements Punishment<Entry> {
     @Override
     public UUID getTargetUUID() {
         return punishment.getUuid() == null ? null : UUID.fromString(punishment.getUuid());
+    }
+
+    @Nullable
+    @Override
+    public String getRevoker() {
+        return punishment.getRemovedByName();
     }
 }
