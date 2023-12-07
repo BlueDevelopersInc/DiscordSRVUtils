@@ -24,8 +24,8 @@ package dev.bluetree242.discordsrvutils.commands.discord.other;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 
 import java.util.UUID;
 

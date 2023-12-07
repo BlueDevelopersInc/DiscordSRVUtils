@@ -233,12 +233,11 @@ public class SuggestionManager {
             if (sent) {
                 core.logger.info("Suggestions Migration has finished.");
             }
-            core.getSuggestionManager().loading = false;
         } catch (Throwable ex) {
             core.getErrorHandler().defaultHandle(ex);
             core.getLogger().severe("Failed to update suggestions system. Suggestions may not work as expected.");
         }
-
+        core.getSuggestionManager().loading = false;
     }
 
 

@@ -23,8 +23,8 @@
 package dev.bluetree242.discordsrvutils.commands.discord.suggestions;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 

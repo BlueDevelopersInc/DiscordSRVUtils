@@ -32,7 +32,7 @@ import dev.bluetree242.discordsrvutils.other.MessageFilter;
 import dev.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import dev.bluetree242.discordsrvutils.platform.PlatformServer;
 import dev.bluetree242.discordsrvutils.platform.PluginPlatform;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandManager;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandManager;
 import dev.bluetree242.discordsrvutils.systems.invitetracking.InviteTrackingManager;
 import dev.bluetree242.discordsrvutils.systems.leveling.LevelingManager;
 import dev.bluetree242.discordsrvutils.systems.leveling.LevelingRewardsManager;

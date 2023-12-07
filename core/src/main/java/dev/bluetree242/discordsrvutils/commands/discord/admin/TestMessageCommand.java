@@ -24,9 +24,9 @@ package dev.bluetree242.discordsrvutils.commands.discord.admin;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.Command;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandCategory;
-import dev.bluetree242.discordsrvutils.systems.commandmanagement.CommandEvent;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import org.json.JSONException;

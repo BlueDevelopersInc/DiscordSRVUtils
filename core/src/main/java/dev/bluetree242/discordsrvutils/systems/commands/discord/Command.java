@@ -20,7 +20,7 @@
  * END
  */
 
-package dev.bluetree242.discordsrvutils.systems.commandmanagement;
+package dev.bluetree242.discordsrvutils.systems.commands.discord;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.utils.Utils;
