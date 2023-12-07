@@ -100,17 +100,16 @@ public class SlashCommandProvider implements github.scarsz.discordsrv.api.comman
             core.getLogger().info(e.getUser().getAsTag() + " Used " + "/" + cmd + " Command");
             executor.run(event);
         } catch (InsufficientPermissionException ex) {
-            ex.printStackTrace();
             e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!", "The bot is missing the following permission: " + ex.getPermission())).queue();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception ex) {
+            core.getErrorHandler().defaultHandle(ex);
             e.replyEmbeds(Embed.error("An error happened while executing this Command. Please report to the devs!")).queue();
         }
         if (event.isConnOpen()) {
             try {
                 event.getConnection().configuration().connectionProvider().acquire().close();
-            } catch (SQLException throwables) {
-                core.getErrorHandler().defaultHandle(throwables);
+            } catch (SQLException ex) {
+                core.getErrorHandler().defaultHandle(ex);
             }
         }
 
