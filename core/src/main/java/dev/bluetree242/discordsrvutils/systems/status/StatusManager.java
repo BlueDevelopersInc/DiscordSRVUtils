@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 
@@ -43,7 +44,7 @@ import java.util.Timer;
 
 @RequiredArgsConstructor
 public class StatusManager {
-    private static StatusManager main;
+    @Getter
     private final DiscordSRVUtils core;
     private StatusTimer timer = new StatusTimer(this);
 

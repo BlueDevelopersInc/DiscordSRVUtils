@@ -181,60 +181,64 @@ public class SuggestionManager {
     }
 
     public void migrateSuggestions() {
-        voteMode = SuggestionVoteMode.valueOf(core.getSuggestionsConfig().suggestions_vote_mode().toUpperCase());
-        String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
-        boolean sent = false;
-        loading = true;
-        DSLContext jooq = core.getDatabaseManager().jooq();
-        List<SuggestionsRecord> records = jooq
-                .selectFrom(SuggestionsTable.SUGGESTIONS)
-                .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
-                .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
-                .fetch();
-        for (SuggestionsRecord record : records) {
-            Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
-            try {
-                Message msg = suggestion.getMessage();
-                if (msg != null) {
-                    if (msg.getButtons().isEmpty()) {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
+        try {
+            voteMode = SuggestionVoteMode.valueOf(core.getSuggestionsConfig().suggestions_vote_mode().toUpperCase());
+            String warnmsg = "Suggestions are being migrated to the new Suggestions Mode. Users may not vote for suggestions during this time";
+            boolean sent = false;
+            loading = true;
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            List<SuggestionsRecord> records = jooq
+                    .selectFrom(SuggestionsTable.SUGGESTIONS)
+                    .where(SuggestionsTable.SUGGESTIONS.VOTE_MODE.notEqual(voteMode.name()))
+                    .or(SuggestionsTable.SUGGESTIONS.VOTE_MODE.isNull())
+                    .fetch();
+            for (SuggestionsRecord record : records) {
+                Suggestion suggestion = core.getSuggestionManager().getSuggestion(record);
+                try {
+                    Message msg = suggestion.getMessage();
+                    if (msg != null) {
+                        if (msg.getButtons().isEmpty()) {
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
+                            } else {
+                                if (!sent) {
+                                    core.logger.info(warnmsg);
+                                    sent = true;
+                                    core.getSuggestionManager().loading = true;
+                                }
+                                msg.clearReactions().queue();
+                                msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
+                                        Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
+                                        Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
+                                        Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
+                            }
                         } else {
-                            if (!sent) {
-                                core.logger.info(warnmsg);
-                                sent = true;
-                                core.getSuggestionManager().loading = true;
+                            if (voteMode == SuggestionVoteMode.REACTIONS) {
+                                if (!sent) {
+                                    core.getSuggestionManager().loading = true;
+                                    core.logger.info(warnmsg);
+                                    sent = true;
+                                }
+                                msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
+                                msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
+                                msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
                             }
-                            msg.clearReactions().queue();
-                            msg.editMessage(suggestion.getCurrentMsg()).setActionRow(
-                                    Button.success("yes", SuggestionManager.getYesEmoji().toJDAEmoji()),
-                                    Button.danger("no", SuggestionManager.getNoEmoji().toJDAEmoji()),
-                                    Button.secondary("reset", github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji.fromUnicode("⬜"))).queue();
                         }
-                    } else {
-                        if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            if (!sent) {
-                                core.getSuggestionManager().loading = true;
-                                core.logger.info(warnmsg);
-                                sent = true;
-                            }
-                            msg.addReaction(SuggestionManager.getYesEmoji().getNameInReaction()).queue();
-                            msg.addReaction(SuggestionManager.getNoEmoji().getNameInReaction()).queue();
-                            msg.editMessage(msg).setActionRows(Collections.EMPTY_LIST).queue();
-                        }
+                        jooq.update(SuggestionsTable.SUGGESTIONS)
+                                .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
+                                .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
+                                .execute();
                     }
-                    jooq.update(SuggestionsTable.SUGGESTIONS)
-                            .set(SuggestionsTable.SUGGESTIONS.VOTE_MODE, voteMode.name())
-                            .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
-                            .execute();
-                }
-            } catch (ErrorResponseException ignored) {
-
+                } catch (ErrorResponseException ignored) {}
             }
+            if (sent) {
+                core.logger.info("Suggestions Migration has finished.");
+            }
+            core.getSuggestionManager().loading = false;
+        } catch (Throwable ex) {
+            core.getErrorHandler().defaultHandle(ex);
+            core.getLogger().severe("Failed to update suggestions system. Suggestions may not work as expected.");
         }
-        if (sent) {
-            core.logger.info("Suggestions Migration has finished.");
-        }
-        core.getSuggestionManager().loading = false;
+
     }
 
 

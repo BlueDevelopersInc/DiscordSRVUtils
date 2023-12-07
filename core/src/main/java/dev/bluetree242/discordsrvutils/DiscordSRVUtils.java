@@ -95,9 +95,6 @@ public class DiscordSRVUtils {
     private final UpdateChecker updateChecker = new UpdateChecker(this);
     @Getter
     private final DatabaseManager databaseManager = new DatabaseManager(this);
-    //latest error that occurred on our thread pool
-    //Plugins we hooked into
-    // faster getter for the logger
 
     @Getter
     private final InviteTrackingManager inviteTrackingManager = new InviteTrackingManager(this);
@@ -307,10 +304,9 @@ public class DiscordSRVUtils {
             if (!inviteTrackingManager.cacheInvites())
                 errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
             //fix issues with any ticket or panel
-            ticketManager.fixTickets();
+            ticketManager.updateTickets();
             //migrate suggestion buttons/reactions if needed
             suggestionManager.migrateSuggestions();
-            statusManager.editMessage(true);
             statusManager.registerTimer();
             logger.info("Plugin is ready to function.");
         });

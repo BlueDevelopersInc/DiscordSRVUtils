@@ -32,6 +32,11 @@ public class StatusTimer extends TimerTask {
 
     @Override
     public void run() {
-        manager.editMessage(true);
+        try {
+            manager.editMessage(true);
+        } catch (Throwable ex) {
+            manager.getCore().getErrorHandler().defaultHandle(ex);
+            manager.getCore().getLogger().severe("Failed to update status message.");
+        }
     }
 }

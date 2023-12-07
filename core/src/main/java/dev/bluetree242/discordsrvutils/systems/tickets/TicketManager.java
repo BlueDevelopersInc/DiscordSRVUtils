@@ -136,42 +136,47 @@ public class TicketManager {
         return getTicket(r, null);
     }
 
-    public void fixTickets() {
-        DSLContext jooq = core.getDatabaseManager().jooq();
-        List<TicketsRecord> tickets = jooq
-                .selectFrom(TicketsTable.TICKETS)
-                .fetch();
-        for (TicketsRecord record : tickets) {
-            TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
-            if (channel == null) {
-                jooq.deleteFrom(TicketsTable.TICKETS)
-                        .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
-                        .execute();
-            }
-        }
-
-        //work with panels
-        List<TicketPanelsRecord> panels = jooq
-                .selectFrom(TicketPanelsTable.TICKET_PANELS)
-                .fetch();
-        for (TicketPanelsRecord record : panels) {
-            Panel panel = getPanel(record);
-            try {
-                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId());
+    public void updateTickets() {
+        try {
+            DSLContext jooq = core.getDatabaseManager().jooq();
+            List<TicketsRecord> tickets = jooq
+                    .selectFrom(TicketsTable.TICKETS)
+                    .fetch();
+            for (TicketsRecord record : tickets) {
+                TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(record.getChannel());
                 if (channel == null) {
-                    core.getLogger().severe("Ticket panel with ID " + panel.getId() + " (" + panel.getName() + ") channel was deleted. To fix this issue, change the channel or delete this ticket using /editpanel command.");
-                    return;
+                    jooq.deleteFrom(TicketsTable.TICKETS)
+                            .where(TicketsTable.TICKETS.CHANNEL.eq(record.getChannel()))
+                            .execute();
                 }
-                Message msg = channel.retrieveMessageById(panel.getMessageId()).complete();
-                if (msg.getButtons().isEmpty()) {
-                    msg.clearReactions().queue();
-                    msg.editMessage(msg).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
-                } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
-                    msg.editMessage(msg).setActionRows(ActionRow.of(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
-                }
-            } catch (ErrorResponseException ex) {
-                panel.getEditor().apply(jooq);
             }
+
+            //work with panels
+            List<TicketPanelsRecord> panels = jooq
+                    .selectFrom(TicketPanelsTable.TICKET_PANELS)
+                    .fetch();
+            for (TicketPanelsRecord record : panels) {
+                Panel panel = getPanel(record);
+                try {
+                    TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(panel.getChannelId());
+                    if (channel == null) {
+                        core.getLogger().severe("Ticket panel with ID " + panel.getId() + " (" + panel.getName() + ") channel was deleted. To fix this issue, change the channel or delete this ticket using /editpanel command.");
+                        return;
+                    }
+                    Message msg = channel.retrieveMessageById(panel.getMessageId()).complete();
+                    if (msg.getButtons().isEmpty()) {
+                        msg.clearReactions().queue();
+                        msg.editMessage(msg).setActionRow(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button())).queue();
+                    } else if (!msg.getButtons().get(0).getLabel().equals(core.getTicketsConfig().open_ticket_button())) {
+                        msg.editMessage(msg).setActionRows(ActionRow.of(Button.primary("open_ticket", Emoji.fromUnicode("📩")).withLabel(core.getTicketsConfig().open_ticket_button()))).queue();
+                    }
+                } catch (ErrorResponseException ex) {
+                    panel.getEditor().apply(jooq);
+                }
+            }
+        } catch (Throwable ex) {
+            core.getErrorHandler().defaultHandle(ex);
+            core.getLogger().severe("Failed to update tickets system. Tickets may not work as expected.");
         }
     }
 

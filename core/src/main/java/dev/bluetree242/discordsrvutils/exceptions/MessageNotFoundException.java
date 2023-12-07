@@ -22,16 +22,14 @@
 
 package dev.bluetree242.discordsrvutils.exceptions;
 
-public class MessageNotFoundException extends RuntimeException {
+import lombok.Getter;
+@Getter
+public class MessageNotFoundException extends InvalidMessageException {
 
-    private final String msg;
+    private final String message;
 
-    public MessageNotFoundException(String embed) {
-        this.msg = "Message \"" + embed + "\" was not found";
-    }
-
-    @Override
-    public String getMessage() {
-        return msg;
+    public MessageNotFoundException(String message) {
+        super(message, null);
+        this.message = "Message \"" + message + "\" was not found";
     }
 }

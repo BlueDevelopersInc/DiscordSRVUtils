@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.systems.messages;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.exceptions.InvalidMessageException;
 import dev.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
@@ -60,8 +61,6 @@ public class MessageManager {
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
     private final DiscordSRVUtils core;
-    //messages folder path[https://discordsrvutils.xyz/support]
-
 
     public Path getMessagesDirectory() {
         return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
@@ -121,7 +120,7 @@ public class MessageManager {
         }
     }
 
-    public EmbedBuilder parseEmbedFromJSON(JSONObject json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public EmbedBuilder parseEmbedFromJSON(JSONObject json, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
         if (!json.isNull("color")) {
@@ -205,7 +204,7 @@ public class MessageManager {
     }
 
 
-    private String getStringFromJson(JSONObject ob, String val, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    private String getStringFromJson(JSONObject ob, String val, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         if (!ob.isNull(val)) {
             String raw = ob.getString(val);
             if (holders != null) {
@@ -250,8 +249,8 @@ public class MessageManager {
         }
         try {
             return new JSONObject(Utils.readFile(file.getPath()));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+        } catch (Throwable ex) {
+            throw new InvalidMessageException(name, ex);
         }
     }
 
