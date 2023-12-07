@@ -26,6 +26,7 @@ import dev.bluetree242.discordsrvutils.interfaces.Punishment;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import me.leoko.advancedban.manager.UUIDManager;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -90,6 +91,6 @@ public class AdvancedBanPunishment implements Punishment<me.leoko.advancedban.ut
 
     @Override
     public UUID getTargetUUID() {
-        return UUIDManager.get().fromString(punishment.getUuid());
+        return punishment.getUuid().equalsIgnoreCase(punishment.getName()) ? Bukkit.getOfflinePlayer(punishment.getName()).getUniqueId() : UUIDManager.get().fromString(punishment.getUuid());
     }
 }
