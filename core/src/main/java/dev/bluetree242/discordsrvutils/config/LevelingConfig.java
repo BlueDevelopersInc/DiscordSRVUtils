@@ -35,7 +35,7 @@ public interface LevelingConfig {
 
     @AnnotationBasedSorter.Order(9)
     @ConfComments("#Is leveling enabled?")
-    @ConfDefault.DefaultBoolean(true)
+    @ConfDefault.DefaultBoolean(false)
     boolean enabled();
 
     @ConfKey("minecraft-levelup-message")
