@@ -6,7 +6,7 @@
     },
     "author": {
       "icon_url": "https://api.creepernation.net/avatar/[punishment.name]",
-      "name": "[punishment.name] was warned by [punishment.operator] For [punishment.reason]"
+      "name": "[punishment.name] was **warned** by `[punishment.operator]` for `[punishment.reason]`"
     }
   }
 }

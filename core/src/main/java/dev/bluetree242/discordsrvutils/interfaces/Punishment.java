@@ -52,21 +52,24 @@ public interface Punishment<O> {
                             msg = punishmentMsg(core, core.getBansConfig().bannedMessage(), placeholder);
                     } else {
                         if (punishment.isIp())
-                            msg = punishmentMsg(core, core.getBansConfig().TempIPBannedMessage(), placeholder);
+                            msg = punishmentMsg(core, core.getBansConfig().tempIPBannedMessage(), placeholder);
                         else
                             msg = punishmentMsg(core, core.getBansConfig().tempBannedMessage(), placeholder);
                     }
                     break;
                 case MUTE:
                     if (punishment.isPermanent()) {
-                        msg = punishmentMsg(core, core.getBansConfig().MutedMessage(), placeholder);
+                        msg = punishmentMsg(core, core.getBansConfig().mutedMessage(), placeholder);
                     } else {
                         //there is no temp ip mute message for now
-                        msg = punishmentMsg(core, core.getBansConfig().TempMutedMessage(), placeholder);
+                        msg = punishmentMsg(core, core.getBansConfig().tempMutedMessage(), placeholder);
                     }
                     break;
                 case WARN:
                     msg = core.getMessageManager().getMessage(core.getBansConfig().warnedMessage(), placeholder, null).build();
+                    break;
+                case KICK:
+                    msg = core.getMessageManager().getMessage(core.getBansConfig().kick_message(), placeholder, null).build();
                     break;
                 default:
                     break;
@@ -75,7 +78,7 @@ public interface Punishment<O> {
             switch (punishment.getPunishmentType()) {
                 case BAN:
                     if (punishment.isIp())
-                        msg = punishmentMsg(core, core.getBansConfig().unipbannedMessage(), placeholder);
+                        msg = punishmentMsg(core, core.getBansConfig().unIPBannedMessage(), placeholder);
                     else
                         msg = punishmentMsg(core, core.getBansConfig().unbannedMessage(), placeholder);
                     break;
@@ -101,7 +104,7 @@ public interface Punishment<O> {
     }
 
     static Message punishmentMsg(DiscordSRVUtils core, String s, PlaceholdObjectList p) {
-        if (s.equals("")) return null; //not send it
+        if (s.isEmpty()) return null; //not send it
         return core.getMessageManager().getMessage(s, p, null).build();
     }
 
@@ -123,14 +126,14 @@ public interface Punishment<O> {
                     else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
                         core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
                     else {
-                        core.severe("Could not add Banned role to " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
+                        core.severe("Could not add banned role to " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
                     break;
                 case MUTE:
                     Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
-                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
+                            core.severe("No role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
                     core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
@@ -148,14 +151,14 @@ public interface Punishment<O> {
                     else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
                         core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
                     else {
-                        core.severe("Could not remove Banned role from " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
+                        core.severe("Could not remove banned role from " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
                     break;
                 case MUTE:
                     Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().mutedRole());
                     if (role == null) {
                         if (core.getBansConfig().mutedRole() != 0)
-                            core.severe("No Role was found with id " + core.getBansConfig().mutedRole());
+                            core.severe("No role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
                     core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
@@ -196,7 +199,7 @@ public interface Punishment<O> {
     }
 
     enum PunishmentType {
-        BAN, MUTE, WARN, UNKNOWN;
+        BAN, MUTE, WARN, KICK, UNKNOWN;
 
         public static PunishmentType get(String name) {
             try {
