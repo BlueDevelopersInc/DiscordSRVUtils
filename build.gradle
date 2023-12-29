@@ -126,7 +126,7 @@ subprojects {
             }
         }
     }
-    tasks.withType(Copy).all { duplicatesStrategy 'INCLUDE' }
+    tasks.withType(Copy).configureEach { duplicatesStrategy 'INCLUDE' }
 }
 shadowJar {
     classifier ''
