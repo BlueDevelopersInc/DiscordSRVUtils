@@ -1,5 +1,4 @@
 import net.kyori.blossom.BlossomExtension
-import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("java")

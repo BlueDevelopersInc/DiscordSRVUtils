@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.exceptions;
 
 import lombok.Getter;
+
 @Getter
 public class MessageNotFoundException extends InvalidMessageException {
 

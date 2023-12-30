@@ -119,6 +119,10 @@ public class LevelingManager {
             leaderboard.add(getPlayerStats(record, num));
         }
         return leaderboard;
+    }
+
+    public void resetLeveling() {
+        core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
     }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
@@ -130,10 +134,6 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
-
-    public void resetLeveling() {
-        core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
-    }
 
     public void convertToMee6() {
         DSLContext conn = core.getDatabaseManager().jooq();

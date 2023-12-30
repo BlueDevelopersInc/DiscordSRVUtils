@@ -228,7 +228,8 @@ public class SuggestionManager {
                                 .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(suggestion.getNumber()))
                                 .execute();
                     }
-                } catch (ErrorResponseException ignored) {}
+                } catch (ErrorResponseException ignored) {
+                }
             }
             if (sent) {
                 core.logger.info("Suggestions Migration has finished.");
