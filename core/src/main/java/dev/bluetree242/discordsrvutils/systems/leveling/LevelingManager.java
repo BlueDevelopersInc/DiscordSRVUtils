@@ -123,17 +123,7 @@ public class LevelingManager {
 
     public void resetLeveling() {
         core.getDatabaseManager().jooq().update(LevelingTable.LEVELING).set(LevelingTable.LEVELING.LEVEL, 0).set(LevelingTable.LEVELING.XP, 0).execute();
-    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
-            .maximumSize(120)
-            .expireAfterWrite(Duration.ofMinutes(1))
-            .refreshAfterWrite(Duration.ofSeconds(30))
-            .build(key -> {
-                DiscordSRVUtils core = DiscordSRVUtils.get();
-                adding = true;
-                PlayerStats stats = getPlayerStats(key);
-                adding = false;
-                return stats;
-            });
+    }
 
     public void convertToMee6() {
         DSLContext conn = core.getDatabaseManager().jooq();
@@ -158,7 +148,17 @@ public class LevelingManager {
                     .set(LevelingTable.LEVELING.XP, xp)
                     .where(LevelingTable.LEVELING.UUID.eq(result.getUuid())).execute();
         }
-    }
+    }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
+            .maximumSize(120)
+            .expireAfterWrite(Duration.ofMinutes(1))
+            .refreshAfterWrite(Duration.ofSeconds(30))
+            .build(key -> {
+                DiscordSRVUtils core = DiscordSRVUtils.get();
+                adding = true;
+                PlayerStats stats = getPlayerStats(key);
+                adding = false;
+                return stats;
+            });
 
     private int getRequiredXP(int level) {
         return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100);

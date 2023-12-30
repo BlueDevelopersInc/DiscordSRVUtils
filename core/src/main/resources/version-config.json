@@ -1,6 +1,0 @@
-{
-  "version": "@version@",
-  "buildNumber": "@build@",
-  "commit": "@commit@",
-  "buildDate": "@buildDate@"
-}

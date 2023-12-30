@@ -63,9 +63,6 @@ subprojects {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
-    tasks.jar {
-    }
-
     if (name == "core") {
         apply(plugin = "net.kyori.blossom")
         extensions.configure<BlossomExtension> {

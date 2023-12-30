@@ -58,12 +58,12 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.2")
     compileOnly(urlFile("https://github.com/Zrips/CMI-API/releases/download/8.7.8.2/CMIAPI8.7.8.2.jar", "CMI-API"))
     compileOnly("net.lapismc:AFKPlus:3.3.15")
-    implementation(project(":core"))
-    implementation("org.slf4j:slf4j-api:2.0.1")
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
-    implementation("org.jooq:jooq:3.14.16")
     compileOnly("net.essentialsx:EssentialsX:2.19.0")
+    implementation("org.slf4j:slf4j-api:2.0.1")
+    implementation("org.jooq:jooq:3.14.16")
     implementation("org.json:json:${rootProject.properties["org_json_version"]}")
+    implementation(project(":core"))
 }
 
 repositories {
