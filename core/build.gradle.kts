@@ -200,3 +200,7 @@ publishing {
         }
     }
 }
+
+tasks.named("publishMavenPublicationToMavenRepository") {
+    dependsOn("jar")
+}
