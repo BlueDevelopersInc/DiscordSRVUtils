@@ -49,7 +49,7 @@ allprojects {
 }
 
 val buildNumber = project.properties["buildNumber"]?.toString() ?: "NONE"
-val commit = project.properties["commit"]?.toString() ?: "NONE"
+val commit = System.getenv("GIT_COMMIT") ?: System.getProperty("GIT_COMMIT") ?: System.getenv("GITHUB_SHA") ?: "NONE"
 
 println("Build Number is $buildNumber")
 println("Commit Hash is $commit")

@@ -24,14 +24,6 @@ import java.net.URL
 
 plugins {
     id("java")
-    id("maven-publish")
-}
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
-    }
 }
 
 fun urlFile(url: String, name: String): ConfigurableFileCollection {
@@ -49,6 +41,7 @@ fun urlFile(url: String, name: String): ConfigurableFileCollection {
 
 
 dependencies {
+    // Bukkit Plugins and APIs
     implementation("org.bstats:bstats-bukkit:3.0.0")
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("com.gitlab.ruany:LiteBansAPI:0.3.4")
@@ -60,8 +53,12 @@ dependencies {
     compileOnly("net.lapismc:AFKPlus:3.3.15")
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
     compileOnly("net.essentialsx:EssentialsX:2.19.0")
+
+    // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
     implementation("org.jooq:jooq:3.14.16")
     implementation("org.json:json:${rootProject.properties["org_json_version"]}")
+
+    // Core plugin
     implementation(project(":core"))
 }
