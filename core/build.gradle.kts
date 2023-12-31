@@ -101,7 +101,7 @@ dependencies {
 
 
 flyway {
-    url = "jdbc:h2:file:${project.buildDir}/migration;MODE=Mysql;DATABASE_TO_UPPER=false"
+    url = "jdbc:h2:file:${project.layout.buildDirectory.asFile.get()}/migration;MODE=Mysql;DATABASE_TO_UPPER=false"
     user = "SA"
     password = ""
     validateMigrationNaming = true
@@ -116,7 +116,7 @@ jooq {
             jooqConfiguration.apply {
                 jdbc.apply {
                     driver = "org.h2.Driver"
-                    url = "jdbc:h2:file:${project.buildDir}/migration"
+                    url = "jdbc:h2:file:${project.layout.buildDirectory.asFile.get()}/migration"
                     user = "SA"
                     password = ""
                     properties.add(Property().apply {
