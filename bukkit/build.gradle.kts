@@ -1,3 +1,4 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import java.net.URL
 
 /*
@@ -24,6 +25,7 @@ import java.net.URL
 
 plugins {
     id("java")
+    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
 fun urlFile(url: String, name: String): ConfigurableFileCollection {
@@ -61,4 +63,34 @@ dependencies {
 
     // Core plugin
     implementation(project(":core"))
+}
+
+
+// generates plugin.yml
+bukkit {
+    name = rootProject.name
+    description = rootProject.description
+    version = project.version.toString()
+    author = "BlueTree242"
+    main = "dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit"
+    apiVersion = "1.13"
+    website = "bluetree242.dev"
+    commands {
+        register("discordsrvutils") {
+            aliases = listOf("dsrvu", "dsu", "du", "discordu", "srvu", "dut")
+        }
+    }
+    softDepend = listOf("DiscordSRV", "Essentials", "AdvancedBan", "PlaceholderAPI", "LiteBans", "LibertyBans", "CMI", "SuperVanish", "PremiumVanish", "AfkPlus")
+    permissions {
+        register("discordsrvutils.reload")
+        register("discordsrvutils.debug")
+        register("discordsrvutils.errornotifications")
+        register("discordsrvutils.updatecheck")
+        register("discordsrvutils.removeslash")
+        register("discordsrvutils.resetlevel")
+        register("discordsrvutils.addxp")
+        forEach {
+            it.default = BukkitPluginDescription.Permission.Default.OP
+        }
+    }
 }
