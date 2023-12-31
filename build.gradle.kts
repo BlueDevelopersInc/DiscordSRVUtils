@@ -51,8 +51,8 @@ allprojects {
 val buildNumber = project.properties["buildNumber"]?.toString() ?: "NONE"
 val commit = System.getenv("GIT_COMMIT") ?: System.getProperty("GIT_COMMIT") ?: System.getenv("GITHUB_SHA") ?: "NONE"
 
-println("Build Number is $buildNumber")
-println("Commit Hash is $commit")
+println("Build number is $buildNumber")
+println("Commit hash is $commit")
 
 subprojects {
     apply(plugin = "java")
