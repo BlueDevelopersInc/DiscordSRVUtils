@@ -65,7 +65,3 @@ dependencies {
     implementation("org.json:json:${rootProject.properties["org_json_version"]}")
     implementation(project(":core"))
 }
-
-repositories {
-    mavenCentral()
-}

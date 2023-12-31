@@ -7,11 +7,6 @@ plugins {
     id("net.kyori.blossom") version "1.3.1" apply false
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 dependencies {
     implementation(project(":bukkit"))
 }
@@ -46,6 +41,10 @@ allprojects {
         testImplementation("org.projectlombok:lombok:1.18.22")
         testCompileOnly("org.projectlombok:lombok:1.18.22")
         testAnnotationProcessor("org.projectlombok:lombok:1.18.22")
+    }
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
