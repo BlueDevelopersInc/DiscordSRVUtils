@@ -148,6 +148,10 @@ public class LevelingManager {
                     .set(LevelingTable.LEVELING.XP, xp)
                     .where(LevelingTable.LEVELING.UUID.eq(result.getUuid())).execute();
         }
+    }
+
+    private int getRequiredXP(int level) {
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100);
     }    public LoadingCache<UUID, PlayerStats> cachedUUIDS = Caffeine.newBuilder()
             .maximumSize(120)
             .expireAfterWrite(Duration.ofMinutes(1))
@@ -159,10 +163,6 @@ public class LevelingManager {
                 adding = false;
                 return stats;
             });
-
-    private int getRequiredXP(int level) {
-        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100);
-    }
 
 
 
