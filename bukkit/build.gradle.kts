@@ -27,7 +27,7 @@ plugins {
 }
 
 fun urlFile(url: String, name: String): ConfigurableFileCollection {
-    val file = File("$buildDir/download/${name}.jar")
+    val file = File("${project.layout.buildDirectory.asFile.get()}/download/${name}.jar")
     file.parentFile.mkdirs()
     if (!file.exists()) {
         URL(url).openStream().use { downloadStream ->
