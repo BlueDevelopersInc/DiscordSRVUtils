@@ -2,9 +2,9 @@
 
 DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 
-[Spigot Page](https://www.spigotmc.org/resources/discordsrvutils.85958/)
+[Modrinth Page](https://modrinth.com/plugin/discordsrvutils)
 
-[![](https://bstats.org/signatures/bukkit/DiscordSRVUtils.svg)](https://bstats.org/plugin/bukkit/DiscordSRV/387 "DiscordSRVUtils' bstats")
+[![](https://bstats.org/signatures/bukkit/DiscordSRVUtils.svg)](https://bstats.org/plugin/bukkit/DiscordSRVUtils/9456 "DiscordSRVUtils' bstats")
 
 # API
 
