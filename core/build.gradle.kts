@@ -33,9 +33,9 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-allprojects {
-    apply(plugin = "java")
-    tasks.withType<ShadowJar> {
+rootProject.allprojects {
+    apply(plugin = "com.github.johnrengelman.shadow")
+    tasks.shadowJar {
         archiveClassifier.set("")
         relocate("com.vdurmont", "dev.bluetree242.discordsrvutils.dependencies.emoji-java")
         relocate("org.bstats", "dev.bluetree242.discordsrvutils.dependencies.bstats")
