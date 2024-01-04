@@ -44,7 +44,6 @@ fun urlFile(url: String, name: String): ConfigurableFileCollection {
 
 dependencies {
     // Bukkit Plugins and APIs
-    implementation("org.bstats:bstats-bukkit:3.0.0")
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("com.gitlab.ruany:LiteBansAPI:0.3.4")
     compileOnly("space.arim.libertybans:bans-api:0.8.0")
