@@ -5,7 +5,7 @@ DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
 [Modrinth Page](https://modrinth.com/plugin/discordsrvutils)
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/kPCZgvM2?label=Modrinth%20downloads)
-![Spiget Downloads](https://img.shields.io/spiget/downloads/85958?label=SpigotMC%20downloads&color=FF7F7F)
+![Spigot Downloads](https://img.shields.io/spiget/downloads/85958?label=SpigotMC%20downloads&color=FF7F7F)
 [![](https://bstats.org/signatures/bukkit/DiscordSRVUtils.svg)](https://bstats.org/plugin/bukkit/DiscordSRVUtils/9456 "DiscordSRVUtils' bstats")
 
 # API
@@ -13,8 +13,8 @@ DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
 ## Maven
 
 ### Version
-![Badge](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release&color=FF7F7F)
-![Badge](https://repo.bluetree242.dev/api/badge/latest/maven-snapshots/dev/bluetree242/discordsrvutils/core?name=Latest%20Development%20Build&color=FF7F7F)
+![Latest release](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release&color=FF7F7F)
+![Latest Development Build](https://repo.bluetree242.dev/api/badge/latest/maven-snapshots/dev/bluetree242/discordsrvutils/core?name=Latest%20Development%20Build&color=FF7F7F)
 
 Replace `VERSION` with the API version you would like. The badges above displays the latest versions available.
 
