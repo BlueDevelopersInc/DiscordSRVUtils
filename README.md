@@ -1,17 +1,22 @@
 # DiscordSRVUtils
 
-DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
+DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
 
 [Modrinth Page](https://modrinth.com/plugin/discordsrvutils)
 
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/kPCZgvM2?label=Modrinth%20downloads)
+![Spiget Downloads](https://img.shields.io/spiget/downloads/85958?label=SpigotMC%20downloads&color=FF7F7F)
 [![](https://bstats.org/signatures/bukkit/DiscordSRVUtils.svg)](https://bstats.org/plugin/bukkit/DiscordSRVUtils/9456 "DiscordSRVUtils' bstats")
 
 # API
 
 ## Maven
 
-###
-Replace `VERSION` with the API version you would like. Latest release can be seen [here](https://repo.bluetree242.dev/api/maven/latest/version/maven-releases/dev/bluetree242/discordsrvutils/core), and latest development build/snapshot can be seen [here](https://repo.bluetree242.dev/api/maven/latest/version/maven-snapshots/dev/bluetree242/discordsrvutils/core).
+### Version
+![Badge](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release&color=FF7F7F)
+![Badge](https://repo.bluetree242.dev/api/badge/latest/maven-snapshots/dev/bluetree242/discordsrvutils/core?name=Latest%20Development%20Build&color=FF7F7F)
+
+Replace `VERSION` with the API version you would like. The badges above displays the latest versions available.
 
 ```xml
 <repository>
@@ -67,6 +72,10 @@ find [here](https://docs.discordsrv.com/master/#developers)
 
 To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop`
 branch. Pull requests on `master` will be denied and closed.
+
+# License
+[License]:https://img.shields.io/github/license/BlueDevelopersInc/DiscordSRVUtils?color=e
+[![License]](https://github.com/BlueDevelopersInc/DiscordSRVUtils/blob/master/LICENSE)
   
 
 
