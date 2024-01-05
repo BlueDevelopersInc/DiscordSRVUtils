@@ -10,6 +10,9 @@ DiscordSRVUtils is a plugin that adds more features to the DiscordSRV bot
 
 ## Maven
 
+###
+Replace `VERSION` with the API version you would like. Latest release can be seen [here](https://repo.bluetree242.dev/api/maven/latest/version/maven-releases/dev/bluetree242/discordsrvutils/core), and latest development build/snapshot can be seen [here](https://repo.bluetree242.dev/api/maven/latest/version/maven-snapshots/dev/bluetree242/discordsrvutils/core).
+
 ```xml
 <repository>
     <id>bluetree242-repo</id>
