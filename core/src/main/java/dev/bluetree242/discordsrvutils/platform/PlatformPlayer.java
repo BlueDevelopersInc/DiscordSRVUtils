@@ -28,10 +28,13 @@ import java.util.UUID;
 
 public abstract class PlatformPlayer<T> extends CommandUser {
 
+    @Override
     public abstract String getName();
 
+    @Override
     public abstract void sendMessage(String msg);
 
+    @Override
     public abstract boolean hasPermission(String node);
 
     public abstract UUID getUniqueId();

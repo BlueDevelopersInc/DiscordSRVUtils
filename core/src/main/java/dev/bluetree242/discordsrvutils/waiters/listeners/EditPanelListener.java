@@ -47,6 +47,7 @@ import java.util.Set;
 public class EditPanelListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             EditPanelWaiter waiter = EditPanelWaiter.getWaiter(e.getAuthor(), e.getChannel());
@@ -145,6 +146,7 @@ public class EditPanelListener extends ListenerAdapter {
         });
     }
 
+    @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             EditPanelWaiter waiter = EditPanelWaiter.getWaiter((e.getMessage().getInteraction() != null ? e.getMessage().getInteraction() : null), e.getMessage());
@@ -153,45 +155,53 @@ public class EditPanelListener extends ListenerAdapter {
             if (waiter == null) return;
             if (waiter.getUser().getIdLong() != e.getUser().getIdLong()) return;
             String name = e.getButton().getId();
-            if (name.equals("apply")) {
-                e.deferEdit().queue();
-                waiter.expire(false);
-                Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq());
-                if (panel == null) {
-                    e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
-                } else {
-                    e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
-                }
-            } else if (name.equals("cancel")) {
-                e.deferEdit().queue();
-                waiter.expire(false);
-                e.getChannel().sendMessageEmbeds(Embed.error("Ok, Cancelled")).queue();
-            } else if (waiter.getStep() != 0) {
-            } else if (name.equals("name")) {
-                e.deferEdit().queue();
-                waiter.setStep(1);
-                embed.setDescription("Please send the new name for the panel");
-                e.getChannel().sendMessageEmbeds(embed.build()).queue();
-            } else if (name.equals("message_channel")) {
-                e.deferEdit().queue();
-                waiter.setStep(2);
-                embed.setDescription("Please mention the new channel for the panel");
-                e.getChannel().sendMessageEmbeds(embed.build()).queue();
-            } else if (name.equals("opened_category")) {
-                e.deferEdit().queue();
-                waiter.setStep(3);
-                embed.setDescription("Please send the ID of the Opened Category for the panel");
-                e.getChannel().sendMessageEmbeds(embed.build()).queue();
-            } else if (name.equals("closed_category")) {
-                e.deferEdit().queue();
-                waiter.setStep(4);
-                embed.setDescription("Please send the ID of the Closed Category for the panel");
-                e.getChannel().sendMessageEmbeds(embed.build()).queue();
-            } else if (name.equals("allowed_roles")) {
-                e.deferEdit().queue();
-                waiter.setStep(5);
-                embed.setDescription("Please mention the roles or send ids of the roles that can view the panel tickets\n\nSay \"none\" For none");
-                e.getChannel().sendMessageEmbeds(embed.build()).queue();
+            if (waiter.getStep() != 0) return;
+            switch (name) {
+                case "apply":
+                    e.deferEdit().queue();
+                    waiter.expire(false);
+                    Panel panel = waiter.getEditor().apply(core.getDatabaseManager().jooq());
+                    if (panel == null) {
+                        e.getChannel().sendMessageEmbeds(Embed.error("Something unexpected happened, please contact the devs")).queue();
+                    } else {
+                        e.getChannel().sendMessageEmbeds(Embed.success("Successfully applied changes")).queue();
+                    }
+                    break;
+                case "cancel":
+                    e.deferEdit().queue();
+                    waiter.expire(false);
+                    e.getChannel().sendMessageEmbeds(Embed.error("Ok, Cancelled")).queue();
+                    break;
+                case "name":
+                    e.deferEdit().queue();
+                    waiter.setStep(1);
+                    embed.setDescription("Please send the new name for the panel");
+                    e.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    break;
+                case "message_channel":
+                    e.deferEdit().queue();
+                    waiter.setStep(2);
+                    embed.setDescription("Please mention the new channel for the panel");
+                    e.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    break;
+                case "opened_category":
+                    e.deferEdit().queue();
+                    waiter.setStep(3);
+                    embed.setDescription("Please send the ID of the Opened Category for the panel");
+                    e.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    break;
+                case "closed_category":
+                    e.deferEdit().queue();
+                    waiter.setStep(4);
+                    embed.setDescription("Please send the ID of the Closed Category for the panel");
+                    e.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    break;
+                case "allowed_roles":
+                    e.deferEdit().queue();
+                    waiter.setStep(5);
+                    embed.setDescription("Please mention the roles or send ids of the roles that can view the panel tickets\n\nSay \"none\" For none");
+                    e.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    break;
             }
         });
     }

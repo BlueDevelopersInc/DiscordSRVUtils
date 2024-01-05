@@ -23,27 +23,22 @@
 package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
-import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
+import github.scarsz.discordsrv.dependencies.jda.api.Permission;
+import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
-public class CloseCommand extends TicketCommand {
-    public CloseCommand(DiscordSRVUtils core) {
-        super(core, "close", "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+public abstract class TicketCommand extends Command {
+    public TicketCommand(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String aliases) {
+        super(core, cmd, description, usage, requiredPermission, category, aliases);
+    }
+
+    public TicketCommand(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData options) {
+        super(core, cmd, description, usage, requiredPermission, category, options);
     }
 
     @Override
-    public void run(CommandEvent e) throws Exception {
-        Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong());
-        if (ticket == null) {
-            e.replyErr("You are not in a ticket").queue();
-            return;
-        }
-        if (ticket.isClosed()) {
-            e.replyErr("Ticket is already closed").queue();
-        } else {
-            e.reply("Closing Ticket...").setEphemeral(true).queue();
-            ticket.close(e.getAuthor());
-        }
+    public boolean isEnabled() {
+        return !(core.getMainConfig().disabled_commands().contains("all:tickets")) && core.getSuggestionsConfig().enabled() && super.isEnabled();
     }
 }

@@ -70,6 +70,7 @@ public class LevelCommand extends Command {
         e.replyMessage(core.getLevelingConfig().level_command_message(), PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, target, "stats")), core.getServer().getOfflinePlayer(target.getUuid())).queue();
     }
 
+    @Override
     public boolean isEnabled() {
         return core.getLevelingConfig().enabled() && super.isEnabled();
     }

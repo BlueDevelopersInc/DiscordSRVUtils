@@ -46,6 +46,7 @@ public class EditPanelWaiter extends Waiter {
     private final TextChannel channel;
     private final User user;
     private final Interaction interaction;
+    @Setter
     private int step = 0;
     @Setter
     private Message message;
@@ -96,10 +97,6 @@ public class EditPanelWaiter extends Waiter {
                 return waiter;
         }
         return null;
-    }
-
-    public void setStep(int num) {
-        step = num;
     }
 
 

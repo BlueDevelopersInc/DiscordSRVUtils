@@ -23,12 +23,11 @@
 package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
-public class ReopenCommand extends Command {
+public class ReopenCommand extends TicketCommand {
     public ReopenCommand(DiscordSRVUtils core) {
         super(core, "reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
     }

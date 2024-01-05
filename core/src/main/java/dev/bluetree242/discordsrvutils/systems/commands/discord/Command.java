@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -44,7 +45,9 @@ public abstract class Command {
     private final List<String> aliases = new ArrayList<>();
     @Getter
     private final OptionData[] options;
+    @Setter
     private boolean adminOnly = false;
+    @Setter
     private boolean ownerOnly = false;
     private CommandCategory category = null;
 
@@ -136,16 +139,8 @@ public abstract class Command {
         return ownerOnly;
     }
 
-    public void setOwnerOnly(boolean b) {
-        ownerOnly = b;
-    }
-
     public final boolean isAdminOnly() {
         return adminOnly;
-    }
-
-    public void setAdminOnly(boolean b) {
-        adminOnly = b;
     }
 
     public boolean isEnabled() {

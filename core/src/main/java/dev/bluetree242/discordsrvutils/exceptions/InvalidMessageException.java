@@ -31,6 +31,7 @@ public class InvalidMessageException extends RuntimeException {
     private final String message;
     private final Throwable cause;
 
+    @Override
     public String getMessage() {
         return "Failed to load message \"" + message + "\"";
     }

@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 public class PanelOpenListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {

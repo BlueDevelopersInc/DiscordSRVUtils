@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.bstats.bukkit.Metrics;
 import github.scarsz.discordsrv.dependencies.bstats.charts.AdvancedPie;
 import github.scarsz.discordsrv.dependencies.bstats.charts.SimplePie;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
@@ -56,11 +57,18 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
     private DiscordSRVUtils core = null;
 
+    @Override
     public void onEnable() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") == null) {
-            getLogger().severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
+            getLogger().severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://modrinth.com/plugin/discordsrv");
             getLogger().severe("Disabling...");
             core = null;
+            disable();
+            return;
+        }
+        if (!AccountLinkManager.class.isInterface()) {
+            //DiscordSRV is out of date
+            getLogger().severe("Plugin could not be enabled because the version of DiscordSRV you are using is not supported. Please make sure you are on DiscordSRV 1.27.0+.");
             disable();
             return;
         }
@@ -75,11 +83,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         Metrics metrics = new Metrics(this, 9456);
         metrics.addCustomChart(new AdvancedPie("features", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
-            //Removed Tickets Because it caused lag on a few servers
-                /*
-                if (!core.getTicketManager().getPanels().get().isEmpty())
-                valueMap.put("Tickets", 1);
-                 */
             if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
             if (core.getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
             if (core.getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
@@ -94,6 +97,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("admins", () -> String.valueOf(core.getJdaManager().getAdminIds().size())));
     }
 
+    @Override
     public void onDisable() {
         if (core == null) return;
         try {
@@ -104,6 +108,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         core = null;
     }
 
+    @Override
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));

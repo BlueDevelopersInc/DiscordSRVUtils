@@ -49,6 +49,7 @@ public class InvitesCommand extends Command {
         ).queue();
     }
 
+    @Override
     public boolean isEnabled() {
         return core.getMainConfig().track_invites() && super.isEnabled();
     }

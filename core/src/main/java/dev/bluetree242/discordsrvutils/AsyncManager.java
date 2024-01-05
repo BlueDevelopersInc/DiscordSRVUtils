@@ -24,10 +24,8 @@ package dev.bluetree242.discordsrvutils;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @RequiredArgsConstructor
@@ -48,13 +46,7 @@ public class AsyncManager {
     public void start() {
         //initialize pool
         stop();
-        pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(core.getMainConfig().pool_size(), new ThreadFactory() {
-            @Override
-            public Thread newThread(@NotNull Runnable r) {
-
-                return newDSUThread(r);
-            }
-        });
+        pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(core.getMainConfig().pool_size(), this::newDSUThread);
     }
 
     public void stop() {

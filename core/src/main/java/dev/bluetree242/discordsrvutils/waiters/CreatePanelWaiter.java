@@ -28,12 +28,14 @@ import dev.bluetree242.discordsrvutils.waiter.Waiter;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class CreatePanelWaiter extends Waiter {
     private final Panel.Builder builder;
     private final TextChannel channel;
     private final User user;
+    @Setter
     private int step = 1;
 
     public CreatePanelWaiter(DiscordSRVUtils core, TextChannel channel, User user) {
@@ -53,10 +55,6 @@ public class CreatePanelWaiter extends Waiter {
             }
         }
         return null;
-    }
-
-    public void setStep(int num) {
-        step = num;
     }
 
     @Override

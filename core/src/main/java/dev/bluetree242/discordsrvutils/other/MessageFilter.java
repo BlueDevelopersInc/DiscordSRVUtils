@@ -43,18 +43,17 @@ public class MessageFilter {
             return false;
         }
         if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.flywaydb")) {
-            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) { //Only log when success or an error, other migration, or it look like spam or error
+            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) { //Only log when success or an error, other migration, or it looks like spam or error
                 if (!message.contains("No failed migration detected.")) //This message mean everything fine, why log it
                     log(level, message, "Flyway");
             }
             return false;
         }
         if (loggerName.contains("hsqldb.db") && level == Level.INFO) return false;
-        if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.jooq")) return false;
-        return true;
+        return !loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.jooq");
     }
 
-    //1 method so i can easily reformat the messages
+    //1 method so I can easily reformat the messages
     public void log(Level level, String msg, String prefix) {
         if (Level.INFO.equals(level)) {
             core.getLogger().info("[" + prefix + "] " + msg);

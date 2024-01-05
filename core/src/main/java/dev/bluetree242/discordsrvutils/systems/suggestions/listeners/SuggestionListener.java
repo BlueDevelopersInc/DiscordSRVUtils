@@ -45,6 +45,7 @@ public class SuggestionListener extends ListenerAdapter {
 
     private final DiscordSRVUtils core;
 
+    @Override
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
@@ -74,6 +75,7 @@ public class SuggestionListener extends ListenerAdapter {
         });
     }
 
+    @Override
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
@@ -87,6 +89,7 @@ public class SuggestionListener extends ListenerAdapter {
     }
 
 
+    @Override
     public void onButtonClick(@NotNull ButtonClickEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         if (e.getUser().isBot()) return;
@@ -141,6 +144,7 @@ public class SuggestionListener extends ListenerAdapter {
         });
     }
 
+    @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (e.getAuthor().isBot()) return;

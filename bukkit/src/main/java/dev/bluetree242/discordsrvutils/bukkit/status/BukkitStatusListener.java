@@ -38,6 +38,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         this.core = core;
     }
 
+    @Override
     public void register() {
         for (String event : core.getStatusConfig().update_events()) {
             try {
@@ -58,6 +59,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         Bukkit.getServer().getScheduler().runTaskLaterAsynchronously((Plugin) core.getPlatform().getOriginal(), () -> core.getStatusManager().editMessage(true), 1);
     }
 
+    @Override
     public void unregister() {
         HandlerList.unregisterAll(this);
         registered = false;

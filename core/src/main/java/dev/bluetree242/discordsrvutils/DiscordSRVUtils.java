@@ -26,8 +26,8 @@ import dev.bluetree242.discordsrvutils.config.*;
 import dev.bluetree242.discordsrvutils.database.DatabaseManager;
 import dev.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
 import dev.bluetree242.discordsrvutils.hooks.PluginHookManager;
-import dev.bluetree242.discordsrvutils.listeners.bukkit.JoinUpdateChecker;
 import dev.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
+import dev.bluetree242.discordsrvutils.listeners.game.JoinUpdateChecker;
 import dev.bluetree242.discordsrvutils.other.MessageFilter;
 import dev.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import dev.bluetree242.discordsrvutils.platform.PlatformServer;
@@ -56,16 +56,15 @@ import lombok.Getter;
 import space.arim.dazzleconf.error.InvalidConfigException;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
-
-
     //instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
     //file separator string
-    public final String fileseparator = System.getProperty("file.separator");
+    public final String fileSeparator = FileSystems.getDefault().getSeparator();
     @Getter
     private final MessageFilter messageFilter = new MessageFilter(this);
     private final PluginPlatform main;
@@ -102,16 +101,16 @@ public class DiscordSRVUtils {
     public Logger logger;
     //Configurations
     private ConfManager<Config> configManager;
-    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationconfigmanager;
-    private ConfManager<TicketsConfig> ticketsconfigManager;
+    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationConfigManager;
+    private ConfManager<TicketsConfig> ticketsConfigManager;
     private Config config;
-    private ConfManager<LevelingConfig> levelingconfigManager;
+    private ConfManager<LevelingConfig> levelingConfigManager;
     @Getter
     private SQLConfig sqlconfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager;
     @Getter
     private PunishmentsIntegrationConfig bansConfig;
-    private ConfManager<StatusConfig> statusConfigConfManager;
+    private ConfManager<StatusConfig> statusConfigManager;
     @Getter
     private TicketsConfig ticketsConfig;
     @Getter
@@ -119,11 +118,11 @@ public class DiscordSRVUtils {
     //was the DiscordSRV AccountLink Listener Removed?
     @Getter
     private SuggestionsConfig suggestionsConfig;
-    private ConfManager<SQLConfig> sqlconfigmanager;
+    private ConfManager<SQLConfig> sqlConfigManager;
     @Getter
     private StatusConfig statusConfig;
     //Our DiscordSRV Listener
-    private DiscordSRVListener dsrvlistener;
+    private DiscordSRVListener dsrvListener;
 
     public DiscordSRVUtils(PluginPlatform main) {
         this.main = main;
@@ -152,18 +151,18 @@ public class DiscordSRVUtils {
         //set the instance
         instance = this;
         //initialize discordsrv listener
-        dsrvlistener = new DiscordSRVListener(this);
+        dsrvListener = new DiscordSRVListener(this);
         //Initialize Managers
     }
 
     private void initConfigs() {
         configManager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
-        sqlconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
-        bansIntegrationconfigmanager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
-        ticketsconfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
-        levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
+        sqlConfigManager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
+        bansIntegrationConfigManager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
+        ticketsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
+        levelingConfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
         suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
-        statusConfigConfManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
+        statusConfigManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
     }
 
     public void onLoad() {
@@ -172,7 +171,7 @@ public class DiscordSRVUtils {
         if (main.getServer().isPluginInstalled("DiscordSRV")) {
             if (DiscordSRV.isReady) {
                 //Oh no, they are using a plugin manager to reload the plugin, give them a warn
-                logger.warning("It seems like you are using a Plugin Manager to reload the plugin. This is not a good practice. If you see problems. Please restart");
+                logger.warning("It seems like you are using a plugin manager to reload the plugin. This is not a good practice. If you see problems, Please restart");
                 return;
             }
             DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGE_REACTIONS);
@@ -213,14 +212,6 @@ public class DiscordSRVUtils {
                     "|   &Wiki: &rhttps://wiki.discordsrvutils.xyz\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
-            try {
-                Class.forName("github.scarsz.discordsrv.api.ApiManager").getDeclaredMethod("addSlashCommandProvider", SlashCommandProvider.class);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                //DiscordSRV is out of date
-                severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
-                main.disable();
-                return;
-            }
             asyncManager.start();
             //Register our in game commands
             main.registerCommands();
@@ -229,8 +220,10 @@ public class DiscordSRVUtils {
             } catch (SQLException ex) {
                 //Oh no! could not connect or migrate. Plugin may not start
                 errorHandler.startupError(ex, "Error could not connect to database: " + ex.getMessage());
+                getPlatform().disable();
+                return;
             }
-            DiscordSRV.api.subscribe(dsrvlistener);
+            DiscordSRV.api.subscribe(dsrvListener);
             if (isReady()) {
                 //Uhh, Maybe they are using a pluginmanager and this plugin was enabled after discordsrv is ready
                 whenReady();
@@ -244,7 +237,7 @@ public class DiscordSRVUtils {
 
 
     public void onDisable() {
-        if (dsrvlistener != null) DiscordSRV.api.unsubscribe(dsrvlistener);
+        if (dsrvListener != null) DiscordSRV.api.unsubscribe(dsrvListener);
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
         if (getJDA() != null) {
@@ -278,18 +271,18 @@ public class DiscordSRVUtils {
     public void reloadConfigs(boolean first) throws IOException, InvalidConfigException {
         configManager.reloadConfig();
         config = configManager.reloadConfigData();
-        sqlconfigmanager.reloadConfig();
-        sqlconfig = sqlconfigmanager.reloadConfigData();
-        bansIntegrationconfigmanager.reloadConfig();
-        bansConfig = bansIntegrationconfigmanager.reloadConfigData();
-        ticketsconfigManager.reloadConfig();
-        ticketsConfig = ticketsconfigManager.reloadConfigData();
-        levelingconfigManager.reloadConfig();
-        levelingConfig = levelingconfigManager.reloadConfigData();
+        sqlConfigManager.reloadConfig();
+        sqlconfig = sqlConfigManager.reloadConfigData();
+        bansIntegrationConfigManager.reloadConfig();
+        bansConfig = bansIntegrationConfigManager.reloadConfigData();
+        ticketsConfigManager.reloadConfig();
+        ticketsConfig = ticketsConfigManager.reloadConfigData();
+        levelingConfigManager.reloadConfig();
+        levelingConfig = levelingConfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
-        statusConfigConfManager.reloadConfig();
-        statusConfig = statusConfigConfManager.reloadConfigData();
+        statusConfigManager.reloadConfig();
+        statusConfig = statusConfigManager.reloadConfigData();
         levelingManager.getLevelingRewardsManager().reloadLevelingRewards();
         levelingManager.getLevelingRewardsManager().reloadRewardCache();
         setSettings(first);

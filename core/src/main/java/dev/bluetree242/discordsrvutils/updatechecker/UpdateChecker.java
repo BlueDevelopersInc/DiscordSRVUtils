@@ -53,12 +53,9 @@ public class UpdateChecker {
                 response.close();
                 int versions_behind = res.getInt("versions_behind");
                 String logger = res.getString("type") != null ? res.getString("type") : "INFO";
-                String msg = null;
+                String msg;
                 if (res.isNull("message")) {
                     if (versions_behind != 0) {
-                        if (logger.equalsIgnoreCase("INFO")) {
-
-                        }
                         msg = (Utils.colors("&cPlugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
                     } else {
                         msg = (Utils.colors("&aPlugin is up to date!"));
@@ -77,8 +74,6 @@ public class UpdateChecker {
                         core.getLogger().info(Utils.colors(msg));
                         break;
                     case "WARNING":
-                        core.getLogger().warning(Utils.colors(msg));
-                        break;
                     case "ERROR":
                         core.getLogger().warning(Utils.colors(msg));
                         break;

@@ -33,6 +33,7 @@ import github.scarsz.discordsrv.dependencies.commons.io.IOUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -62,15 +65,14 @@ public class MessageManager {
     private final DiscordSRVUtils core;
 
     public Path getMessagesDirectory() {
-        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
+        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileSeparator + "messages");
     }
-
 
     public void init() {
         if (getMessagesDirectory().toFile().mkdir()) {
             defaultMessages.forEach((key, val) -> {
                 try {
-                    File file = new File(getMessagesDirectory() + core.fileseparator + key + ".json");
+                    File file = new File(getMessagesDirectory() + core.fileSeparator + key + ".json");
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);
@@ -86,7 +88,8 @@ public class MessageManager {
 
     public void initDefaultMessages() {
         //prepare a list of all messages
-        String[] messages = new String[]{"afk",
+        String[] messages = new String[]{
+                "afk",
                 "ban",
                 "level",
                 "mute",
@@ -262,8 +265,14 @@ public class MessageManager {
             if (!json.isNull("content")) {
                 msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
-            if (!json.isNull("embed")) {
-                msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
+            if (!json.isNull("embed") || !json.isNull("embeds")) {
+                if (json.has("embeds") && json.get("embeds") instanceof JSONArray) {
+                    List<MessageEmbed> embeds = new ArrayList<>();
+                    for (Object o : json.getJSONArray("embeds")) {
+                        embeds.add(parseEmbedFromJSON((JSONObject) o, holders, placehold).build());
+                    }
+                    msg.setEmbeds(embeds);
+                } else msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
             }
         } else {
             if (holders != null) {
@@ -284,6 +293,4 @@ public class MessageManager {
         action.setContent(msg.getContentRaw());
         return action;
     }
-
-
 }

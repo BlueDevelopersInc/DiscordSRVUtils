@@ -62,6 +62,7 @@ public class LeaderboardCommand extends Command {
         e.reply(embed.build()).queue();
     }
 
+    @Override
     public boolean isEnabled() {
         return core.getLevelingConfig().enabled() && super.isEnabled();
     }

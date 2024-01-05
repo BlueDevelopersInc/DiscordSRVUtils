@@ -24,7 +24,6 @@ package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
@@ -33,7 +32,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
-public class EditPanelCommand extends Command {
+public class EditPanelCommand extends TicketCommand {
     public EditPanelCommand(DiscordSRVUtils core) {
         super(core, "editpanel", "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));

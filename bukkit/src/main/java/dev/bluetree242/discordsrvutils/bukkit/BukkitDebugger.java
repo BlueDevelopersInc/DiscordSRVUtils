@@ -72,6 +72,7 @@ public class BukkitDebugger implements Debugger {
         return run(null);
     }
 
+    @Override
     public String run(String stacktrace) throws Exception {
         if (stacktrace == null) stacktrace = core.getErrorHandler().getFinalError();
         JSONArray data = new JSONArray();
@@ -119,7 +120,7 @@ public class BukkitDebugger implements Debugger {
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRVUtils Conf Files").put("data", FilesToArray(getDSUFiles())));
         data.put(new JSONObject().put("type", "files").put("name", "DiscordSRV Conf Files").put("data", FilesToArray(getDiscordSRVFiles())));
         List<Map<String, String>> files = new ArrayList<>();
-        for (File file : Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "messages").toFile().listFiles()) {
+        for (File file : Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "messages").toFile().listFiles()) {
             if (file.getName().endsWith(".json")) {
                 files.add(fileMap(file.getName(), Utils.readFile(file.getPath())));
             }
@@ -151,13 +152,13 @@ public class BukkitDebugger implements Debugger {
 
     private List<Map<String, String>> getDSUFiles() throws Exception {
         List<Map<String, String>> files = new ArrayList<>();
-        files.add(fileMap("config.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "config.yml")));
-        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "PunishmentsIntegration.yml")));
-        files.add(fileMap("tickets.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "tickets.yml")));
-        files.add(fileMap("leveling.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling.yml")));
-        files.add(fileMap("status.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "status.yml")));
-        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "suggestions.yml")));
-        files.add(fileMap("leveling-rewards.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileseparator + "leveling-rewards.json")));
+        files.add(fileMap("config.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "config.yml")));
+        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "PunishmentsIntegration.yml")));
+        files.add(fileMap("tickets.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "tickets.yml")));
+        files.add(fileMap("leveling.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "leveling.yml")));
+        files.add(fileMap("status.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "status.yml")));
+        files.add(fileMap("suggestions.yml", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "suggestions.yml")));
+        files.add(fileMap("leveling-rewards.json", Utils.readFile(core.getPlatform().getDataFolder() + core.fileSeparator + "leveling-rewards.json")));
         return files;
     }
 

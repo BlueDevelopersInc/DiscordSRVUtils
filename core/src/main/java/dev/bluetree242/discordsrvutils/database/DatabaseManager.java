@@ -50,9 +50,9 @@ public class DatabaseManager {
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.method_class_names", "abc");
         HikariConfig settings = new HikariConfig();
-        String jdbcurl = null;
-        String user = null;
-        String pass = null;
+        String jdbcurl;
+        String user;
+        String pass;
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
         try {
@@ -65,7 +65,7 @@ public class DatabaseManager {
             } else {
                 core.logger.info("MySQL is disabled, using hsqldb");
                 hsqldb = true;
-                jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
+                jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
                 user = "SA";
                 pass = "";
             }

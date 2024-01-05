@@ -40,6 +40,7 @@ import org.jooq.DSLContext;
 public class GameLevelingListener extends PlatformListener {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onJoin(PlatformJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             PlayerStats stats = core.getLevelingManager().getPlayerStats(e.getPlayer().getUniqueId());
@@ -64,6 +65,7 @@ public class GameLevelingListener extends PlatformListener {
         });
     }
 
+    @Override
     public void onChat(PlatformChatEvent e) {
         if (!core.getLevelingConfig().enabled()) return;
         if (e.isCancelled()) return;

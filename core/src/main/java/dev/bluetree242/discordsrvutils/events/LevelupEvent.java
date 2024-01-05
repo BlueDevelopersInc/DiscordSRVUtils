@@ -29,11 +29,9 @@ import java.util.UUID;
 
 public class LevelupEvent extends Event {
 
-    private final PlayerStats stats;
     private final UUID uuid;
 
     public LevelupEvent(PlayerStats stats, UUID uuid) {
-        this.stats = stats;
         this.uuid = uuid;
     }
 

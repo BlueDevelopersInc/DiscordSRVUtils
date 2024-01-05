@@ -193,7 +193,7 @@ public class Utils {
         return argsResult.toString().replaceAll("\\s+$", "");
     }
 
-    public static @NotNull String parseArgs(String @NotNull [] args, int start) {
+    public static @NotNull String parseArgs(@NotNull String[] args, int start) {
         StringBuilder argsResult = new StringBuilder();
         for (int i = start; i < args.length; i++) {
             argsResult.append(args[i]).append(" ");

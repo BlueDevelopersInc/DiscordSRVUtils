@@ -46,6 +46,7 @@ import java.util.List;
 public class DiscordLevelingListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {
@@ -87,6 +88,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
 
 
     //give leveling roles when they rejoin the discord server
+    @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (core.getDiscordSRV().getUuid(e.getUser().getId()) != null) {
