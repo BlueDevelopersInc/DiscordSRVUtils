@@ -52,13 +52,12 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         variables.put("TicketManager", core.getTicketManager());
         variables.put("LevelingManager", core.getLevelingManager());
         variables.put("CommandManager", core.getCommandManager());
+        val = NamedValueFormatter.formatExpressions(val, core, variables);
+        val = core.getPlatform().placehold(placehold, val);
         for (PlaceholdObject holder : this) {
             variables.put(holder.display, holder.getObject());
             val = holder.apply(val, placehold, false);
         }
-
-        val = core.getPlatform().placehold(placehold, val);
-        val = NamedValueFormatter.formatExpressions(val, core, variables);
         return val;
     }
 

@@ -64,7 +64,19 @@ public class PlaceholdObject {
             }
         } else {
             Map<String, Method> map = getHoldersMap();
-            if (doAllowCode) s = core.getPlatform().placehold(placehold, s);
+            if (doAllowCode) {
+                Map<String, Object> variables = new HashMap<>();
+                variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
+                variables.put("jda", core.getJDA());
+                variables.put("DSU", core);
+                variables.put("TicketManager", core.getTicketManager());
+                variables.put("server", core.getServer().getOriginal());
+                variables.put("LevelingManager", core.getLevelingManager());
+                variables.put("CommandManager", core.getCommandManager());
+                variables.put(display, ob);
+                val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
+                val[0] = core.getPlatform().placehold(placehold, val[0]);
+            }
             map.forEach((key, result) -> {
                 try {
                     if (val[0].contains("[" + this.display + "." + key + "]")) {
@@ -78,18 +90,6 @@ public class PlaceholdObject {
                 } catch (Exception ignored) {
                 }
             });
-        }
-        if (doAllowCode) {
-            Map<String, Object> variables = new HashMap<>();
-            variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
-            variables.put("jda", core.getJDA());
-            variables.put("DSU", core);
-            variables.put("TicketManager", core.getTicketManager());
-            variables.put("server", core.getServer().getOriginal());
-            variables.put("LevelingManager", core.getLevelingManager());
-            variables.put("CommandManager", core.getCommandManager());
-            variables.put(display, ob);
-            val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
         }
         return val[0];
     }

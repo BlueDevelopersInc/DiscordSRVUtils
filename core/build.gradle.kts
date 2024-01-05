@@ -20,7 +20,6 @@
  * END
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import nu.studer.gradle.jooq.JooqGenerate
 import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Property
