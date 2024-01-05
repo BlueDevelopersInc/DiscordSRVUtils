@@ -266,7 +266,7 @@ public class MessageManager {
                 msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
             if (!json.isNull("embed") || !json.isNull("embeds")) {
-                if (json.get("embeds") instanceof JSONArray) {
+                if (json.has("embeds") && json.get("embeds") instanceof JSONArray) {
                     List<MessageEmbed> embeds = new ArrayList<>();
                     for (Object o : json.getJSONArray("embeds")) {
                         embeds.add(parseEmbedFromJSON((JSONObject) o, holders, placehold).build());
