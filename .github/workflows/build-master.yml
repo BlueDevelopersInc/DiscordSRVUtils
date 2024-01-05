@@ -1,17 +1,11 @@
-# This workflow is for anything not on develop branch, because jenkins already try to build that.
+# This workflow is for master branch and publishing.
 
-name: Build Project
+name: Build Project & Deploy
 
 on:
   push:
     branches:
-      - "*"
-      - "!develop"
-      - '!master'
-  pull_request:
-    types:
-      - opened
-      - synchronize
+      - "master"
 
 jobs:
   build:
@@ -28,9 +22,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Run build with Gradle Wrapper
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3.1.1
         with:
           name: build-artifacts
           path: "build/libs/*.jar"
+      - name: Publish to maven repository
+        run: ./gradlew core:publish
