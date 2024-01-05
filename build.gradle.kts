@@ -39,7 +39,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven("https://repo.citizensnpcs.co")
-        maven("https://nexus.scarsz.me/repository/maven-public/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://jitpack.io")
         maven("https://repo.codemc.org/repository/maven-public")
@@ -56,13 +55,8 @@ allprojects {
         maven("https://repo.essentialsx.net/releases/")
     }
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.22")
-        compileOnly("org.projectlombok:lombok:1.18.22")
-        annotationProcessor("org.projectlombok:lombok:1.18.22")
-
-        testImplementation("org.projectlombok:lombok:1.18.22")
-        testCompileOnly("org.projectlombok:lombok:1.18.22")
-        testAnnotationProcessor("org.projectlombok:lombok:1.18.22")
+        compileOnly("org.projectlombok:lombok:1.18.30")
+        annotationProcessor("org.projectlombok:lombok:1.18.30")
     }
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -212,14 +212,6 @@ public class DiscordSRVUtils {
                     "|   &Wiki: &rhttps://wiki.discordsrvutils.xyz\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
-            try {
-                Class.forName("github.scarsz.discordsrv.api.ApiManager").getDeclaredMethod("addSlashCommandProvider", SlashCommandProvider.class);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                //DiscordSRV is out of date
-                severe("Plugin could not enable because DiscordSRV is missing an important feature. This means your DiscordSRV is outdated, please update it for DSU to work");
-                main.disable();
-                return;
-            }
             asyncManager.start();
             //Register our in game commands
             main.registerCommands();
