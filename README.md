@@ -70,7 +70,7 @@ find [here](https://docs.discordsrv.com/master/#developers)
 
 # Contributing
 
-To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop`
+To contribute you can fork this repo and make changes on the `develop` branch. And you can pull request to the `develop`
 branch. Pull requests on `master` will be denied and closed.
 
 # License
