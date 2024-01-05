@@ -104,7 +104,7 @@ public class DiscordSRVUtils {
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationConfigManager;
     private ConfManager<TicketsConfig> ticketsConfigManager;
     private Config config;
-    private ConfManager<LevelingConfig> levelingconfigManager;
+    private ConfManager<LevelingConfig> levelingConfigManager;
     @Getter
     private SQLConfig sqlconfig;
     private ConfManager<SuggestionsConfig> suggestionsConfigManager;
@@ -160,7 +160,7 @@ public class DiscordSRVUtils {
         sqlConfigManager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
         bansIntegrationConfigManager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
         ticketsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
-        levelingconfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
+        levelingConfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
         suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
         statusConfigManager = ConfManager.create(main.getDataFolder().toPath(), "status.yml", StatusConfig.class);
     }
@@ -285,8 +285,8 @@ public class DiscordSRVUtils {
         bansConfig = bansIntegrationConfigManager.reloadConfigData();
         ticketsConfigManager.reloadConfig();
         ticketsConfig = ticketsConfigManager.reloadConfigData();
-        levelingconfigManager.reloadConfig();
-        levelingConfig = levelingconfigManager.reloadConfigData();
+        levelingConfigManager.reloadConfig();
+        levelingConfig = levelingConfigManager.reloadConfigData();
         suggestionsConfigManager.reloadConfig();
         suggestionsConfig = suggestionsConfigManager.reloadConfigData();
         statusConfigManager.reloadConfig();
