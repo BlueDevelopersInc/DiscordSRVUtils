@@ -49,7 +49,7 @@ public class StatusManager {
     private StatusTimer timer = new StatusTimer(this);
 
     public Path getDataPath() {
-        return Paths.get(core.getPlatform().getDataFolder() + core.fileseparator + "data" + core.fileseparator + "status-message.json");
+        return Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "data" + core.fileSeparator + "status-message.json");
     }
 
 

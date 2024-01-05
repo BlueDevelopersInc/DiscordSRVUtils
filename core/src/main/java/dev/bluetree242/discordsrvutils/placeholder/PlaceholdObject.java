@@ -65,14 +65,7 @@ public class PlaceholdObject {
         } else {
             Map<String, Method> map = getHoldersMap();
             if (doAllowCode) {
-                Map<String, Object> variables = new HashMap<>();
-                variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
-                variables.put("jda", core.getJDA());
-                variables.put("DSU", core);
-                variables.put("TicketManager", core.getTicketManager());
-                variables.put("server", core.getServer().getOriginal());
-                variables.put("LevelingManager", core.getLevelingManager());
-                variables.put("CommandManager", core.getCommandManager());
+                Map<String, Object> variables = getVariableMap(core);
                 variables.put(display, ob);
                 val[0] = NamedValueFormatter.formatExpressions(val[0], core, variables);
                 val[0] = core.getPlatform().placehold(placehold, val[0]);
@@ -114,5 +107,17 @@ public class PlaceholdObject {
             return map;
         }
         return map;
+    }
+
+    protected static Map<String, Object> getVariableMap(DiscordSRVUtils core) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
+        variables.put("jda", core.getJDA());
+        variables.put("DSU", core);
+        variables.put("server", core.getServer().getOriginal());
+        variables.put("TicketManager", core.getTicketManager());
+        variables.put("LevelingManager", core.getLevelingManager());
+        variables.put("CommandManager", core.getCommandManager());
+        return variables;
     }
 }

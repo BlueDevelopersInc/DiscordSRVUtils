@@ -57,7 +57,6 @@ public class ErrorHandler {
         //handle error on thread pool
         if (!core.getMainConfig().minimize_errors()) {
             core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
-
             ex.printStackTrace();
             core.getLogger().severe("Read the note above the error Please.");
             //don't spam errors
@@ -78,7 +77,7 @@ public class ErrorHandler {
 
     public void defaultHandle(Throwable ex, MessageChannel channel) {
         //send message for errors
-        channel.sendMessage(Embed.error("An error happened. Check Console for details")).queue();
+        channel.sendMessageEmbeds(Embed.error("An error happened. Check Console for details")).queue();
         core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
     }

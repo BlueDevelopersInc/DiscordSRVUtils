@@ -41,6 +41,7 @@ public class LitebansPunishmentListener extends Events.Listener {
         litebans.api.Events.get().unregister(this);
     }
 
+    @Override
     public void entryAdded(Entry e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!core.isReady()) return;
@@ -49,6 +50,7 @@ public class LitebansPunishmentListener extends Events.Listener {
         });
     }
 
+    @Override
     public void entryRemoved(Entry e) {
         if (!core.isReady()) return;
         core.getAsyncManager().executeAsync(() -> {

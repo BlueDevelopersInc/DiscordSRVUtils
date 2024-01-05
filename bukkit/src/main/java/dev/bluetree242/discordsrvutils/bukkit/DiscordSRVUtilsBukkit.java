@@ -56,6 +56,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
     private DiscordSRVUtils core = null;
 
+    @Override
     public void onEnable() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") == null) {
             getLogger().severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -75,11 +76,6 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         Metrics metrics = new Metrics(this, 9456);
         metrics.addCustomChart(new AdvancedPie("features", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
-            //Removed Tickets Because it caused lag on a few servers
-                /*
-                if (!core.getTicketManager().getPanels().get().isEmpty())
-                valueMap.put("Tickets", 1);
-                 */
             if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
             if (core.getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
             if (core.getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
@@ -94,6 +90,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("admins", () -> String.valueOf(core.getJdaManager().getAdminIds().size())));
     }
 
+    @Override
     public void onDisable() {
         if (core == null) return;
         try {
@@ -104,6 +101,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         core = null;
     }
 
+    @Override
     public void onLoad() {
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));

@@ -44,6 +44,7 @@ import java.util.List;
 public class WelcomerAndGoodByeListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
@@ -94,6 +95,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
         });
     }
 
+    @Override
     public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {

@@ -24,7 +24,6 @@ package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import dev.bluetree242.discordsrvutils.waiters.CreatePanelWaiter;
@@ -33,7 +32,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 
 import java.awt.*;
 
-public class CreatePanelCommand extends Command {
+public class CreatePanelCommand extends TicketCommand {
     public CreatePanelCommand(DiscordSRVUtils core) {
         super(core, "createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS_ADMIN, "cp");
         setAdminOnly(true);
@@ -42,7 +41,7 @@ public class CreatePanelCommand extends Command {
     @Override
     public void run(CommandEvent e) throws Exception {
         if (CreatePanelWaiter.getWaiter((TextChannel) e.getChannel(), e.getMember().getUser()) != null) {
-            e.getChannel().sendMessage(Embed.error("You are already creating one")).queue();
+            e.getChannel().sendMessageEmbeds(Embed.error("You are already creating one")).queue();
             return;
         }
         EmbedBuilder embed = new EmbedBuilder();

@@ -24,10 +24,12 @@ package dev.bluetree242.discordsrvutils.waiter;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
+import lombok.Getter;
 
 public abstract class Waiter extends ListenerAdapter {
     private final long startTime;
     private final DiscordSRVUtils core = DiscordSRVUtils.get();
+    @Getter
     private boolean expired = false;
 
     public Waiter() {
@@ -56,9 +58,5 @@ public abstract class Waiter extends ListenerAdapter {
         core.getWaiterManager().getWaiters().remove(this);
         if (callExpired)
             whenExpired();
-    }
-
-    public final boolean isExpired() {
-        return expired;
     }
 }

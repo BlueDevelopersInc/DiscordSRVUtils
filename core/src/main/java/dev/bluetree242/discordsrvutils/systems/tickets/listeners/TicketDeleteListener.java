@@ -35,6 +35,7 @@ import org.jooq.DSLContext;
 public class TicketDeleteListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onTextChannelDelete(@NotNull TextChannelDeleteEvent e) {
         if (core.getMainConfig().bungee_mode()) return;
         core.getAsyncManager().executeAsync(() -> {

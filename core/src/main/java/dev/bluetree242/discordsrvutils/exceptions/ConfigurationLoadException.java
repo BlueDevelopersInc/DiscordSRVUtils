@@ -29,9 +29,9 @@ public class ConfigurationLoadException extends RuntimeException {
     private final Throwable cause;
     private final String confname;
 
-    public ConfigurationLoadException(Throwable ex, String confname) {
+    public ConfigurationLoadException(Throwable ex, String confName) {
         this.cause = ex;
-        this.confname = confname;
+        this.confname = confName;
     }
 
     @Override

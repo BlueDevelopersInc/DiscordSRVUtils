@@ -65,14 +65,14 @@ public class MessageManager {
     private final DiscordSRVUtils core;
 
     public Path getMessagesDirectory() {
-        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileseparator + "messages");
+        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileSeparator + "messages");
     }
 
     public void init() {
         if (getMessagesDirectory().toFile().mkdir()) {
             defaultMessages.forEach((key, val) -> {
                 try {
-                    File file = new File(getMessagesDirectory() + core.fileseparator + key + ".json");
+                    File file = new File(getMessagesDirectory() + core.fileSeparator + key + ".json");
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);
@@ -265,7 +265,7 @@ public class MessageManager {
             if (!json.isNull("content")) {
                 msg.setContent(getStringFromJson(json, "content", holders, placehold));
             }
-            if (!json.isNull("embed")) {
+            if (!json.isNull("embed") || !json.isNull("embeds")) {
                 if (json.get("embeds") instanceof JSONArray) {
                     List<MessageEmbed> embeds = new ArrayList<>();
                     for (Object o : json.getJSONArray("embeds")) {

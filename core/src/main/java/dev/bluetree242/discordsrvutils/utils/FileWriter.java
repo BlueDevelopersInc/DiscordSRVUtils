@@ -23,19 +23,19 @@
 package dev.bluetree242.discordsrvutils.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class FileWriter extends OutputStreamWriter {
 
-    public FileWriter(File file, Charset charset) throws FileNotFoundException {
-        super(new FileOutputStream(file), charset);
+    public FileWriter(File file, Charset charset) throws IOException {
+        super(Files.newOutputStream(file.toPath()), charset);
     }
 
-    public FileWriter(File file) throws FileNotFoundException {
-        super(new FileOutputStream(file), StandardCharsets.UTF_8);
+    public FileWriter(File file) throws IOException {
+        super(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8);
     }
 }

@@ -23,7 +23,6 @@
 package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
-public class PanelListCommand extends Command {
+public class PanelListCommand extends TicketCommand {
     public PanelListCommand(DiscordSRVUtils core) {
         super(core, "panelist", "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
         setAdminOnly(true);

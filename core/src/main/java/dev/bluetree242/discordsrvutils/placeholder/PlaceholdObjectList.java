@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -44,18 +43,13 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
 
     public String apply(String s, PlatformPlayer placehold) {
         String val = s;
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
-        variables.put("jda", core.getJDA());
-        variables.put("DSU", core);
-        variables.put("server", core.getServer().getOriginal());
-        variables.put("TicketManager", core.getTicketManager());
-        variables.put("LevelingManager", core.getLevelingManager());
-        variables.put("CommandManager", core.getCommandManager());
+        Map<String, Object> variables = PlaceholdObject.getVariableMap(core);
+        for (PlaceholdObject holder : this) {
+            variables.put(holder.display, holder.getObject());
+        }
         val = NamedValueFormatter.formatExpressions(val, core, variables);
         val = core.getPlatform().placehold(placehold, val);
         for (PlaceholdObject holder : this) {
-            variables.put(holder.display, holder.getObject());
             val = holder.apply(val, placehold, false);
         }
         return val;

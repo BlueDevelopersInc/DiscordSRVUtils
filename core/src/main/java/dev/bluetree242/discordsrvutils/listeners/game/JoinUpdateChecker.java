@@ -20,7 +20,7 @@
  * END
  */
 
-package dev.bluetree242.discordsrvutils.listeners.bukkit;
+package dev.bluetree242.discordsrvutils.listeners.game;
 
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class JoinUpdateChecker extends PlatformListener {
     private final DiscordSRVUtils core;
 
+    @Override
     public void onJoin(PlatformJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
             core.getUpdateChecker().updateCheck(e.getPlayer());

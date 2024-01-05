@@ -24,14 +24,13 @@ package dev.bluetree242.discordsrvutils.commands.discord.tickets;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.embeds.Embed;
-import dev.bluetree242.discordsrvutils.systems.commands.discord.Command;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandCategory;
 import dev.bluetree242.discordsrvutils.systems.commands.discord.CommandEvent;
 import dev.bluetree242.discordsrvutils.systems.tickets.Panel;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.OptionType;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
-public class DeletePanelCommand extends Command {
+public class DeletePanelCommand extends TicketCommand {
 
     public DeletePanelCommand(DiscordSRVUtils core) {
         super(core, "deletepanel", "Delete a panel", "[P]deletepanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,

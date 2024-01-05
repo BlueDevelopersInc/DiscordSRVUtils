@@ -45,6 +45,7 @@ public class PaginationListener extends ListenerAdapter {
         return null;
     }
 
+    @Override
     public void onButtonClick(ButtonClickEvent e) {
         if (e.getMessage().getInteraction() == null) return;
         core.getAsyncManager().executeAsync(() -> {

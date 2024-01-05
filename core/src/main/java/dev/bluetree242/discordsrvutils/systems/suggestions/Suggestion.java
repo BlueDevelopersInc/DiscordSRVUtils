@@ -77,7 +77,7 @@ public class Suggestion {
     }
 
     /**
-     * @return null if not approved or declined yet, true if approved false if declined
+     * @return null if not approved or declined yet, true if approved, false if declined.
      **/
     public Boolean isApproved() {
         return Approved;
@@ -94,7 +94,7 @@ public class Suggestion {
                 .execute();
         SuggestionNote suggestionNote = new SuggestionNote(staff, note, number, System.currentTimeMillis());
         notes.add(suggestionNote);
-        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? Arrays.asList(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
+        getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? Collections.singletonList(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
         return suggestionNote;
     }
 

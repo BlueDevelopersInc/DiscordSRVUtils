@@ -29,12 +29,12 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public abstract class SuggestionCommand extends Command {
-
     public SuggestionCommand(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, OptionData... options) {
         super(core, cmd, description, usage, requiredPermission, category, options);
     }
 
+    @Override
     public boolean isEnabled() {
-        return core.getSuggestionsConfig().enabled() && super.isEnabled();
+        return !(core.getMainConfig().disabled_commands().contains("all:suggestions")) && core.getSuggestionsConfig().enabled() && super.isEnabled();
     }
 }

@@ -42,6 +42,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.Channel
 import github.scarsz.discordsrv.dependencies.jda.internal.utils.Checks;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.InsertSetMoreStep;
@@ -188,33 +189,16 @@ public class Panel {
     @RequiredArgsConstructor
     public static class Builder {
         private final DiscordSRVUtils core;
+        @Setter
         private String name;
+        @Setter
         private Long channelId;
+        @Setter
         private Long openedCategory;
+        @Setter
         private Long closedCategory;
+        @Setter
         private Set<Long> allowedRoles = new HashSet<>();
-
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-
-        public void setChannelId(Long channelId) {
-            this.channelId = channelId;
-        }
-
-        public void setOpenedCategory(Long openedCategory) {
-            this.openedCategory = openedCategory;
-        }
-
-        public void setClosedCategory(Long closedCategory) {
-            this.closedCategory = closedCategory;
-        }
-
-        public void setAllowedRoles(Set<Long> allowedRoles) {
-            this.allowedRoles = allowedRoles;
-        }
 
 
         public Panel create(DSLContext conn) {
@@ -249,10 +233,15 @@ public class Panel {
     public static class Editor {
         private final DiscordSRVUtils core;
         private final Panel panel;
+        @Setter
         private String name;
+        @Setter
         private Long channelId;
+        @Setter
         private Long openedCategory;
+        @Setter
         private Long closedCategory;
+        @Setter
         private Set<Long> allowedRoles;
 
         public Editor(DiscordSRVUtils core, Panel panel) {
@@ -263,26 +252,6 @@ public class Panel {
             this.openedCategory = panel.openedCategory;
             this.closedCategory = panel.closedCategory;
             this.allowedRoles = panel.allowedRoles;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setChannelId(Long channelId) {
-            this.channelId = channelId;
-        }
-
-        public void setOpenedCategory(Long openedCategory) {
-            this.openedCategory = openedCategory;
-        }
-
-        public void setClosedCategory(Long closedCategory) {
-            this.closedCategory = closedCategory;
-        }
-
-        public void setAllowedRoles(Set<Long> allowedRoles) {
-            this.allowedRoles = allowedRoles;
         }
 
         public Panel apply(DSLContext conn) {

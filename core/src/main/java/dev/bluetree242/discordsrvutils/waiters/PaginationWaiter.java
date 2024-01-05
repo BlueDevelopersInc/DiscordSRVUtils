@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class PaginationWaiter extends Waiter {
-    private final DiscordSRVUtils core;
     @Getter
     private final MessageChannel channel;
     @Getter
@@ -51,7 +50,6 @@ public class PaginationWaiter extends Waiter {
     private int currentPage = 1;
 
     public PaginationWaiter(DiscordSRVUtils core, MessageChannel channel, List<MessageEmbed> embeds, User user, Interaction interaction) {
-        this.core = core;
         this.embeds = embeds;
         this.user = user;
         this.channel = channel;
@@ -83,9 +81,8 @@ public class PaginationWaiter extends Waiter {
         return currentPage;
     }
 
-    public PaginationWaiter setPage(int page) {
+    public void setPage(int page) {
         this.currentPage = page;
-        return this;
     }
 
     @Override

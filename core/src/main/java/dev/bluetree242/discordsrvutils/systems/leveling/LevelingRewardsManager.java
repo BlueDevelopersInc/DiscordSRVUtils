@@ -56,10 +56,10 @@ public class LevelingRewardsManager {
     private File rewardCacheFile;
 
     public void reloadLevelingRewards() {
-        rewardCacheFile = new File(core.getPlatform().getDataFolder(), core.fileseparator + "data" + core.fileseparator + "leveling-reward-cache.json");
+        rewardCacheFile = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "data" + core.fileSeparator + "leveling-reward-cache.json");
         try {
-            File file = new File(core.getPlatform().getDataFolder(), core.fileseparator + "leveling-roles.json");
-            File filer = new File(core.getPlatform().getDataFolder(), core.fileseparator + "leveling-rewards.json");
+            File file = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "leveling-roles.json");
+            File filer = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "leveling-rewards.json");
             JSONObject json;
             if (file.exists()) {
                 if (filer.exists()) {

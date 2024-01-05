@@ -38,20 +38,24 @@ public class InviteTrackingListener extends ListenerAdapter {
 
     private final DiscordSRVUtils core;
 
+    @Override
     public void onGuildInviteCreate(GuildInviteCreateEvent e) {
         Invite i = e.getInvite();
         if (i.getInviter() == null) return;
         core.getInviteTrackingManager().getCachedInvites().add(new InviteTrackingManager.CachedInvite(i.getCode(), i.getInviter().getIdLong(), e.getGuild().getIdLong(), i.getUses()));
     }
 
+    @Override
     public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent e) {
         core.getInviteTrackingManager().getCachedInvites().removeIf(i -> i.getCode().equals(e.getCode()));
     }
 
+    @Override
     public void onRoleUpdatePermissions(@NotNull RoleUpdatePermissionsEvent e) {
         core.getInviteTrackingManager().cacheInvites();
     }
 
+    @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
         if (e.getUser().getIdLong() == core.getJDA().getSelfUser().getIdLong())
             core.getInviteTrackingManager().cacheInvites();

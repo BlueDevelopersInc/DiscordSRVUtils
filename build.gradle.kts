@@ -71,7 +71,7 @@ allprojects {
 }
 
 val buildNumber = project.properties["buildNumber"]?.toString() ?: "NONE"
-val commit = System.getenv("GIT_COMMIT") ?: System.getProperty("GIT_COMMIT") ?: System.getenv("GITHUB_SHA") ?: "NONE"
+val commit = System.getenv("GIT_COMMIT") ?: System.getProperty("GIT_COMMIT") ?: System.getenv("GITHUB_SHA") ?: "UNKNOWN"
 
 println("Build number is $buildNumber")
 println("Commit hash is $commit")
@@ -100,7 +100,9 @@ subprojects {
     }
 }
 
-tasks.getByName("build").finalizedBy(tasks.getByName("shadowJar"))
+tasks.build {
+    finalizedBy(tasks.shadowJar)
+}
 tasks.shadowJar {
     archiveClassifier.set("")
 }
