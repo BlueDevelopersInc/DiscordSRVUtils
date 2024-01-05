@@ -44,7 +44,6 @@ import dev.bluetree242.discordsrvutils.systems.tickets.TicketManager;
 import dev.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
 import dev.bluetree242.discordsrvutils.waiter.WaiterManager;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.OnlineStatus;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;

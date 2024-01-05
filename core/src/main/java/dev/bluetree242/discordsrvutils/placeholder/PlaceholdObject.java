@@ -47,6 +47,17 @@ public class PlaceholdObject {
         return PlaceholdObjectList.ofArray(core, holders).apply(s);
     }
 
+    protected static Map<String, Object> getVariableMap(DiscordSRVUtils core) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
+        variables.put("jda", core.getJDA());
+        variables.put("DSU", core);
+        variables.put("server", core.getServer().getOriginal());
+        variables.put("TicketManager", core.getTicketManager());
+        variables.put("LevelingManager", core.getLevelingManager());
+        variables.put("CommandManager", core.getCommandManager());
+        return variables;
+    }
 
     public Object getObject() {
         return ob;
@@ -107,17 +118,5 @@ public class PlaceholdObject {
             return map;
         }
         return map;
-    }
-
-    protected static Map<String, Object> getVariableMap(DiscordSRVUtils core) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("guild", core.getPlatform().getDiscordSRV().getMainGuild());
-        variables.put("jda", core.getJDA());
-        variables.put("DSU", core);
-        variables.put("server", core.getServer().getOriginal());
-        variables.put("TicketManager", core.getTicketManager());
-        variables.put("LevelingManager", core.getLevelingManager());
-        variables.put("CommandManager", core.getCommandManager());
-        return variables;
     }
 }
