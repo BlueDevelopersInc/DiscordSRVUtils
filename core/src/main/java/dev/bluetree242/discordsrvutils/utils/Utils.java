@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2023 BlueTree242
+ * Copyright (C) 2020 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,8 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.utils;
 
-import com.vdurmont.emoji.EmojiParser;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;

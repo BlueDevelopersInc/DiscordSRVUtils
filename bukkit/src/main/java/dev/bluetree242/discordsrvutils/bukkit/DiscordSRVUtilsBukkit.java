@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2023 BlueTree242
+ * Copyright (C) 2020 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -25,10 +25,10 @@ package dev.bluetree242.discordsrvutils.bukkit;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.bukkit.discordsrv.SlashCommandProvider;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.bstats.bukkit.Metrics;
+import github.scarsz.discordsrv.dependencies.bstats.charts.AdvancedPie;
+import github.scarsz.discordsrv.dependencies.bstats.charts.SimplePie;
 import lombok.Getter;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
 

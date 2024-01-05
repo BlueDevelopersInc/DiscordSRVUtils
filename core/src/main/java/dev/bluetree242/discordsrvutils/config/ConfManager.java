@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRVUtils
  * -------------
- * Copyright (C) 2020 - 2023 BlueTree242
+ * Copyright (C) 2020 - 2024 BlueTree242
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -75,8 +75,8 @@ public class ConfManager<C> extends ConfigurationHelper<C> {
         }
     }
 
-    public org.checkerframework.checker.units.qual.C getConfigData() {
-        org.checkerframework.checker.units.qual.C configData = (org.checkerframework.checker.units.qual.C) this.configData;
+    public C getConfigData() {
+        C configData = (C) this.configData;
         if (configData == null) {
             throw new IllegalStateException("Configuration has not been loaded yet");
         }

@@ -1,3 +1,25 @@
+/*
+ * LICENSE
+ * DiscordSRVUtils
+ * -------------
+ * Copyright (C) 2020 - 2024 BlueTree242
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
+ */
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import nu.studer.gradle.jooq.JooqGenerate
 import org.jooq.meta.jaxb.*
@@ -37,24 +59,19 @@ rootProject.allprojects {
     apply(plugin = "com.github.johnrengelman.shadow")
     tasks.shadowJar {
         archiveClassifier.set("")
-        relocate("com.vdurmont", "dev.bluetree242.discordsrvutils.dependencies.emoji-java")
-        relocate("org.bstats", "dev.bluetree242.discordsrvutils.dependencies.bstats")
-        relocate("space.arim.dazzleconf", "dev.bluetree242.discordsrvutils.dependencies.dazzleconf")
-        relocate("com.zaxxer", "dev.bluetree242.discordsrvutils.dependencies.hikariCP")
-        relocate("org.hsqldb", "dev.bluetree242.discordsrvutils.dependencies.hsqldb")
-        relocate("org.mariadb.jdbc", "dev.bluetree242.discordsrvutils.dependencies.mariadb")
-        relocate("org.yaml", "dev.bluetree242.discordsrvutils.dependencies.yaml")
-        relocate("com.squareup.okhttp3", "dev.bluetree242.discordsrvutils.dependencies.okhttp")
-        relocate("org.flywaydb", "dev.bluetree242.discordsrvutils.dependencies.flywaydb")
-        relocate("org.bstats", "dev.bluetree242.discordsrvutils.dependencies.bstats")
-        relocate("com.github.benmanes.caffeine", "dev.bluetree242.discordsrvutils.dependencies.caffeine")
-        relocate("org.json", "dev.bluetree242.discordsrvutils.dependencies.json")
-        relocate("com.google.errorprone", "dev.bluetree242.discordsrvutils.dependencies.google")
-        relocate("org.apache.commons", "dev.bluetree242.discordsrvutils.dependencies.commons")
-        relocate("org.jooq", "dev.bluetree242.discordsrvutils.dependencies.jooq")
-        relocate("org.slf4j", "dev.bluetree242.discordsrvutils.dependencies.slf4j")
-        relocate("org.reactivestreams", "dev.bluetree242.discordsrvutils.dependencies.reactivestreams")
-        relocate("org.checkerframework", "dev.bluetree242.discordsrvutils.dependencies.checkerframework")
+        val prefix = "dev.bluetree242.discordsrvutils.dependencies"
+        relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
+        relocate("com.zaxxer", "$prefix.hikaricp")
+        relocate("org.hsqldb", "$prefix.hsqldb")
+        relocate("org.mariadb.jdbc", "$prefix.mariadb")
+        relocate("org.flywaydb", "$prefix.flywaydb")
+        relocate("com.github.benmanes.caffeine", "$prefix.caffeine")
+        relocate("org.json", "$prefix.json")
+        relocate("org.jooq", "$prefix.jooq")
+        relocate("org.slf4j", "$prefix.slf4j")
+        relocate("org.reactivestreams", "$prefix.reactivestreams")
+        relocate("javax.activation", "$prefix.javax.activation")
+        relocate("javax.xml.bind", "$prefix.javax.xml.bind")
     }
 }
 
@@ -72,12 +89,15 @@ dependencies {
     implementation("org.flywaydb:flyway-core:7.5.3")
 
     // Caching
-    implementation("com.github.ben-manes.caffeine:caffeine:2.9.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:2.9.1") {
+        exclude(group = "com.google.errorprone")
+        exclude("org.checkerframework")
+    }
 
     // Configuration
-    implementation("com.vdurmont:emoji-java:5.1.1")
-    implementation("org.yaml:snakeyaml:1.27")
-    implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2")
+    implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2") {
+        exclude(group = "org.yaml")
+    }
 
     // Discord Integration
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
@@ -94,9 +114,6 @@ dependencies {
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
-
-    // General Utilities
-    implementation("commons-io:commons-io:2.7")
 }
 
 
