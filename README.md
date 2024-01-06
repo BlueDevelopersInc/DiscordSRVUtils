@@ -31,6 +31,7 @@ Replace `VERSION` with the API version you would like. The badges above displays
     <groupId>dev.bluetree242.discordsrvutils</groupId>
     <artifactId>core</artifactId>
     <version>VERSION</version>
+    <scope>provided</scope>
 </dependency>
 ```
 
