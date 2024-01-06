@@ -47,7 +47,7 @@ repositories {
 ```gradle
 dependencies {
     // Any other dependency...
-    implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
+    compileOnly 'dev.bluetree242.discordsrvutils:core:VERSION'
 }
 ```
 
