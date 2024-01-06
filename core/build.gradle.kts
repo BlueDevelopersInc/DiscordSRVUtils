@@ -196,7 +196,7 @@ publishing {
             val repository = "https://repo.bluetree242.dev/maven-"
             val releasesRepoUrl = repository + "releases"
             val snapshotsRepoUrl = repository + "snapshots"
-            url = uri(if (version.toString().endsWith("-DEV")) snapshotsRepoUrl else releasesRepoUrl)
+            url = uri(if (version.toString().endsWith("-DEV") || version.toString().contains("-BETA")) snapshotsRepoUrl else releasesRepoUrl)
             credentials {
                 username = System.getenv("REPO_USERNAME")
                 password = System.getenv("REPO_PASSWORD")

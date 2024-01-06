@@ -1,4 +1,4 @@
-# This workflow is for master branch and publishing.
+# This workflow is for master and beta branch for publishing.
 
 name: Build Project & Deploy
 
@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - "master"
+      - "beta"
 
 jobs:
   build:

@@ -1,4 +1,4 @@
-# This workflow is for anything not on develop branch, because jenkins already try to build that.
+# This workflow is for anything not on develop/master/beta branches because jenkins/release workflow already try to build them.
 
 name: Build Project
 
@@ -8,6 +8,7 @@ on:
       - "*"
       - "!develop"
       - '!master'
+      - "!beta"
   pull_request:
     types:
       - opened
