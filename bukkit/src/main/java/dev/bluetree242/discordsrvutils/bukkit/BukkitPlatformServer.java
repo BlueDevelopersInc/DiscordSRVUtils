@@ -115,13 +115,11 @@ public class BukkitPlatformServer extends PlatformServer {
 
     @Override
     public void executeConsoleCommands(String... cmds) {
-        Runnable runnable = () -> {
+        SchedulerUtil.runTask(main, () -> {
             for (String cmd : cmds) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
-        };
-        if (Bukkit.isPrimaryThread()) runnable.run();
-        else Bukkit.getScheduler().runTask(main, runnable);
+        });
     }
 
     @Override
