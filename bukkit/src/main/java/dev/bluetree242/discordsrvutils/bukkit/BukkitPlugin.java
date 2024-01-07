@@ -36,6 +36,7 @@ import dev.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import dev.bluetree242.discordsrvutils.platform.PlatformServer;
 import dev.bluetree242.discordsrvutils.platform.PluginPlatform;
 import dev.bluetree242.discordsrvutils.systems.status.StatusListener;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.platform.bukkit.BukkitAudiences;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -122,7 +123,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public void registerCommands() {
-        BukkitCommandListener listener = new BukkitCommandListener(core);
+        BukkitCommandListener listener = new BukkitCommandListener(core, main);
         Objects.requireNonNull(main.getCommand("discordsrvutils")).setExecutor(listener);
         Objects.requireNonNull(main.getCommand("discordsrvutils")).setTabCompleter(listener);
     }
@@ -161,5 +162,10 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         else if (player instanceof BukkitOfflinePlayer)
             return applyPlaceholders(s, ((BukkitOfflinePlayer) player).getOriginal());
         else return applyPlaceholders(s, null);
+    }
+
+    @Override
+    public BukkitAudiences getAudience() {
+        return main.getAdventure();
     }
 }

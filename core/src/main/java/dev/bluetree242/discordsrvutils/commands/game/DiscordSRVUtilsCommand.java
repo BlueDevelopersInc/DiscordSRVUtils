@@ -26,6 +26,7 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.VersionInfo;
 import dev.bluetree242.discordsrvutils.events.LevelupEvent;
 import dev.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import dev.bluetree242.discordsrvutils.exceptions.InvalidResponseException;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
@@ -33,9 +34,13 @@ import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
 import dev.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import dev.bluetree242.discordsrvutils.platform.command.PlatformCommand;
 import dev.bluetree242.discordsrvutils.systems.leveling.PlayerStats;
+import dev.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.ClickEvent;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.format.NamedTextColor;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 
@@ -82,10 +87,24 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                 }
             } else if (args[0].equalsIgnoreCase("updatecheck")) {
                 if (sender.hasPermission("discordsrvutils.updatecheck")) {
-                    if (sender instanceof ConsoleCommandUser) {
-                        core.getUpdateChecker().updateCheck();
-                    } else {
-                        core.getUpdateChecker().updateCheck((PlatformPlayer) sender);
+                    try {
+                        UpdateChecker.UpdateCheckResult result = core.getUpdateChecker().updateCheck(false);
+                        if (result == null) sender.sendMessage("&cLooks like update checking is disabled.");
+                        else {
+                            if (result.getMessage() == null) {
+                                if (result.getVersionsBehind() <= 0) {
+                                    sender.sendMessage("&aYou are up to date.");
+                                } else {
+                                    sender.sendMessage(Component.text("You are ").color(NamedTextColor.YELLOW)
+                                            .append(Component.text(result.getVersionsBehind()).color(NamedTextColor.RED))
+                                            .appendSpace().append(Component.text("versions behind. Update is available at "))
+                                            .append(Component.text(result.getDownloadUrl()).color(NamedTextColor.AQUA).clickEvent(ClickEvent.openUrl(result.getDownloadUrl())))
+                                    );
+                                }
+                            } else sender.sendMessage(result.getMessage());
+                        }
+                    } catch (InvalidResponseException e) {
+                        sender.sendMessage("&4Failed to check for updates: &c" + e.getFriendlyMessage());
                     }
                     return;
                 }

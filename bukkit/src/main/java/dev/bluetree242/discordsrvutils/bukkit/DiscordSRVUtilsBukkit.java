@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.bstats.bukkit.Metrics;
 import github.scarsz.discordsrv.dependencies.bstats.charts.AdvancedPie;
 import github.scarsz.discordsrv.dependencies.bstats.charts.SimplePie;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.platform.bukkit.BukkitAudiences;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +41,8 @@ import java.util.Map;
 
 @Getter
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
+
+    private BukkitAudiences adventure;
 
     static {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -72,6 +75,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             disable();
             return;
         }
+        adventure = BukkitAudiences.create(this);
         if (core == null) {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
@@ -104,6 +108,10 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             core.onDisable();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
         }
         core = null;
     }

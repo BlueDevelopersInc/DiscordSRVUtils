@@ -22,15 +22,20 @@
 
 package dev.bluetree242.discordsrvutils.bukkit.cmd;
 
+import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 import dev.bluetree242.discordsrvutils.platform.command.ConsoleCommandUser;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 @Getter
+@RequiredArgsConstructor
 public class BukkitConsoleCommandUser extends ConsoleCommandUser {
     private final CommandSender sender = Bukkit.getConsoleSender();
+    private final DiscordSRVUtilsBukkit main;
 
     @Override
     public String getName() {
@@ -42,8 +47,13 @@ public class BukkitConsoleCommandUser extends ConsoleCommandUser {
         return true;
     }
 
-    @Override
     public void sendMessage(String msg) {
         sender.sendMessage(Utils.colors(msg));
+    }
+
+
+    @Override
+    public void sendMessage(Component component) {
+        main.getAdventure().console().sendMessage(component);
     }
 }

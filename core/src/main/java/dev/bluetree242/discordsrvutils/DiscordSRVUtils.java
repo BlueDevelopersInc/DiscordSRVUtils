@@ -25,6 +25,7 @@ package dev.bluetree242.discordsrvutils;
 import dev.bluetree242.discordsrvutils.config.*;
 import dev.bluetree242.discordsrvutils.database.DatabaseManager;
 import dev.bluetree242.discordsrvutils.exceptions.ConfigurationLoadException;
+import dev.bluetree242.discordsrvutils.exceptions.InvalidResponseException;
 import dev.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import dev.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import dev.bluetree242.discordsrvutils.listeners.game.JoinUpdateChecker;
@@ -169,7 +170,7 @@ public class DiscordSRVUtils {
         //require intents and cacheflags
         if (main.getServer().isPluginInstalled("DiscordSRV")) {
             if (DiscordSRV.isReady) {
-                //Oh no, they are using a plugin manager to reload the plugin, give them a warn
+                //Oh no, they are using a plugin manager to reload the plugin, give them a warning
                 logger.warning("It seems like you are using a plugin manager to reload the plugin. This is not a good practice. If you see problems, Please restart");
                 return;
             }
@@ -180,7 +181,6 @@ public class DiscordSRVUtils {
     }
 
     public void onEnable() {
-        updateChecker.updateCheck();
         try {
             if (!main.getServer().isPluginEnabled("DiscordSRV")) {
                 logger.severe("DiscordSRV is not installed or failed to start. Download DiscordSRV at https://www.spigotmc.org/resources/discordsrv.18494/");
@@ -217,17 +217,24 @@ public class DiscordSRVUtils {
             try {
                 databaseManager.setupDatabase();
             } catch (SQLException ex) {
-                //Oh no! could not connect or migrate. Plugin may not start
+                //Oh, no! could not connect or migrate. Plugin may not start
                 errorHandler.startupError(ex, "Error could not connect to database: " + ex.getMessage());
                 getPlatform().disable();
                 return;
             }
             DiscordSRV.api.subscribe(dsrvListener);
             if (isReady()) {
-                //Uhh, Maybe they are using a pluginmanager and this plugin was enabled after discordsrv is ready
+                //Uhh, Maybe they are using a plugin manager and this plugin was enabled after discordsrv is ready
                 whenReady();
             }
             whenStarted();
+            getServer().runAsync(() -> {
+                try {
+                    UpdateChecker.UpdateCheckResult result = getUpdateChecker().updateCheck(true);
+                } catch (InvalidResponseException e) {
+                    getLogger().severe(e.getFriendlyMessage());
+                }
+            });
         } catch (Throwable ex) {
             //Plugin couldn't start, sadly
             errorHandler.startupError(ex, "Plugin could not start");
