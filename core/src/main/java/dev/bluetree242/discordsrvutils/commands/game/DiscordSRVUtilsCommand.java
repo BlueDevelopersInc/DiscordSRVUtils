@@ -57,7 +57,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
     @Override
     public void onRunAsync(String[] args, CommandUser sender, String label) throws Throwable {
         if (args.length == 0) {
-            sender.sendMessage("&eRunning DiscordSRVUtils v" + core.getPlatform().getDescription().getVersion());
+            sender.sendMessage("&eRunning DiscordSRVUtils v&a" + core.getPlatform().getDescription().getVersion());
             sender.sendMessage("&eBuild " + (VersionInfo.BUILD_NUMBER.equalsIgnoreCase("NONE") ? "&aNone/Unknown" : "&a#" + VersionInfo.BUILD_NUMBER));
             sender.sendMessage("&bStatus: " + (core.isReady() ? "&aRunning and functioning" : "&cNot running"));
             return;
