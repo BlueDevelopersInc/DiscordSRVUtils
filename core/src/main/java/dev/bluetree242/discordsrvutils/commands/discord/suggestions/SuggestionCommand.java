@@ -37,4 +37,8 @@ public abstract class SuggestionCommand extends Command {
     public boolean isEnabled() {
         return !(core.getMainConfig().disabled_commands().contains("all:suggestions")) && core.getSuggestionsConfig().enabled() && super.isEnabled();
     }
+
+    protected boolean useEphemeral() {
+        return core.getSuggestionsConfig().use_ephemeral();
+    }
 }

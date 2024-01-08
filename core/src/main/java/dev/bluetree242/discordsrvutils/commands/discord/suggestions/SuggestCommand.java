@@ -44,36 +44,32 @@ public class SuggestCommand extends SuggestionCommand {
 
     @Override
     public void run(CommandEvent e) throws Exception {
-        if (!core.getSuggestionsConfig().enabled()) {
-            e.replyErr("Suggestions are not enabled").queue();
-            return;
-        }
         Long channelId = core.getSuggestionsConfig().suggestions_channel();
         if (channelId == 0) {
-            e.replyErr("Suggestions Channel set to 0... Please change it").queue();
+            e.replyErr("Suggestions Channel set to 0... Please change it").setEphemeral(useEphemeral()).queue();
             return;
         }
         TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
         if (channel == null) {
-            e.replyErr("Suggestions Channel not found").queue();
+            e.replyErr("Suggestions Channel not found").setEphemeral(useEphemeral()).queue();
             return;
         }
 
         if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getSuggestionsConfig().suggestion_muted_role()))) {
-            e.replyErr("You are suggestion muted").queue();
+            e.replyErr("You are suggestion muted").setEphemeral(useEphemeral()).queue();
             return;
         }
 
         Long val = antispamMap.get(e.getAuthor().getIdLong());
         if (val != null) {
             if (!(System.nanoTime() - val >= core.getLevelingManager().MAP_EXPIRATION_NANOS)) {
-                e.replyErr("Slow down.. you need to wait 2 minutes before every new suggestion").queue();
+                e.replyErr("Slow down.. you need to wait 2 minutes before every new suggestion").setEphemeral(useEphemeral()).queue();
                 return;
             }
         }
 
         String suggestionText = e.getOption("suggestion").getAsString();
         Suggestion suggestion = core.getSuggestionManager().makeSuggestion(suggestionText, e.getAuthor().getIdLong());
-        e.replySuccess("Successfully created suggestion").queue();
+        e.replySuccess("Successfully created suggestion").setEphemeral(useEphemeral()).queue();
     }
 }

@@ -40,17 +40,17 @@ public class DenySuggestionCommand extends SuggestionCommand {
     @Override
     public void run(CommandEvent e) throws Exception {
         if (!core.getSuggestionsConfig().enabled()) {
-            e.replyErr("Suggestions are not enabled").queue();
+            e.replyErr("Suggestions are not enabled").setEphemeral(useEphemeral()).queue();
             return;
         }
 
         int number = (int) e.getOption("number").getAsLong();
         Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number);
         if (suggestion == null) {
-            e.replyErr("Suggestion not found").queue();
+            e.replyErr("Suggestion not found").setEphemeral(useEphemeral()).queue();
             return;
         }
         suggestion.setApproved(false, e.getAuthor().getIdLong());
-        e.replySuccess("Successfully denied suggestion").queue();
+        e.replySuccess("Successfully denied suggestion").setEphemeral(useEphemeral()).queue();
     }
 }

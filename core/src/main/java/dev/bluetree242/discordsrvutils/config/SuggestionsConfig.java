@@ -120,4 +120,9 @@ public interface SuggestionsConfig {
     @ConfComments("# Message when User tries to vote their own suggestion. This message is only sent on BUTTONS mode.")
     @ConfDefault.DefaultString("You may not vote your own suggestion.")
     String vote_own_suggestion_message();
+
+    @AnnotationBasedSorter.Order(150)
+    @ConfComments("# Should the message responses use ephemeral replies? This means that only the user can see it, and it disappears after a while.")
+    @ConfDefault.DefaultBoolean(false)
+    boolean use_ephemeral();
 }

@@ -41,7 +41,7 @@ public class SuggestionNoteCommand extends SuggestionCommand {
     @Override
     public void run(CommandEvent e) throws Exception {
         if (!core.getSuggestionsConfig().enabled()) {
-            e.replyErr("Suggestions are not enabled").queue();
+            e.replyErr("Suggestions are not enabled").setEphemeral(useEphemeral()).queue();
             return;
         }
 
@@ -49,11 +49,10 @@ public class SuggestionNoteCommand extends SuggestionCommand {
         String noteText = e.getOption("note").getAsString();
         Suggestion suggestion = core.getSuggestionManager().getSuggestionByNumber(number);
         if (suggestion == null) {
-            e.replyErr("Suggestion not found").queue();
+            e.replyErr("Suggestion not found").setEphemeral(useEphemeral()).queue();
             return;
         }
         suggestion.addNote(e.getAuthor().getIdLong(), noteText);
-        e.replySuccess("Successfully added note").queue();
-
+        e.replySuccess("Successfully added note").setEphemeral(useEphemeral()).queue();
     }
 }
