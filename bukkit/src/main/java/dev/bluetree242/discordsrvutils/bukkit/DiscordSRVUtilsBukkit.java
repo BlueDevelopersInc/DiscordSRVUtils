@@ -42,8 +42,6 @@ import java.util.Map;
 @Getter
 public class DiscordSRVUtilsBukkit extends JavaPlugin {
 
-    private BukkitAudiences adventure;
-
     static {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(DiscordSRVUtilsBukkit.class.getClassLoader());
@@ -58,6 +56,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         }
     }
 
+    private BukkitAudiences adventure;
     private DiscordSRVUtils core = null;
 
     @Override
@@ -109,7 +108,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(this.adventure != null) {
+        if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }

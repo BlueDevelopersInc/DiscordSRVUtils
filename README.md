@@ -17,8 +17,8 @@ DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
 
 Replace `VERSION` with the API version you would like. The badges above displays the latest versions available.
 
-
 ## Maven
+
 ```xml
 <repository>
     <id>bluetree242-repo</id>

@@ -66,7 +66,7 @@ public class UpdateChecker {
                 .addFormDataPart("devUpdatechecker", String.valueOf(core.getMainConfig().dev_updatechecker()))
                 .build();
 
-            Request req = new Request.Builder().url(System.getProperty("discordsrvutils.updatecheck.url", "https://discordsrvutils.xyz/updatecheck"))
+        Request req = new Request.Builder().url(System.getProperty("discordsrvutils.updatecheck.url", "https://discordsrvutils.xyz/updatecheck"))
                 .post(form)
                 .addHeader("Accept", "application/json")
                 .build();

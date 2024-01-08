@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class InvalidResponseException extends RuntimeException{
+public class InvalidResponseException extends RuntimeException {
     private final String message;
     private final Throwable cause;
 

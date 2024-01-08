@@ -58,7 +58,8 @@ public class JoinUpdateChecker extends PlatformListener {
 
                         ));
                     }
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
             });
         }
     }

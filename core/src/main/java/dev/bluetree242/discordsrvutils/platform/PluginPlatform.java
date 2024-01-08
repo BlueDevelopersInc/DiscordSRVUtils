@@ -25,7 +25,6 @@ package dev.bluetree242.discordsrvutils.platform;
 
 import dev.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import dev.bluetree242.discordsrvutils.systems.status.StatusListener;
-import github.scarsz.discordsrv.dependencies.kyori.adventure.audience.Audience;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.platform.AudienceProvider;
 import lombok.Getter;
 
