@@ -58,6 +58,12 @@ public interface Config {
     @ConfDefault.DefaultBoolean(true)
     boolean register_slash();
 
+    @AnnotationBasedSorter.Order(36)
+    @ConfKey("register-command-aliases")
+    @ConfComments("# Should We register slash commands aliases into your discord server? Setting this to false will reduce the amount of commands shown by this plugin.")
+    @ConfDefault.DefaultBoolean(true)
+    boolean register_aliases();
+
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
     @ConfComments("#Should we do Welcomer?")

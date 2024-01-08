@@ -43,19 +43,21 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public class SlashCommandProvider implements github.scarsz.discordsrv.api.commands.SlashCommandProvider {
-    private final DiscordSRVUtilsBukkit core;
+    private final DiscordSRVUtilsBukkit main;
 
     @Override
     public Set<PluginSlashCommand> getSlashCommands() {
         Set<PluginSlashCommand> commands = new HashSet<>();
-        if (core.getCore() == null || !core.getCore().isEnabled() || !core.getCore().getMainConfig().register_slash())
+        if (main.getCore() == null || !main.getCore().isEnabled() || !main.getCore().getMainConfig().register_slash())
             return commands;
-        CommandManager manager = core.getCore().getCommandManager();
+        CommandManager manager = main.getCore().getCommandManager();
         for (Command command : manager.getCommands()) {
             if (!command.isEnabled()) continue;
             commands.add(getCmd(command.getCmd(), command));
-            for (String alias : command.getAliases()) {
-                commands.add(getCmd(alias, command));
+            if (main.getCore().getMainConfig().register_aliases()) {
+                for (String alias : command.getAliases()) {
+                    commands.add(getCmd(alias, command));
+                }
             }
         }
         return commands;
@@ -63,12 +65,12 @@ public class SlashCommandProvider implements github.scarsz.discordsrv.api.comman
 
 
     private PluginSlashCommand getCmd(String alias, Command cmd) {
-        return new PluginSlashCommand(core, new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()), DiscordSRV.getPlugin().getMainGuild().getId());
+        return new PluginSlashCommand(main, new CommandData(alias, cmd.getDescription()).addOptions(cmd.getOptions()), DiscordSRV.getPlugin().getMainGuild().getId());
     }
 
     @SlashCommand(path = "*")
     public void onCommand(SlashCommandEvent e) {
-        DiscordSRVUtils core = this.core.getCore();
+        DiscordSRVUtils core = this.main.getCore();
         if (core.getMainConfig().bungee_mode()) return;
         String cmd = e.getName();
         Command executor = core.getCommandManager().getCommandHashMap().get(cmd);
