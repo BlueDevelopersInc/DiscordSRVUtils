@@ -31,3 +31,6 @@ jobs:
           path: "build/libs/*.jar"
       - name: Publish to maven repository
         run: ./gradlew core:publish
+        env:
+          REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
+          REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
