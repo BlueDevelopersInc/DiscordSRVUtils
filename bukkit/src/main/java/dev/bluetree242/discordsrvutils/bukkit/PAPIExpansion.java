@@ -32,6 +32,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -106,6 +108,19 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return 100 - core.getLevelingManager().getCachedStats(p).getXpPercentage() + "%";
         }
         return null;
+    }
+
+    @Override
+    public @NotNull List<String> getPlaceholders() {
+        return Arrays.asList(
+                "%discordsrvutils_level%",
+                "%discordsrvutils_xp%",
+                "%discordsrvutils_rank%",
+                "%discordsrvutils_xp_total_required%",
+                "%discordsrvutils_xp_total_percentage%",
+                "%discordsrvutils_xp_percentage%",
+                "%discordsrvutils_xp_left%"
+        );
     }
 
     protected static class Hook extends PluginHook {
