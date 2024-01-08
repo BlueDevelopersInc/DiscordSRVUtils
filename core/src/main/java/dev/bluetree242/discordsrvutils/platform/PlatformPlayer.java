@@ -23,6 +23,7 @@
 package dev.bluetree242.discordsrvutils.platform;
 
 import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 
 import java.util.UUID;
 

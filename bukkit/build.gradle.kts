@@ -96,6 +96,7 @@ bukkit {
     main = "dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit"
     apiVersion = "1.13"
     website = "bluetree242.dev"
+    foliaSupported = true
     commands {
         register("discordsrvutils") {
             aliases = listOf("dsrvu", "dsu", "du", "discordu", "srvu", "dut")

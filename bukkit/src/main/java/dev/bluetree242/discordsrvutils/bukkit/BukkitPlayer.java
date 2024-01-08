@@ -26,6 +26,7 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsAFKListener;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -50,6 +51,12 @@ public class BukkitPlayer extends PlatformPlayer<Player> {
     public void sendMessage(String msg) {
         original.sendMessage(Utils.colors(msg));
     }
+
+    @Override
+    public void sendMessage(Component component) {
+        core.getPlatform().getAudience().player(getUniqueId()).sendMessage(component);
+    }
+
 
     @Override
     public boolean hasPermission(String node) {

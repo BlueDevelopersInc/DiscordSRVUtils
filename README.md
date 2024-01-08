@@ -10,14 +10,15 @@ DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
 
 # API
 
-## Maven
-
 ### Version
+
 ![Latest release](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release&color=FF7F7F)
 ![Latest Development Build](https://repo.bluetree242.dev/api/badge/latest/maven-snapshots/dev/bluetree242/discordsrvutils/core?name=Latest%20Development%20Build&color=FF7F7F)
 
 Replace `VERSION` with the API version you would like. The badges above displays the latest versions available.
 
+
+## Maven
 ```xml
 <repository>
     <id>bluetree242-repo</id>
@@ -30,6 +31,7 @@ Replace `VERSION` with the API version you would like. The badges above displays
     <groupId>dev.bluetree242.discordsrvutils</groupId>
     <artifactId>core</artifactId>
     <version>VERSION</version>
+    <scope>provided</scope>
 </dependency>
 ```
 
@@ -45,7 +47,7 @@ repositories {
 ```gradle
 dependencies {
     // Any other dependency...
-    implementation 'dev.bluetree242.discordsrvutils:core:VERSION'
+    compileOnly 'dev.bluetree242.discordsrvutils:core:VERSION'
 }
 ```
 
@@ -70,10 +72,11 @@ find [here](https://docs.discordsrv.com/master/#developers)
 
 # Contributing
 
-To contribute you can fork this repo and make changes on the `develop` branch. And you can Pull Request to the `develop`
+To contribute you can fork this repo and make changes on the `develop` branch. And you can pull request to the `develop`
 branch. Pull requests on `master` will be denied and closed.
 
 # License
+
 [License]:https://img.shields.io/github/license/BlueDevelopersInc/DiscordSRVUtils?color=e
 [![License]](https://github.com/BlueDevelopersInc/DiscordSRVUtils/blob/master/LICENSE)
   

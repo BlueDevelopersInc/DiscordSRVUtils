@@ -24,6 +24,7 @@ package dev.bluetree242.discordsrvutils.bukkit;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.OfflinePlayer;
@@ -43,7 +44,12 @@ public class BukkitOfflinePlayer extends PlatformPlayer<OfflinePlayer> {
 
     @Override
     public void sendMessage(String msg) {
-        //offline
+        // offline
+    }
+
+    @Override
+    public void sendMessage(Component component) {
+        // offline
     }
 
     @Override

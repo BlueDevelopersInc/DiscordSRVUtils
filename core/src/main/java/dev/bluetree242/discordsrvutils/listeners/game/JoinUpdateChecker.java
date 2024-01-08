@@ -26,16 +26,40 @@ package dev.bluetree242.discordsrvutils.listeners.game;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import dev.bluetree242.discordsrvutils.platform.listener.PlatformListener;
+import dev.bluetree242.discordsrvutils.updatechecker.UpdateChecker;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.ClickEvent;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.format.NamedTextColor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JoinUpdateChecker extends PlatformListener {
     private final DiscordSRVUtils core;
+    private final Component prefix = Component.empty()
+            .append(Component.text("[").color(NamedTextColor.GRAY))
+            .append(Component.text("DSU").color(NamedTextColor.YELLOW))
+            .append(Component.text("]").color(NamedTextColor.GRAY))
+            .appendSpace();
 
     @Override
     public void onJoin(PlatformJoinEvent e) {
         if (e.getPlayer().hasPermission("discordsrvutils.updatechecker")) {
-            core.getUpdateChecker().updateCheck(e.getPlayer());
+            core.getAsyncManager().executeAsync(() -> {
+                try {
+                    UpdateChecker.UpdateCheckResult result = core.getUpdateChecker().updateCheck(false);
+                    if (result == null) return;
+                    if (result.getMessage() != null) e.getPlayer().sendMessage(prefix.append(result.getMessage()));
+                    else if (result.getVersionsBehind() > 0) {
+                        e.getPlayer().sendMessage(prefix.append(
+                                Component.text("You are ").color(NamedTextColor.YELLOW)
+                                        .append(Component.text(result.getVersionsBehind()).color(NamedTextColor.RED))
+                                        .appendSpace().append(Component.text("versions behind. Update is available at "))
+                                        .append(Component.text(result.getDownloadUrl()).color(NamedTextColor.AQUA).clickEvent(ClickEvent.openUrl(result.getDownloadUrl())))
+
+                        ));
+                    }
+                } catch (Throwable ignored) {}
+            });
         }
     }
 }

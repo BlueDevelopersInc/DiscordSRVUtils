@@ -24,6 +24,7 @@ package dev.bluetree242.discordsrvutils.bukkit.cmd;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
+import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
 import dev.bluetree242.discordsrvutils.commands.game.DiscordSRVUtilsCommand;
 import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
 import dev.bluetree242.discordsrvutils.utils.Utils;
@@ -37,10 +38,12 @@ import java.util.List;
 public class BukkitCommandListener implements CommandExecutor, TabCompleter {
     private final DiscordSRVUtils core;
     private final DiscordSRVUtilsCommand cmd;
+    private final DiscordSRVUtilsBukkit main;
 
-    public BukkitCommandListener(DiscordSRVUtils core) {
+    public BukkitCommandListener(DiscordSRVUtils core, DiscordSRVUtilsBukkit main) {
         this.core = core;
         cmd = new DiscordSRVUtilsCommand(core);
+        this.main = main;
     }
 
     @Nullable
@@ -66,7 +69,7 @@ public class BukkitCommandListener implements CommandExecutor, TabCompleter {
         if (sender instanceof Player) {
             return new BukkitPlayer(core, ((Player) sender));
         } else if (sender instanceof ConsoleCommandSender) {
-            return new BukkitConsoleCommandUser();
+            return new BukkitConsoleCommandUser(main);
         } else {
             return new BukkitCommandUser(sender);
         }

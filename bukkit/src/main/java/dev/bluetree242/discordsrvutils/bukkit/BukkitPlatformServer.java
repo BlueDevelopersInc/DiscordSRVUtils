@@ -29,6 +29,7 @@ import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
 import dev.bluetree242.discordsrvutils.platform.PlatformServer;
 import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,12 +44,12 @@ public class BukkitPlatformServer extends PlatformServer {
     private final DiscordSRVUtils core;
     @Getter
     private final Debugger debugger;
-    private final DiscordSRVUtilsBukkit bcore;
+    private final DiscordSRVUtilsBukkit main;
 
-    public BukkitPlatformServer(DiscordSRVUtils core, DiscordSRVUtilsBukkit bcore) {
+    public BukkitPlatformServer(DiscordSRVUtils core, DiscordSRVUtilsBukkit main) {
         this.core = core;
         debugger = new BukkitDebugger(core);
-        this.bcore = bcore;
+        this.main = main;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class BukkitPlatformServer extends PlatformServer {
 
     @Override
     public CommandUser getConsoleSender() {
-        return new BukkitConsoleCommandUser();
+        return new BukkitConsoleCommandUser(main);
     }
 
 
@@ -114,13 +115,16 @@ public class BukkitPlatformServer extends PlatformServer {
 
     @Override
     public void executeConsoleCommands(String... cmds) {
-        Runnable runnable = () -> {
+        SchedulerUtil.runTask(main, () -> {
             for (String cmd : cmds) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
-        };
-        if (Bukkit.isPrimaryThread()) runnable.run();
-        else Bukkit.getScheduler().runTask(bcore, runnable);
+        });
+    }
+
+    @Override
+    public void runAsync(Runnable runnable) {
+        SchedulerUtil.runTaskAsynchronously(main, runnable);
     }
 
 

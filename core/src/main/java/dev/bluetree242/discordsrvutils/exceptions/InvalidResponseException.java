@@ -20,37 +20,19 @@
  * END
  */
 
-package dev.bluetree242.discordsrvutils.bukkit.cmd;
+package dev.bluetree242.discordsrvutils.exceptions;
 
-import dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit;
-import dev.bluetree242.discordsrvutils.platform.command.CommandUser;
-import dev.bluetree242.discordsrvutils.utils.Utils;
-import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.command.CommandSender;
 
-@Getter
 @RequiredArgsConstructor
-public class BukkitCommandUser extends CommandUser {
-    private final CommandSender sender;
+@Getter
+public class InvalidResponseException extends RuntimeException{
+    private final String message;
+    private final Throwable cause;
 
-    @Override
-    public String getName() {
-        return sender.getName();
-    }
-
-    @Override
-    public boolean hasPermission(String node) {
-        return sender.hasPermission(node);
-    }
-
-    @Override
-    public void sendMessage(String msg) {
-        sender.sendMessage(Utils.colors(msg));
-    }
-
-    @Override
-    public void sendMessage(Component component) {
+    public String getFriendlyMessage() {
+        if (cause != null) return cause.getClass().getSimpleName() + ": " + cause.getMessage();
+        return message;
     }
 }

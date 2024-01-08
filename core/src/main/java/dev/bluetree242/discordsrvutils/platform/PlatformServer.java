@@ -53,4 +53,5 @@ public abstract class PlatformServer {
 
     public abstract void executeConsoleCommands(String... cmds);
 
+    public abstract void runAsync(Runnable runnable);
 }

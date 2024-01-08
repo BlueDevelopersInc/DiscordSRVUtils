@@ -22,6 +22,8 @@
 
 package dev.bluetree242.discordsrvutils.platform.command;
 
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+
 public abstract class CommandUser {
 
     public abstract String getName();
@@ -29,4 +31,6 @@ public abstract class CommandUser {
     public abstract boolean hasPermission(String node);
 
     public abstract void sendMessage(String msg);
+
+    public abstract void sendMessage(Component component);
 }

@@ -24,95 +24,109 @@ package dev.bluetree242.discordsrvutils.updatechecker;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.VersionInfo;
-import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
-import dev.bluetree242.discordsrvutils.utils.Utils;
+import dev.bluetree242.discordsrvutils.exceptions.InvalidResponseException;
+import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonProperty;
+import github.scarsz.discordsrv.dependencies.jackson.databind.DeserializationFeature;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.minimessage.MiniMessage;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.ComponentSerializer;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class UpdateChecker {
     private final DiscordSRVUtils core;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public void updateCheck() {
-        core.getAsyncManager().executeAsync(() -> {
-            //do updatechecker
-            try {
-                if (!core.isEnabled()) return;
-                OkHttpClient client = new OkHttpClient();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                        .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
-                        .addFormDataPart("buildNumber", VersionInfo.BUILD_NUMBER)
-                        .addFormDataPart("commit", VersionInfo.COMMIT)
-                        .addFormDataPart("buildDate", VersionInfo.BUILD_DATE)
-                        .build();
-
-                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
-                Response response = client.newCall(req).execute();
-                JSONObject res = new JSONObject(response.body().string());
-                response.close();
-                int versions_behind = res.getInt("versions_behind");
-                String logger = res.getString("type") != null ? res.getString("type") : "INFO";
-                String msg;
-                if (res.isNull("message")) {
-                    if (versions_behind != 0) {
-                        msg = (Utils.colors("&cPlugin is " + versions_behind + " versions behind. Please Update. Download from " + res.getString("downloadUrl")));
-                    } else {
-                        msg = (Utils.colors("&aPlugin is up to date!"));
-                    }
-                } else {
-                    //the updatechecker wants its own message
-                    String message = res.getString("message");
-                    if (message.contains(res.getString("downloadUrl"))) {
-                        msg = message;
-                    } else {
-                        msg = message + " Download from " + res.getString("downloadUrl");
-                    }
-                }
-                switch (logger) {
-                    case "INFO":
-                        core.getLogger().info(Utils.colors(msg));
-                        break;
-                    case "WARNING":
-                    case "ERROR":
-                        core.getLogger().warning(Utils.colors(msg));
-                        break;
-                }
-            } catch (Exception e) {
-                //We could not check for updates.
-                core.getLogger().severe("Could not check for updates: " + e.getMessage());
-            }
-
-        });
+    public @Nullable UpdateCheckResult updateCheck(boolean startup) {
+        if (!System.getProperty("discordsrvutils.updatecheck", "true").equalsIgnoreCase("true")) return null;
+        UpdateCheckResult result = runRequest(startup);
+        if (startup || result.getLogLevel() != Level.INFO) {
+            core.getLogger().log(result.getLogLevel(), result.getConsoleMessage());
+        }
+        return result;
     }
 
-    public void updateCheck(PlatformPlayer p) {
-        core.getAsyncManager().executeAsync(() -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
-                        .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
-                        .addFormDataPart("buildNumber", VersionInfo.BUILD_NUMBER)
-                        .addFormDataPart("commit", VersionInfo.COMMIT)
-                        .addFormDataPart("buildDate", VersionInfo.BUILD_DATE)
-                        .addFormDataPart("devUpdatechecker", core.getMainConfig().dev_updatechecker() + "")
-                        .build();
+    private UpdateCheckResult runRequest(boolean startup) {
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody form = new MultipartBody.Builder().setType(MediaType.get("multipart/form-data"))
+                .addFormDataPart("updatecheckVersion", "1")
+                .addFormDataPart("version", core.getPlatform().getDescription().getVersion())
+                .addFormDataPart("buildNumber", VersionInfo.BUILD_NUMBER)
+                .addFormDataPart("commit", VersionInfo.COMMIT)
+                .addFormDataPart("buildDate", VersionInfo.BUILD_DATE)
+                .addFormDataPart("devUpdatechecker", String.valueOf(core.getMainConfig().dev_updatechecker()))
+                .build();
 
-                Request req = new Request.Builder().url("https://discordsrvutils.xyz/updatecheck").post(form).build();
-                Response response = client.newCall(req).execute();
-                JSONObject res = new JSONObject(response.body().string());
-                response.close();
-                int versions_behind = res.getInt("versions_behind");
-                if (res.isNull("message")) {
-                    if (versions_behind != 0) {
-                        p.sendMessage("&7[&eDSU&7] &cPlugin is " + versions_behind + " versions behind. Please Update. Click to Download");
-                    }
-                } else {
-                    p.sendMessage("&7[&eDSU&7] &c" + res.getString("message"));
-                }
-            } catch (Exception ignored) {
-            }
+            Request req = new Request.Builder().url(System.getProperty("discordsrvutils.updatecheck.url", "https://discordsrvutils.xyz/updatecheck"))
+                .post(form)
+                .addHeader("Accept", "application/json")
+                .build();
+        try (Response response = client.newCall(req).execute()) {
+            String body = response.body().string();
+            if (response.code() != 200) throw new InvalidResponseException(body, null);
+            UpdateCheckResult result = objectMapper.readValue(body, UpdateCheckResult.class);
+            response.close();
+            return result;
+        } catch (Throwable e) {
+            throw new InvalidResponseException(e.getMessage(), e);
+        }
+    }
 
-        });
+
+    @RequiredArgsConstructor
+    public enum MessageFormat {
+        LEGACY(LegacyComponentSerializer.builder().character('&').extractUrls().build()),
+        MINIMESSAGE(MiniMessage.miniMessage());
+        private final ComponentSerializer<Component, ? extends Component, String> serializer;
+    }
+
+    @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+    public static class UpdateCheckResult {
+        @Getter
+        private String downloadUrl;
+
+        @Getter
+        @JsonProperty(required = true, value = "versions_behind")
+        private int versionsBehind;
+
+        @Getter
+        private boolean shouldDisable = true;
+
+        private String message;
+
+        private String consoleMessage;
+
+        private String type = "INFO";
+
+        @Getter
+        private MessageFormat messageFormat = MessageFormat.LEGACY; // default is legacy because updatechecker may not return this value and therefore assumes an older version for some reason.
+
+        public Component getMessage() {
+            if (message == null) return null;
+            return messageFormat.serializer.deserialize(message);
+        }
+
+        public Level getLogLevel() {
+            if (type.equalsIgnoreCase("INFO")) return Level.INFO;
+            return Level.SEVERE;
+        }
+
+        public String getConsoleMessage() {
+            Component result;
+            if (consoleMessage == null && message == null) {
+                return getVersionsBehind() <= 0 ? "You are up to date." : "You are " + getVersionsBehind() + " versions behind. Update is available at " + getDownloadUrl();
+            } else if (consoleMessage == null) result = getMessage();
+            else result = messageFormat.serializer.deserialize(consoleMessage);
+            return PlainTextComponentSerializer.plainText().serialize(result);
+        }
     }
 }

@@ -40,7 +40,6 @@ public class ErrorHandler {
     private long lastErrorTime = 0;
 
     protected void startupError(Throwable ex, @NotNull String msg) {
-        core.getPlatform().disable();
         core.getLogger().warning(msg);
         try {
             //create a debug report, we know commands don't work after plugin is disabled
@@ -51,6 +50,7 @@ public class ErrorHandler {
         //tell them where to report
         core.getLogger().severe("Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
+        core.getPlatform().disable();
     }
 
     public void defaultHandle(Throwable ex) {
@@ -58,7 +58,7 @@ public class ErrorHandler {
         if (!core.getMainConfig().minimize_errors()) {
             core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
             ex.printStackTrace();
-            core.getLogger().severe("Read the note above the error Please.");
+            core.getLogger().severe("Read the note above the error please.");
             //don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
                 for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
