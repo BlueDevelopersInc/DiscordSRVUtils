@@ -208,7 +208,7 @@ public class DiscordSRVUtils {
                     "|   &cStorage: &r" + storage + "\n&r" +
                     "| &cSupport:\n&r" +
                     "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
-                    "|   &Wiki: &rhttps://wiki.discordsrvutils.xyz\n" +
+                    "|   &cWiki: &rhttps://wiki.discordsrvutils.xyz\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]================================[]");
             asyncManager.start();
