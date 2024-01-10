@@ -71,6 +71,14 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                 }
                 //welcomer
                 if (core.getMainConfig().welcomer_enabled()) {
+                    if (core.getMainConfig().welcomer_role() != 0) {
+                        Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getMainConfig().welcomer_role());
+                        if (role == null) {
+                            core.severe("Welcomer Role not found... User did not receive any roles");
+                        } else {
+                            core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).queue();
+                        }
+                    }
                     MessageChannel channel = core.getMainConfig().welcomer_dm_user() ? e.getUser().openPrivateChannel().complete() : core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(core.getMainConfig().welcomer_channel());
                     if (channel == null) {
                         core.severe("No Text Channel was found with ID " + core.getMainConfig().welcomer_channel() + ". Join Message was not sent for " + e.getUser().getAsTag());
@@ -81,14 +89,6 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                         holders.add(new PlaceholdObject(core, e.getMember(), "member"));
                         if (inviter != null) holders.add(new PlaceholdObject(core, inviter, "inviter"));
                         channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
-                    }
-                    if (core.getMainConfig().welcomer_role() != 0) {
-                        Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getMainConfig().welcomer_role());
-                        if (role == null) {
-                            core.severe("Welcomer Role not found... User did not receive any roles");
-                        } else {
-                            core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).queue();
-                        }
                     }
                 }
             }
