@@ -27,12 +27,14 @@ import com.zaxxer.hikari.HikariDataSource;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
+import org.hsqldb.lib.FrameworkLogger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
+import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -49,15 +51,20 @@ public class DatabaseManager {
 
     public void setupDatabase() throws SQLException {
         System.setProperty("hsqldb.method_class_names", "abc");
+        try {
+            Field field = FrameworkLogger.class.getDeclaredField("noopMode");
+            field.setAccessible(true);
+            field.set(null, true);
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
         HikariConfig settings = new HikariConfig();
-        String jdbcurl;
+        String jdbcUrl;
         String user;
         String pass;
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
         try {
             if (core.getSqlconfig().isEnabled()) {
-                jdbcurl = "jdbc:mysql://" +
+                jdbcUrl = "jdbc:mysql://" +
                         core.getSqlconfig().Host() +
                         ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
                 user = core.getSqlconfig().UserName();
@@ -65,14 +72,14 @@ public class DatabaseManager {
             } else {
                 core.logger.info("MySQL is disabled, using hsqldb");
                 hsqldb = true;
-                jdbcurl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
+                jdbcUrl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
                 user = "SA";
                 pass = "";
             }
             //load jooq classes
             new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
             settings.setDriverClassName(hsqldb ? "dev.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver" : "dev.bluetree242.discordsrvutils.dependencies.mariadb.Driver");
-            settings.setJdbcUrl(jdbcurl);
+            settings.setJdbcUrl(jdbcUrl);
             settings.setUsername(user);
             settings.setPassword(pass);
             sql = new HikariDataSource(settings);

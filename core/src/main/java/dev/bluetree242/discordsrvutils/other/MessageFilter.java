@@ -49,7 +49,6 @@ public class MessageFilter {
             }
             return false;
         }
-        if (loggerName.contains("hsqldb.db") && level == Level.INFO) return false;
         return !loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.jooq");
     }
 
