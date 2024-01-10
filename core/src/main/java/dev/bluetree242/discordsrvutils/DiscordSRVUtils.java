@@ -210,7 +210,7 @@ public class DiscordSRVUtils {
                     "|   &cGithub: &rhttps://github.com/BlueTree242/BlueDevelopersInc/issues\n" +
                     "|   &cWiki: &rhttps://wiki.discordsrvutils.xyz\n" +
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
-                    "[]================================[]");
+                    "[]====================================[]");
             asyncManager.start();
             //Register our in game commands
             main.registerCommands();
