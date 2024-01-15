@@ -39,6 +39,6 @@ public abstract class TicketCommand extends Command {
 
     @Override
     public boolean isEnabled() {
-        return !(core.getMainConfig().disabled_commands().contains("all:tickets")) && core.getSuggestionsConfig().enabled() && super.isEnabled();
+        return !(core.getMainConfig().disabled_commands().contains("all:tickets")) && super.isEnabled();
     }
 }
