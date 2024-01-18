@@ -35,7 +35,6 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
 import java.lang.reflect.Field;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -55,7 +54,8 @@ public class DatabaseManager {
             Field field = FrameworkLogger.class.getDeclaredField("noopMode");
             field.setAccessible(true);
             field.set(null, true);
-        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {
+        }
         HikariConfig settings = new HikariConfig();
         String jdbcUrl;
         String user;
@@ -72,7 +72,7 @@ public class DatabaseManager {
             } else {
                 core.logger.info("MySQL is disabled, using hsqldb");
                 hsqldb = true;
-                jdbcUrl = "jdbc:hsqldb:file:" + Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
+                jdbcUrl = "jdbc:hsqldb:file:" + core.getPlatform().getDataFolder().toPath().resolve("database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
                 user = "SA";
                 pass = "";
             }

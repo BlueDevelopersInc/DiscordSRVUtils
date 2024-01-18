@@ -29,7 +29,6 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
 import github.scarsz.discordsrv.dependencies.commons.io.IOUtils;
-import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonInclude;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
@@ -47,7 +46,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -73,7 +71,7 @@ public class MessageManager {
         if (getMessagesDirectory().toFile().mkdir()) {
             defaultMessages.forEach((key, val) -> {
                 try {
-                    File file = new File(getMessagesDirectory() + core.fileSeparator + key + ".json");
+                    File file = getMessagesDirectory().resolve(key + ".json").toFile();
                     file.createNewFile();
                     FileWriter writer = new FileWriter(file);
                     writer.write(val);

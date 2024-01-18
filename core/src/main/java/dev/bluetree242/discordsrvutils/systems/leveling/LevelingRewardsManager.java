@@ -56,10 +56,10 @@ public class LevelingRewardsManager {
     private File rewardCacheFile;
 
     public void reloadLevelingRewards() {
-        rewardCacheFile = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "data" + core.fileSeparator + "leveling-reward-cache.json");
+        rewardCacheFile = core.getPlatform().getDataFolder().toPath().resolve("data").resolve("leveling-reward-cache.json").toFile();
         try {
-            File file = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "leveling-roles.json");
-            File filer = new File(core.getPlatform().getDataFolder(), core.fileSeparator + "leveling-rewards.json");
+            File file = core.getPlatform().getDataFolder().toPath().resolve("leveling-roles.json").toFile();
+            File filer = core.getPlatform().getDataFolder().toPath().resolve("leveling-rewards.json").toFile();
             JSONObject json;
             if (file.exists()) {
                 if (filer.exists()) {
@@ -183,7 +183,7 @@ public class LevelingRewardsManager {
         JSONObject result = new JSONObject();
         for (String key : roles.toMap().keySet()) {
             Object value = roles.get(key);
-            if (value instanceof Long) result.put(key + "", new JSONObject().put("roles", new JSONArray().put(value)));
+            if (value instanceof Long) result.put(key, new JSONObject().put("roles", new JSONArray().put(value)));
             else result.put(key, value);
         }
         return result;

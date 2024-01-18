@@ -56,15 +56,12 @@ import lombok.Getter;
 import space.arim.dazzleconf.error.InvalidConfigException;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
     //instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
-    //file separator string
-    public final String fileSeparator = FileSystems.getDefault().getSeparator();
     @Getter
     private final MessageFilter messageFilter = new MessageFilter(this);
     private final PluginPlatform main;

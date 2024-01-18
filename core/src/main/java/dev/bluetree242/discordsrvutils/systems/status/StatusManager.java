@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Timer;
 
 @RequiredArgsConstructor
@@ -49,7 +48,7 @@ public class StatusManager {
     private StatusTimer timer = new StatusTimer(this);
 
     public Path getDataPath() {
-        return Paths.get(core.getPlatform().getDataFolder() + core.fileSeparator + "data" + core.fileSeparator + "status-message.json");
+        return core.getPlatform().getDataFolder().toPath().resolve("data").resolve("status-message.json");
     }
 
 
