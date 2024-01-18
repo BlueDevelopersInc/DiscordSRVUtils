@@ -127,7 +127,7 @@ public class MessageManager {
 
         // Title and color
         embed.setTitle(placehold(json.get("title"), holders, placehold), placehold(json.get("url"), holders, placehold));
-        if (json.get("color") != null)
+        if (json.has("color"))
             embed.setColor(json.get("color").isInt() ? json.get("color").asInt() : colorOf(json.get("color").asText()).getRGB());
 
         // Footer
@@ -199,9 +199,9 @@ public class MessageManager {
 
     public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
-        if (json.get("embed") != null)
+        if (json.has("embed"))
             msg.setEmbeds(parseEmbedFromJSON(json.get("embed"), holders, placehold).build());
-        if (json.get("content") != null) {
+        if (json.has("content")) {
             msg.setContent(placehold(json.get("content"), holders, placehold));
         }
         return msg;
@@ -260,7 +260,7 @@ public class MessageManager {
             msg.setContent(placehold(json.get("content"), holders, placehold));
 
             // Embed
-            JsonNode embeds = json.get("embeds") == null ? json.get("embed") : json.get("embeds");
+            JsonNode embeds = json.has("embeds") ? json.get("embeds") : json.get("embed");
             if (embeds.isArray()) {
                 List<MessageEmbed> messageEmbeds = new ArrayList<>();
                 for (JsonNode embed : embeds) {
