@@ -28,8 +28,10 @@ import dev.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
-import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.commons.io.IOUtils;
+import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonInclude;
+import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.MessageBuilder;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -37,8 +39,6 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageEmbed;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.interactions.ReplyAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -63,9 +63,10 @@ public class MessageManager {
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
     private final DiscordSRVUtils core;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     public Path getMessagesDirectory() {
-        return Paths.get(core.getPlatform().getDataFolder().toString() + core.fileSeparator + "messages");
+        return core.getPlatform().getDataFolder().toPath().resolve("messages");
     }
 
     public void init() {
@@ -123,48 +124,50 @@ public class MessageManager {
         }
     }
 
-    public EmbedBuilder parseEmbedFromJSON(JSONObject json, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
+    public EmbedBuilder parseEmbedFromJSON(JsonNode json, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(getStringFromJson(json, "title", holders, placehold), getStringFromJson(json, "url", holders, placehold));
-        if (!json.isNull("color")) {
-            int color = json.get("color") instanceof Integer ? json.getInt("color") : colorOf(json.getString("color")).getRGB();
-            embed.setColor(color);
-        }
-        if (!json.isNull("footer")) {
-            JSONObject footer = json.getJSONObject("footer");
-            embed.setFooter(getStringFromJson(footer, "text", holders, placehold), getStringFromJson(footer, "icon_url", holders, placehold));
-        }
-        if (!json.isNull("thumbnail")) {
-            JSONObject thumbnail = json.getJSONObject("thumbnail");
-            embed.setThumbnail(getStringFromJson(thumbnail, "url", holders, placehold));
-        }
-        if (!json.isNull("image")) {
-            JSONObject image = json.getJSONObject("image");
-            embed.setImage(getStringFromJson(image, "url", holders, placehold));
-        }
-        if (!json.isNull("author")) {
-            JSONObject author = json.getJSONObject("author");
-            embed.setAuthor(getStringFromJson(author, "name", holders, placehold), getStringFromJson(author, "url", holders, placehold), getStringFromJson(author, "icon_url", holders, placehold));
-        }
-        embed.setTimestamp(getTimestamp(json, holders, placehold));
-        if (!json.isNull("fields")) {
-            JSONArray fields = json.getJSONArray("fields");
-            for (Object o : fields) {
-                JSONObject field = (JSONObject) o;
-                embed.addField(getStringFromJson(field, "name", holders, placehold), getStringFromJson(field, "value", holders, placehold), !field.isNull("inline") && field.getBoolean("inline"));
+
+        // Title and color
+        embed.setTitle(placehold(json.get("title"), holders, placehold), placehold(json.get("url"), holders, placehold));
+        if (json.get("color") != null)
+            embed.setColor(json.get("color").isInt() ? json.get("color").asInt() : colorOf(json.get("color").asText()).getRGB());
+
+        // Footer
+        JsonNode footer = json.get("footer");
+        if (footer != null)
+            embed.setFooter(placehold(footer.get("text"), holders, placehold), placehold(footer.get("icon_url"), holders, placehold));
+
+        // Thumbnail
+        JsonNode thumbnail = json.get("thumbnail");
+        if (thumbnail != null) embed.setThumbnail(placehold(thumbnail.get("url"), holders, placehold));
+
+        // Image
+        JsonNode image = json.get("image");
+        if (image != null) embed.setImage(placehold(image.get("url"), holders, placehold));
+
+        // Author & Timestamp
+        JsonNode author = json.get("author");
+        if (author != null)
+            embed.setAuthor(placehold(author.get("name"), holders, placehold), placehold(author.get("url"), holders, placehold), placehold(author.get("icon_url"), holders, placehold));
+        embed.setTimestamp(parseTimestamp(json, holders, placehold));
+
+        // Fields & Description
+        JsonNode fields = json.get("fields");
+        if (fields != null) {
+            for (JsonNode field : fields) {
+                embed.addField(placehold(field.get("name"), holders, placehold), placehold(field.get("value"), holders, placehold), field.get("inline") != null && field.get("inline").asBoolean());
             }
         }
-
-        embed.setDescription(getStringFromJson(json, "description", holders, placehold));
+        embed.setDescription(placehold(json.get("description"), holders, placehold));
         return embed;
     }
 
-    private @Nullable Instant getTimestamp(JSONObject json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    private @Nullable Instant parseTimestamp(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         if (json.has("timestamp")) {
-            if (json.get("timestamp") instanceof Long) return Instant.ofEpochSecond(json.getLong("timestamp"));
+            if (json.get("timestamp").isLong()) return Instant.ofEpochSecond(json.get("timestamp").asLong());
             else {
-                if (json.getString("timestamp").equalsIgnoreCase("now")) return Instant.now();
-                String timestamp = getStringFromJson(json, "timestamp", holders, placehold);
+                if (json.get("timestamp").asText().equalsIgnoreCase("now")) return Instant.now();
+                String timestamp = placehold(json.get("timestamp"), holders, placehold);
                 if (timestamp.equalsIgnoreCase("now")) return Instant.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS'Z']");
                 LocalDateTime dateTime = LocalDateTime.parse(timestamp, formatter);
@@ -192,37 +195,31 @@ public class MessageManager {
         }
     }
 
-    public EmbedBuilder parseEmbedFromJSON(JSONObject json) {
+    public EmbedBuilder parseEmbedFromJSON(JsonNode json) {
         return parseEmbedFromJSON(json, null, null);
     }
 
-    public MessageBuilder parseMessageFromJson(JSONObject json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
-        if (!json.isNull("embed"))
-            msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
-        if (!json.isNull("content")) {
-            msg.setContent(getStringFromJson(json, "content", holders, placehold));
+        if (json.get("embed") != null)
+            msg.setEmbeds(parseEmbedFromJSON(json.get("embed"), holders, placehold).build());
+        if (json.get("content") != null) {
+            msg.setContent(placehold(json.get("content"), holders, placehold));
         }
         return msg;
     }
 
-
-    private String getStringFromJson(JSONObject ob, String val, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
-        if (!ob.isNull(val)) {
-            String raw = ob.getString(val);
+    private String placehold(JsonNode ob, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
+        if (ob != null) {
+            String raw = ob.asText();
             if (holders != null) {
                 raw = holders.apply(raw, placehold);
             } else raw = new PlaceholdObjectList(core).apply(raw, placehold);
             return raw;
-        }
-        return null;
+        } else return null;
     }
 
-    private String getStringFromJson(JSONObject ob, String val) {
-        return getStringFromJson(ob, val, null, null);
-    }
-
-    public JSONObject getMessageJSONByName(String name) {
+    public JsonNode getMessageJSONByName(String name) {
         String[] split = name.split("/");
         Path path = getMessagesDirectory();
         File file = null;
@@ -251,7 +248,7 @@ public class MessageManager {
             throw new MessageNotFoundException(name);
         }
         try {
-            return new JSONObject(Utils.readFile(file.getPath()));
+            return objectMapper.readTree(file);
         } catch (Throwable ex) {
             throw new InvalidMessageException(name, ex);
         }
@@ -261,19 +258,18 @@ public class MessageManager {
         MessageBuilder msg = new MessageBuilder();
         if (content.startsWith("message:")) {
             String embedName = content.replaceFirst("message:", "");
-            JSONObject json = getMessageJSONByName(embedName);
-            if (!json.isNull("content")) {
-                msg.setContent(getStringFromJson(json, "content", holders, placehold));
-            }
-            if (!json.isNull("embed") || !json.isNull("embeds")) {
-                if (json.has("embeds") && json.get("embeds") instanceof JSONArray) {
-                    List<MessageEmbed> embeds = new ArrayList<>();
-                    for (Object o : json.getJSONArray("embeds")) {
-                        embeds.add(parseEmbedFromJSON((JSONObject) o, holders, placehold).build());
-                    }
-                    msg.setEmbeds(embeds);
-                } else msg.setEmbeds(parseEmbedFromJSON(json.getJSONObject("embed"), holders, placehold).build());
-            }
+            JsonNode json = getMessageJSONByName(embedName);
+            msg.setContent(placehold(json.get("content"), holders, placehold));
+
+            // Embed
+            JsonNode embeds = json.get("embeds") == null ? json.get("embed") : json.get("embeds");
+            if (embeds.isArray()) {
+                List<MessageEmbed> messageEmbeds = new ArrayList<>();
+                for (JsonNode embed : embeds) {
+                    messageEmbeds.add(parseEmbedFromJSON(embed, holders, placehold).build());
+                }
+                msg.setEmbeds(messageEmbeds);
+            } else msg.setEmbeds(parseEmbedFromJSON(embeds, holders, placehold).build());
         } else {
             if (holders != null) {
                 content = holders.apply(content);
@@ -282,7 +278,6 @@ public class MessageManager {
         }
         return msg;
     }
-
 
     public MessageBuilder getMessage(String content) {
         return getMessage(content, null, null);
