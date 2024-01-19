@@ -123,7 +123,8 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         try {
             Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
             return true;
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
         return false;
     }
 

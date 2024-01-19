@@ -34,7 +34,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 @RequiredArgsConstructor
-public class ChatListener  implements Listener {
+public class ChatListener implements Listener {
     private final DiscordSRVUtils core;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
