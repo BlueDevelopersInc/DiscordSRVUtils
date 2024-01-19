@@ -60,7 +60,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class DiscordSRVUtils {
-    //instance for DiscordSRVUtils.get()
+    // Instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
     @Getter
     private final MessageFilter messageFilter = new MessageFilter(this);
@@ -96,7 +96,7 @@ public class DiscordSRVUtils {
     private final InviteTrackingManager inviteTrackingManager = new InviteTrackingManager(this);
     @Getter
     public Logger logger;
-    //Configurations
+    // Configurations
     private ConfManager<Config> configManager;
     private ConfManager<PunishmentsIntegrationConfig> bansIntegrationConfigManager;
     private ConfManager<TicketsConfig> ticketsConfigManager;
@@ -112,13 +112,13 @@ public class DiscordSRVUtils {
     private TicketsConfig ticketsConfig;
     @Getter
     private LevelingConfig levelingConfig;
-    //was the DiscordSRV AccountLink Listener Removed?
+    // Was the DiscordSRV AccountLink Listener Removed?
     @Getter
     private SuggestionsConfig suggestionsConfig;
     private ConfManager<SQLConfig> sqlConfigManager;
     @Getter
     private StatusConfig statusConfig;
-    //Our DiscordSRV Listener
+    // Our DiscordSRV Listener
     private DiscordSRVListener dsrvListener;
 
     public DiscordSRVUtils(PluginPlatform main) {
@@ -145,11 +145,11 @@ public class DiscordSRVUtils {
     }
 
     private void init() {
-        //set the instance
+        // Set the instance
         instance = this;
-        //initialize discordsrv listener
+        // Initialize discordsrv listener
         dsrvListener = new DiscordSRVListener(this);
-        //Initialize Managers
+        // Initialize Managers
     }
 
     private void initConfigs() {
@@ -164,10 +164,10 @@ public class DiscordSRVUtils {
 
     public void onLoad() {
         init();
-        //require intents and cacheflags
+        // Require intents and cacheflags
         if (main.getServer().isPluginInstalled("DiscordSRV")) {
             if (DiscordSRV.isReady) {
-                //Oh no, they are using a plugin manager to reload the plugin, give them a warning
+                // Oh no, they are using a plugin manager to reload the plugin, give them a warning
                 logger.warning("It seems like you are using a plugin manager to reload the plugin. This is not a good practice. If you see problems, Please restart");
                 return;
             }
@@ -186,16 +186,16 @@ public class DiscordSRVUtils {
                 return;
             }
             try {
-                //Reload Configurations
+                // Reload Configurations
                 reloadConfigs(true);
             } catch (ConfigurationLoadException ex) {
                 logger.severe(ex.getMessage());
                 main.disable();
                 return;
             }
-            //set storage string to use later
+            // Set storage string to use later
             String storage = getSqlconfig().isEnabled() ? "MySQL" : "HsqlDB";
-            //print startup message
+            // Print startup message
             getServer().getConsoleSender().sendMessage("\n[]=====[&2Enabling DiscordSRVUtils&r]=====[]\n" +
                     "| &cInformation:\n&r" +
                     "|   &cName: &rDiscordSRVUtils\n&r" +
@@ -209,19 +209,19 @@ public class DiscordSRVUtils {
                     "|   &cDiscord: &rhttps://discordsrvutils.xyz/support\n" +
                     "[]====================================[]");
             asyncManager.start();
-            //Register our in game commands
+            // Register our in game commands
             main.registerCommands();
             try {
                 databaseManager.setupDatabase();
             } catch (SQLException ex) {
-                //Oh, no! could not connect or migrate. Plugin may not start
+                // Oh, no! could not connect or migrate. Plugin may not start
                 errorHandler.startupError(ex, "Error could not connect to database: " + ex.getMessage());
                 getPlatform().disable();
                 return;
             }
             DiscordSRV.api.subscribe(dsrvListener);
             if (isReady()) {
-                //Uhh, Maybe they are using a plugin manager and this plugin was enabled after discordsrv is ready
+                // Uhh, Maybe they are using a plugin manager and this plugin was enabled after discordsrv is ready
                 whenReady();
             }
             whenStarted();
@@ -233,7 +233,7 @@ public class DiscordSRVUtils {
                 }
             });
         } catch (Throwable ex) {
-            //Plugin couldn't start, sadly
+            // Plugin couldn't start, sadly
             errorHandler.startupError(ex, "Plugin could not start");
         }
     }
@@ -292,16 +292,16 @@ public class DiscordSRVUtils {
     }
 
     public void whenReady() {
-        //do it async, fixing tickets and suggestions can take long time
+        // Do it async, fixing tickets and suggestions can take long time
         asyncManager.executeAsync(() -> {
             registerListeners();
             setSettings(true);
             pluginHookManager.hookAll();
             if (!inviteTrackingManager.cacheInvites())
                 errorHandler.severe("Bot does not have the MANAGE_SERVER permission, we cannot make detect inviter when someone joins, please grant the permission.");
-            //fix issues with any ticket or panel
+            // Fix issues with any ticket or panel
             ticketManager.updateTickets();
-            //migrate suggestion buttons/reactions if needed
+            // Migrate suggestion buttons/reactions if needed
             suggestionManager.migrateSuggestions();
             statusManager.registerTimer();
             logger.info("Plugin is ready to function.");

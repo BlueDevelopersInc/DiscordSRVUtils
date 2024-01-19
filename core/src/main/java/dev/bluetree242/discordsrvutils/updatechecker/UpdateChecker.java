@@ -108,7 +108,7 @@ public class UpdateChecker {
         private String type = "INFO";
 
         @Getter
-        private MessageFormat messageFormat = MessageFormat.LEGACY; // default is legacy because updatechecker may not return this value and therefore assumes an older version for some reason.
+        private MessageFormat messageFormat = MessageFormat.LEGACY; // Default is legacy because updatechecker may not return this value and therefore assumes an older version for some reason.
 
         public Component getMessage() {
             if (message == null) return null;

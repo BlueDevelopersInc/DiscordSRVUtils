@@ -42,28 +42,28 @@ public class ErrorHandler {
     protected void startupError(Throwable ex, @NotNull String msg) {
         core.getLogger().warning(msg);
         try {
-            //create a debug report, we know commands don't work after plugin is disabled
+            // Create a debug report, we know commands don't work after plugin is disabled
             core.getLogger().severe(core.getServer().getDebugger().run(Utils.exceptionToStackTrack(ex)));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //tell them where to report
+        // Tell them where to report
         core.getLogger().severe("Send this to support at https://discordsrvutils.xyz/support");
         ex.printStackTrace();
         core.getPlatform().disable();
     }
 
     public void defaultHandle(Throwable ex) {
-        //handle error on thread pool
+        // Handle error on thread pool
         if (!core.getMainConfig().minimize_errors()) {
             core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
             ex.printStackTrace();
             core.getLogger().severe("Read the note above the error please.");
-            //don't spam errors
+            // Don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
                 for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
                     if (p.hasPermission("discordsrvutils.errornotifications")) {
-                        //tell admins that something was wrong
+                        // Tell admins that something was wrong
                         p.sendMessage("&7[&eDSU&7] Plugin had an error. Check console for details. Support at https://discordsrvutils.xyz/support");
                     }
                 }
@@ -76,7 +76,7 @@ public class ErrorHandler {
     }
 
     public void defaultHandle(Throwable ex, MessageChannel channel) {
-        //send message for errors
+        // Send message for errors
         channel.sendMessageEmbeds(Embed.error("An error happened. Check Console for details")).queue();
         core.getLogger().severe("The following error have a high chance to be caused by DiscordSRVUtils. Report at https://discordsrvutils.xyz/support and not discordsrv's Discord.");
         ex.printStackTrace();
@@ -86,7 +86,7 @@ public class ErrorHandler {
         core.getLogger().severe(sv);
         for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
-                //tell admins that something was wrong
+                // Tell admins that something was wrong
                 p.sendMessage("&7[&eDSU&7] &c" + sv);
         }
     }

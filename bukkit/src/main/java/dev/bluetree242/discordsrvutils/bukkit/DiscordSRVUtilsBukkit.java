@@ -69,7 +69,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             return;
         }
         if (!AccountLinkManager.class.isInterface()) {
-            //DiscordSRV is out of date
+            // DiscordSRV is out of date
             getLogger().severe("Plugin could not be enabled because the version of DiscordSRV you are using is not supported. Please make sure you are on DiscordSRV 1.27.0+.");
             disable();
             return;
@@ -82,7 +82,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
         core.onEnable();
         if (!isEnabled()) return;
-        //bstats stuff
+        // Bstats stuff
         Metrics metrics = new Metrics(this, 9456);
         metrics.addCustomChart(new AdvancedPie("features", () -> {
             Map<String, Integer> valueMap = new HashMap<>();

@@ -61,7 +61,7 @@ public interface Punishment<O> {
                     if (punishment.isPermanent()) {
                         msg = punishmentMsg(core, core.getBansConfig().mutedMessage(), placeholder);
                     } else {
-                        //there is no temp ip mute message for now
+                        // There is no temp ip mute message for now
                         msg = punishmentMsg(core, core.getBansConfig().tempMutedMessage(), placeholder);
                     }
                     break;
@@ -104,7 +104,7 @@ public interface Punishment<O> {
     }
 
     static Message punishmentMsg(DiscordSRVUtils core, String s, PlaceholdObjectList p) {
-        if (s.isEmpty()) return null; //not send it
+        if (s.isEmpty()) return null; // Not send it
         return core.getMessageManager().getMessage(s, p, null).build();
     }
 

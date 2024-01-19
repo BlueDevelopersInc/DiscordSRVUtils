@@ -213,7 +213,7 @@ public class BukkitDebugger implements Debugger {
         files.forEach(map -> {
             String content = map.get("content");
             if (StringUtils.isNotBlank(content)) {
-                // remove sensitive options from files
+                // Remove sensitive options from files
                 for (String option : github.scarsz.discordsrv.util.DebugUtil.SENSITIVE_OPTIONS) {
                     String value = DiscordSRV.config().getString(option);
                     if (StringUtils.isNotBlank(value) && !value.equalsIgnoreCase("username")) {
@@ -261,21 +261,21 @@ public class BukkitDebugger implements Debugger {
     private Map<String, String> getSystemInfo() {
         Map<String, String> output = new HashMap<>();
 
-        // total number of processors or cores available to the JVM
+        // Total number of processors or cores available to the JVM
         output.put("Available processors (cores)", Runtime.getRuntime().availableProcessors() + "");
-        // memory
+        // Memory
         output.put("Free memory for JVM (MB)", Runtime.getRuntime().freeMemory() / 1024 / 1024 + "");
         output.put("Maximum memory for JVM (MB)", (Runtime.getRuntime().maxMemory() == Long.MAX_VALUE ? "no limit" : Runtime.getRuntime().maxMemory() / 1024 / 1024) + "");
         output.put("Total memory available for JVM (MB)", Runtime.getRuntime().totalMemory() / 1024 / 1024 + "");
 
-        // drive space
+        // Drive space
         File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
         output.put("Server storage", "");
         output.put("- total space (MB)", serverRoot.getTotalSpace() / 1024 / 1024 + "");
         output.put("- free space (MB)", serverRoot.getFreeSpace() / 1024 / 1024 + "");
         output.put("- usable space (MB)", serverRoot.getUsableSpace() / 1024 / 1024 + "");
 
-        // java version
+        // Java version
         Map<String, String> systemProperties = ManagementFactory.getRuntimeMXBean().getSystemProperties();
         output.put("Java version", systemProperties.get("java.version"));
         output.put("Java vendor", systemProperties.get("java.vendor") + " " + systemProperties.get("java.vendor.url"));

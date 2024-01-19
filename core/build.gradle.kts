@@ -103,7 +103,7 @@ dependencies {
     // JSON Processing
     implementation("org.json:json:${rootProject.properties["org_json_version"]}")
 
-    // jOOQ for SQL queries
+    // JOOQ for SQL queries
     implementation("org.jooq:jooq:3.14.16")
 
     // Code Generation

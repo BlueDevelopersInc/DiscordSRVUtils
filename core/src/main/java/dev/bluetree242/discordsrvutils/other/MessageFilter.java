@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-//fix the big messages that look like spam
+// Fix the big messages that look like spam
 @RequiredArgsConstructor
 public class MessageFilter {
     private final DiscordSRVUtils core;
@@ -37,14 +37,14 @@ public class MessageFilter {
         String message = record.getMessage();
         Level level = record.getLevel();
         if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
-            //Ignorable message
+            // Ignorable message
             if (!message.contains("Driver does not support get/set network timeout for connections."))
                 log(level, message, "HikariCP");
             return false;
         }
         if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.flywaydb")) {
-            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) { //Only log when success or an error, other migration, or it looks like spam or error
-                if (!message.contains("No failed migration detected.")) //This message mean everything fine, why log it
+            if (message.contains("failed") || message.contains("is up to date. No migration necessary.")) { // Only log when success or an error, other migration, or it looks like spam or error
+                if (!message.contains("No failed migration detected.")) // This message mean everything fine, why log it
                     log(level, message, "Flyway");
             }
             return false;
@@ -52,7 +52,7 @@ public class MessageFilter {
         return !loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.jooq");
     }
 
-    //1 method so I can easily reformat the messages
+    // 1 method so I can easily reformat the messages
     public void log(Level level, String msg, String prefix) {
         if (Level.INFO.equals(level)) {
             core.getLogger().info("[" + prefix + "] " + msg);

@@ -57,7 +57,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class MessageManager {
-    //default messages to use
+    // Default messages to use
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
     private final DiscordSRVUtils core;
@@ -86,7 +86,7 @@ public class MessageManager {
     }
 
     public void initDefaultMessages() {
-        //prepare a list of all messages
+        // Prepare a list of all messages
         String[] messages = new String[]{
                 "afk",
                 "ban",
@@ -114,7 +114,7 @@ public class MessageManager {
                 "kick"};
         for (String msg : messages) {
             try {
-                //add them to the map
+                // Add them to the map
                 defaultMessages.put(msg, new String(IOUtils.toByteArray(core.getPlatform().getResource("messages/" + msg + ".json"))));
             } catch (IOException e) {
                 core.getLogger().severe("Could not load " + msg + ".json");

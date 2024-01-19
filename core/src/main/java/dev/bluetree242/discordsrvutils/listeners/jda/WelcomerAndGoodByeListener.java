@@ -48,7 +48,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             if (!e.getUser().isBot()) {
-                //get the inviter
+                // Get the inviter
                 InviteTrackingManager.CachedInvite invite = null;
                 User inviter = null;
                 if (e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER)) {
@@ -65,11 +65,11 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                         }
                     }
                 }
-                //store in db
+                // Store in db
                 if (!core.getMainConfig().bungee_mode() && core.getMainConfig().track_invites() && invite != null) {
                     core.getInviteTrackingManager().addInvite(core.getDatabaseManager().jooq(), e.getUser().getIdLong(), invite.getUserId(), invite.getGuildId());
                 }
-                //welcomer
+                // Welcomer
                 if (core.getMainConfig().welcomer_enabled()) {
                     if (core.getMainConfig().welcomer_role() != 0) {
                         Role role = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getMainConfig().welcomer_role());

@@ -71,14 +71,14 @@ public class InviteTrackingManager {
     }
 
     public void addInvite(DSLContext conn, long userId, long inviterId, long guildId) {
-        //check if it's already there but previous time, to prevent duplicates
+        // Check if it's already there but previous time, to prevent duplicates
         InviteTrackingRecord record = conn.selectFrom(InviteTrackingTable.INVITE_TRACKING)
                 .where(InviteTrackingTable.INVITE_TRACKING.INVITER_ID.eq(inviterId))
                 .and(InviteTrackingTable.INVITE_TRACKING.USER_ID.eq(userId))
                 .and(InviteTrackingTable.INVITE_TRACKING.GUILD_ID.eq(guildId))
                 .fetchOne();
         if (record == null) {
-            //add it
+            // Add it
             conn.insertInto(InviteTrackingTable.INVITE_TRACKING)
                     .set(InviteTrackingTable.INVITE_TRACKING.INVITER_ID, inviterId)
                     .set(InviteTrackingTable.INVITE_TRACKING.GUILD_ID, guildId)
@@ -87,7 +87,7 @@ public class InviteTrackingManager {
                     .set(InviteTrackingTable.INVITE_TRACKING.LEFT_SERVER, false)
                     .execute();
         } else {
-            //modify old one
+            // Modify old one
             conn.update(InviteTrackingTable.INVITE_TRACKING)
                     .set(InviteTrackingTable.INVITE_TRACKING.INVITER_ID, inviterId)
                     .set(InviteTrackingTable.INVITE_TRACKING.GUILD_ID, guildId)

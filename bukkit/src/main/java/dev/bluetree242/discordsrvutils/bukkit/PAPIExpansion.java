@@ -139,7 +139,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
         @Override
         public void hook() {
-            //on next tick because of those bukkit sync errors when PAPI fires the registration event
+            // On next tick because of those bukkit sync errors when PAPI fires the registration event
             Bukkit.getScheduler().runTask((Plugin) core.getPlatform().getOriginal(), () -> (expansion = new PAPIExpansion(core)).register());
         }
 

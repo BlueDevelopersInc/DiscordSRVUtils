@@ -119,7 +119,7 @@ public class LibertyBansPunishment implements dev.bluetree242.discordsrvutils.in
         try {
             result = plugin.getUserResolver().lookupName(operator ? getOperatorUUID() : getTargetUUID()).get().orElse(null);
         } catch (InterruptedException | ExecutionException e) {
-            //nothing
+            // Nothing
         }
         if (result != null) {
             if (operator) operatorName = result;

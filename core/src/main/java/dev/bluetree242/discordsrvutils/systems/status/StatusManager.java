@@ -59,11 +59,11 @@ public class StatusManager {
     }
 
     public void newMessage(TextChannel channel) {
-        //path for some temp storage which should not be stored in database
+        // Path for some temp storage which should not be stored in database
         File file = getDataPath().toFile();
         JSONObject json = new JSONObject();
         json.put("channel", channel.getIdLong());
-        //Its already async, complete() should be fine
+        // Its already async, complete() should be fine
         Message msg = channel.sendMessage(getStatusMessage(true)).complete();
         json.put("message", msg.getIdLong());
         try {
@@ -74,7 +74,7 @@ public class StatusManager {
             FileWriter writer = new FileWriter(file);
             writer.write(json.toString());
             writer.close();
-            //Should be written successfully
+            // Should be written successfully
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -106,11 +106,11 @@ public class StatusManager {
                 return;
             }
             Message msg = channel.retrieveMessageById(messageId).complete();
-            //Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
+            // Its async so it should be fine.. complete() to make sure it does it before discordsrv shuts down when doing offline message
             msg.editMessage(toSend).complete();
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
-            //Ignore the error for now
+            // Ignore the error for now
         } catch (ErrorResponseException ex) {
             if (ex.getErrorResponse() == ErrorResponse.UNKNOWN_MESSAGE)
                 core.getLogger().severe("Failed to update status message because the message does not exist anymore. To fix this. run /status <channel> or /status only to disable.");

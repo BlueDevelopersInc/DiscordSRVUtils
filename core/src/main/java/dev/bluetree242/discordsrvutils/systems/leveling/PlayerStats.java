@@ -70,7 +70,7 @@ public class PlayerStats {
     }
 
     public static int getTotalXpRequired(int level) {
-        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); //mee6's algorithm
+        return (int) (5 * (Math.pow(level, 2)) + (50 * level) + 100); // Mee6's algorithm
     }
 
     public void setLevel(int level) {

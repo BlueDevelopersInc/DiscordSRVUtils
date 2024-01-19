@@ -144,15 +144,15 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
 
     @Override
     public void addHooks() {
-        //Punishments
+        // Punishments
         new AdvancedBanHook(core);
         new LibertybansHook(core);
         new LitebansHook(core);
-        //Afk
+        // Afk
         new EssentialsHook(core);
         new CMIHook(core);
         new AfkPlusHook(core);
-        //PAPI
+        // PAPI
         new PAPIExpansion.Hook(core);
     }
 

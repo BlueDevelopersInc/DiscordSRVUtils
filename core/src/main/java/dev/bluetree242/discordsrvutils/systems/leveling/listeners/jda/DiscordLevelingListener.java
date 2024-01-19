@@ -87,7 +87,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
     }
 
 
-    //give leveling roles when they rejoin the discord server
+    // Give leveling roles when they rejoin the discord server
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         core.getAsyncManager().executeAsync(() -> {

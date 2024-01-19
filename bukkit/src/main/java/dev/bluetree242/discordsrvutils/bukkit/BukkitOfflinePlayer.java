@@ -44,17 +44,17 @@ public class BukkitOfflinePlayer extends PlatformPlayer<OfflinePlayer> {
 
     @Override
     public void sendMessage(String msg) {
-        // offline
+        // Offline
     }
 
     @Override
     public void sendMessage(Component component) {
-        // offline
+        // Offline
     }
 
     @Override
     public boolean hasPermission(String node) {
-        return false; //false for security
+        return false; // False for security
     }
 
     @Override

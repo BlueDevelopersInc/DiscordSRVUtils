@@ -36,10 +36,10 @@ import java.util.logging.Logger;
 
 @Getter
 public abstract class PluginPlatform<K> {
-    //platform-event stuff
+    // Platform-event stuff
     private final List<PlatformListener> listeners = new ArrayList<>();
 
-    //abstract to allow some constant stuff that depend on some methods
+    // Abstract to allow some constant stuff that depend on some methods
     public abstract Logger getLogger();
 
     public abstract File getDataFolder();

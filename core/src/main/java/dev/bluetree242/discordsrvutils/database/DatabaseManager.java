@@ -43,7 +43,7 @@ public class DatabaseManager {
     private final DiscordSRVUtils core;
     private final Settings settings = new Settings()
             .withRenderQuotedNames(RenderQuotedNames.NEVER);
-    //database connection pool
+    // Database connection pool
     private HikariDataSource sql;
     private boolean hsqldb = false;
     private DSLContext jooq;
@@ -64,7 +64,7 @@ public class DatabaseManager {
         Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
         try {
             if (core.getSqlconfig().isEnabled()) {
-                jdbcUrl = "jdbc:mysql://" +
+                jdbcUrl = "jdbc:mysql:// " +
                         core.getSqlconfig().Host() +
                         ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
                 user = core.getSqlconfig().UserName();
@@ -76,7 +76,7 @@ public class DatabaseManager {
                 user = "SA";
                 pass = "";
             }
-            //load jooq classes
+            // Load jooq classes
             new Thread(() -> new JooqClassLoading(core).preInitializeJooqClasses()).start();
             settings.setDriverClassName(hsqldb ? "dev.bluetree242.discordsrvutils.dependencies.hsqldb.jdbc.JDBCDriver" : "dev.bluetree242.discordsrvutils.dependencies.mariadb.Driver");
             settings.setJdbcUrl(jdbcUrl);
@@ -94,7 +94,7 @@ public class DatabaseManager {
     }
 
     public void migrate() {
-        //Migrate tables, and others.
+        // Migrate tables, and others.
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(sql)
                 .locations("classpath:flyway-migrations")
@@ -103,7 +103,7 @@ public class DatabaseManager {
                 .table("discordsrvutils_schema")
                 .baselineVersion("0.0")
                 .load();
-        //repair if there is an issue
+        // Repair if there is an issue
         flyway.repair();
         flyway.migrate();
     }

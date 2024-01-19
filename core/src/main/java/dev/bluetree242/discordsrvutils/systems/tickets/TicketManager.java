@@ -151,7 +151,7 @@ public class TicketManager {
                 }
             }
 
-            //work with panels
+            // Work with panels
             List<TicketPanelsRecord> panels = jooq
                     .selectFrom(TicketPanelsTable.TICKET_PANELS)
                     .fetch();

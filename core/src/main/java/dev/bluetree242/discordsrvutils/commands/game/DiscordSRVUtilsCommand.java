@@ -136,7 +136,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     return;
                 }
             } else if (args[0].equalsIgnoreCase("migrateLeveling")) {
-                if (sender instanceof ConsoleCommandUser) { //only console
+                if (sender instanceof ConsoleCommandUser) { // Only console
                     if (migrated) {
                         sender.sendMessage("&cAlready migrated.");
                         return;

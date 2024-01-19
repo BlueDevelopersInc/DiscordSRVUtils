@@ -78,7 +78,7 @@ public class LevelingRewardsManager {
                     levelingRewardsRaw = new JSONObject(Utils.readFile(filer));
                     return;
                 } else {
-                    json = new JSONObject().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-rewards/"); //the time i wrote this, it's a 404
+                    json = new JSONObject().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-rewards/"); // The time i wrote this, it's a 404
                 }
             }
             FileWriter writer = new FileWriter(filer);
@@ -115,7 +115,7 @@ public class LevelingRewardsManager {
         if (!level.has("commands")) return null;
         return level.getJSONArray("commands").toList().stream()
                 .map(o -> (String) o)
-                .map(c -> PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats")).apply(c)) //placeholders
+                .map(c -> PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats")).apply(c)) // Placeholders
                 .collect(Collectors.toList());
     }
 
@@ -139,7 +139,7 @@ public class LevelingRewardsManager {
 
     public void rewardIfOnline(PlayerStats stats) {
         int lastLevel = getLastLevel(stats.getUuid());
-        if (lastLevel == stats.getLevel()) return; //they got all rewards
+        if (lastLevel == stats.getLevel()) return; // They got all rewards
         if (lastLevel > stats.getLevel()) {
             rewardCache.remove(stats.getUuid().toString());
             saveRewardCache();
@@ -170,10 +170,10 @@ public class LevelingRewardsManager {
             try {
                 int num = Integer.parseInt(key);
                 Object v = getLevelObject(num);
-                if (v == null) continue; //unreachable but just in case
+                if (v == null) continue; // Unreachable but just in case
                 if (v instanceof JSONObject && ((JSONObject) v).has("commands")) return true;
             } catch (NumberFormatException ex) {
-                //not a level
+                // Not a level
             }
         }
         return false;

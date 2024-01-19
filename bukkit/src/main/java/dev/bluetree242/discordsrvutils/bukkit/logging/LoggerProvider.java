@@ -53,6 +53,6 @@ public class LoggerProvider implements SLF4JServiceProvider {
 
     @Override
     public void initialize() {
-        //nothing to initialize
+        // Nothing to initialize
     }
 }

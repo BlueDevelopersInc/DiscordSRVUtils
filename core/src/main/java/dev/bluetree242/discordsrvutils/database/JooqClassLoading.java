@@ -37,7 +37,7 @@ public class JooqClassLoading {
 
     public void preInitializeJooqClasses() {
         long startNanos = System.nanoTime();
-        //this forces jvm to load the classes
+        // This forces jvm to load the classes
         DSLContext context = core.getDatabaseManager().newRenderOnlyJooq();
 
         context
@@ -60,7 +60,7 @@ public class JooqClassLoading {
                 .getSQL();
         long elapsedMillis = (System.nanoTime() - startNanos) / 1_000_000L;
         if (elapsedMillis >= 1000) {
-            String elapsedSeconds = String.format("%.2f", ((double) elapsedMillis) / 1000D); //more user readable
+            String elapsedSeconds = String.format("%.2f", ((double) elapsedMillis) / 1000D); // More user readable
             core.getLogger().info("Pre-Loaded JOOQ classes in " + elapsedSeconds + " Seconds.");
         }
     }

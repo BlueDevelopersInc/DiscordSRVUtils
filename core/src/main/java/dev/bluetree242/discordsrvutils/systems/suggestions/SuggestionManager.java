@@ -55,7 +55,7 @@ public class SuggestionManager {
     private final DiscordSRVUtils core;
     public boolean loading = false;
 
-    //Mode for suggestions voting
+    // Mode for suggestions voting
     @Getter
     public SuggestionVoteMode voteMode;
 

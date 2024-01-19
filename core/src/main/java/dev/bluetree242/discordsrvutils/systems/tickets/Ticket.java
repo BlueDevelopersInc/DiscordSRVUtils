@@ -68,7 +68,7 @@ public class Ticket {
     public void close(User userWhoClosed) {
         DSLContext conn = core.getDatabaseManager().jooq();
         if (closed) return;
-        //set it without the message id
+        // Set it without the message id
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.CLOSED, "true")
                 .where(TicketsTable.TICKETS.CHANNEL.eq(channelID))
@@ -90,7 +90,7 @@ public class Ticket {
                 Button.danger("delete_ticket", Emoji.fromUnicode("\uD83D\uDDD1️")).withLabel(core.getTicketsConfig().delete_ticket_button())
         ).complete();
         messageID = msg.getIdLong();
-        //now do it with msg id
+        // Now do it with msg id
         conn.update(TicketsTable.TICKETS)
                 .set(TicketsTable.TICKETS.MESSAGEID, messageID)
                 .set(TicketsTable.TICKETS.CLOSED, "true")

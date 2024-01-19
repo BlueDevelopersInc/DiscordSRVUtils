@@ -46,13 +46,13 @@ import java.util.List;
 
 public class JdaManager {
     private final DiscordSRVUtils core;
-    //listeners that should be registered
+    // Listeners that should be registered
     @Getter
     private final List<ListenerAdapter> listeners = new ArrayList<>();
 
     public JdaManager(DiscordSRVUtils core) {
         this.core = core;
-        //Add The JDA Listeners to the List
+        // Add The JDA Listeners to the List
         listeners.add(new WelcomerAndGoodByeListener(core));
         listeners.add(new CreatePanelListener(core));
         listeners.add(new PaginationListener(core));

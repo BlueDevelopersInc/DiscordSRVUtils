@@ -87,7 +87,7 @@ dependencies {
 }
 
 
-// generates plugin.yml
+// Generates plugin.yml
 bukkit {
     name = rootProject.name
     description = rootProject.description

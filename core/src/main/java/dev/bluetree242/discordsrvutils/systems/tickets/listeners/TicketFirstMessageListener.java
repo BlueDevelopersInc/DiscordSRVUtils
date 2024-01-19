@@ -45,7 +45,7 @@ public class TicketFirstMessageListener extends ListenerAdapter {
             Ticket ticket = core.getTicketManager().getTicketByChannel(e.getChannel().getIdLong());
             if (ticket == null || ticket.getUserID() == e.getAuthor().getIdLong() || ticket.isClosed() || ticket.isFirstMessage())
                 return;
-            //store it
+            // Store it
             core.getDatabaseManager().jooq().update(TicketsTable.TICKETS)
                     .set(TicketsTable.TICKETS.FIRSTMESSAGE, true)
                     .where(TicketsTable.TICKETS.CHANNEL.eq(e.getChannel().getIdLong()))

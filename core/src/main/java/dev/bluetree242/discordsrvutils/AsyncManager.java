@@ -35,7 +35,7 @@ public class AsyncManager {
     private ThreadPoolExecutor pool;
 
     private Thread newDSUThread(Runnable r) {
-        //start new thread with name and handler
+        // Start new thread with name and handler
         Thread thread = new Thread(r);
         thread.setName("DSU-THREAD");
         thread.setDaemon(true);
@@ -44,7 +44,7 @@ public class AsyncManager {
     }
 
     public void start() {
-        //initialize pool
+        // Initialize pool
         stop();
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(core.getMainConfig().pool_size(), this::newDSUThread);
     }
