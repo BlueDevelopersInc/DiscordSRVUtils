@@ -34,6 +34,10 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.ArrayUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.RandomStringUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.commons.lang3.exception.ExceptionUtils;
+import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
+import github.scarsz.discordsrv.dependencies.jackson.databind.node.ArrayNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.node.ObjectNode;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import github.scarsz.discordsrv.hooks.SkriptHook;
@@ -43,8 +47,6 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -65,6 +67,7 @@ import java.util.stream.Collectors;
 public class BukkitDebugger implements Debugger {
     private final SecureRandom RANDOM = new SecureRandom();
     private final OkHttpClient client = new OkHttpClient.Builder().build();
+    ObjectMapper mapper = new ObjectMapper();
     private final DiscordSRVUtils core;
 
     @Override
@@ -75,7 +78,7 @@ public class BukkitDebugger implements Debugger {
     @Override
     public String run(String stacktrace) throws Exception {
         if (stacktrace == null) stacktrace = core.getErrorHandler().getFinalError();
-        JSONArray data = new JSONArray();
+        ArrayNode data = mapper.createArrayNode();
         Map<String, String> information = new HashMap<>();
         information.put("DSU Version", core.getPlatform().getDescription().getVersion());
         information.put("DSU Command Executor", Bukkit.getServer().getPluginCommand("discordsrvutils").getPlugin() + "");
@@ -100,52 +103,51 @@ public class BukkitDebugger implements Debugger {
         information.put("ExecutorService Status", core.getAsyncManager().getPool() == null ? "null" : (core.getAsyncManager().getPool().isShutdown() ? "Shutdown" : "Q:" + core.getAsyncManager().getPool().getQueue().size() + ", R:" + core.getAsyncManager().getPool().getActiveCount() + ", AV:" + core.getAsyncManager().getPool().getPoolSize()));
         information.put("DiscordSRV Hooked Plugins", DiscordSRV.getPlugin().getPluginHooks().stream().map(github.scarsz.discordsrv.hooks.PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")));
         information.put("Scripts", String.join(", ", SkriptHook.getSkripts()));
-        data.put(new JSONObject().put("type", "key_value").put("name", "Information").put("data", MapToKeyValue(information)));
+        data.add(mapper.createObjectNode().put("type", "key_value").put("name", "Information").set("data", mapToKeyValue(information)));
         Map<String, String> versionConfig = new HashMap<>();
         versionConfig.put("Version", VersionInfo.VERSION);
         versionConfig.put("Build Number", VersionInfo.BUILD_NUMBER);
         versionConfig.put("Commit Hash", VersionInfo.COMMIT);
         versionConfig.put("Build Date", new Date(Long.parseLong(VersionInfo.BUILD_DATE)) + " (" + (Utils.getDuration(System.currentTimeMillis() - Long.parseLong(VersionInfo.BUILD_DATE)) + " ago)"));
-        data.put(new JSONObject().put("type", "key_value").put("name", "Version Config").put("data", MapToKeyValue(versionConfig)));
-        JSONObject logs = new JSONObject().put("type", "files").put("name", "Log Information").put("data",
-                new JSONArray().put(new JSONObject().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())))
-        );
+        data.add(mapper.createObjectNode().put("type", "key_value").put("name", "Version Config").set("data", mapToKeyValue(versionConfig)));
+        ObjectNode logs = mapper.createObjectNode().put("type", "files").put("name", "Log Information");
+        ArrayNode logsData = logs.putArray("data").add(mapper.createObjectNode().put("type", "log").put("name", "Logs").put("content", Utils.b64Encode(getRelevantLinesFromServerLog())));
         if (stacktrace != null) {
-            logs.getJSONArray("data").put(new JSONObject().put("type", "log").put("name", "Last Error").put("content", Utils.b64Encode(stacktrace)));
+            logsData.add(mapper.createObjectNode().put("type", "log").put("name", "Last Error").put("content", Utils.b64Encode(stacktrace)));
         }
-        data.put(logs);
+        data.add(logs);
 
-        data.put(new JSONObject().put("type", "key_value").put("name", "System Info").put("data", MapToKeyValue(getSystemInfo())));
-        data.put(new JSONObject().put("type", "key_value").put("name", "Server Info").put("data", MapToKeyValue(getServerInfo())));
-        data.put(new JSONObject().put("type", "files").put("name", "DiscordSRVUtils Conf Files").put("data", FilesToArray(getDSUFiles())));
-        data.put(new JSONObject().put("type", "files").put("name", "DiscordSRV Conf Files").put("data", FilesToArray(getDiscordSRVFiles())));
+        data.add(mapper.createObjectNode().put("type", "key_value").put("name", "System Info").set("data", mapToKeyValue(getSystemInfo())));
+        data.add(mapper.createObjectNode().put("type", "key_value").put("name", "Server Info").set("data", mapToKeyValue(getServerInfo())));
+        data.add(mapper.createObjectNode().put("type", "files").put("name", "DiscordSRVUtils Conf Files").set("data", FilesToArray(getDSUFiles())));
+        data.add(mapper.createObjectNode().put("type", "files").put("name", "DiscordSRV Conf Files").set("data", FilesToArray(getDiscordSRVFiles())));
         List<Map<String, String>> files = new ArrayList<>();
         for (File file : core.getMessageManager().getMessagesDirectory().toFile().listFiles()) {
             if (file.getName().endsWith(".json")) {
                 files.add(fileMap(file.getName(), Utils.readFile(file.getPath())));
             }
         }
-        data.put(new JSONObject().put("type", "files").put("name", "DSU Messages Files").put("data", FilesToArray(files)));
+        data.add(mapper.createObjectNode().put("type", "files").put("name", "DSU Messages Files").set("data", FilesToArray(files)));
         int aesBits = 256;
         String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("data", Utils.b64Encode(encrypt(key.getBytes(), data.toString()))).build();
         Request request = new Request.Builder().post(body).url("https://mcdebug.bluetree242.dev/api/v1/createDebug").build();
         Response response = client.newCall(request).execute();
 
-        JSONObject bdy = new JSONObject(response.body().string());
+        JsonNode bdy = mapper.readTree(response.body().string());
         response.close();
         if (response.code() != 200) {
             return "ERROR: INVALID RESPONSE CODE " + response.code();
         }
-        return "https://mcdebug.bluetree242.dev" + "/" + bdy.getString("id") + "#" + key;
+        return "https://mcdebug.bluetree242.dev" + "/" + bdy.get("id").asText() + "#" + key;
 
 
     }
 
-    private JSONArray MapToKeyValue(Map<String, String> map) {
-        JSONArray output = new JSONArray();
+    private ArrayNode mapToKeyValue(Map<String, String> map) {
+        ArrayNode output = mapper.createArrayNode();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            output.put(new JSONObject().put("key", entry.getKey()).put("value", entry.getValue()));
+            output.add(mapper.createObjectNode().put("key", entry.getKey()).put("value", entry.getValue()));
         }
         return output;
     }
@@ -177,18 +179,18 @@ public class BukkitDebugger implements Debugger {
         return output;
     }
 
-    private JSONObject fileMapToObject(Map<String, String> fileMap) {
-        JSONObject output = new JSONObject();
+    private ObjectNode fileMapToObject(Map<String, String> fileMap) {
+        ObjectNode output = mapper.createObjectNode();
         output.put("name", fileMap.get("name"));
         output.put("content", Utils.b64Encode(fileMap.get("content")));
         output.put("type", fileMap.get("type"));
         return output;
     }
 
-    private JSONArray FilesToArray(List<Map<String, String>> files) {
-        JSONArray array = new JSONArray();
+    private ArrayNode FilesToArray(List<Map<String, String>> files) {
+        ArrayNode array = mapper.createArrayNode();
         for (Map<String, String> file : files) {
-            array.put(fileMapToObject(file));
+            array.add(fileMapToObject(file));
         }
         return array;
     }
