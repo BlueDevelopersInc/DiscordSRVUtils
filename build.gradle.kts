@@ -38,21 +38,11 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven("https://repo.citizensnpcs.co")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://jitpack.io")
-        maven("https://repo.codemc.org/repository/maven-public")
         maven("https://nexus.scarsz.me/content/groups/public/")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://repo.maven.apache.org/maven2/")
-        maven("https://m2.dv8tion.net/releases")
-        maven("https://mvn-repo.arim.space/affero-gpl3")
-        maven("https://mvn-repo.arim.space/gpl3")
-        maven("https://mvn-repo.arim.space/lesser-gpl3")
-        maven("https://repo.dmulloy2.net/repository/public/")
         maven("https://repo.essentialsx.net/releases/")
+        maven("https://mvn-repo.arim.space/affero-gpl3/")
         maven("https://repo.papermc.io/repository/maven-public/")
     }
     dependencies {
