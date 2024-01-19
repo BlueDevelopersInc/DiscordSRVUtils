@@ -102,7 +102,7 @@ public class StatusManager {
             if (messageId == null || channelId == null) return;
             TextChannel channel = core.getPlatform().getDiscordSRV().getMainGuild().getTextChannelById(channelId);
             if (channel == null) {
-                core.getLogger().severe("Failed to update status message because the channel does not exist anymore. To fix this. run /status <new channel> or /status only to disable.");
+                core.getLogger().severe("Failed to update status message because the channel does not exist anymore. To fix this. run/status <new channel> or /status only (on discord) to disable.");
                 return;
             }
             Message msg = channel.retrieveMessageById(messageId).complete();
