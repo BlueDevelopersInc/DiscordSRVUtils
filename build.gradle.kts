@@ -53,6 +53,7 @@ allprojects {
         maven("https://mvn-repo.arim.space/lesser-gpl3")
         maven("https://repo.dmulloy2.net/repository/public/")
         maven("https://repo.essentialsx.net/releases/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
     dependencies {
         compileOnly("org.projectlombok:lombok:1.18.30")

@@ -27,6 +27,9 @@ import dev.bluetree242.discordsrvutils.bukkit.cmd.BukkitCommandListener;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.afkplus.AfkPlusHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.cmi.CMIHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.afk.essentials.EssentialsHook;
+import dev.bluetree242.discordsrvutils.bukkit.listeners.game.BukkitListener;
+import dev.bluetree242.discordsrvutils.bukkit.listeners.game.ChatListener;
+import dev.bluetree242.discordsrvutils.bukkit.listeners.game.PaperChatListener;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.AdvancedBanHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.LibertybansHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
@@ -109,6 +112,19 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
     @Override
     public void registerListeners() {
         Bukkit.getServer().getPluginManager().registerEvents(new BukkitListener(core), main);
+        if (isPaperChatSupported()) {
+            Bukkit.getServer().getPluginManager().registerEvents(new PaperChatListener(core), main);
+        } else {
+            Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(core), main);
+        }
+    }
+
+    private boolean isPaperChatSupported() {
+        try {
+            Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+            return true;
+        } catch (ClassNotFoundException ignored) {}
+        return false;
     }
 
     @Override

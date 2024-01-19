@@ -66,7 +66,7 @@ fun urlFile(url: String, name: String): ConfigurableFileCollection {
 
 dependencies {
     // Bukkit Plugins and APIs
-    compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
     compileOnly("com.gitlab.ruany:LiteBansAPI:0.3.4")
     compileOnly("space.arim.libertybans:bans-api:0.8.0")
     compileOnly("com.github.LeonMangler:SuperVanish:6.2.17")
@@ -114,5 +114,12 @@ bukkit {
         forEach {
             it.default = BukkitPluginDescription.Permission.Default.OP
         }
+    }
+}
+
+allprojects {
+    project.java {
+        disableAutoTargetJvm() // Paper uses java 17, but we need to support java 8
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17)) // This doesn't change the compiled class version.
     }
 }

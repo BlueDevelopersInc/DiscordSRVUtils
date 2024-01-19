@@ -20,26 +20,25 @@
  * END
  */
 
-package dev.bluetree242.discordsrvutils.bukkit;
+package dev.bluetree242.discordsrvutils.bukkit.listeners.game;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
+import dev.bluetree242.discordsrvutils.bukkit.BukkitPlayer;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.platform.events.PlatformChatEvent;
-import dev.bluetree242.discordsrvutils.platform.events.PlatformJoinEvent;
 import dev.bluetree242.discordsrvutils.platform.listener.PlatformListener;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 @RequiredArgsConstructor
-public class BukkitListener implements Listener {
+public class ChatListener  implements Listener {
     private final DiscordSRVUtils core;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onChat(AsyncPlayerChatEvent e) {
+    public void onJoin(AsyncPlayerChatEvent e) {
         PlatformChatEvent event = new PlatformChatEvent() {
             @Override
             public PlatformPlayer getPlayer() {
@@ -57,22 +56,4 @@ public class BukkitListener implements Listener {
             listener.onChat(event);
         }
     }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onChat(PlayerJoinEvent e) {
-        PlatformJoinEvent event = new PlatformJoinEvent() {
-            @Override
-            public PlatformPlayer getPlayer() {
-                return new BukkitPlayer(core, e.getPlayer());
-            }
-        };
-
-        for (Object o : core.getPlatform().getListeners()) {
-            PlatformListener listener = (PlatformListener) o;
-            listener.onJoin(event);
-        }
-    }
-
-
 }
-
