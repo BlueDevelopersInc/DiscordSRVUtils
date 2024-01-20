@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import me.leoko.advancedban.bukkit.event.PunishmentEvent;
 import me.leoko.advancedban.bukkit.event.RevokePunishmentEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -35,7 +36,7 @@ import org.bukkit.plugin.Plugin;
 public class AdvancedBanPunishmentListener implements Listener {
     private final DiscordSRVUtils core;
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPunish(PunishmentEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             AdvancedBanPunishment punishment = new AdvancedBanPunishment(e.getPunishment(), false);
@@ -43,7 +44,7 @@ public class AdvancedBanPunishmentListener implements Listener {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onRevoke(RevokePunishmentEvent e) {
         core.getAsyncManager().executeAsync(() -> {
             AdvancedBanPunishment punishment = new AdvancedBanPunishment(e.getPunishment(), true);
