@@ -21,6 +21,7 @@
  */
 
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import org.apache.tools.ant.filters.ReplaceTokens
 import java.net.URL
 
 /*

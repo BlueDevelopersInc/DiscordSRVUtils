@@ -30,7 +30,10 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":bukkit"))
+    implementation(project(":bukkit")) {
+        isTransitive = false
+    }
+    implementation(project(":core"))
 }
 
 allprojects {
