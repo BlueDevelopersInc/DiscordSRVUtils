@@ -67,8 +67,8 @@ import java.util.stream.Collectors;
 public class BukkitDebugger implements Debugger {
     private final SecureRandom RANDOM = new SecureRandom();
     private final OkHttpClient client = new OkHttpClient.Builder().build();
-    ObjectMapper mapper = new ObjectMapper();
     private final DiscordSRVUtils core;
+    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String run() throws Exception {
@@ -121,12 +121,7 @@ public class BukkitDebugger implements Debugger {
         data.add(mapper.createObjectNode().put("type", "key_value").put("name", "Server Info").set("data", mapToKeyValue(getServerInfo())));
         data.add(mapper.createObjectNode().put("type", "files").put("name", "DiscordSRVUtils Conf Files").set("data", FilesToArray(getDSUFiles())));
         data.add(mapper.createObjectNode().put("type", "files").put("name", "DiscordSRV Conf Files").set("data", FilesToArray(getDiscordSRVFiles())));
-        List<Map<String, String>> files = new ArrayList<>();
-        for (File file : core.getMessageManager().getMessagesDirectory().toFile().listFiles()) {
-            if (file.getName().endsWith(".json")) {
-                files.add(fileMap(file.getName(), Utils.readFile(file.getPath())));
-            }
-        }
+        List<Map<String, String>> files = getMessages();
         data.add(mapper.createObjectNode().put("type", "files").put("name", "DSU Messages Files").set("data", FilesToArray(files)));
         int aesBits = 256;
         String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
@@ -356,6 +351,27 @@ public class BukkitDebugger implements Debugger {
         File[] extensionFiles = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), "PlaceholderAPI/expansions").listFiles();
         if (extensionFiles == null) return "PlaceholderAPI/expansions is not directory/IO error";
         return Arrays.stream(extensionFiles).map(File::getName).collect(Collectors.joining(", "));
+    }
+
+    private List<Map<String, String>> getMessages(String prefix, File file) throws IOException {
+        List<Map<String, String>> result = new ArrayList<>();
+        File[] files = Arrays.stream(file.listFiles()).sorted((file1, file2) -> {
+            if (file1.isDirectory() && !file2.isDirectory()) return 1;
+            else if (!file1.isDirectory() && file2.isDirectory()) return -1;
+            else return file1.getName().compareTo(file2.getName());
+        }).toArray(File[]::new);
+        for (File listFile : files) {
+            if (listFile.getName().endsWith(".json")) {
+                result.add(fileMap(prefix + listFile.getName(), Utils.readFile(listFile.getPath())));
+            } else if (listFile.isDirectory()) {
+                result.addAll(getMessages(prefix + listFile.getName() + "/", listFile));
+            }
+        }
+        return result;
+    }
+
+    private List<Map<String, String>> getMessages() throws IOException {
+        return getMessages("", core.getMessageManager().getMessagesDirectory().toFile());
     }
 
 }
