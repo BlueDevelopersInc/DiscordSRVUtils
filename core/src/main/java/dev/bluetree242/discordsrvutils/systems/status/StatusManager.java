@@ -46,8 +46,8 @@ import java.util.Timer;
 public class StatusManager {
     @Getter
     private final DiscordSRVUtils core;
-    private StatusTimer timer = new StatusTimer(this);
     private final ObjectMapper mapper = new ObjectMapper();
+    private StatusTimer timer = new StatusTimer(this);
 
     public Path getDataPath() {
         return core.getPlatform().getDataFolder().toPath().resolve("data").resolve("status-message.json");

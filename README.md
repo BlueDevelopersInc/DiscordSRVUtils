@@ -25,6 +25,7 @@ Replace `VERSION` with the API version you would like. The badges above displays
 ## Maven
 
 ```xml
+
 <repository>
     <id>bluetree242-repo</id>
     <url>https://repo.bluetree242.dev/maven-public</url>
@@ -32,6 +33,7 @@ Replace `VERSION` with the API version you would like. The badges above displays
 ```
 
 ```xml
+
 <dependency>
     <groupId>dev.bluetree242.discordsrvutils</groupId>
     <artifactId>core</artifactId>
