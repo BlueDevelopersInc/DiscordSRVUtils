@@ -32,7 +32,7 @@ public interface SuggestionsConfig {
 
 
     @AnnotationBasedSorter.Order(9)
-    @ConfComments("#Is Suggestions enabled?")
+    @ConfComments("# Is Suggestions enabled?")
     @ConfDefault.DefaultBoolean(false)
     boolean enabled();
 
@@ -90,7 +90,7 @@ public interface SuggestionsConfig {
     String suggestion_denied();
 
     @AnnotationBasedSorter.Order(95)
-    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n#Note: Muted role and anti suggestion spam will not be applied here")
+    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n# Note: Muted role and anti suggestion spam will not be applied here")
     @ConfDefault.DefaultBoolean(false)
     Boolean set_suggestion_from_channel();
 
@@ -112,7 +112,7 @@ public interface SuggestionsConfig {
     Long suggestion_muted_role();
 
     @AnnotationBasedSorter.Order(130)
-    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n#Another note is that your votes will be reset by changing this")
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n# Another note is that your votes will be reset by changing this")
     @ConfDefault.DefaultString("REACTIONS")
     String suggestions_vote_mode();
 

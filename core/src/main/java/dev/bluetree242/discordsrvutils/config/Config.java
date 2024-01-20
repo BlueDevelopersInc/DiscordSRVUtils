@@ -36,13 +36,13 @@ public interface Config {
 
 
     @AnnotationBasedSorter.Order(10)
-    @ConfComments("#Admins who can use the bot without limits. This can be either user or role IDs.")
+    @ConfComments("# Admins who can use the bot without limits. This can be either user or role IDs.")
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 
 
     @AnnotationBasedSorter.Order(30)
-    @ConfComments("#OnlineStatus for the bot. can be ONLINE, DND, or IDLE")
+    @ConfComments("# OnlineStatus for the bot. can be ONLINE, DND, or IDLE")
     @ConfDefault.DefaultString("ONLINE")
     String onlinestatus();
 
@@ -66,74 +66,74 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("welcomer.enabled")
-    @ConfComments("#Should we do Welcomer?")
+    @ConfComments("# Should we do Welcomer?")
     @ConfDefault.DefaultBoolean(false)
     boolean welcomer_enabled();
 
     @AnnotationBasedSorter.Order(50)
     @ConfKey("welcomer.channel")
-    @ConfComments("#Channel to send welcomer message, Use ID, No need to change this if dms are enabled")
+    @ConfComments("# Channel to send welcomer message, Use ID, No need to change this if dms are enabled")
     @ConfDefault.DefaultLong(0)
     long welcomer_channel();
 
     @AnnotationBasedSorter.Order(60)
     @ConfKey("welcomer.dm_user")
-    @ConfComments("#Should we DM the User?")
+    @ConfComments("# Should we DM the User?")
     @ConfDefault.DefaultBoolean(false)
     boolean welcomer_dm_user();
 
     @AnnotationBasedSorter.Order(70)
     @ConfKey("welcomer.message")
-    @ConfComments("#Welcomer message")
+    @ConfComments("# Welcomer message")
     @ConfDefault.DefaultString("message:welcome")
     String welcomer_message();
 
     @AnnotationBasedSorter.Order(71)
     @ConfKey("welcomer.role")
-    @ConfComments("#Role to add when they join the server")
+    @ConfComments("# Role to add when they join the server")
     @ConfDefault.DefaultLong(0)
     Long welcomer_role();
 
     @AnnotationBasedSorter.Order(80)
     @ConfKey("goodbye.enabled")
-    @ConfComments("#Should we send goodbye messages?")
+    @ConfComments("# Should we send goodbye messages?")
     @ConfDefault.DefaultBoolean(false)
     boolean goodbye_enabled();
 
     @AnnotationBasedSorter.Order(90)
     @ConfKey("goodbye.channel")
     @ConfDefault.DefaultLong(0)
-    @ConfComments("#Channel to send message in, DM unavailable because when they leave there is a big chance of no mutual servers")
+    @ConfComments("# Channel to send message in, DM unavailable because when they leave there is a big chance of no mutual servers")
     long goodbye_channel();
 
     @AnnotationBasedSorter.Order(100)
     @ConfKey("goodbye.message")
-    @ConfComments("#Message to send")
+    @ConfComments("# Message to send")
     @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
     String goodbye_message();
 
     @AnnotationBasedSorter.Order(101)
     @ConfKey("invite-tracking")
-    @ConfComments("#Should we track invites? This enables a whole invite tracking system. https://wiki.discordsrvutils.xyz/invite-tracking")
+    @ConfComments("# Should we track invites? This enables a whole invite tracking system. https://wiki.discordsrvutils.xyz/invite-tracking")
     @ConfDefault.DefaultBoolean(true)
     boolean track_invites();
 
 
     @AnnotationBasedSorter.Order(110)
     @ConfKey("afk.enabled")
-    @ConfComments("#Should we send afk (and no longer afk) messages?")
+    @ConfComments("# Should we send afk (and no longer afk) messages?")
     @ConfDefault.DefaultBoolean(true)
     boolean afk_message_enabled();
 
     @AnnotationBasedSorter.Order(120)
     @ConfKey("afk.channel")
-    @ConfComments("#AFK Channel. Leave 0 for default channel for discordsrv")
+    @ConfComments("# AFK Channel. Leave 0 for default channel for discordsrv")
     @ConfDefault.DefaultLong(0)
     long afk_channel();
 
     @AnnotationBasedSorter.Order(130)
     @ConfKey("afk.message")
-    @ConfComments("#AFK Message")
+    @ConfComments("# AFK Message")
     @ConfDefault.DefaultString("message:afk")
     String afk_message();
 

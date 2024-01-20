@@ -34,12 +34,12 @@ import java.util.List;
 public interface LevelingConfig {
 
     @AnnotationBasedSorter.Order(9)
-    @ConfComments("#Is leveling enabled?")
+    @ConfComments("# Is leveling enabled?")
     @ConfDefault.DefaultBoolean(false)
     boolean enabled();
 
     @ConfKey("minecraft-levelup-message")
-    @ConfComments("#Message when a minecraft player levelup")
+    @ConfComments("# Message when a minecraft player levelup")
     @AnnotationBasedSorter.Order(10)
     @ConfDefault.DefaultStrings({
             "&e-----------------------------------------------------&r",
@@ -61,38 +61,38 @@ public interface LevelingConfig {
     boolean require_link();
 
     @ConfKey("discord-message")
-    @ConfComments("#Message when a Discord user levelup")
+    @ConfComments("# Message when a Discord user levelup")
     @AnnotationBasedSorter.Order(30)
     @ConfDefault.DefaultString("Congratulations [user.asMention]! You leveled up to level [stats.level]")
     String discord_message();
 
     @ConfKey("discord-channel")
-    @ConfComments("#ID of channel for discord leveling messages, 0 for discordsrv default and -1 for the channel where user leveled up")
+    @ConfComments("# ID of channel for discord leveling messages, 0 for discordsrv default and -1 for the channel where user leveled up")
     @AnnotationBasedSorter.Order(30)
     @ConfDefault.DefaultLong(-1)
     long discord_channel();
 
 
     @ConfKey("level-command-message")
-    @ConfComments("#Message when user uses the level (aka rank) command")
+    @ConfComments("# Message when user uses the level (aka rank) command")
     @AnnotationBasedSorter.Order(40)
     @ConfDefault.DefaultString("message:level")
     String level_command_message();
 
     @ConfKey("level-command-invalid-player")
-    @ConfComments("#Message when player not found when you run /rank <player_name> command")
+    @ConfComments("# Message when player not found when you run /rank <player_name> command")
     @AnnotationBasedSorter.Order(50)
     @ConfDefault.DefaultString("Player never joined before")
     String level_command_invalid_player();
 
     @ConfKey("level-command-not-linked")
-    @ConfComments("#Message when user not linked when using /rank")
+    @ConfComments("# Message when user not linked when using /rank")
     @AnnotationBasedSorter.Order(60)
     @ConfDefault.DefaultString("Your account is not linked with any Minecraft Account. Use `/discordsrv link` in game to link your account")
     String level_command_not_linked();
 
     @ConfKey("level-command-other-not-linked")
-    @ConfComments("#Message when user not linked when using /rank <mention another user>")
+    @ConfComments("# Message when user not linked when using /rank <mention another user>")
     @AnnotationBasedSorter.Order(70)
     @ConfDefault.DefaultString("[user.name]'s discord account is not linked with minecraft account")
     String level_command_other_not_linked();
