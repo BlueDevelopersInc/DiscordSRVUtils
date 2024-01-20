@@ -26,14 +26,15 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
-import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
+import github.scarsz.discordsrv.dependencies.jackson.databind.node.ObjectNode;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.ErrorResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class StatusManager {
     @Getter
     private final DiscordSRVUtils core;
     private StatusTimer timer = new StatusTimer(this);
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public Path getDataPath() {
         return core.getPlatform().getDataFolder().toPath().resolve("data").resolve("status-message.json");
@@ -61,7 +63,7 @@ public class StatusManager {
     public void newMessage(TextChannel channel) {
         // Path for some temp storage which should not be stored in database
         File file = getDataPath().toFile();
-        JSONObject json = new JSONObject();
+        ObjectNode json = mapper.createObjectNode();
         json.put("channel", channel.getIdLong());
         // Its already async, complete() should be fine
         Message msg = channel.sendMessage(getStatusMessage(true)).complete();
@@ -83,15 +85,15 @@ public class StatusManager {
     public Long getMessageId() throws IOException {
         File file = getDataPath().toFile();
         if (!file.exists()) return null;
-        JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
-        return json.getLong("message");
+        JsonNode json = mapper.readTree(file);
+        return json.get("message").asLong();
     }
 
     public Long getChannelId() throws IOException {
         File file = getDataPath().toFile();
         if (!file.exists()) return null;
-        JSONObject json = new JSONObject(Utils.readFile(file.getPath()));
-        return json.getLong("channel");
+        JsonNode json = mapper.readTree(file);
+        return json.get("channel").asLong();
     }
 
     public void editMessage(boolean online) {
