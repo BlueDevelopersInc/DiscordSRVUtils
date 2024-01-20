@@ -1,8 +1,13 @@
+<center>
+  <img alt="Spigot" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg">
+  <a href="https://modrinth.com/plugin/discordsrvutils"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">
+</a>
+  <a href="https://discordsrvutils.xyz"><img alt="Website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
+</center>
+
 # DiscordSRVUtils
 
-DiscordSRVUtils is a DiscordSRV addon that adds more features to the bot!
-
-[Modrinth Page](https://modrinth.com/plugin/discordsrvutils)
+Elevate your Discord server with custom messages, synced punishments, tickets, and leveling!
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/kPCZgvM2?label=Modrinth%20downloads)
 ![Spigot Downloads](https://img.shields.io/spiget/downloads/85958?label=SpigotMC%20downloads&color=FF7F7F)
