@@ -36,14 +36,11 @@ dependencies {
 allprojects {
     apply(plugin = "java")
     repositories {
-        mavenLocal()
         mavenCentral()
-        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-        maven("https://jitpack.io")
-        maven("https://nexus.scarsz.me/content/groups/public/")
-        maven("https://repo.essentialsx.net/releases/")
-        maven("https://mvn-repo.arim.space/affero-gpl3/")
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://mvn-repo.arim.space/affero-gpl3/")
+        maven("https://mvn-repo.arim.space/lesser-gpl3/")
+        maven("https://nexus.scarsz.me/content/groups/public/")
     }
     dependencies {
         compileOnly("org.projectlombok:lombok:1.18.30")

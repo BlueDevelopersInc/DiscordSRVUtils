@@ -50,6 +50,12 @@ plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
+repositories {
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.essentialsx.net/releases/")
+    maven("https://jitpack.io")
+}
+
 fun urlFile(url: String, name: String): ConfigurableFileCollection {
     val file = File("${project.layout.buildDirectory.asFile.get()}/download/${name}.jar")
     file.parentFile.mkdirs()
@@ -62,7 +68,6 @@ fun urlFile(url: String, name: String): ConfigurableFileCollection {
     }
     return files(file.path.toString())
 }
-
 
 dependencies {
     // Bukkit Plugins and APIs
