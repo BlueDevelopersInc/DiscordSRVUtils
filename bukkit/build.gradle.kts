@@ -87,7 +87,6 @@ dependencies {
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
     implementation("org.jooq:jooq:3.14.16")
-    implementation("org.json:json:${rootProject.properties["org_json_version"]}")
 
     // Core plugin
     implementation(project(":core"))
