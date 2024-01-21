@@ -33,6 +33,7 @@ import dev.bluetree242.discordsrvutils.bukkit.listeners.game.PaperChatListener;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.advancedban.AdvancedBanHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.libertybans.LibertybansHook;
 import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.litebans.LitebansHook;
+import dev.bluetree242.discordsrvutils.bukkit.listeners.punishments.ultimatepunishments.UltimatePunishmentsHook;
 import dev.bluetree242.discordsrvutils.bukkit.status.BukkitStatusListener;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.platform.PlatformPluginDescription;
@@ -165,6 +166,7 @@ public class BukkitPlugin extends PluginPlatform<JavaPlugin> {
         new AdvancedBanHook(core);
         new LibertybansHook(core);
         new LitebansHook(core);
+        new UltimatePunishmentsHook(core);
         // Afk
         new EssentialsHook(core);
         new CMIHook(core);

@@ -195,7 +195,7 @@ public interface Punishment<O> {
     }
 
     enum PunishmentProvider {
-        ADVANCEDBAN, LITEBANS, LIBERTYBANS
+        ADVANCEDBAN, LITEBANS, LIBERTYBANS, ULTIMATEPUNISHMENTS
     }
 
     enum PunishmentType {
