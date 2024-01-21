@@ -82,7 +82,7 @@ dependencies {
     compileOnly("net.lapismc:AFKPlus:3.3.15")
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
     compileOnly("net.essentialsx:EssentialsX:2.19.0")
-    implementation("me.TechsCode:UltraPunishmentsAPI:1.0.0_build-2")
+    compileOnly("me.TechsCode:UltraPunishmentsAPI:1.0.0_build-2")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
