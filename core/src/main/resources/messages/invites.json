@@ -3,7 +3,7 @@
     "thumbnail": {
       "url": "[user.effectiveAvatarUrl]"
     },
-    "color": "cyan",
+    "color": "orange",
     "description": "**Total:** [invites.totalInvites]\n**Stayed:** [invites.stayedInvites]\n**Left:** [invites.leftInvites]",
     "title": "[user.name]'s Invites"
   }
