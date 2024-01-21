@@ -1,7 +1,7 @@
 {
   "embed": {
     "title": "New Punishment",
-    "description": "Player ``[punishment.name]`` was **banned** for ``[punishment.reason]``\nDuration: ``[punishment.duration]``",
+    "description": "Player `[punishment.name]` was **banned** for `[punishment.reason]`\nDuration: `[punishment.duration]`",
     "color": 5540790,
     "footer": {
       "icon_url": "https://i.imgur.com/OA0Lv2e.png",
