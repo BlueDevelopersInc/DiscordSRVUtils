@@ -106,7 +106,7 @@ bukkit {
     foliaSupported = true
     commands {
         register("discordsrvutils") {
-            aliases = listOf("dsrvu", "dsu", "du", "discordu", "srvu", "dut")
+            aliases = listOf("dsu")
         }
     }
     softDepend = listOf("DiscordSRV", "Essentials", "AdvancedBan", "PlaceholderAPI", "LiteBans", "LibertyBans", "CMI", "SuperVanish", "PremiumVanish", "AfkPlus", "UltimatePunishments")
