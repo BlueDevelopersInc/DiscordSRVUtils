@@ -242,8 +242,7 @@ public class MessageManager {
                 } catch (Exception ex) {
                     throw new MessageNotFoundException(name);
                 }
-            }
-            throw new MessageNotFoundException(name);
+            } else throw new MessageNotFoundException(name);
         }
         try {
             return objectMapper.readTree(file);
