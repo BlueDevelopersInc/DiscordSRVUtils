@@ -13,7 +13,7 @@
     "fields": [
       {
         "name": "Players",
-        "value": "${#server.getOnlinePlayers().size()}/[server.maxPlayers]"
+        "value": "[server.onlineCount]/[server.maxPlayers]"
       },
       {
         "name": "Version",

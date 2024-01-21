@@ -37,6 +37,10 @@ public abstract class PlatformServer {
 
     public abstract List<PlatformPlayer> getOnlinePlayers();
 
+    public abstract int getMaxPlayers();
+
+    public abstract int getOnlineCount();
+
     public abstract CommandUser getConsoleSender();
 
     public abstract String colors(String s);

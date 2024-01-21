@@ -79,6 +79,16 @@ public class BukkitPlatformServer extends PlatformServer {
     }
 
     @Override
+    public int getMaxPlayers() {
+        return Bukkit.getServer().getMaxPlayers();
+    }
+
+    @Override
+    public int getOnlineCount() {
+        return Bukkit.getServer().getOnlinePlayers().size();
+    }
+
+    @Override
     public CommandUser getConsoleSender() {
         return new BukkitConsoleCommandUser(main);
     }
