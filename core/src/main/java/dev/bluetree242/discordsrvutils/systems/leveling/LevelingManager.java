@@ -42,7 +42,6 @@ public class LevelingManager {
     private final DiscordSRVUtils core;
     @Getter
     private final LevelingRewardsManager levelingRewardsManager;
-    private boolean adding = false;
 
     public PlayerStats getCachedStats(UUID uuid) {
         return cachedUUIDS.get(uuid);
@@ -72,13 +71,17 @@ public class LevelingManager {
     }
 
     public PlayerStats getPlayerStats(UUID uuid) {
+        return getPlayerStats(uuid, false);
+    }
+
+    public PlayerStats getPlayerStats(UUID uuid, boolean forCache) {
         DSLContext conn = core.getDatabaseManager().jooq();
         List<LevelingRecord> records = conn.selectFrom(LevelingTable.LEVELING).orderBy(LevelingTable.LEVELING.LEVEL.desc()).fetch();
         int num = 0;
         for (LevelingRecord record : records) {
             num++;
             if (record.getUuid().equals(uuid.toString())) {
-                return getPlayerStats(record, num);
+                return getPlayerStats(record, num, forCache);
             }
         }
         return null;
@@ -97,6 +100,10 @@ public class LevelingManager {
     }
 
     public PlayerStats getPlayerStats(LevelingRecord r, int rank) {
+        return getPlayerStats(r, rank, false);
+    }
+
+    public PlayerStats getPlayerStats(LevelingRecord r, int rank, boolean forCache) {
         PlayerStats stats = new PlayerStats(core,
                 UUID.fromString(r.getUuid()),
                 r.getName(), r.getLevel(),
@@ -104,7 +111,7 @@ public class LevelingManager {
                 r.getMinecraftmessages() == null ? 0 : r.getMinecraftmessages(),
                 r.getDiscordmessages() == null ? 0 : r.getDiscordmessages(),
                 rank);
-        if (!adding)
+        if (!forCache)
             cachedUUIDS.put(stats.getUuid(), stats);
         return stats;
     }
@@ -160,10 +167,7 @@ public class LevelingManager {
             .refreshAfterWrite(Duration.ofSeconds(30))
             .build(key -> {
                 DiscordSRVUtils core = DiscordSRVUtils.get();
-                adding = true;
-                PlayerStats stats = getPlayerStats(key);
-                adding = false;
-                return stats;
+                return getPlayerStats(key, true);
             });
 
 
