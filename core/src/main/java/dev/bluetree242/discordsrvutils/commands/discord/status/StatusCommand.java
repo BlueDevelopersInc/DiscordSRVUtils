@@ -33,7 +33,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class StatusCommand extends Command {
     public StatusCommand(DiscordSRVUtils core) {
-        super(core, "status", "Set the status message", "[P]status <ping channel>", null,
+        super(core, "status", "Set/Change/Remove status message", "<ping channel>", null,
                 new OptionData(OptionType.CHANNEL, "channel", "Channel to send status message in", false));
         setAdminOnly(true);
     }

@@ -34,7 +34,7 @@ import java.util.StringJoiner;
 
 public class LeaderboardCommand extends Command {
     public LeaderboardCommand(DiscordSRVUtils core) {
-        super(core, "leaderboard", "Get the leaderboard of players by level", "[P]leaderboard", null, CommandCategory.LEVELING, "lb");
+        super(core, "leaderboard", "List top ranks in leveling", "", null, CommandCategory.LEVELING, "lb");
     }
 
     @Override

@@ -29,7 +29,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build.OptionData;
 
 public abstract class TicketCommand extends Command {
-    public TicketCommand(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String aliases) {
+    public TicketCommand(DiscordSRVUtils core, String cmd, String description, String usage, Permission requiredPermission, CommandCategory category, String... aliases) {
         super(core, cmd, description, usage, requiredPermission, category, aliases);
     }
 

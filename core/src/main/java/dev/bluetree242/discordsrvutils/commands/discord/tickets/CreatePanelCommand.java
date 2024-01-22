@@ -34,7 +34,7 @@ import java.awt.*;
 
 public class CreatePanelCommand extends TicketCommand {
     public CreatePanelCommand(DiscordSRVUtils core) {
-        super(core, "createpanel", "Create a ticket panel", "[P]createpanel", null, CommandCategory.TICKETS_ADMIN, "cp");
+        super(core, "createpanel", "Create a ticket panel", "", null, CommandCategory.TICKETS_ADMIN, "cp");
         setAdminOnly(true);
     }
 

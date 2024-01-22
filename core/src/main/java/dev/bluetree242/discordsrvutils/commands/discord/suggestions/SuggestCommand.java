@@ -38,7 +38,7 @@ public class SuggestCommand extends SuggestionCommand {
     public final Map<Long, Long> antispamMap = new HashMap<>();
 
     public SuggestCommand(DiscordSRVUtils core) {
-        super(core, "suggest", "Add a new suggestion", "[P]suggest <suggestion>", null, CommandCategory.SUGGESTIONS,
+        super(core, "suggest", "Add a new suggestion", "<suggestion>", null, CommandCategory.SUGGESTIONS,
                 new OptionData(OptionType.STRING, "suggestion", "Your Suggestion", true));
     }
 

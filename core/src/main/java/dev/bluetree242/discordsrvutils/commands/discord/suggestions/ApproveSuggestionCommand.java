@@ -31,7 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class ApproveSuggestionCommand extends SuggestionCommand {
     public ApproveSuggestionCommand(DiscordSRVUtils core) {
-        super(core, "approvesuggestion", "Approve a suggestion", "[P]approvesuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super(core, "approvesuggestion", "Approve a suggestion", "<suggestion number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
         addAliases("approve");
         setAdminOnly(true);

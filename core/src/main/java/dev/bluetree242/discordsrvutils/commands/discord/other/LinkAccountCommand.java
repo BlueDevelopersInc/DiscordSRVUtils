@@ -30,7 +30,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class LinkAccountCommand extends Command {
     public LinkAccountCommand(DiscordSRVUtils core) {
-        super(core, "linkaccount", "Link your Discord Account with InGame Account Using Code", "[P]linkaccount <code>", null,
+        super(core, "linkaccount", "Link your discord with minecraft using code", "<code>", null,
                 new OptionData(OptionType.INTEGER, "code", "LinkAccount Code", true));
     }
 

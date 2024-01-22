@@ -33,8 +33,8 @@ import org.json.JSONException;
 
 public class TestMessageCommand extends Command {
     public TestMessageCommand(DiscordSRVUtils core) {
-        super(core, "testmessage", "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN,
-                new OptionData(OptionType.STRING, "name", "Name of the Embed Message to test", true));
+        super(core, "testmessage", "Test an embed by it's name", "<name>", null, CommandCategory.ADMIN,
+                new OptionData(OptionType.STRING, "name", "Name of the embed message to test", true));
         addAliases("tm");
         setAdminOnly(true);
     }

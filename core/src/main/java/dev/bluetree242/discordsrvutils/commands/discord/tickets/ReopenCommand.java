@@ -29,7 +29,7 @@ import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
 public class ReopenCommand extends TicketCommand {
     public ReopenCommand(DiscordSRVUtils core) {
-        super(core, "reopen", "Reopen the ticket command executed on", "[P]reopen", null, CommandCategory.TICKETS, "reopenticket");
+        super(core, "reopen", "Reopen the ticket command is executed on", "", null, CommandCategory.TICKETS, "reopenticket");
     }
 
     @Override

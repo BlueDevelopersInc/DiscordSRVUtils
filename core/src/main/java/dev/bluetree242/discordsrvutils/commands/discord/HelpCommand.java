@@ -37,21 +37,21 @@ import java.util.StringJoiner;
 
 public class HelpCommand extends Command {
     public HelpCommand(DiscordSRVUtils core) {
-        super(core, "help", "Get Help about commands", "[P]help [Command]", null,
+        super(core, "help", "Provides help for most commands.", "[command]", null,
                 new OptionData(OptionType.STRING, "command", "Command to get help of", false));
     }
 
     @Override
     public void run(CommandEvent e) throws Exception {
         if (e.getOption("command") == null) {
-            if (!core.getMainConfig().help_response().equals("")) {
+            if (!core.getMainConfig().help_response().isEmpty()) {
                 e.replyMessage(core.getMainConfig().help_response()).queue();
                 return;
             }
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.GREEN);
             embed.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-            embed.setTitle(e.getJDA().getSelfUser().getName() + " Commands");
+            embed.setTitle(e.getJDA().getSelfUser().getName() + "'s commands");
             embed.setFooter("Executed by " + e.getAuthor().getAsTag(), e.getAuthor().getEffectiveAvatarUrl());
             embed.setTimestamp(Instant.now());
             for (CommandCategory category : CommandCategory.values()) {
@@ -64,7 +64,7 @@ public class HelpCommand extends Command {
                     embed.addField(category.toString(), joiner.toString(), false);
                 }
             }
-            embed.setDescription("Use " + "/" + "help <Command> to get Help for a command");
+            embed.setDescription("Use `" + "/" + "help <command>` to get help for a specific command");
             e.reply(embed.build()).queue();
         } else {
             String cmd = e.getOption("command").getAsString();

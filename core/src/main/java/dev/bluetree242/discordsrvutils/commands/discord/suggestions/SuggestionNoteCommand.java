@@ -31,7 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class SuggestionNoteCommand extends SuggestionCommand {
     public SuggestionNoteCommand(DiscordSRVUtils core) {
-        super(core, "suggestionnote", "Add a Note to a suggestion", "[P]suggestionnote <Suggestion Number> <Note>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super(core, "suggestionnote", "Add a note to a suggestion", "<suggestion number> <note>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true),
                 new OptionData(OptionType.STRING, "note", "The Note to add", true));
         addAliases("note");

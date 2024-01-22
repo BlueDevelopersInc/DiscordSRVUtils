@@ -31,7 +31,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class DenySuggestionCommand extends SuggestionCommand {
     public DenySuggestionCommand(DiscordSRVUtils core) {
-        super(core, "denysuggestion", "Deny a suggestion", "[P]denysuggestion <Suggestion Number>", null, CommandCategory.SUGGESTIONS_ADMIN,
+        super(core, "denysuggestion", "Deny a suggestion", "<suggestion number>", null, CommandCategory.SUGGESTIONS_ADMIN,
                 new OptionData(OptionType.INTEGER, "number", "Suggestion Number", true));
         addAliases("deny");
         setAdminOnly(true);

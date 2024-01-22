@@ -29,7 +29,7 @@ import dev.bluetree242.discordsrvutils.systems.tickets.Ticket;
 
 public class CloseCommand extends TicketCommand {
     public CloseCommand(DiscordSRVUtils core) {
-        super(core, "close", "Close the ticket command executed on", "[P]close", null, CommandCategory.TICKETS, "closeticket");
+        super(core, "close", "Close the ticket command is executed on", "", null, CommandCategory.TICKETS, "closeticket");
     }
 
     @Override

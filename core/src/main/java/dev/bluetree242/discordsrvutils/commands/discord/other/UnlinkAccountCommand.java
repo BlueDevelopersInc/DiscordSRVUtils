@@ -31,7 +31,7 @@ import java.util.UUID;
 
 public class UnlinkAccountCommand extends Command {
     public UnlinkAccountCommand(DiscordSRVUtils core) {
-        super(core, "unlinkaccount", "Unlink your Discord Account with your in-game account", "[P]unlinkaccount", null);
+        super(core, "unlinkaccount", "Unlink your discord and minecraft account", "", null);
         addAliases("unlink");
     }
 

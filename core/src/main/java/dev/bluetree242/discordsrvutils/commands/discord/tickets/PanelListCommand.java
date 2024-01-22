@@ -39,7 +39,7 @@ import java.util.StringJoiner;
 
 public class PanelListCommand extends TicketCommand {
     public PanelListCommand(DiscordSRVUtils core) {
-        super(core, "panelist", "Get list of panels", "[P]panellist", null, CommandCategory.TICKETS_ADMIN, "panellist");
+        super(core, "panelist", "Lists available panels", "", null, CommandCategory.TICKETS_ADMIN);
         setAdminOnly(true);
     }
 

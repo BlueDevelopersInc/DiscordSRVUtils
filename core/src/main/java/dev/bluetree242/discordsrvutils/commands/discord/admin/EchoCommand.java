@@ -35,8 +35,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class EchoCommand extends Command {
     public EchoCommand(DiscordSRVUtils core) {
-        super(core, "echo", "Test an Embed by it's name", "[P]testmessage <name>", null, CommandCategory.ADMIN,
-                new OptionData(OptionType.STRING, "text", "Text to send", true),
+        super(core, "echo", "Send a message here or another channel (supports embeds)", "<name>", null, CommandCategory.ADMIN,
+                new OptionData(OptionType.STRING, "text", "Text to send (use message:messagename for embed)", true),
                 new OptionData(OptionType.CHANNEL, "channel", "Channel to send the message in", false));
         setAdminOnly(true);
     }

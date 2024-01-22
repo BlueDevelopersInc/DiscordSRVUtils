@@ -35,8 +35,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class InvitesCommand extends Command {
     public InvitesCommand(DiscordSRVUtils core) {
-        super(core, "invites", "Get Amount of invites for a user", "[P]invites [user]", null, CommandCategory.INVITE_TRACKING,
-                new OptionData(OptionType.USER, "user_mention", "User to get invites of", false));
+        super(core, "invites", "Provides invite information about a user", "[user]", null, CommandCategory.INVITE_TRACKING,
+                new OptionData(OptionType.USER, "user_mention", "User to get invite information for", false));
     }
 
     @Override

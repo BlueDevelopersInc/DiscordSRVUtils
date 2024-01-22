@@ -33,8 +33,10 @@ import lombok.Setter;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public abstract class Command {
     public final DiscordSRVUtils core;
     private final String cmd;
@@ -85,19 +87,6 @@ public abstract class Command {
 
     public abstract void run(CommandEvent e) throws Exception;
 
-    public final String getDescription() {
-        return description;
-    }
-
-    public final String getUsage() {
-        return usage.replace("[P]", "/");
-    }
-
-
-    public final String getCmd() {
-        return cmd;
-    }
-
     public final Permission getRequiredPermission() {
         return requestPermission;
     }
@@ -105,21 +94,19 @@ public abstract class Command {
     public MessageEmbed getHelpEmbed() {
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setTitle("/" + cmd + " Command")
+        embed.setTitle("/" + cmd + " command")
                 .setColor(Color.GREEN)
                 .addField("Description", Utils.trim(getDescription()), false)
-                .addField("Usage", getUsage(), false)
+                .addField("Usage", "/" + cmd + " " + getUsage(), false)
                 .setThumbnail(core.getJDA().getSelfUser().getEffectiveAvatarUrl());
 
-        if (aliases.size() >= 1) embed.addField("aliases", getAliasesString(), false);
+        if (!aliases.isEmpty()) embed.addField("aliases", getAliasesString(), false);
         return embed.build();
 
     }
 
     public void addAliases(String... aliases) {
-        for (String alias : aliases) {
-            this.aliases.add(alias);
-        }
+        this.aliases.addAll(Arrays.asList(aliases));
     }
 
 

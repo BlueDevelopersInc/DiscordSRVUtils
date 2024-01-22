@@ -34,7 +34,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.interactions.commands.build
 
 public class EditPanelCommand extends TicketCommand {
     public EditPanelCommand(DiscordSRVUtils core) {
-        super(core, "editpanel", "Edit a panel", "[P]editpanel <Panel ID>", null, CommandCategory.TICKETS_ADMIN,
+        super(core, "editpanel", "Edit a ticket panel", "<panel id>", null, CommandCategory.TICKETS_ADMIN,
                 new OptionData(OptionType.STRING, "id", "Panel ID", true));
         addAliases("ep");
         setAdminOnly(true);
