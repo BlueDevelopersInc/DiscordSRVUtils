@@ -312,8 +312,6 @@ public class DiscordSRVUtils {
     public void setSettings(boolean first) {
         if (!isReady()) return;
         if (!first) DiscordSRV.api.updateSlashCommands();
-        OnlineStatus onlineStatus = getMainConfig().onlinestatus().equalsIgnoreCase("DND") ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.valueOf(getMainConfig().onlinestatus().toUpperCase());
-        getJDA().getPresence().setStatus(onlineStatus);
         levelingManager.cachedUUIDS.invalidateAll();
         if (main.getStatusListener() != null) {
             if (main.getStatusListener().registered) {

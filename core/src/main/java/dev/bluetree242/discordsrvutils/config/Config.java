@@ -40,12 +40,6 @@ public interface Config {
     @ConfDefault.DefaultLongs({})
     List<Long> admins();
 
-
-    @AnnotationBasedSorter.Order(30)
-    @ConfComments("# OnlineStatus for the bot. can be ONLINE, DND, or IDLE")
-    @ConfDefault.DefaultString("ONLINE")
-    String onlinestatus();
-
     @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
     @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
