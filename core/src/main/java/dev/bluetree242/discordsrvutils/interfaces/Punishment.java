@@ -124,7 +124,7 @@ public interface Punishment<O> {
                     if (bannedRole == null)
                         core.getPlatform().getDiscordSRV().getMainGuild().ban(discordUser, 0, "Minecraft Synced Ban").queue();
                     else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
-                        core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft Synced Ban").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordMember, bannedRole).reason("Minecraft synced ban").queue();
                     else {
                         core.severe("Could not add banned role to " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
@@ -136,7 +136,7 @@ public interface Punishment<O> {
                             core.severe("No role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
-                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute Synced with Minecraft").queue();
+                    core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(discordUser.getIdLong(), role).reason("Mute synced with minecraft").queue();
                     break;
                 default:
                     break;
@@ -147,9 +147,9 @@ public interface Punishment<O> {
                 case BAN:
                     Role bannedRole = core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getBansConfig().bannedRole());
                     if (bannedRole == null)
-                        core.getPlatform().getDiscordSRV().getMainGuild().unban(discordUser).reason("Minecraft Synced UnBan").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().unban(discordUser).reason("Minecraft synced unban").queue();
                     else if (core.getPlatform().getDiscordSRV().getMainGuild().getSelfMember().canInteract(bannedRole))
-                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft Synced UnBan").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), bannedRole).reason("Minecraft synced unban").queue();
                     else {
                         core.severe("Could not remove banned role from " + discordUser.getName() + ". Please make sure the bot's role is higher than the banned role");
                     }
@@ -161,7 +161,7 @@ public interface Punishment<O> {
                             core.severe("No role was found with id " + core.getBansConfig().mutedRole());
                         return;
                     }
-                    core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("Unmute Synced with Minecraft").queue();
+                    core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(discordUser.getIdLong(), role).reason("unmute synced with minecraft").queue();
                 default:
                     break;
             }

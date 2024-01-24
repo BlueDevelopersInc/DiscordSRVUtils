@@ -97,7 +97,7 @@ public class DiscordLevelingListener extends ListenerAdapter {
                 List<Role> toAdd = core.getLevelingManager().getLevelingRewardsManager().getRolesForLevel(stats.getLevel());
                 Collection actions = new ArrayList<>();
                 for (Role role : toAdd) {
-                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).reason("Account Linked"));
+                    actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(e.getMember(), role).reason("Account linked"));
                 }
                 if (!actions.isEmpty()) RestAction.allOf(actions).queue();
             }

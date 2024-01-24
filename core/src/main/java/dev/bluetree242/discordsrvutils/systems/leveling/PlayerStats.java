@@ -147,11 +147,11 @@ public class PlayerStats {
         Collection actions = new ArrayList<>();
         for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(level)) {
             if (member.getRoles().contains(role))
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User Leveled Up"));
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("User leveled up"));
         }
         List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
         for (Role role : toAdd) {
-            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("User Leveled Up"));
+            actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("User leveled up"));
         }
         if (!actions.isEmpty())
             RestAction.allOf(actions).queue();

@@ -74,7 +74,7 @@ public class DiscordSRVListener {
             }
             List<Role> toAdd = manager.getLevelingRewardsManager().getRolesForLevel(level);
             for (Role role : toAdd) {
-                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account Linked"));
+                actions.add(core.getPlatform().getDiscordSRV().getMainGuild().addRoleToMember(member, role).reason("Account linked"));
             }
             if (!actions.isEmpty()) RestAction.allOf(actions).queue();
         });
@@ -90,7 +90,7 @@ public class DiscordSRVListener {
             if (member != null) {
                 for (Role role : manager.getLevelingRewardsManager().getRolesToRemove(null)) {
                     if (member.getRoles().contains(role))
-                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("Account Unlinked").queue();
+                        core.getPlatform().getDiscordSRV().getMainGuild().removeRoleFromMember(member, role).reason("Account unlinked").queue();
                 }
             }
         });
