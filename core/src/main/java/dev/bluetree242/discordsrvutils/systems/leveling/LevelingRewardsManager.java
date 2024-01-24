@@ -49,13 +49,13 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class LevelingRewardsManager {
     private final DiscordSRVUtils core;
+    private final ObjectMapper objectMapper = Utils.OBJECT_MAPPER;
     @Getter
     private ObjectNode levelingRewardsRaw;
     @Getter
     @Setter
     private ObjectNode rewardCache;
     private File rewardCacheFile;
-    private final ObjectMapper objectMapper = Utils.OBJECT_MAPPER;
 
     public void reloadLevelingRewards() {
         rewardCacheFile = core.getPlatform().getDataFolder().toPath().resolve("data").resolve("leveling-reward-cache.json").toFile();
@@ -82,7 +82,7 @@ public class LevelingRewardsManager {
                     json = objectMapper.createObjectNode().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-rewards/"); // The time I wrote this, it's a 404
                 }
             }
-                FileWriter writer = new FileWriter(filer);
+            FileWriter writer = new FileWriter(filer);
             writer.write(json.toPrettyString());
             writer.close();
             levelingRewardsRaw = json;
@@ -168,7 +168,7 @@ public class LevelingRewardsManager {
 
     private boolean needCache() {
         Iterator<String> keys = levelingRewardsRaw.fieldNames();
-        while(keys.hasNext()) {
+        while (keys.hasNext()) {
             String key = keys.next();
             try {
                 int num = Integer.parseInt(key);
@@ -188,7 +188,8 @@ public class LevelingRewardsManager {
         while (keys.hasNext()) {
             String key = keys.next();
             JsonNode value = roles.get(key);
-            if (value.isLong()) result.set(key, objectMapper.createObjectNode().set("roles", objectMapper.createArrayNode().add(value)));
+            if (value.isLong())
+                result.set(key, objectMapper.createObjectNode().set("roles", objectMapper.createArrayNode().add(value)));
             else result.set(key, value);
         }
         return result;
