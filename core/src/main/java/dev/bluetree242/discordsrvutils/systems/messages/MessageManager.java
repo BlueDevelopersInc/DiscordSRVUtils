@@ -128,7 +128,7 @@ public class MessageManager {
 
         // Title and color
         embed.setTitle(placehold(json.get("title"), holders, placehold), placehold(json.get("url"), holders, placehold));
-        if (json.has("color"))
+        if (json.hasNonNull("color"))
             embed.setColor(json.get("color").isInt() ? json.get("color").asInt() : colorOf(json.get("color").asText()).getRGB());
 
         // Footer
@@ -162,7 +162,7 @@ public class MessageManager {
     }
 
     private @Nullable Instant parseTimestamp(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
-        if (json.has("timestamp")) {
+        if (json.hasNonNull("timestamp")) {
             if (json.get("timestamp").isLong()) return Instant.ofEpochSecond(json.get("timestamp").asLong());
             else {
                 if (json.get("timestamp").asText().equalsIgnoreCase("now")) return Instant.now();
@@ -200,7 +200,7 @@ public class MessageManager {
 
     public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
-        JsonNode embeds = json.has("embeds") ? json.get("embeds") : json.get("embed");
+        JsonNode embeds = json.hasNonNull("embeds") ? json.get("embeds") : json.get("embed");
         if (embeds.isArray()) {
             List<MessageEmbed> messageEmbeds = new ArrayList<>();
             for (JsonNode embed : embeds) {
@@ -208,7 +208,7 @@ public class MessageManager {
             }
             msg.setEmbeds(messageEmbeds);
         } else msg.setEmbeds(parseEmbedFromJSON(embeds, holders, placehold).build());
-        if (json.has("content")) {
+        if (json.hasNonNull("content")) {
             msg.setContent(placehold(json.get("content"), holders, placehold));
         }
         return msg;
@@ -266,7 +266,7 @@ public class MessageManager {
             msg.setContent(placehold(json.get("content"), holders, placehold));
 
             // Embed
-            JsonNode embeds = json.has("embeds") ? json.get("embeds") : json.get("embed");
+            JsonNode embeds = json.hasNonNull("embeds") ? json.get("embeds") : json.get("embed");
             if (embeds.isArray()) {
                 List<MessageEmbed> messageEmbeds = new ArrayList<>();
                 for (JsonNode embed : embeds) {
