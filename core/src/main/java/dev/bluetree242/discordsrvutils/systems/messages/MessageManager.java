@@ -200,8 +200,14 @@ public class MessageManager {
 
     public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
-        if (json.has("embed"))
-            msg.setEmbeds(parseEmbedFromJSON(json.get("embed"), holders, placehold).build());
+        JsonNode embeds = json.has("embeds") ? json.get("embeds") : json.get("embed");
+        if (embeds.isArray()) {
+            List<MessageEmbed> messageEmbeds = new ArrayList<>();
+            for (JsonNode embed : embeds) {
+                messageEmbeds.add(parseEmbedFromJSON(embed, holders, placehold).build());
+            }
+            msg.setEmbeds(messageEmbeds);
+        } else msg.setEmbeds(parseEmbedFromJSON(embeds, holders, placehold).build());
         if (json.has("content")) {
             msg.setContent(placehold(json.get("content"), holders, placehold));
         }
