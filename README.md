@@ -1,7 +1,6 @@
-<div style="text-align: center;">
+<div align="center">
   <img alt="Spigot" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg">
-  <a href="https://modrinth.com/plugin/discordsrvutils"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">
-</a>
+  <a href="https://modrinth.com/plugin/discordsrvutils"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"></a>
   <a href="https://discordsrvutils.xyz"><img alt="Website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
 </div>
 
