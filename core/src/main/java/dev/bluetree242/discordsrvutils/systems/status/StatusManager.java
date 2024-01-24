@@ -26,6 +26,7 @@ import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObject;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
+import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jackson.databind.node.ObjectNode;
@@ -46,7 +47,7 @@ import java.util.Timer;
 public class StatusManager {
     @Getter
     private final DiscordSRVUtils core;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = Utils.OBJECT_MAPPER;
     private StatusTimer timer = new StatusTimer(this);
 
     public Path getDataPath() {

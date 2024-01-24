@@ -28,6 +28,7 @@ import dev.bluetree242.discordsrvutils.exceptions.MessageNotFoundException;
 import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
+import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.commons.io.IOUtils;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
@@ -61,7 +62,7 @@ public class MessageManager {
     @Getter
     private final Map<String, String> defaultMessages = new HashMap<>();
     private final DiscordSRVUtils core;
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = Utils.OBJECT_MAPPER;
 
     public Path getMessagesDirectory() {
         return core.getPlatform().getDataFolder().toPath().resolve("messages");

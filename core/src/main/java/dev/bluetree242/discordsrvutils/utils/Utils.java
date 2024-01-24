@@ -24,6 +24,7 @@ package dev.bluetree242.discordsrvutils.utils;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
@@ -44,6 +45,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static String readFile(String path)
             throws IOException {

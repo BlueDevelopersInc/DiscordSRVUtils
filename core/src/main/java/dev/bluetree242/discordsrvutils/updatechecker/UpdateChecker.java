@@ -25,8 +25,9 @@ package dev.bluetree242.discordsrvutils.updatechecker;
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.VersionInfo;
 import dev.bluetree242.discordsrvutils.exceptions.InvalidResponseException;
+import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonIgnoreProperties;
 import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonProperty;
-import github.scarsz.discordsrv.dependencies.jackson.databind.DeserializationFeature;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.minimessage.MiniMessage;
@@ -43,8 +44,7 @@ import java.util.logging.Level;
 @RequiredArgsConstructor
 public class UpdateChecker {
     private final DiscordSRVUtils core;
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final ObjectMapper objectMapper = Utils.OBJECT_MAPPER;
 
     public @Nullable UpdateCheckResult updateCheck(boolean startup) {
         if (!System.getProperty("discordsrvutils.updatecheck", "true").equalsIgnoreCase("true")) return null;
@@ -90,6 +90,7 @@ public class UpdateChecker {
     }
 
     @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UpdateCheckResult {
         @Getter
         private String downloadUrl;

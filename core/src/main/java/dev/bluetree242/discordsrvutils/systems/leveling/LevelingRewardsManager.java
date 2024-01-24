@@ -28,7 +28,6 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
 import dev.bluetree242.discordsrvutils.utils.Utils;
-import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +81,7 @@ public class LevelingRewardsManager {
                 }
             }
             FileWriter writer = new FileWriter(filer);
-            writer.write(new ObjectMapper().readTree(json.toString()).toPrettyString());
+            writer.write(Utils.OBJECT_MAPPER.readTree(json.toString()).toPrettyString());
             writer.close();
             levelingRewardsRaw = json;
         } catch (IOException | JSONException e) {

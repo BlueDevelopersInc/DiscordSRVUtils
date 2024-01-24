@@ -68,7 +68,7 @@ public class BukkitDebugger implements Debugger {
     private final SecureRandom RANDOM = new SecureRandom();
     private final OkHttpClient client = new OkHttpClient.Builder().build();
     private final DiscordSRVUtils core;
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = Utils.OBJECT_MAPPER;
 
     @Override
     public String run() throws Exception {
