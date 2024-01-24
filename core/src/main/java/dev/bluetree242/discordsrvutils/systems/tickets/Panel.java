@@ -32,10 +32,7 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.utils.KeyGenerator;
 import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Emoji;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.interactions.components.Button;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
@@ -141,12 +138,27 @@ public class Panel {
         if (runningProcesses.containsKey(user.getIdLong())) return null;
         runningProcesses.put(user.getIdLong(), id);
         try {
-            ChannelAction<TextChannel> action = core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(openedCategory).createTextChannel("ticket-" + user.getName());
+            Category category = core.getPlatform().getDiscordSRV().getMainGuild().getCategoryById(openedCategory);
+            ChannelAction<TextChannel> action = category.createTextChannel("ticket-" + user.getName());
+            action.syncPermissionOverrides();
             action.addMemberPermissionOverride(user.getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), EnumSet.noneOf(Permission.class));
-            for (Long role : allowedRoles) {
-                action.addRolePermissionOverride(role, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE), null);
+            for (Long id : allowedRoles) {
+                Role role = category.getGuild().getRoleById(id);
+                if (role == null) continue;
+                PermissionOverride override = category.getPermissionOverride(role);
+                EnumSet<Permission> allow = override == null ? EnumSet.noneOf(Permission.class) : override.getAllowed().clone();
+                EnumSet<Permission> deny = override == null ? EnumSet.noneOf(Permission.class) : override.getDenied().clone();
+                deny.removeAll(Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE));
+                allow.addAll(Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE));
+                action.addRolePermissionOverride(id, allow, deny);
             }
-            action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL));
+            EnumSet<Permission> allow = category.getPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole()).getAllowed().clone();
+            EnumSet<Permission> deny = category.getPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole()).getDenied().clone();
+            allow.remove(Permission.VIEW_CHANNEL);
+            deny.add(Permission.VIEW_CHANNEL);
+            action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(),
+                    allow,
+                    deny);
             TextChannel channel = action.complete();
             Message msg = channel.sendMessage(core.getMessageManager().getMessage(core.getTicketsConfig().ticket_opened_message(), PlaceholdObjectList.ofArray(core,
                     new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"),
