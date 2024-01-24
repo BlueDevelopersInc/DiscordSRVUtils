@@ -28,64 +28,64 @@ import dev.bluetree242.discordsrvutils.placeholder.PlaceholdObjectList;
 import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 import dev.bluetree242.discordsrvutils.utils.FileWriter;
 import dev.bluetree242.discordsrvutils.utils.Utils;
+import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
+import github.scarsz.discordsrv.dependencies.jackson.databind.node.ArrayNode;
+import github.scarsz.discordsrv.dependencies.jackson.databind.node.ObjectNode;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 public class LevelingRewardsManager {
     private final DiscordSRVUtils core;
     @Getter
-    private JSONObject levelingRewardsRaw;
+    private ObjectNode levelingRewardsRaw;
     @Getter
     @Setter
-    private JSONObject rewardCache;
+    private ObjectNode rewardCache;
     private File rewardCacheFile;
+    private final ObjectMapper objectMapper = Utils.OBJECT_MAPPER;
 
     public void reloadLevelingRewards() {
         rewardCacheFile = core.getPlatform().getDataFolder().toPath().resolve("data").resolve("leveling-reward-cache.json").toFile();
         try {
             File file = core.getPlatform().getDataFolder().toPath().resolve("leveling-roles.json").toFile();
             File filer = core.getPlatform().getDataFolder().toPath().resolve("leveling-rewards.json").toFile();
-            JSONObject json;
+            ObjectNode json;
             if (file.exists()) {
                 if (filer.exists()) {
                     core.getLogger().warning("Found leveling-roles.json, and leveling-rewards.json. Not converting, using new leveling-rewards.json");
-                    levelingRewardsRaw = new JSONObject(Utils.readFile(filer));
+                    levelingRewardsRaw = (ObjectNode) objectMapper.readTree(filer);
                     return;
                 }
-                json = new JSONObject(Utils.readFile(file));
+                json = (ObjectNode) objectMapper.readTree(file);
                 file.renameTo(filer);
-                filer = file;
-                levelingRewardsRaw = new JSONObject();
-                if (json.isEmpty() || (json.length() == 1 && json.has("_wiki"))) return;
+                levelingRewardsRaw = objectMapper.createObjectNode();
+                if (json.isEmpty() || (json.size() == 1 && json.has("_wiki"))) return;
                 json = convertToRewards(json);
             } else {
                 if (filer.exists()) {
-                    levelingRewardsRaw = new JSONObject(Utils.readFile(filer));
+                    levelingRewardsRaw = (ObjectNode) objectMapper.readTree(filer);
                     return;
                 } else {
-                    json = new JSONObject().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-rewards/"); // The time i wrote this, it's a 404
+                    json = objectMapper.createObjectNode().put("_wiki", "https://wiki.discordsrvutils.xyz/leveling-rewards/"); // The time I wrote this, it's a 404
                 }
             }
-            FileWriter writer = new FileWriter(filer);
-            writer.write(Utils.OBJECT_MAPPER.readTree(json.toString()).toPrettyString());
+                FileWriter writer = new FileWriter(filer);
+            writer.write(json.toPrettyString());
             writer.close();
             levelingRewardsRaw = json;
         } catch (IOException | JSONException e) {
-            levelingRewardsRaw = new JSONObject();
+            levelingRewardsRaw = objectMapper.createObjectNode();
             core.severe("Failed to load leveling-rewards.json: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
@@ -93,9 +93,9 @@ public class LevelingRewardsManager {
     public void reloadRewardCache() {
         try {
             if (rewardCacheFile.exists()) {
-                rewardCache = new JSONObject(Utils.readFile(rewardCacheFile));
+                rewardCache = (ObjectNode) objectMapper.readTree(rewardCacheFile);
             } else {
-                rewardCache = new JSONObject();
+                rewardCache = objectMapper.createObjectNode();
                 if (needCache()) {
                     rewardCacheFile.getParentFile().mkdirs();
                     rewardCacheFile.createNewFile();
@@ -105,15 +105,15 @@ public class LevelingRewardsManager {
                 }
             }
         } catch (IOException e) {
-            rewardCache = new JSONObject();
+            rewardCache = objectMapper.createObjectNode();
             core.severe("Failed to load leveling reward cache: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
-    private List<String> getCommands(JSONObject level, PlayerStats stats) {
+    private List<String> getCommands(ObjectNode level, PlayerStats stats) {
         if (!level.has("commands")) return null;
-        return level.getJSONArray("commands").toList().stream()
-                .map(o -> (String) o)
+        return StreamSupport.stream(level.get("commands").spliterator(), false)
+                .map(JsonNode::asText)
                 .map(c -> PlaceholdObjectList.ofArray(core, new PlaceholdObject(core, stats, "stats")).apply(c)) // Placeholders
                 .collect(Collectors.toList());
     }
@@ -121,10 +121,10 @@ public class LevelingRewardsManager {
     private List<String> getCommands(int level, int lastLevel, PlayerStats stats) {
         List<String> result = new ArrayList<>();
         for (int num = (lastLevel + 1); num <= level; num++) {
-            Object o = getLevelObject(num);
+            JsonNode o = getLevelObject(num);
             if (o == null) continue;
-            if (o instanceof JSONObject) {
-                JSONObject json = (JSONObject) o;
+            if (o.isObject()) {
+                ObjectNode json = (ObjectNode) o;
                 List<String> resultLevel = getCommands(json, stats);
                 if (resultLevel != null) result.addAll(resultLevel);
             }
@@ -133,7 +133,7 @@ public class LevelingRewardsManager {
     }
 
     private int getLastLevel(UUID uuid) {
-        return rewardCache.has(uuid.toString()) ? rewardCache.getInt(uuid.toString()) : 0;
+        return rewardCache.has(uuid.toString()) ? rewardCache.get(uuid.toString()).asInt() : 0;
     }
 
     public void rewardIfOnline(PlayerStats stats) {
@@ -165,12 +165,14 @@ public class LevelingRewardsManager {
     }
 
     private boolean needCache() {
-        for (String key : levelingRewardsRaw.toMap().keySet()) {
+        Iterator<String> keys = levelingRewardsRaw.fieldNames();
+        while(keys.hasNext()) {
+            String key = keys.next();
             try {
                 int num = Integer.parseInt(key);
-                Object v = getLevelObject(num);
+                JsonNode v = getLevelObject(num);
                 if (v == null) continue; // Unreachable but just in case
-                if (v instanceof JSONObject && ((JSONObject) v).has("commands")) return true;
+                if (v.isObject() && v.has("commands")) return true;
             } catch (NumberFormatException ex) {
                 // Not a level
             }
@@ -178,12 +180,14 @@ public class LevelingRewardsManager {
         return false;
     }
 
-    private JSONObject convertToRewards(JSONObject roles) {
-        JSONObject result = new JSONObject();
-        for (String key : roles.toMap().keySet()) {
-            Object value = roles.get(key);
-            if (value instanceof Long) result.put(key, new JSONObject().put("roles", new JSONArray().put(value)));
-            else result.put(key, value);
+    private ObjectNode convertToRewards(ObjectNode roles) {
+        ObjectNode result = objectMapper.createObjectNode();
+        Iterator<String> keys = roles.fieldNames();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JsonNode value = roles.get(key);
+            if (value.isLong()) result.set(key, objectMapper.createObjectNode().set("roles", objectMapper.createArrayNode().add(value)));
+            else result.set(key, value);
         }
         return result;
     }
@@ -193,7 +197,7 @@ public class LevelingRewardsManager {
         boolean found;
         int num = getLastLevelWithRoles(level);
         if (num == -1) return result;
-        JSONObject json = levelingRewardsRaw.getJSONObject(num + "");
+        ObjectNode json = (ObjectNode) levelingRewardsRaw.get(Integer.toString(num));
         result.addAll(getRoleIds(json));
         return result;
     }
@@ -202,38 +206,39 @@ public class LevelingRewardsManager {
         int result = -1;
         int num = level;
         while (num >= 0 && result == -1) {
-            Object o = getLevelObject(num);
+            JsonNode o = getLevelObject(num);
+
             num--;
-            if (o instanceof JSONObject && ((JSONObject) o).has("roles")) result = num + 1;
+            if (o != null && o.isObject() && o.has("roles")) result = num + 1;
         }
         return result;
     }
 
-    private Object getLevelObject(int level) {
-        if (levelingRewardsRaw.has(level + "")) return levelingRewardsRaw.get(level + "");
+    private JsonNode getLevelObject(int level) {
+        if (levelingRewardsRaw.has(level + "")) return levelingRewardsRaw.get(Integer.toString(level));
         return null;
     }
 
     public List<Role> getRolesToRemove(Integer level) {
 
         List<Role> roles = new ArrayList<>();
-        Map<String, Object> map = levelingRewardsRaw.toMap();
-        List<String> keys = new ArrayList<>(map.keySet());
+        Iterator<String> keys = levelingRewardsRaw.fieldNames();
         int num = level == null ? -1 : getLastLevelWithRoles(level);
-        for (String key : keys) {
+        while (keys.hasNext()) {
+            String key = keys.next();
             if (key.equals(num + "")) continue;
-            Object value = levelingRewardsRaw.get(key);
-            if (!(value instanceof JSONObject)) continue;
-            roles.addAll(getRoleIds((JSONObject) value));
+            JsonNode value = levelingRewardsRaw.get(key);
+            if (!value.isObject()) continue;
+            roles.addAll(getRoleIds((ObjectNode) value));
         }
         return roles;
     }
 
-    private List<Role> getRoleIds(JSONObject json) {
+    private List<Role> getRoleIds(ObjectNode json) {
         List<Role> result = new ArrayList<>();
         if (json.has("roles")) {
-            JSONArray roles = json.getJSONArray("roles");
-            roles.forEach(r -> result.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById((Long) r)));
+            ArrayNode roles = (ArrayNode) json.get("roles");
+            roles.forEach(r -> result.add(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(r.asLong())));
         }
 
         return result;

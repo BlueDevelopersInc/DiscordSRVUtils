@@ -118,7 +118,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     if (name.equalsIgnoreCase("all")) {
                         core.getLevelingManager().resetLeveling();
                         core.getLevelingManager().cachedUUIDS.invalidateAll();
-                        core.getLevelingManager().getLevelingRewardsManager().setRewardCache(new JSONObject());
+                        core.getLevelingManager().getLevelingRewardsManager().setRewardCache(Utils.OBJECT_MAPPER.createObjectNode());
                         core.getLevelingManager().getLevelingRewardsManager().saveRewardCache();
                         sender.sendMessage("&eEveryone's level has been reset");
                     } else {
