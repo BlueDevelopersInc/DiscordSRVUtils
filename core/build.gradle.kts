@@ -66,7 +66,6 @@ rootProject.allprojects {
         relocate("org.mariadb.jdbc", "$prefix.mariadb")
         relocate("org.flywaydb", "$prefix.flywaydb")
         relocate("com.github.benmanes.caffeine", "$prefix.caffeine")
-        relocate("org.json", "$prefix.json")
         relocate("org.jooq", "$prefix.jooq")
         relocate("org.slf4j", "$prefix.slf4j")
         relocate("org.reactivestreams", "$prefix.reactivestreams")
@@ -99,9 +98,6 @@ dependencies {
 
     // Discord Integration
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
-
-    // JSON Processing
-    implementation("org.json:json:${rootProject.properties["org_json_version"]}")
 
     // JOOQ for SQL queries
     implementation("org.jooq:jooq:3.14.16")

@@ -42,7 +42,6 @@ import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.event.ClickEvent;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.format.NamedTextColor;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;

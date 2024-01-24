@@ -36,11 +36,13 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -84,7 +86,7 @@ public class LevelingRewardsManager {
             writer.write(json.toPrettyString());
             writer.close();
             levelingRewardsRaw = json;
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             levelingRewardsRaw = objectMapper.createObjectNode();
             core.severe("Failed to load leveling-rewards.json: " + e.getClass().getName() + ": " + e.getMessage());
         }
