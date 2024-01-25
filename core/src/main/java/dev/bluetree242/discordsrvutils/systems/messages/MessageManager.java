@@ -51,10 +51,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 public class MessageManager {
@@ -200,6 +200,13 @@ public class MessageManager {
 
     public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
+
+        // Content
+        if (json.hasNonNull("content")) {
+            msg.setContent(placehold(json.get("content"), holders, placehold));
+        }
+
+        // Embed
         JsonNode embeds = json.hasNonNull("embeds") ? json.get("embeds") : json.get("embed");
         if (embeds.isArray()) {
             List<MessageEmbed> messageEmbeds = new ArrayList<>();
@@ -208,9 +215,14 @@ public class MessageManager {
             }
             msg.setEmbeds(messageEmbeds);
         } else msg.setEmbeds(parseEmbedFromJSON(embeds, holders, placehold).build());
-        if (json.hasNonNull("content")) {
-            msg.setContent(placehold(json.get("content"), holders, placehold));
-        }
+
+        // Allowed Mentions
+        String[] allowedMentions = json.has("allowed_mentions") ?
+                (json.get("allowed_mentions").isArray() ?
+                        StreamSupport.stream(json.get("allowed_mentions").spliterator(), false).map(JsonNode::asText).toArray(String[]::new)
+                        : new String[]{json.get("allowed_mentions").asText()})
+                : null;
+        msg.setAllowedMentions(Arrays.stream(allowedMentions).map(s -> Message.MentionType.valueOf(s.toUpperCase(Locale.ROOT))).collect(Collectors.toSet()));
         return msg;
     }
 
@@ -260,19 +272,8 @@ public class MessageManager {
     public MessageBuilder getMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
         MessageBuilder msg = new MessageBuilder();
         if (content.startsWith("message:")) {
-            String embedName = content.replaceFirst("message:", "");
-            JsonNode json = getMessageJSONByName(embedName);
-            msg.setContent(placehold(json.get("content"), holders, placehold));
-
-            // Embed
-            JsonNode embeds = json.hasNonNull("embeds") ? json.get("embeds") : json.get("embed");
-            if (embeds.isArray()) {
-                List<MessageEmbed> messageEmbeds = new ArrayList<>();
-                for (JsonNode embed : embeds) {
-                    messageEmbeds.add(parseEmbedFromJSON(embed, holders, placehold).build());
-                }
-                msg.setEmbeds(messageEmbeds);
-            } else msg.setEmbeds(parseEmbedFromJSON(embeds, holders, placehold).build());
+            String messageName = content.replaceFirst("message:", "");
+            return parseMessageFromJson(getMessageJSONByName(messageName), holders, placehold);
         } else {
             if (holders != null) {
                 content = holders.apply(content);
