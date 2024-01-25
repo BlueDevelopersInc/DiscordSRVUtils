@@ -244,7 +244,8 @@ public class DiscordSRVUtils {
         jdaManager.removeListeners();
         try {
             Runtime.getRuntime().removeShutdownHook(statusManager.getShutdownHook());
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
         if (getJDA() != null) {
             statusManager.unregisterTimer();
             statusManager.editMessage(false);
@@ -323,7 +324,8 @@ public class DiscordSRVUtils {
             statusManager.reloadTimer();
             try {
                 Runtime.getRuntime().addShutdownHook(statusManager.getShutdownHook());
-            } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {
+            }
         }
     }
 
