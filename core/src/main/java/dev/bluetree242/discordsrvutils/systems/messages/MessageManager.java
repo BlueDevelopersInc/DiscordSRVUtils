@@ -222,7 +222,7 @@ public class MessageManager {
                         StreamSupport.stream(json.get("allowed_mentions").spliterator(), false).map(JsonNode::asText).toArray(String[]::new)
                         : new String[]{json.get("allowed_mentions").asText()})
                 : null;
-        msg.setAllowedMentions(Arrays.stream(allowedMentions).map(s -> Message.MentionType.valueOf(s.toUpperCase(Locale.ROOT))).collect(Collectors.toSet()));
+        msg.setAllowedMentions(allowedMentions == null ? null : Arrays.stream(allowedMentions).map(s -> Message.MentionType.valueOf(s.toUpperCase(Locale.ROOT))).collect(Collectors.toSet()));
         return msg;
     }
 
