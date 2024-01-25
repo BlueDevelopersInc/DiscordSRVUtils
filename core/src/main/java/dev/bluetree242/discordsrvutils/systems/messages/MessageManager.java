@@ -245,7 +245,6 @@ public class MessageManager {
                     FileWriter writer = new FileWriter(file);
                     writer.write(defaultMessages.get(name));
                     writer.close();
-                    return getMessageJSONByName(name);
                 } catch (Exception ex) {
                     throw new MessageNotFoundException(name);
                 }
