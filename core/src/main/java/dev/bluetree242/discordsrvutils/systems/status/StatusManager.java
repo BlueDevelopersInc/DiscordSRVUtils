@@ -30,6 +30,7 @@ import dev.bluetree242.discordsrvutils.utils.Utils;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jackson.databind.node.ObjectNode;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
@@ -49,6 +50,22 @@ public class StatusManager {
     private final DiscordSRVUtils core;
     private final ObjectMapper mapper = Utils.OBJECT_MAPPER;
     private StatusTimer timer = new StatusTimer(this);
+
+    private Thread shutdownHook = null;
+
+    public Thread getShutdownHook() {
+        if (shutdownHook != null) return shutdownHook;
+        else return shutdownHook = new Thread(() -> {
+            if (core.isEnabled() && core.getJDA() != null && core.getJDA().getStatus() == JDA.Status.CONNECTED) {
+                try {
+                    editMessage(false);
+                } catch (Throwable ex) {
+                    core.getLogger().severe("Failed to update status message during shutdown hook.");
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
 
     public Path getDataPath() {
         return core.getPlatform().getDataFolder().toPath().resolve("data").resolve("status-message.json");

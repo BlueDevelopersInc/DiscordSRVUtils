@@ -242,6 +242,9 @@ public class DiscordSRVUtils {
         if (dsrvListener != null) DiscordSRV.api.unsubscribe(dsrvListener);
         pluginHookManager.removeHookAll();
         jdaManager.removeListeners();
+        try {
+            Runtime.getRuntime().removeShutdownHook(statusManager.getShutdownHook());
+        } catch (Throwable ignored) {}
         if (getJDA() != null) {
             statusManager.unregisterTimer();
             statusManager.editMessage(false);
@@ -318,6 +321,9 @@ public class DiscordSRVUtils {
             }
             main.getStatusListener().register();
             statusManager.reloadTimer();
+            try {
+                Runtime.getRuntime().addShutdownHook(statusManager.getShutdownHook());
+            } catch (Throwable ignored) {}
         }
     }
 
