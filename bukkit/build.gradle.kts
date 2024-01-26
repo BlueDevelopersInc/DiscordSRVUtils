@@ -86,6 +86,8 @@ dependencies {
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
+
+    // JOOQ
     implementation("org.jooq:jooq:3.14.16")
 
     // Core plugin
