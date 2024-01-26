@@ -287,6 +287,10 @@ public class MessageManager {
         return parseMessageFromJson(getMessageJSONByName(name), holders, placehold);
     }
 
+    public MessageBuilder getMessage(File file, PlaceholdObjectList holders, PlatformPlayer placehold) throws IOException {
+        return parseMessageFromJson(objectMapper.readTree(file), holders, placehold);
+    }
+
     public MessageBuilder getMessage(String content) {
         return getMessage(content, null, null);
     }
