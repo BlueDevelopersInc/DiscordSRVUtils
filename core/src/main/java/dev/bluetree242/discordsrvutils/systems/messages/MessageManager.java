@@ -283,6 +283,10 @@ public class MessageManager {
         return msg;
     }
 
+    public MessageBuilder getMessageNamed(String name, PlaceholdObjectList holders, PlatformPlayer placehold) {
+        return parseMessageFromJson(getMessageJSONByName(name), holders, placehold);
+    }
+
     public MessageBuilder getMessage(String content) {
         return getMessage(content, null, null);
     }
