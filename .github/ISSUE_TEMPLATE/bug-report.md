@@ -26,13 +26,13 @@ If applicable, add screenshots to help explain your problem.
 
 **Server Information:**
 
-- Version: [e.g. 1.18]
+- Version: [e.g. 1.20.4]
 - Software: [e.g. Paper]
 
 **Plugin Information:**
 
-- Version: [e.g. 1.2.7]
-- DiscordSRV Version [e.g. 1.24.0]
+- Version: [e.g. 1.2.13]
+- DiscordSRV Version [e.g. 1.27.0]
 - Build Number (run `/dsu` to find out, if it doesn't tell you then none)
 
 **Additional context**
