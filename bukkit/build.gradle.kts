@@ -102,7 +102,7 @@ bukkit {
     author = "BlueTree242"
     main = "dev.bluetree242.discordsrvutils.bukkit.DiscordSRVUtilsBukkit"
     apiVersion = "1.13"
-    website = "bluetree242.dev"
+    website = "discordsrvutils.xyz"
     foliaSupported = true
     commands {
         register("discordsrvutils") {
