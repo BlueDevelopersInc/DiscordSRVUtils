@@ -45,7 +45,7 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
                 Class eventClass = Class.forName(event);
                 Bukkit.getPluginManager().registerEvent(eventClass, this, EventPriority.MONITOR, this, (Plugin) core.getPlatform().getOriginal(), false);
             } catch (ClassNotFoundException e) {
-                core.severe("Event " + event + " Not Found");
+                core.severe("Event " + event + " not found");
             }
         }
         registered = true;
@@ -56,7 +56,14 @@ public class BukkitStatusListener extends StatusListener implements Listener, Ev
         if (event instanceof Cancellable) {
             if (((Cancellable) event).isCancelled()) return;
         }
-        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously((Plugin) core.getPlatform().getOriginal(), () -> core.getStatusManager().editMessage(true), 1);
+        core.getAsyncManager().executeAsync(() -> {
+            try {
+                core.getStatusManager().editMessage(true);
+            } catch (Throwable ex) {
+                core.getLogger().severe("Failed to update status message.");
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override
