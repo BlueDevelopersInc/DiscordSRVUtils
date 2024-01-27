@@ -40,7 +40,6 @@ allprojects {
     apply(plugin = "java")
     repositories {
         mavenCentral()
-        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://mvn-repo.arim.space/affero-gpl3/")
         maven("https://mvn-repo.arim.space/lesser-gpl3/")
         maven("https://nexus.scarsz.me/content/groups/public/")
