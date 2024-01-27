@@ -152,8 +152,9 @@ public class Panel {
                 allow.addAll(Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE));
                 action.addRolePermissionOverride(id, allow, deny);
             }
-            EnumSet<Permission> allow = category.getPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole()).getAllowed().clone();
-            EnumSet<Permission> deny = category.getPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole()).getDenied().clone();
+            PermissionOverride override = category.getPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole());
+            EnumSet<Permission> allow = override == null ? EnumSet.noneOf(Permission.class) : override.getAllowed().clone();
+            EnumSet<Permission> deny = override == null ? EnumSet.noneOf(Permission.class) : override.getDenied().clone();
             allow.remove(Permission.VIEW_CHANNEL);
             deny.add(Permission.VIEW_CHANNEL);
             action.addPermissionOverride(core.getPlatform().getDiscordSRV().getMainGuild().getPublicRole(),
