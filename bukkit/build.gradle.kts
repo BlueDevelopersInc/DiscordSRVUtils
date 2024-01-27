@@ -55,7 +55,6 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.essentialsx.net/releases/")
     maven("https://jitpack.io")
-    maven("https://repo.techscode.com/repository/techscode-apis/")
 }
 
 fun urlFile(url: String, name: String): ConfigurableFileCollection {
@@ -83,7 +82,6 @@ dependencies {
     compileOnly("net.lapismc:AFKPlus:3.3.15")
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
     compileOnly("net.essentialsx:EssentialsX:2.19.0")
-    implementation("me.TechsCode:UltraPunishmentsAPI:1.0.0_build-2")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
@@ -111,7 +109,7 @@ bukkit {
             aliases = listOf("dsu")
         }
     }
-    softDepend = listOf("DiscordSRV", "Essentials", "AdvancedBan", "PlaceholderAPI", "LiteBans", "LibertyBans", "CMI", "SuperVanish", "PremiumVanish", "AfkPlus", "UltimatePunishments")
+    softDepend = listOf("DiscordSRV", "Essentials", "AdvancedBan", "PlaceholderAPI", "LiteBans", "LibertyBans", "CMI", "SuperVanish", "PremiumVanish", "AfkPlus")
     permissions {
         register("discordsrvutils.reload")
         register("discordsrvutils.debug")
