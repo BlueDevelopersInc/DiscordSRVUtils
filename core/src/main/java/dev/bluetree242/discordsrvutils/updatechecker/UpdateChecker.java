@@ -124,7 +124,7 @@ public class UpdateChecker {
         public String getConsoleMessage() {
             Component result;
             if (consoleMessage == null && message == null) {
-                result =  getVersionsBehind() <= 0 ?
+                result = getVersionsBehind() <= 0 ?
                         Component.text("You are up to date.", NamedTextColor.GREEN) :
                         Component.text("You are ", NamedTextColor.RED)
                                 .append(Component.text(getVersionsBehind(), NamedTextColor.DARK_RED))
