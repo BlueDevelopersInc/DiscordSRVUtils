@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LitebansHook extends PluginHook {
     private final DiscordSRVUtils core;
-    LitebansPunishmentListener listener;
+    private LitebansPunishmentListener listener;
 
     @Override
     public String getRequiredPlugin() {
