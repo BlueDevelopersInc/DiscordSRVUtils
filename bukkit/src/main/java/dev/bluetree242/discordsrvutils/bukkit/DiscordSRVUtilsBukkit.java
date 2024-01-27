@@ -71,6 +71,7 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         if (!AccountLinkManager.class.isInterface()) {
             // DiscordSRV is out of date
             getLogger().severe("Plugin could not be enabled because the version of DiscordSRV you are using is not supported. Please make sure you are on DiscordSRV 1.27.0+.");
+            getLogger().severe("Disabling...");
             disable();
             return;
         }
@@ -79,25 +80,10 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
             core = new DiscordSRVUtils(new BukkitPlugin(this));
             ((BukkitPlugin) core.getPlatform()).setDiscordSRVUtils(core);
         }
-        DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(this));
+        new SlashCommandProviderInitializer().initialize();
         core.onEnable();
         if (!isEnabled()) return;
-        // Bstats stuff
-        Metrics metrics = new Metrics(this, 9456);
-        metrics.addCustomChart(new AdvancedPie("features", () -> {
-            Map<String, Integer> valueMap = new HashMap<>();
-            if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
-            if (core.getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
-            if (core.getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
-            if (core.getMainConfig().track_invites()) valueMap.put("Invite Tracking", 1);
-            if (core.getBansConfig().isSendPunishmentMsgsToDiscord() && isAnyPunishmentsPluginInstalled())
-                valueMap.put("Punishment Messages", 1);
-            if (core.getPluginHookManager().isHooked("Essentials") && core.getMainConfig().afk_message_enabled())
-                valueMap.put("AFK Messages", 1);
-            return valueMap;
-        }));
-        metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
-        metrics.addCustomChart(new SimplePie("admins", () -> String.valueOf(core.getJdaManager().getAdminIds().size())));
+        new BstatsInitializer().initialize();
     }
 
     @Override
@@ -132,5 +118,31 @@ public class DiscordSRVUtilsBukkit extends JavaPlugin {
         if (core.getPluginHookManager().isHooked("AdvancedBan")) return true;
         if (core.getPluginHookManager().isHooked("Litebans")) return true;
         return core.getPluginHookManager().isHooked("Libertybans");
+    }
+
+    private class SlashCommandProviderInitializer {
+        public void initialize() {
+            DiscordSRV.api.addSlashCommandProvider(new SlashCommandProvider(DiscordSRVUtilsBukkit.this));
+        }
+    }
+
+    private class BstatsInitializer {
+        public void initialize() {
+            Metrics metrics = new Metrics(DiscordSRVUtilsBukkit.this, 9456);
+            metrics.addCustomChart(new AdvancedPie("features", () -> {
+                Map<String, Integer> valueMap = new HashMap<>();
+                if (core.getLevelingConfig().enabled()) valueMap.put("Leveling", 1);
+                if (core.getSuggestionsConfig().enabled()) valueMap.put("Suggestions", 1);
+                if (core.getMainConfig().welcomer_enabled()) valueMap.put("Welcomer", 1);
+                if (core.getMainConfig().track_invites()) valueMap.put("Invite Tracking", 1);
+                if (core.getBansConfig().isSendPunishmentMsgsToDiscord() && isAnyPunishmentsPluginInstalled())
+                    valueMap.put("Punishment Messages", 1);
+                if (core.getPluginHookManager().isHooked("Essentials") && core.getMainConfig().afk_message_enabled())
+                    valueMap.put("AFK Messages", 1);
+                return valueMap;
+            }));
+            metrics.addCustomChart(new SimplePie("discordsrv_versions", () -> DiscordSRV.getPlugin().getDescription().getVersion()));
+            metrics.addCustomChart(new SimplePie("admins", () -> String.valueOf(core.getJdaManager().getAdminIds().size())));
+        }
     }
 }
