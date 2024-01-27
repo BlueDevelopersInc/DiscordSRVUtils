@@ -30,10 +30,10 @@ import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonIgnoreProper
 import github.scarsz.discordsrv.dependencies.jackson.annotation.JsonProperty;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.format.NamedTextColor;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.minimessage.MiniMessage;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.ComponentSerializer;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import github.scarsz.discordsrv.dependencies.okhttp3.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -124,10 +124,15 @@ public class UpdateChecker {
         public String getConsoleMessage() {
             Component result;
             if (consoleMessage == null && message == null) {
-                return getVersionsBehind() <= 0 ? "You are up to date." : "You are " + getVersionsBehind() + " versions behind. Update is available at " + getDownloadUrl();
+                result =  getVersionsBehind() <= 0 ?
+                        Component.text("You are up to date.", NamedTextColor.GREEN) :
+                        Component.text("You are ", NamedTextColor.RED)
+                                .append(Component.text(getVersionsBehind(), NamedTextColor.DARK_RED))
+                                .append(Component.text(" versions behind. Update is available at "))
+                                .append(Component.text(getDownloadUrl(), NamedTextColor.AQUA));
             } else if (consoleMessage == null) result = getMessage();
             else result = messageFormat.serializer.deserialize(consoleMessage);
-            return PlainTextComponentSerializer.plainText().serialize(result);
+            return Utils.toAnsi(result);
         }
     }
 }

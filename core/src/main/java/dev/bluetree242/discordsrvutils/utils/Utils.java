@@ -29,6 +29,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Emote;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -240,5 +243,15 @@ public class Utils {
 
     public static int nextInt(int min, int max) {
         return new SecureRandom().nextInt(max - min) + min;
+    }
+
+    @SuppressWarnings("JavaReflectionMemberAccess")
+    public static String toAnsi(Component component) {
+        try {
+            ANSIComponentSerializer instance = (ANSIComponentSerializer) ANSIComponentSerializer.class.getMethod("ansi").invoke(null);
+            return (String) ANSIComponentSerializer.class.getMethod("serialize", Component.class).invoke(instance, component);
+        } catch (Throwable e) {
+            return PlainTextComponentSerializer.plainText().serialize(component);
+        }
     }
 }

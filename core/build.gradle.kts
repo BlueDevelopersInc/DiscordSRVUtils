@@ -71,6 +71,11 @@ rootProject.allprojects {
         relocate("org.reactivestreams", "$prefix.reactivestreams")
         relocate("javax.activation", "$prefix.javax.activation")
         relocate("javax.xml.bind", "$prefix.javax.xml.bind")
+        relocate("net.kyori.adventure.text.serializer.ansi", "$prefix.adventure.text.serializer.ansi")
+        relocate("net.kyori.ansi", "$prefix.ansi")
+
+        // This makes adventure-ansi work
+        relocate("net.kyori", "github.scarsz.discordsrv.dependencies.kyori")
     }
 }
 
@@ -108,6 +113,11 @@ dependencies {
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.1")
+
+    // Colored console output
+    implementation("net.kyori:adventure-text-serializer-ansi:4.14.0") {
+        exclude(group = "net.kyori", module = "adventure-api")
+    }
 }
 
 
