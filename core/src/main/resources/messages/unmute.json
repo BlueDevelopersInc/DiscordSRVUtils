@@ -1,0 +1,11 @@
+{
+  "embed": {
+    "title": "Revoked Punishment",
+    "description": "Player `[punishment.name]` was unmuted for `[punishment.reason]`",
+    "color": 10771377,
+    "footer": {
+      "icon_url": "https://i.imgur.com/9IkDPIr.png",
+      "text": "[punishment.operator]"
+    }
+  }
+}

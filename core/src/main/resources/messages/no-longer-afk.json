@@ -1,0 +1,9 @@
+{
+  "embed": {
+    "color": "orange",
+    "author": {
+      "icon_url": "https://api.creepernation.net/avatar/[player.name]",
+      "name": "[player.name] is no longer afk"
+    }
+  }
+}

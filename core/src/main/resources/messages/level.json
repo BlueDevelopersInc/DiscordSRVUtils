@@ -1,0 +1,10 @@
+{
+  "embed": {
+    "thumbnail": {
+      "url": "https://api.creepernation.net/avatar/[stats.name]"
+    },
+    "color": "cyan",
+    "description": "**Level:** [stats.level]\n**XP:** [stats.xp] / [stats.totalXpRequired] ([stats.xpPercentage]%)\n**Rank:** #[stats.rank]",
+    "title": "Level for [stats.name]"
+  }
+}

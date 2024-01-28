@@ -1,0 +1,11 @@
+{
+  "embed": {
+    "title": "New Punishment",
+    "description": "Player `[punishment.name]` was **kicked** for `[punishment.reason]`",
+    "color": 14169911,
+    "footer": {
+      "icon_url": "https://i.imgur.com/YzMFeax.png",
+      "text": "[punishment.operator]"
+    }
+  }
+}

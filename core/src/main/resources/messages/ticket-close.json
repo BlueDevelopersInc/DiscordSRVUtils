@@ -1,0 +1,6 @@
+{
+  "embed": {
+    "color": "#FF5555",
+    "description": "Ticket Closed by [user.asMention]"
+  }
+}

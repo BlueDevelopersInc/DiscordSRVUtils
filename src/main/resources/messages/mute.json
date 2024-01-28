@@ -1,8 +1,0 @@
-{"embed": {
- "color": "red",
- "footer": {"text": "[punishment.duration]"},
- "author": {
-  "icon_url": "https://minotar.net/avatar/[punishment.name]",
-  "name": "[punishment.name] was muted by [punishment.operator] For [punishment.reason]"
- }
-}}

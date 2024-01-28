@@ -1,0 +1,36 @@
+# This workflow is for master and beta branch for publishing.
+
+name: Build Project & Deploy
+
+on:
+  push:
+    branches:
+      - "master"
+      - "beta"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "zulu"
+          java-package: jdk
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: DiscordSRVUtils (jar is in zip)
+          path: "build/libs/*.jar"
+      - name: Publish to maven repository
+        run: ./gradlew core:publish
+        env:
+          REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
+          REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}

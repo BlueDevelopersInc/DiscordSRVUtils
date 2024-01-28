@@ -1,0 +1,7 @@
+{
+  "embed": {
+    "color": "cyan",
+    "description": "Staff will be here shortly\nClick `Close Ticket` to close this ticket\n**Panel Name: **[panel.name]"
+  },
+  "content": "[user.asMention] Here is your ticket"
+}
