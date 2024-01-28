@@ -16,7 +16,7 @@ Elevate your Discord server with custom messages, synced punishments, tickets, a
 
 ### Version
 
-![Latest release](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release&color=FF7F7F)
+![Latest release](https://repo.bluetree242.dev/api/badge/latest/maven-releases/dev/bluetree242/discordsrvutils/core?name=Latest%20Release)
 ![Latest Development Build](https://repo.bluetree242.dev/api/badge/latest/maven-snapshots/dev/bluetree242/discordsrvutils/core?name=Latest%20Development%20Build&color=FF7F7F)
 
 Replace `VERSION` with the API version you would like. The badges above displays the latest versions available.
