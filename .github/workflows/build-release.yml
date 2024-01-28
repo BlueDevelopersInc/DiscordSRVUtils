@@ -30,6 +30,7 @@ jobs:
           name: DiscordSRVUtils (jar is in zip)
           path: "build/libs/*.jar"
       - name: Publish to maven repository
+        environment: publishing
         run: ./gradlew core:publish
         env:
           REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
