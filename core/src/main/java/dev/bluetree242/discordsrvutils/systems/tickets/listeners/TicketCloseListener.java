@@ -43,7 +43,7 @@ public class TicketCloseListener extends ListenerAdapter {
             if (ticket != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getButton().getId().equals("close_ticket")) {
-                    if (ticket.getUserID().equals(e.getUser().getIdLong()) && core.getTicketsConfig().block_self_close()) {
+                    if (ticket.getUserID() == e.getUser().getIdLong() && core.getTicketsConfig().block_self_close() && !core.getJdaManager().isAdmin(ticket.getUserID())) {
                         e.reply("You cannot close your own ticket.").setEphemeral(true).queue();
                         return;
                     }

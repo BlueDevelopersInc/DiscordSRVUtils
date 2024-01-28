@@ -42,7 +42,7 @@ public class CloseCommand extends TicketCommand {
         if (ticket.isClosed()) {
             e.replyErr("Ticket is already closed").queue();
         } else {
-            if (ticket.getUserID().equals(e.getAuthor().getIdLong()) && core.getTicketsConfig().block_self_close()) {
+            if (ticket.getUserID() == e.getAuthor().getIdLong() && core.getTicketsConfig().block_self_close() && !core.getJdaManager().isAdmin(ticket.getUserID())) {
                 e.reply("You cannot close your own ticket.").setEphemeral(true).queue();
                 return;
             }

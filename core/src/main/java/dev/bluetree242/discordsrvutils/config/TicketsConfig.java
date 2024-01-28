@@ -98,7 +98,7 @@ public interface TicketsConfig {
 
     @AnnotationBasedSorter.Order(110)
     @ConfKey("block-self-close")
-    @ConfComments("# If set to true, users will not be able to close their own tickets.")
+    @ConfComments("# If set to true, users will not be able to close their own tickets.\n# This can be bypassed by being an admin.")
     @ConfDefault.DefaultBoolean(false)
     boolean block_self_close();
 }
