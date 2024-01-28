@@ -137,7 +137,7 @@ public class SuggestionManager {
         if (!core.getSuggestionsConfig().enabled()) {
             throw new IllegalStateException("Suggestions are not enabled");
         }
-        Long channelId = core.getSuggestionsConfig().suggestions_channel();
+        long channelId = core.getSuggestionsConfig().suggestions_channel();
         if (channelId == 0) {
             throw new IllegalStateException("Suggestions Channel set to 0... Please change it");
         }
@@ -198,8 +198,7 @@ public class SuggestionManager {
                     Message msg = suggestion.getMessage();
                     if (msg != null) {
                         if (msg.getButtons().isEmpty()) {
-                            if (voteMode == SuggestionVoteMode.REACTIONS) {
-                            } else {
+                            if (voteMode != SuggestionVoteMode.REACTIONS) {
                                 if (!sent) {
                                     core.logger.info(warnmsg);
                                     sent = true;

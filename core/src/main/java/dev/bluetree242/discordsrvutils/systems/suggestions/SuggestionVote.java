@@ -27,7 +27,7 @@ import lombok.Getter;
 @Getter
 public class SuggestionVote {
 
-    private final Long id;
+    private final long id;
     private final int SuggestionNumber;
     private final boolean agree;
 

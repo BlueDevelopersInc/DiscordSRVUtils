@@ -27,12 +27,12 @@ import lombok.Getter;
 public class SuggestionNote {
 
     @Getter
-    private final Long staffID;
+    private final long staffID;
     private final String NoteText;
     @Getter
     private final int SuggestionNumber;
     @Getter
-    private final Long CreationTime;
+    private final long CreationTime;
 
     public SuggestionNote(Long staffID, String noteText, int suggestionNumber, Long creationTime) {
         this.staffID = staffID;

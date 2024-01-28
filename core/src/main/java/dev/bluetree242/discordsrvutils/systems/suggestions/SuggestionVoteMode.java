@@ -23,5 +23,5 @@
 package dev.bluetree242.discordsrvutils.systems.suggestions;
 
 public enum SuggestionVoteMode {
-    REACTIONS, BUTTONS;
+    REACTIONS, BUTTONS
 }

@@ -55,13 +55,13 @@ public class Panel {
     @Getter
     private String name;
     @Getter
-    private Long messageId;
+    private long messageId;
     @Getter
-    private Long channelId;
+    private long channelId;
     @Getter
-    private Long openedCategory;
+    private long openedCategory;
     @Getter
-    private Long closedCategory;
+    private long closedCategory;
     @Getter
     private Set<Long> allowedRoles;
 

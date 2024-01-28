@@ -43,25 +43,25 @@ public class Suggestion {
     @Getter
     protected final int number;
     @Getter
-    protected final Long submitter;
+    protected final long submitter;
     @Getter
-    protected final Long channelID;
+    protected final long channelID;
     @Getter
-    protected final Long creationTime;
+    protected final long creationTime;
     @Getter
     protected final Set<SuggestionNote> notes;
     @Getter
-    protected final Long MessageID;
+    protected final Long messageID;
     @Getter
     protected final DiscordSRVUtils core;
     protected Boolean Approved;
     protected Message msg;
     @Getter
-    protected Long approver;
+    protected long approver;
     @Getter
     Set<SuggestionVote> votes;
 
-    public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long MessageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
+    public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long messageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
         this.core = core;
         this.text = text;
         this.number = number;
@@ -69,7 +69,7 @@ public class Suggestion {
         this.channelID = channelID;
         this.creationTime = creationTime;
         this.notes = notes;
-        this.MessageID = MessageID;
+        this.messageID = messageID;
         this.Approved = Approved;
         this.approver = approver;
         this.votes = votes;
@@ -112,11 +112,11 @@ public class Suggestion {
 
     public Message getMessage() {
         if (core.getJDA().getTextChannelById(channelID) == null) return null;
-        return msg == null ? msg = core.getJDA().getTextChannelById(channelID).retrieveMessageById(MessageID).complete() : msg;
+        return msg == null ? msg = core.getJDA().getTextChannelById(channelID).retrieveMessageById(messageID).complete() : msg;
     }
 
     public int getYesCount() {
-        if (MessageID == null) return 0;
+        if (messageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(SuggestionVote::isAgree).collect(Collectors.toList());
             return votes.size();
@@ -125,7 +125,7 @@ public class Suggestion {
     }
 
     public int getNoCount() {
-        if (MessageID == null) return 0;
+        if (messageID == null) return 0;
         if (core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS) {
             List<SuggestionVote> votes = getVotes().stream().filter(v -> !v.isAgree()).collect(Collectors.toList());
             return votes.size();

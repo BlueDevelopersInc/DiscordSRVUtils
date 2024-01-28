@@ -37,7 +37,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class LevelingManager {
-    public final Long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
+    public final long MAP_EXPIRATION_NANOS = Duration.ofSeconds(60L).toNanos();
     public final Map<UUID, Long> antispamMap = new HashMap<>();
     private final DiscordSRVUtils core;
     @Getter

@@ -38,16 +38,17 @@ public class Ticket {
     @Getter
     private final String id;
     @Getter
-    private final Long userID;
+    private final long userID;
     @Getter
-    private final Long channelID;
+    private final long channelID;
     @Getter
     private final boolean closed;
     @Getter
     private final Panel panel;
     @Getter
     private final boolean firstMessage;
-    private Long messageID;
+    @Getter
+    private long messageID;
 
     public Ticket(DiscordSRVUtils core, String id, Long userID, Long channelID, boolean closed, Panel panel, Long messageID, boolean firstMessage) {
         this.core = core;
@@ -58,10 +59,6 @@ public class Ticket {
         this.panel = panel;
         this.messageID = messageID;
         this.firstMessage = firstMessage;
-    }
-
-    public long getMessageID() {
-        return messageID;
     }
 
 

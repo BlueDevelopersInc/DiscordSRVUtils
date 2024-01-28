@@ -39,7 +39,7 @@ public interface SuggestionsConfig {
     @AnnotationBasedSorter.Order(10)
     @ConfComments("# Channel to send suggestions in")
     @ConfDefault.DefaultLong(0)
-    Long suggestions_channel();
+    long suggestions_channel();
 
 
     @AnnotationBasedSorter.Order(20)
@@ -109,7 +109,7 @@ public interface SuggestionsConfig {
     @AnnotationBasedSorter.Order(120)
     @ConfComments("# Role that if user have they can't make suggestions")
     @ConfDefault.DefaultLong(0)
-    Long suggestion_muted_role();
+    long suggestion_muted_role();
 
     @AnnotationBasedSorter.Order(130)
     @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n# Another note is that your votes will be reset by changing this")

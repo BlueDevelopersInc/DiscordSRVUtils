@@ -38,6 +38,6 @@ public interface StatusConfig {
     @AnnotationBasedSorter.Order(20)
     @ConfComments("# Delay to update the status message in seconds. Keep in mind discord has rate limits")
     @ConfDefault.DefaultLong(60)
-    Long update_delay();
+    long update_delay();
 
 }

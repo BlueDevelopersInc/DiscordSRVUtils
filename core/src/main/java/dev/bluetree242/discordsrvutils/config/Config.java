@@ -86,7 +86,7 @@ public interface Config {
     @ConfKey("welcomer.role")
     @ConfComments("# Role to add when they join the server")
     @ConfDefault.DefaultLong(0)
-    Long welcomer_role();
+    long welcomer_role();
 
     @AnnotationBasedSorter.Order(80)
     @ConfKey("goodbye.enabled")

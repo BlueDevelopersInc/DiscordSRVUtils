@@ -58,7 +58,7 @@ public interface TicketsConfig {
     @ConfKey("ticket-banned-role")
     @ConfComments("# If user have this role they can't open a ticket")
     @ConfDefault.DefaultLong(0)
-    Long ticket_banned_role();
+    long ticket_banned_role();
 
     @AnnotationBasedSorter.Order(50)
     @ConfKey("ticket-close-button")
