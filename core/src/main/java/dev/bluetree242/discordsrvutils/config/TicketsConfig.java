@@ -95,4 +95,10 @@ public interface TicketsConfig {
     @ConfComments("# Delay for deleting the ping when staff finally reply to someone in a ticket. Set to 0 to disable")
     @ConfDefault.DefaultInteger(3)
     int firstmessage_ping_delay();
+
+    @AnnotationBasedSorter.Order(110)
+    @ConfKey("block-self-close")
+    @ConfComments("# If set to true, users will not be able to close their own tickets.")
+    @ConfDefault.DefaultBoolean(false)
+    boolean block_self_close();
 }

@@ -42,6 +42,10 @@ public class CloseCommand extends TicketCommand {
         if (ticket.isClosed()) {
             e.replyErr("Ticket is already closed").queue();
         } else {
+            if (ticket.getUserID().equals(e.getAuthor().getIdLong()) && core.getTicketsConfig().block_self_close()) {
+                e.reply("You cannot close your own ticket.").setEphemeral(true).queue();
+                return;
+            }
             e.reply("Closing Ticket...").setEphemeral(true).queue();
             ticket.close(e.getAuthor());
         }
