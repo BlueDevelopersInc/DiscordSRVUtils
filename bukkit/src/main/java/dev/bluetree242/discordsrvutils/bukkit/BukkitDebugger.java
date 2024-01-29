@@ -151,7 +151,7 @@ public class BukkitDebugger implements Debugger {
         List<Map<String, String>> files = new ArrayList<>();
         Path dataFolderPath = core.getPlatform().getDataFolder().toPath();
         files.add(fileMap("config.yml", Utils.readFile(dataFolderPath.resolve("config.yml").toFile())));
-        files.add(fileMap("PunishmentsIntegration.yml", Utils.readFile(dataFolderPath.resolve("PunishmentsIntegration.yml").toFile())));
+        files.add(fileMap("punishments-integration.yml", Utils.readFile(dataFolderPath.resolve("PunishmentsIntegration.yml").toFile())));
         files.add(fileMap("tickets.yml", Utils.readFile(dataFolderPath.resolve("tickets.yml").toFile())));
         files.add(fileMap("leveling.yml", Utils.readFile(dataFolderPath.resolve("leveling.yml").toFile())));
         files.add(fileMap("status.yml", Utils.readFile(dataFolderPath.resolve("status.yml").toFile())));

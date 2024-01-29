@@ -54,6 +54,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.utils.cache.CacheFlag;
 import lombok.Getter;
 import space.arim.dazzleconf.error.InvalidConfigException;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -97,7 +98,7 @@ public class DiscordSRVUtils {
     public Logger logger;
     // Configurations
     private ConfManager<Config> configManager;
-    private ConfManager<PunishmentsIntegrationConfig> bansIntegrationConfigManager;
+    private ConfManager<PunishmentsIntegrationConfig> punishmentsIntegrationConfigManager;
     private ConfManager<TicketsConfig> ticketsConfigManager;
     private Config config;
     private ConfManager<LevelingConfig> levelingConfigManager;
@@ -154,7 +155,9 @@ public class DiscordSRVUtils {
     private void initConfigs() {
         configManager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
         sqlConfigManager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
-        bansIntegrationConfigManager = ConfManager.create(main.getDataFolder().toPath(), "PunishmentsIntegration.yml", PunishmentsIntegrationConfig.class);
+        File oldPunishmentsIntegrationConfig = getPlatform().getDataFolder().toPath().resolve("PunishmentsIntegration.yml").toFile();
+        if (oldPunishmentsIntegrationConfig.exists()) oldPunishmentsIntegrationConfig.renameTo(getPlatform().getDataFolder().toPath().resolve("punishments-integration.yml").toFile());
+        punishmentsIntegrationConfigManager = ConfManager.create(main.getDataFolder().toPath(), "punishments-integration.yml", PunishmentsIntegrationConfig.class);
         ticketsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
         levelingConfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
         suggestionsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "suggestions.yml", SuggestionsConfig.class);
@@ -279,8 +282,8 @@ public class DiscordSRVUtils {
         config = configManager.reloadConfigData();
         sqlConfigManager.reloadConfig();
         sqlconfig = sqlConfigManager.reloadConfigData();
-        bansIntegrationConfigManager.reloadConfig();
-        bansConfig = bansIntegrationConfigManager.reloadConfigData();
+        punishmentsIntegrationConfigManager.reloadConfig();
+        bansConfig = punishmentsIntegrationConfigManager.reloadConfigData();
         ticketsConfigManager.reloadConfig();
         ticketsConfig = ticketsConfigManager.reloadConfigData();
         levelingConfigManager.reloadConfig();
