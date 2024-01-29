@@ -29,7 +29,7 @@ import dev.bluetree242.discordsrvutils.exceptions.InvalidResponseException;
 import dev.bluetree242.discordsrvutils.hooks.PluginHookManager;
 import dev.bluetree242.discordsrvutils.listeners.discordsrv.DiscordSRVListener;
 import dev.bluetree242.discordsrvutils.listeners.game.JoinUpdateChecker;
-import dev.bluetree242.discordsrvutils.other.MessageFilter;
+import dev.bluetree242.discordsrvutils.other.LogFilter;
 import dev.bluetree242.discordsrvutils.platform.PlatformDiscordSRV;
 import dev.bluetree242.discordsrvutils.platform.PlatformServer;
 import dev.bluetree242.discordsrvutils.platform.PluginPlatform;
@@ -63,7 +63,7 @@ public class DiscordSRVUtils {
     // Instance for DiscordSRVUtils.get()
     private static DiscordSRVUtils instance;
     @Getter
-    private final MessageFilter messageFilter = new MessageFilter(this);
+    private final LogFilter logFilter = new LogFilter(this);
     private final PluginPlatform main;
     @Getter
     private final MessageManager messageManager = new MessageManager(this);

@@ -30,15 +30,14 @@ import java.util.logging.LogRecord;
 
 // Fix the big messages that look like spam
 @RequiredArgsConstructor
-public class MessageFilter {
+public class LogFilter {
     private final DiscordSRVUtils core;
 
     public boolean canLog(String loggerName, LogRecord record) {
         String message = record.getMessage();
         Level level = record.getLevel();
-        if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.hikariCP.hikari")) {
-            // Ignorable message
-            if (!message.contains("Driver does not support get/set network timeout for connections."))
+        if (loggerName.startsWith("dev.bluetree242.discordsrvutils.dependencies.hikaricp")) {
+            if (!message.endsWith("Driver does not support get/set network timeout for connections. (feature not supported)"))
                 log(level, message, "HikariCP");
             return false;
         }

@@ -65,7 +65,7 @@ public class BukkitLogger extends LegacyAbstractLogger {
         record.setLoggerName(main.getLogger().getName());
         record.setParameters(arguments);
         record.setThrown(throwable);
-        if (!main.getCore().getMessageFilter().canLog(name, record)) return;
+        if (!main.getCore().getLogFilter().canLog(name, record)) return;
         main.getLogger().log(record);
     }
 
