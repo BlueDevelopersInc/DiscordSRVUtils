@@ -27,7 +27,7 @@ import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-@ConfHeader("# Database config. Only MySQL & MariaDB are supported")
+@ConfHeader("# Database config. Only MySQL & MariaDB are supported.")
 public interface SQLConfig {
 
 
@@ -42,7 +42,7 @@ public interface SQLConfig {
     String Host();
 
     @ConfDefault.DefaultInteger(3306)
-    @ConfComments("\n# Port for your Database, usually 3306")
+    @ConfComments("\n# Port for your Database, usually 3306.")
     @AnnotationBasedSorter.Order(3)
     int Port();
 

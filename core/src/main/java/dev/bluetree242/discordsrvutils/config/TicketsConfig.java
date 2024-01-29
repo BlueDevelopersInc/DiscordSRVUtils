@@ -39,60 +39,60 @@ public interface TicketsConfig {
     @ConfKey("ticket-opened-message")
     @AnnotationBasedSorter.Order(20)
     @ConfDefault.DefaultString("message:ticket-open")
-    @ConfComments("# Message to send in ticket when its opened")
+    @ConfComments("# Message to send in ticket when its opened.")
     String ticket_opened_message();
 
     @ConfKey("ticket-closed-message")
     @AnnotationBasedSorter.Order(30)
     @ConfDefault.DefaultString("message:ticket-close")
-    @ConfComments("# Message to send in ticket when its closed")
+    @ConfComments("# Message to send in ticket when its closed.")
     String ticket_closed_message();
 
     @ConfKey("ticket-reopen-message")
     @AnnotationBasedSorter.Order(30)
     @ConfDefault.DefaultString("message:ticket-reopen")
-    @ConfComments("# Message to send in ticket when its reopened")
+    @ConfComments("# Message to send in ticket when its reopened.")
     String ticket_reopen_message();
 
     @AnnotationBasedSorter.Order(40)
     @ConfKey("ticket-banned-role")
-    @ConfComments("# If user have this role they can't open a ticket")
+    @ConfComments("# If user have this role they can't open a ticket.")
     @ConfDefault.DefaultLong(0)
     long ticket_banned_role();
 
     @AnnotationBasedSorter.Order(50)
     @ConfKey("ticket-close-button")
-    @ConfComments("# Text on Close Ticket Button")
+    @ConfComments("# Text on Close Ticket Button.")
     @ConfDefault.DefaultString("Close Ticket")
     String ticket_close_button();
 
     @AnnotationBasedSorter.Order(60)
     @ConfKey("ticket-reopen-button")
-    @ConfComments("# Text on Ticket Reopen Button")
+    @ConfComments("# Text on Ticket Reopen Button.")
     @ConfDefault.DefaultString("Reopen Ticket")
     String ticket_reopen_button();
 
     @AnnotationBasedSorter.Order(70)
     @ConfKey("ticket-delete-button")
-    @ConfComments("# Text on Delete Ticket Button")
+    @ConfComments("# Text on Delete Ticket Button.")
     @ConfDefault.DefaultString("Delete Ticket")
     String delete_ticket_button();
 
     @AnnotationBasedSorter.Order(80)
     @ConfKey("ticket-open-ephemeral-msg")
-    @ConfComments("# Text on Delete Ticket Button")
+    @ConfComments("# Text on Delete Ticket Button.")
     @ConfDefault.DefaultString("Ticket Opened at [channel.asMention]")
     String ticket_open_ephemeral_msg();
 
     @AnnotationBasedSorter.Order(90)
     @ConfKey("ticket-open-button")
-    @ConfComments("# Text on the Open Ticket Button")
+    @ConfComments("# Text on the Open Ticket Button.")
     @ConfDefault.DefaultString("Open Ticket")
     String open_ticket_button();
 
     @AnnotationBasedSorter.Order(100)
     @ConfKey("ticket-first-message-ping-delete-delay")
-    @ConfComments("# Delay for deleting the ping when staff finally reply to someone in a ticket. Set to 0 to disable")
+    @ConfComments("# Delay for deleting the ping when staff finally reply to someone in a ticket. Set to 0 to disable.")
     @ConfDefault.DefaultInteger(3)
     int firstmessage_ping_delay();
 

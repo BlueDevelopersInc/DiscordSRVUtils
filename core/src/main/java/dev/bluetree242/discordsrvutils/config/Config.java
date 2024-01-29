@@ -42,7 +42,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(34)
     @ConfKey("disabled-commands")
-    @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here")
+    @ConfComments("# Commands that must be disabled, will also hide from help command, Don't use aliases here.")
     @ConfDefault.DefaultStrings({})
     List<String> disabled_commands();
 
@@ -66,7 +66,7 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(50)
     @ConfKey("welcomer.channel")
-    @ConfComments("# Channel to send welcomer message, Use ID, No need to change this if dms are enabled")
+    @ConfComments("# Channel to send welcomer message, Use ID, No need to change this if dms are enabled.")
     @ConfDefault.DefaultLong(0)
     long welcomer_channel();
 
@@ -78,13 +78,13 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(70)
     @ConfKey("welcomer.message")
-    @ConfComments("# Welcomer message")
+    @ConfComments("# Welcomer message.")
     @ConfDefault.DefaultString("message:welcome")
     String welcomer_message();
 
     @AnnotationBasedSorter.Order(71)
     @ConfKey("welcomer.role")
-    @ConfComments("# Role to add when they join the server")
+    @ConfComments("# Role to add when they join the server.")
     @ConfDefault.DefaultLong(0)
     long welcomer_role();
 
@@ -97,12 +97,12 @@ public interface Config {
     @AnnotationBasedSorter.Order(90)
     @ConfKey("goodbye.channel")
     @ConfDefault.DefaultLong(0)
-    @ConfComments("# Channel to send message in, DM unavailable because when they leave there is a big chance of no mutual servers")
+    @ConfComments("# Channel to send message in, DM unavailable because when they leave there is a big chance of no mutual servers.")
     long goodbye_channel();
 
     @AnnotationBasedSorter.Order(100)
     @ConfKey("goodbye.message")
-    @ConfComments("# Message to send")
+    @ConfComments("# Message to send.")
     @ConfDefault.DefaultString("GoodBye **[user.asTag]**. Hope you come back later")
     String goodbye_message();
 
@@ -121,13 +121,13 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(120)
     @ConfKey("afk.channel")
-    @ConfComments("# AFK Channel. Leave 0 for default channel for discordsrv")
+    @ConfComments("# AFK Channel. Leave 0 for default channel for discordsrv.")
     @ConfDefault.DefaultLong(0)
     long afk_channel();
 
     @AnnotationBasedSorter.Order(130)
     @ConfKey("afk.message")
-    @ConfComments("# AFK Message")
+    @ConfComments("# AFK Message.")
     @ConfDefault.DefaultString("message:afk")
     String afk_message();
 
@@ -138,19 +138,19 @@ public interface Config {
 
     @AnnotationBasedSorter.Order(141)
     @ConfKey("help-response")
-    @ConfComments("# Response of /help command, leave blank to generate. You can use message:msgfile where msgfile is the name of the message file in your messages folder (without json, and you can make a new file)")
+    @ConfComments("# Response of /help command, leave blank to generate. You can use message:msgfile where msgfile is the name of the message file in your messages folder (without json, and you can make a new file).")
     @ConfDefault.DefaultString("")
     String help_response();
 
     @AnnotationBasedSorter.Order(150)
     @ConfKey("bungee-mode")
-    @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee")
+    @ConfComments("# Bungee Mode. This will make bot not respond to commands, and nothing will happen as if plugin not installed (only mc leveling is active). This option should be enabled on all servers except lobby if you use bungee.")
     @ConfDefault.DefaultBoolean(false)
     Boolean bungee_mode();
 
     @AnnotationBasedSorter.Order(160)
     @ConfKey("minimize-errors")
-    @ConfComments("# Replace errors with small error note. Please note that this is a bad practice. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support")
+    @ConfComments("# Replace errors with small error note. Please note that this is a bad practice. If your console is spammed with errors (by this plugin) Please report at https://discordsrvutils.xyz/support.")
     @ConfDefault.DefaultBoolean(false)
     Boolean minimize_errors();
 

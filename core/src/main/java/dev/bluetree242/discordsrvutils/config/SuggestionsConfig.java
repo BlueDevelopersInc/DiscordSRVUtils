@@ -37,60 +37,60 @@ public interface SuggestionsConfig {
     boolean enabled();
 
     @AnnotationBasedSorter.Order(10)
-    @ConfComments("# Channel to send suggestions in")
+    @ConfComments("# Channel to send suggestions in.")
     @ConfDefault.DefaultLong(0)
     long suggestions_channel();
 
 
     @AnnotationBasedSorter.Order(20)
-    @ConfComments("# Suggestion Message without notes or approval/decline")
+    @ConfComments("# Suggestion Message without notes or approval/decline.")
     @ConfDefault.DefaultString("message:suggestion")
     String suggestions_message();
 
     @AnnotationBasedSorter.Order(30)
-    @ConfComments("# The Reaction for community to react when they +1 vote the suggestion")
+    @ConfComments("# The Reaction for community to react when they +1 vote the suggestion.")
     @ConfDefault.DefaultString("white_check_mark")
     String yes_reaction();
 
     @AnnotationBasedSorter.Order(40)
-    @ConfComments("# The Reaction for community to react when they -1 vote the suggestion")
+    @ConfComments("# The Reaction for community to react when they -1 vote the suggestion.")
     @ConfDefault.DefaultString("x")
     String no_reaction();
 
 
     @AnnotationBasedSorter.Order(50)
-    @ConfComments("# Should the Submitter of suggestion be able to vote their own suggestion?")
+    @ConfComments("# Should the submitter of suggestion be able to vote their own suggestion?")
     @ConfDefault.DefaultBoolean(false)
     Boolean allow_submitter_vote();
 
 
     @AnnotationBasedSorter.Order(60)
-    @ConfComments("# Message when the suggestion is noted (only latest note is previewed)")
+    @ConfComments("# Message when the suggestion is noted (only latest note is previewed).")
     @ConfDefault.DefaultString("message:suggestion-noted")
     String suggestion_noted_message();
 
     @AnnotationBasedSorter.Order(70)
-    @ConfComments("# Message when the suggestion is noted and also approved (only latest note is previewed)")
+    @ConfComments("# Message when the suggestion is noted and also approved (only latest note is previewed).")
     @ConfDefault.DefaultString("message:suggestion-noted-approved")
     String suggestion_noted_approved();
 
     @AnnotationBasedSorter.Order(80)
-    @ConfComments("# Message when the suggestion is approved")
+    @ConfComments("# Message when the suggestion is approved.")
     @ConfDefault.DefaultString("message:suggestion-approved")
     String suggestion_approved();
 
     @AnnotationBasedSorter.Order(90)
-    @ConfComments("# Message when the suggestion is noted and also denied (only latest note is previewed)")
+    @ConfComments("# Message when the suggestion is noted and also denied (only latest note is previewed).")
     @ConfDefault.DefaultString("message:suggestion-noted-denied")
     String suggestion_noted_denied();
 
     @AnnotationBasedSorter.Order(90)
-    @ConfComments("# Message when the suggestion is denied")
+    @ConfComments("# Message when the suggestion is denied.")
     @ConfDefault.DefaultString("message:suggestion-denied")
     String suggestion_denied();
 
     @AnnotationBasedSorter.Order(95)
-    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n# Note: Muted role and anti suggestion spam will not be applied here")
+    @ConfComments("# If a message is sent in the suggestions channel, do we delete it and make a new suggestion?\n# Note: Muted role and anti suggestion spam will not be applied here.")
     @ConfDefault.DefaultBoolean(false)
     Boolean set_suggestion_from_channel();
 
@@ -107,12 +107,12 @@ public interface SuggestionsConfig {
      */
 
     @AnnotationBasedSorter.Order(120)
-    @ConfComments("# Role that if user have they can't make suggestions")
+    @ConfComments("# Role that if user have they can't make suggestions.")
     @ConfDefault.DefaultLong(0)
     long suggestion_muted_role();
 
     @AnnotationBasedSorter.Order(130)
-    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n# Another note is that your votes will be reset by changing this")
+    @ConfComments("# Mode of the suggestions. Set to BUTTONS to make it use buttons instead of reactions/n# Note that changing this is not affected until server restart./n# Another note is that your votes will be reset by changing this.")
     @ConfDefault.DefaultString("REACTIONS")
     String suggestions_vote_mode();
 
