@@ -61,7 +61,7 @@ public class JooqClassLoading {
         long elapsedMillis = (System.nanoTime() - startNanos) / 1_000_000L;
         if (elapsedMillis >= 1000) {
             String elapsedSeconds = String.format("%.2f", ((double) elapsedMillis) / 1000D); // More user readable
-            core.getLogger().info("Pre-Loaded JOOQ classes in " + elapsedSeconds + " Seconds.");
+            core.getLogger().info("Pre-Loaded JOOQ classes in " + elapsedSeconds + " seconds.");
         }
     }
 }

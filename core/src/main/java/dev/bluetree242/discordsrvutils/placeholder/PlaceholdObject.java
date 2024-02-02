@@ -69,7 +69,12 @@ public class PlaceholdObject {
 
     public String apply(@NotNull String s, PlatformPlayer placehold, boolean doAllowCode) {
         final String[] val = {s};
-        if (ob instanceof String || ob instanceof Integer || ob instanceof Double || ob instanceof Long || ob instanceof Float) {
+        if (ob == null) {
+            if (val[0].contains("[" + display + "]")) {
+                val[0] = val[0].replace("[" + display + "]", "null");
+            }
+        }
+        else if (ob instanceof String || ob instanceof Integer || ob instanceof Double || ob instanceof Long || ob instanceof Float) {
             if (val[0].contains("[" + display + "]")) {
                 val[0] = val[0].replace("[" + display + "]", ob.toString());
             }
