@@ -45,6 +45,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         String val = s;
         Map<String, Object> variables = PlaceholdObject.getVariableMap(core);
         for (PlaceholdObject holder : this) {
+            if (holder.getObject() == null) continue;
             variables.put(holder.display, holder.getObject());
         }
         val = NamedValueFormatter.formatExpressions(val, core, variables);

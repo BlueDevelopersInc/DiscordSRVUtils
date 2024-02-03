@@ -41,7 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class WelcomerAndGoodByeListener extends ListenerAdapter {
+public class WelcomerListener extends ListenerAdapter {
     private final DiscordSRVUtils core;
 
     @Override
@@ -88,7 +88,7 @@ public class WelcomerAndGoodByeListener extends ListenerAdapter {
                         holders.add(new PlaceholdObject(core, core.getPlatform().getDiscordSRV().getMainGuild(), "guild"));
                         holders.add(new PlaceholdObject(core, e.getMember(), "member"));
                         holders.add(new PlaceholdObject(core, invite, "invite"));
-                        if (inviter != null) holders.add(new PlaceholdObject(core, inviter, "inviter"));
+                        holders.add(new PlaceholdObject(core, inviter, "inviter"));
                         channel.sendMessage(core.getMessageManager().getMessage(core.getMainConfig().welcomer_message(), holders, null).build()).queue();
                     }
                 }

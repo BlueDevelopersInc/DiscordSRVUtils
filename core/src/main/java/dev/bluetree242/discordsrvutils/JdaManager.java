@@ -22,7 +22,7 @@
 
 package dev.bluetree242.discordsrvutils;
 
-import dev.bluetree242.discordsrvutils.listeners.jda.WelcomerAndGoodByeListener;
+import dev.bluetree242.discordsrvutils.listeners.jda.WelcomerListener;
 import dev.bluetree242.discordsrvutils.systems.invitetracking.listeners.InviteTrackingListener;
 import dev.bluetree242.discordsrvutils.systems.leveling.listeners.jda.DiscordLevelingListener;
 import dev.bluetree242.discordsrvutils.systems.suggestions.listeners.SuggestionListener;
@@ -53,7 +53,7 @@ public class JdaManager {
     public JdaManager(DiscordSRVUtils core) {
         this.core = core;
         // Add The JDA Listeners to the List
-        listeners.add(new WelcomerAndGoodByeListener(core));
+        listeners.add(new WelcomerListener(core));
         listeners.add(new CreatePanelListener(core));
         listeners.add(new PaginationListener(core));
         listeners.add(new TicketDeleteListener(core));
