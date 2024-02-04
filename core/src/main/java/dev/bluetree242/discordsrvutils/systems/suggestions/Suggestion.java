@@ -54,14 +54,14 @@ public class Suggestion {
     protected final Long messageID;
     @Getter
     protected final DiscordSRVUtils core;
-    protected Boolean Approved;
+    protected Boolean approved;
     protected Message msg;
     @Getter
-    protected long approver;
+    protected Long approver;
     @Getter
     Set<SuggestionVote> votes;
 
-    public Suggestion(DiscordSRVUtils core, String text, int number, Long submitter, Long channelID, Long creationTime, Set<SuggestionNote> notes, Long messageID, Boolean Approved, Long approver, Set<SuggestionVote> votes) {
+    public Suggestion(DiscordSRVUtils core, String text, int number, long submitter, long channelID, long creationTime, Set<SuggestionNote> notes, Long messageID, Boolean approved, Long approver, Set<SuggestionVote> votes) {
         this.core = core;
         this.text = text;
         this.number = number;
@@ -70,17 +70,16 @@ public class Suggestion {
         this.creationTime = creationTime;
         this.notes = notes;
         this.messageID = messageID;
-        this.Approved = Approved;
+        this.approved = approved;
         this.approver = approver;
         this.votes = votes;
-
     }
 
     /**
      * @return null if not approved or declined yet, true if approved, false if declined.
      **/
     public Boolean isApproved() {
-        return Approved;
+        return approved;
     }
 
 
@@ -105,7 +104,7 @@ public class Suggestion {
                 .set(SuggestionsTable.SUGGESTIONS.APPROVER, staffID)
                 .where(SuggestionsTable.SUGGESTIONS.SUGGESTIONNUMBER.eq(number))
                 .execute();
-        this.Approved = approved;
+        this.approved = approved;
         this.approver = staffID;
         getMessage().editMessage(getCurrentMsg()).setActionRows(core.getSuggestionManager().voteMode == SuggestionVoteMode.BUTTONS ? Collections.singletonList(SuggestionManager.getActionRow(getYesCount(), getNoCount())) : Collections.emptyList()).queue();
     }
