@@ -74,7 +74,7 @@ public class PlaceholdObject {
                 val[0] = val[0].replace("[" + display + "]", "null");
             }
         }
-        else if (ob instanceof String || ob instanceof Integer || ob instanceof Double || ob instanceof Long || ob instanceof Float) {
+        else if (ob instanceof String || ob instanceof Integer || ob instanceof Double || ob instanceof Long || ob instanceof Float || ob instanceof Boolean) {
             if (val[0].contains("[" + display + "]")) {
                 val[0] = val[0].replace("[" + display + "]", ob.toString());
             }
