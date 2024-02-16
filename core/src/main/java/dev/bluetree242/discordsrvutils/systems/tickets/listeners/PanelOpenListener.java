@@ -46,7 +46,7 @@ public class PanelOpenListener extends ListenerAdapter {
             if (panel != null) {
                 if (e.getUser().isBot()) return;
                 if (e.getMember().getRoles().contains(core.getPlatform().getDiscordSRV().getMainGuild().getRoleById(core.getTicketsConfig().ticket_banned_role()))) {
-                    e.deferReply(true).setContent("You are Ticket Muted").queue();
+                    e.deferReply(true).setContent("You are ticket muted.").queue();
                     return;
                 }
                 Ticket t = panel.openTicket(e.getUser());

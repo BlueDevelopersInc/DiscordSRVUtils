@@ -129,6 +129,7 @@ public class Panel {
         TicketsRecord check = conn
                 .selectFrom(TicketsTable.TICKETS)
                 .where(TicketsTable.TICKETS.USERID.eq(user.getIdLong()))
+                .and(TicketsTable.TICKETS.ID.eq(id))
                 .and(TicketsTable.TICKETS.CLOSED.eq("false"))
                 .orderBy(TicketsTable.TICKETS.OPENTIME)
                 .fetchOne();
