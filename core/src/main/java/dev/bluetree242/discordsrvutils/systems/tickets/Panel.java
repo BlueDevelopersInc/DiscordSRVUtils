@@ -55,7 +55,7 @@ public class Panel {
     @Getter
     private String name;
     @Getter
-    private long messageId;
+    private Long messageId;
     @Getter
     private long channelId;
     @Getter
@@ -65,7 +65,7 @@ public class Panel {
     @Getter
     private Set<Long> allowedRoles;
 
-    public Panel(DiscordSRVUtils core, String name, String id, Long messageId, Long channelId, Long openedCategory, Long closedCategory, Set<Long> allowedRoles) {
+    public Panel(DiscordSRVUtils core, String name, String id, Long messageId, long channelId, long openedCategory, long closedCategory, Set<Long> allowedRoles) {
         this.core = core;
         this.name = name;
         this.id = id;
