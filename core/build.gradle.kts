@@ -20,6 +20,7 @@
  * END
  */
 
+import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import nu.studer.gradle.jooq.JooqGenerate
 import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Property
@@ -74,8 +75,12 @@ rootProject.allprojects {
         relocate("net.kyori.adventure.text.serializer.ansi", "$prefix.adventure.text.serializer.ansi")
         relocate("net.kyori.ansi", "$prefix.ansi")
 
-        // This makes adventure-ansi work
+        // This is copied from DiscordSRV's build.gradle.kts, it is to avoid shading the same library that exists in both plugins.
         relocate("net.kyori", "github.scarsz.discordsrv.dependencies.kyori")
+
+
+        // Other things
+        transform(ServiceFileTransformer::class.java)
     }
 }
 
@@ -86,16 +91,21 @@ tasks.compileJava {
 dependencies {
     // Database
     implementation("com.zaxxer:HikariCP:3.4.5")
-    implementation("org.hsqldb:hsqldb:2.6.1:jdk8")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.0")
+    implementation("org.hsqldb:hsqldb:2.7.1:jdk8")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.1.0") {
+        exclude("com.github.waffle")
+        exclude("org.checkerframework")
+        exclude("com.google.errorprone")
+    }
 
     // Database Migration
-    implementation("org.flywaydb:flyway-core:7.5.3")
+    val flywayVer = "8.2.0"
+    implementation("org.flywaydb:flyway-core:$flywayVer")
 
     // Caching
     implementation("com.github.ben-manes.caffeine:caffeine:2.9.1") {
-        exclude(group = "com.google.errorprone")
         exclude("org.checkerframework")
+        exclude("com.google.errorprone")
     }
 
     // Configuration
@@ -116,7 +126,7 @@ dependencies {
 
     // Colored console output
     implementation("net.kyori:adventure-text-serializer-ansi:4.14.0") {
-        exclude(group = "net.kyori", module = "adventure-api")
+        exclude("net.kyori","adventure-api")
     }
 }
 

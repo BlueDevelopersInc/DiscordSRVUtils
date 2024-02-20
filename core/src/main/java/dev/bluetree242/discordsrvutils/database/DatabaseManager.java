@@ -64,13 +64,13 @@ public class DatabaseManager {
         Thread.currentThread().setContextClassLoader(DatabaseManager.class.getClassLoader());
         try {
             if (core.getSqlconfig().isEnabled()) {
-                jdbcUrl = "jdbc:mysql:// " +
-                        core.getSqlconfig().Host() +
-                        ":" + core.getSqlconfig().Port() + "/" + core.getSqlconfig().DatabaseName();
-                user = core.getSqlconfig().UserName();
-                pass = core.getSqlconfig().Password();
+                jdbcUrl = "jdbc:mariadb://" +
+                        core.getSqlconfig().host() +
+                        ":" + core.getSqlconfig().port() + "/" + core.getSqlconfig().database();
+                user = core.getSqlconfig().username();
+                pass = core.getSqlconfig().password();
             } else {
-                core.logger.info("MySQL is disabled, using hsqldb");
+                core.logger.info("MariaDB is disabled, using hsqldb");
                 hsqldb = true;
                 jdbcUrl = "jdbc:hsqldb:file:" + core.getPlatform().getDataFolder().toPath().resolve("database").resolve("Database") + ";hsqldb.lock_file=false;sql.syntax_mys=true;sql.lowercase_ident=true";
                 user = "SA";
@@ -85,7 +85,7 @@ public class DatabaseManager {
             sql = new HikariDataSource(settings);
             jooq = DSL.using(sql, hsqldb ? SQLDialect.HSQLDB : SQLDialect.MYSQL, this.settings);
             migrate();
-            core.getLogger().info("MySQL/HsqlDB Connected & Setup");
+            core.getLogger().info("MariaDB/HsqlDB connected & setup.");
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {

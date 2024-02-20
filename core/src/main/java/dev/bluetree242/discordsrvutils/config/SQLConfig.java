@@ -27,9 +27,8 @@ import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
-@ConfHeader("# Database config. Only MySQL & MariaDB are supported.")
+@ConfHeader("# Database config. Only MariaDB is supported.\n")
 public interface SQLConfig {
-
 
     @ConfDefault.DefaultBoolean(false)
     @ConfComments("# Should we use a database?")
@@ -37,27 +36,27 @@ public interface SQLConfig {
     boolean isEnabled();
 
     @ConfDefault.DefaultString("localhost")
-    @ConfComments("# Host for your database, usually localhost.")
+    @ConfComments("# host for your database, usually localhost.")
     @AnnotationBasedSorter.Order(2)
-    String Host();
+    String host();
 
     @ConfDefault.DefaultInteger(3306)
     @ConfComments("# Port for your Database, usually 3306.")
     @AnnotationBasedSorter.Order(3)
-    int Port();
+    int port();
 
     @ConfDefault.DefaultString("root")
     @ConfComments("# Username used to login to database.")
     @AnnotationBasedSorter.Order(4)
-    String UserName();
+    String username();
 
     @ConfDefault.DefaultString("password")
     @ConfComments("# Password used to login to database.")
     @AnnotationBasedSorter.Order(5)
-    String Password();
+    String password();
 
-    @ConfDefault.DefaultString("DiscordSRVUtilsData")
+    @ConfDefault.DefaultString("discordsrvutils")
     @ConfComments("# Database name. The host should tell you the name normally.")
     @AnnotationBasedSorter.Order(6)
-    String DatabaseName();
+    String database();
 }
