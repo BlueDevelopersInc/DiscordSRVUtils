@@ -28,6 +28,4 @@ public class VersionInfo {
     public static final String BUILD_NUMBER = "@build@";
     public static final String COMMIT = "@commit@";
     public static final String BUILD_DATE = "@buildDate@";
-
-
 }

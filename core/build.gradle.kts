@@ -126,7 +126,7 @@ dependencies {
 
     // Colored console output
     implementation("net.kyori:adventure-text-serializer-ansi:4.14.0") {
-        exclude("net.kyori","adventure-api")
+        exclude("net.kyori", "adventure-api")
     }
 }
 

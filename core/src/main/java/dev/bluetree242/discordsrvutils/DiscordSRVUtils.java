@@ -156,7 +156,8 @@ public class DiscordSRVUtils {
         configManager = ConfManager.create(main.getDataFolder().toPath(), "config.yml", Config.class);
         sqlConfigManager = ConfManager.create(main.getDataFolder().toPath(), "sql.yml", SQLConfig.class);
         File oldPunishmentsIntegrationConfig = getPlatform().getDataFolder().toPath().resolve("PunishmentsIntegration.yml").toFile();
-        if (oldPunishmentsIntegrationConfig.exists()) oldPunishmentsIntegrationConfig.renameTo(getPlatform().getDataFolder().toPath().resolve("punishments-integration.yml").toFile());
+        if (oldPunishmentsIntegrationConfig.exists())
+            oldPunishmentsIntegrationConfig.renameTo(getPlatform().getDataFolder().toPath().resolve("punishments-integration.yml").toFile());
         punishmentsIntegrationConfigManager = ConfManager.create(main.getDataFolder().toPath(), "punishments-integration.yml", PunishmentsIntegrationConfig.class);
         ticketsConfigManager = ConfManager.create(main.getDataFolder().toPath(), "tickets.yml", TicketsConfig.class);
         levelingConfigManager = ConfManager.create(main.getDataFolder().toPath(), "leveling.yml", LevelingConfig.class);
