@@ -53,6 +53,10 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         for (PlaceholdObject holder : this) {
             val = holder.apply(val, placehold, false);
         }
+        for (String key : variables.keySet()) {
+            Object value = variables.get(key);
+            val = new PlaceholdObject(core, value, key).apply(val, placehold, false);
+        }
         return val;
     }
 
