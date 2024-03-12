@@ -65,7 +65,7 @@ public abstract class PluginPlatform<K> {
     public abstract void addHooks();
 
 
-    public abstract String placehold(PlatformPlayer player, String s);
+    public abstract String placehold(PlatformPlayer<?> player, String s);
 
     public abstract PlatformDiscordSRV getDiscordSRV();
 

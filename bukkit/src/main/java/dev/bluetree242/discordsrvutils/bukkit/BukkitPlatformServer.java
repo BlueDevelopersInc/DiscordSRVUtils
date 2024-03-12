@@ -105,19 +105,19 @@ public class BukkitPlatformServer extends PlatformServer {
     }
 
     @Override
-    public PlatformPlayer getOfflinePlayer(UUID uuid) {
+    public PlatformPlayer<?> getOfflinePlayer(UUID uuid) {
         return new BukkitOfflinePlayer(Bukkit.getOfflinePlayer(uuid), core);
     }
 
     @Override
-    public PlatformPlayer getPlayer(UUID uuid) {
+    public PlatformPlayer<?> getPlayer(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return null;
         return new BukkitPlayer(core, player);
     }
 
     @Override
-    public PlatformPlayer getPlayer(String name) {
+    public PlatformPlayer<?> getPlayer(String name) {
         Player player = Bukkit.getPlayer(name);
         if (player == null) return null;
         return new BukkitPlayer(core, player);

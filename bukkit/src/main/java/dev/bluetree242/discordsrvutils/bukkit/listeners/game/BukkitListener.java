@@ -41,7 +41,7 @@ public class BukkitListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         PlatformJoinEvent event = new PlatformJoinEvent() {
             @Override
-            public PlatformPlayer getPlayer() {
+            public PlatformPlayer<?> getPlayer() {
                 return new BukkitPlayer(core, e.getPlayer());
             }
         };

@@ -29,9 +29,9 @@ import lombok.Getter;
 @Getter
 public class MinecraftLevelupEvent extends LevelupEvent {
     private final PlayerStats stats;
-    private final PlatformPlayer player;
+    private final PlatformPlayer<?> player;
 
-    public MinecraftLevelupEvent(PlayerStats stats, PlatformPlayer player) {
+    public MinecraftLevelupEvent(PlayerStats stats, PlatformPlayer<?> player) {
         super(stats, player.getUniqueId());
         this.stats = stats;
         this.player = player;

@@ -161,7 +161,7 @@ public class MessageManager {
         return embed;
     }
 
-    private @Nullable Instant parseTimestamp(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    private @Nullable Instant parseTimestamp(JsonNode json, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         if (json.hasNonNull("timestamp")) {
             if (json.get("timestamp").isLong()) return Instant.ofEpochSecond(json.get("timestamp").asLong());
             else {
@@ -198,7 +198,7 @@ public class MessageManager {
         return parseEmbedFromJSON(json, null, null);
     }
 
-    public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public MessageBuilder parseMessageFromJson(JsonNode json, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         MessageBuilder msg = new MessageBuilder();
 
         // Content
@@ -269,7 +269,7 @@ public class MessageManager {
         }
     }
 
-    public MessageBuilder getMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public MessageBuilder getMessage(String content, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         MessageBuilder msg = new MessageBuilder();
         if (content.startsWith("message:")) {
             String messageName = content.replaceFirst("message:", "");
@@ -283,11 +283,11 @@ public class MessageManager {
         return msg;
     }
 
-    public MessageBuilder getMessageNamed(String name, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public MessageBuilder getMessageNamed(String name, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         return parseMessageFromJson(getMessageJSONByName(name), holders, placehold);
     }
 
-    public MessageBuilder getMessage(File file, PlaceholdObjectList holders, PlatformPlayer placehold) throws IOException {
+    public MessageBuilder getMessage(File file, PlaceholdObjectList holders, PlatformPlayer<?> placehold) throws IOException {
         return parseMessageFromJson(objectMapper.readTree(file), holders, placehold);
     }
 

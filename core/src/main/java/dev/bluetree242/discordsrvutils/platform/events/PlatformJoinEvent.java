@@ -26,5 +26,5 @@ import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 public abstract class PlatformJoinEvent {
 
-    public abstract PlatformPlayer getPlayer();
+    public abstract PlatformPlayer<?> getPlayer();
 }

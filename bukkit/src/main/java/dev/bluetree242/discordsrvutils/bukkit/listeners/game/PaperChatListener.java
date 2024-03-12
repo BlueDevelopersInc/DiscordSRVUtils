@@ -41,7 +41,7 @@ public class PaperChatListener implements Listener {
     public void onJoin(AsyncChatEvent e) {
         PlatformChatEvent event = new PlatformChatEvent() {
             @Override
-            public PlatformPlayer getPlayer() {
+            public PlatformPlayer<?> getPlayer() {
                 return new BukkitPlayer(core, e.getPlayer());
             }
 

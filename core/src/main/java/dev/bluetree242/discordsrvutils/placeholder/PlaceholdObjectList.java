@@ -41,7 +41,7 @@ public class PlaceholdObjectList extends ArrayList<PlaceholdObject> {
         return list;
     }
 
-    public String apply(String s, PlatformPlayer placehold) {
+    public String apply(String s, PlatformPlayer<?> placehold) {
         String val = s;
         Map<String, Object> variables = PlaceholdObject.getVariableMap(core);
         for (PlaceholdObject holder : this) {

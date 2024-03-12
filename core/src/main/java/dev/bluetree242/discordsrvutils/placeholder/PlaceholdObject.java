@@ -63,11 +63,11 @@ public class PlaceholdObject {
         return ob;
     }
 
-    public String apply(@NotNull String s, PlatformPlayer placehold) {
+    public String apply(@NotNull String s, PlatformPlayer<?> placehold) {
         return apply(s, placehold, true);
     }
 
-    public String apply(@NotNull String s, PlatformPlayer placehold, boolean doAllowCode) {
+    public String apply(@NotNull String s, PlatformPlayer<?> placehold, boolean doAllowCode) {
         final String[] val = {s};
         if (ob == null) {
             if (val[0].contains("[" + display + "]")) {

@@ -61,7 +61,7 @@ public class ErrorHandler {
             core.getLogger().severe("Read the note above the error please.");
             // Don't spam errors
             if ((System.currentTimeMillis() - lastErrorTime) >= 180000)
-                for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
+                for (PlatformPlayer<?> p : core.getServer().getOnlinePlayers()) {
                     if (p.hasPermission("discordsrvutils.errornotifications")) {
                         // Tell admins that something was wrong
                         p.sendMessage("&7[&eDSU&7] Plugin had an error. Check console for details. Support at https://discordsrvutils.xyz/support");
@@ -84,7 +84,7 @@ public class ErrorHandler {
 
     public void severe(String sv) {
         core.getLogger().severe(sv);
-        for (PlatformPlayer p : core.getServer().getOnlinePlayers()) {
+        for (PlatformPlayer<?> p : core.getServer().getOnlinePlayers()) {
             if (p.hasPermission("discordsrvutils.errornotifications"))
                 // Tell admins that something was wrong
                 p.sendMessage("&7[&eDSU&7] &c" + sv);

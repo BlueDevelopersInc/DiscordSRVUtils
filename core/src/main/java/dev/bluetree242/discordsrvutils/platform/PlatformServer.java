@@ -49,11 +49,11 @@ public abstract class PlatformServer {
 
     public abstract Debugger getDebugger();
 
-    public abstract PlatformPlayer getOfflinePlayer(UUID uuid);
+    public abstract PlatformPlayer<?> getOfflinePlayer(UUID uuid);
 
-    public abstract PlatformPlayer getPlayer(UUID uuid);
+    public abstract PlatformPlayer<?> getPlayer(UUID uuid);
 
-    public abstract PlatformPlayer getPlayer(String name);
+    public abstract PlatformPlayer<?> getPlayer(String name);
 
     public abstract void executeConsoleCommands(String... cmds);
 

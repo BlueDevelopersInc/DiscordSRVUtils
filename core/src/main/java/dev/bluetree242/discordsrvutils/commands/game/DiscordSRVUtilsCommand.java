@@ -175,7 +175,7 @@ public class DiscordSRVUtilsCommand implements PlatformCommand {
                     sender.sendMessage("&cPlease provide player name.");
                     return;
                 }
-                PlatformPlayer player = core.getServer().getPlayer(name);
+                PlatformPlayer<?> player = core.getServer().getPlayer(name);
                 if (player == null) {
                     sender.sendMessage("&cPlayer not found.");
                     return;

@@ -26,7 +26,7 @@ import dev.bluetree242.discordsrvutils.platform.PlatformPlayer;
 
 public abstract class PlatformChatEvent {
 
-    public abstract PlatformPlayer getPlayer();
+    public abstract PlatformPlayer<?> getPlayer();
 
     public abstract boolean isCancelled();
 }

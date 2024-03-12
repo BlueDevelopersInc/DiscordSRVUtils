@@ -145,7 +145,7 @@ public class LevelingRewardsManager {
             rewardCache.remove(stats.getUuid().toString());
             saveRewardCache();
         }
-        PlatformPlayer player = core.getPlatform().getServer().getPlayer(stats.getUuid());
+        PlatformPlayer<?> player = core.getPlatform().getServer().getPlayer(stats.getUuid());
         if (player == null) return;
         List<String> commands = getCommands(stats.getLevel(), lastLevel, stats);
         if (commands.isEmpty()) return;

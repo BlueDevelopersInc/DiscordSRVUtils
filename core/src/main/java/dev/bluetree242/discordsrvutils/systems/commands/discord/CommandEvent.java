@@ -63,7 +63,7 @@ public class CommandEvent {
         return event.reply(msg);
     }
 
-    public ReplyAction replyMessage(String content, PlaceholdObjectList holders, PlatformPlayer placehold) {
+    public ReplyAction replyMessage(String content, PlaceholdObjectList holders, PlatformPlayer<?> placehold) {
         holders.add(new PlaceholdObject(core, getAuthor(), "user"));
         if (getChannel() instanceof TextChannel) {
             holders.add(new PlaceholdObject(core, getMember(), "member"));
