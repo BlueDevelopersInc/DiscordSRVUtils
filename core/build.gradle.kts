@@ -61,7 +61,6 @@ rootProject.allprojects {
         archiveClassifier.set("")
         val prefix = "dev.bluetree242.discordsrvutils.dependencies"
         relocate("space.arim.dazzleconf", "$prefix.dazzleconf")
-        relocate("org.yaml.snakeyaml", "$prefix.snakeyaml")
         relocate("com.zaxxer", "$prefix.hikaricp")
         relocate("org.hsqldb", "$prefix.hsqldb")
         relocate("org.mariadb.jdbc", "$prefix.mariadb")
@@ -109,7 +108,9 @@ dependencies {
     }
 
     // Configuration
-    implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2")
+    implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.3.0-M2") {
+        exclude(group = "org.yaml")
+    }
 
     // Discord Integration
     compileOnly("com.discordsrv:discordsrv:${rootProject.properties["discordsrv_version"]}")
