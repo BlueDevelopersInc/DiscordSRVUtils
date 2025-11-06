@@ -210,7 +210,7 @@ tasks {
 publishing {
     repositories {
         maven {
-            val repository = "https://repo.bluetree242.dev/maven-"
+            val repository = "https://repo.bluetree242.dev/"
             val releasesRepoUrl = repository + "releases"
             val snapshotsRepoUrl = repository + "snapshots"
             url = uri(if (version.toString().endsWith("-DEV")) snapshotsRepoUrl else releasesRepoUrl)
