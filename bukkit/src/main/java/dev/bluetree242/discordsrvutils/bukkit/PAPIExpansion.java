@@ -24,6 +24,7 @@ package dev.bluetree242.discordsrvutils.bukkit;
 
 import dev.bluetree242.discordsrvutils.DiscordSRVUtils;
 import dev.bluetree242.discordsrvutils.hooks.PluginHook;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
@@ -140,7 +141,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         @Override
         public void hook() {
             // On next tick because of those bukkit sync errors when PAPI fires the registration event
-            Bukkit.getScheduler().runTask((Plugin) core.getPlatform().getOriginal(), () -> (expansion = new PAPIExpansion(core)).register());
+            SchedulerUtil.runTask((Plugin) core.getPlatform().getOriginal(), () -> (expansion = new PAPIExpansion(core)).register());
         }
 
         @Override
