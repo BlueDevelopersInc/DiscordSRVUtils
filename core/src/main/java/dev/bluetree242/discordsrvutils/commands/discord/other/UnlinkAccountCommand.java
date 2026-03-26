@@ -41,7 +41,7 @@ public class UnlinkAccountCommand extends Command {
         if (uuid == null) e.reply(Embed.error("You are not linked.")).queue();
         else {
             core.getDiscordSRV().unlink(uuid);
-            e.reply(Embed.success("You have been unlinked.")).queue();
+            e.reply(Embed.success("You have been unlinked.")).setEphemeral(true).queue();
         }
     }
 }
